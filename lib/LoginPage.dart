@@ -256,25 +256,6 @@ class Login extends State<LoginPage> {
         ));
   }
 
-  void showSuccess(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success!"),
-          content: Text(message),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void showError(String errorMessage) {
     showDialog(
@@ -305,10 +286,10 @@ class Login extends State<LoginPage> {
     var response = await user.login();
 
     if (response.success) {
-      showSuccess("User was successfully login!");
       setState(() {
         isLoggedIn = true;
       });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
     } else {
       showError(response.error!.message);
     }
@@ -319,7 +300,6 @@ class Login extends State<LoginPage> {
     var response = await user.logout();
 
     if (response.success) {
-      showSuccess("User was successfully logout!");
       setState(() {
         isLoggedIn = false;
       });
