@@ -1,20 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/CategoryPage.dart';
+import 'package:untitled/AccountPage.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: PrescriptionCategory(),
-  ));
-}
 
 class PrescriptionCategory extends StatefulWidget {
   @override
@@ -23,7 +12,7 @@ class PrescriptionCategory extends StatefulWidget {
 
 class Prescription extends State<PrescriptionCategory> {
   final todoController = TextEditingController();
-
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +21,6 @@ class Prescription extends State<PrescriptionCategory> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        brightness: Brightness.light,
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
@@ -54,6 +42,35 @@ class Prescription extends State<PrescriptionCategory> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Container(
+            child: Text('Prescription medications', style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),),
+          ),
+          SizedBox(height: 40),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            height: 50,
+            decoration: BoxDecoration(
+                color: Color(0xffEFEFEF),
+                borderRadius: BorderRadius.circular(14)),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.search),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Search",
+                  style: TextStyle(
+                      color: Colors.grey, fontSize: 19),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 50,),
           Expanded(
               child: FutureBuilder<List<ParseObject>>(
                   future: getPresMedication(),
@@ -82,7 +99,6 @@ class Prescription extends State<PrescriptionCategory> {
                               padding: EdgeInsets.only(top: 10.0),
                               scrollDirection: Axis.vertical,
                               itemCount: snapshot.data!.length,
-                              itemExtent: 100,
                               itemBuilder: (context, index) {
                                 //Get Parse Object Values
                                 final medGet = snapshot.data![index];
@@ -96,34 +112,45 @@ class Prescription extends State<PrescriptionCategory> {
                                 //final StrengthUnit = medGet.get<String>('StrengthUnit')!;
                                 //final PackageSize = medGet.get<int>('PackageSize')!;
                                 //final PackageType = medGet.get<String>('PackageType')!;
-                                final MarketingCompany = medGet.get<String>('MarketingCompany')!;
-                                final PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
-                                return Card(
-                                    elevation: 5,
-                                    margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                    color: Colors.purple[100],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(35.0),
-                                    ),
-                                //shadowColor: Colors.grey,
-                                child: ListTile(
-                                  leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
-                                    size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
-                                  title: Text(TradeName,style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16
-                                  ),),
-                                  subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: Colors.grey
-                                  ),),
-                                  trailing: Icon(Icons.add_shopping_cart, color: Colors.black,
-                                    size: 25,),
-                                  onTap: (){
-                                    print(TradeName);
-                                  },
-                                ));
+                                var MarketingCompany = medGet.get<String>('MarketingCompany')!;
+                                var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
+                                MarketingCompany = MarketingCompany.toLowerCase();
+                                PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
+                                return SingleChildScrollView(
+                                      child: Card(
+                                           elevation: 5,
+                                           margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                           color: Colors.purple[100],
+                                           shape: RoundedRectangleBorder(
+                                             borderRadius: BorderRadius.circular(35.0),
+                                           ),
+                                    child: ExpansionTile(
+                                           title: Text(TradeName,style: TextStyle(
+                                           fontWeight: FontWeight.w400,
+                                           fontSize: 20),),
+                                            subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15,
+                                            color: Colors.black),),
+                                            leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
+                                                     size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.keyboard_arrow_down,color: Colors.black,
+                                              size: 26.0,),
+                                            IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart,color: Colors.black,
+                                              size: 25.0,)),
+                                          ],
+                                        ),
+                                            children: <Widget>[
+                                              ListTile(
+                                                subtitle: Text('Medication details:'+ '\n' +'• Usage method form: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 18,
+                                                    color: Colors.black
+                                                ),),
+                                )])));
                               });
                         }
                     }
@@ -132,6 +159,43 @@ class Prescription extends State<PrescriptionCategory> {
       ),
     ),
     ),
+        bottomNavigationBar: Container(
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                child: GNav(
+                  tabBackgroundColor: Colors.pink.shade100,
+                  gap: 8,
+                  padding: const EdgeInsets.all(16),
+                  tabs: [
+                    GButton(icon: Icons.home, text: 'Home'),
+                    GButton(icon: Icons.shopping_cart, text: 'Cart'),
+                    GButton(icon: Icons.shopping_bag, text: 'Orders'),
+                    GButton(icon: Icons.account_circle, text: 'Account'),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if(_selectedIndex == 0){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => CategoryPage()));
+                    }
+                      else if (_selectedIndex == 1) {
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 2) {
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 3) {
+                      _selectedIndex = 0;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AccountPage()));
+
+                    }
+                  }),
+                )))
     );
   }
 
