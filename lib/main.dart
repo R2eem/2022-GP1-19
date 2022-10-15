@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/PrescriptionCategory.dart';
 import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
 import 'package:untitled/CategoryPage.dart';
@@ -128,7 +129,7 @@ class HomePage extends StatelessWidget {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionCategory()));
                       },
                       color: Colors.pink[100],
                       elevation: 0,
