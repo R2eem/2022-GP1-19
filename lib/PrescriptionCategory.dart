@@ -105,15 +105,16 @@ class Prescription extends State<PrescriptionCategory> {
                                 final TradeName = medGet.get<String>('TradeName')!;
                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                 final Publicprice = medGet.get<double>('Publicprice')!;
-                                final UsageMethod = medGet.get<String>('UsageMethod')!;
                                 //final Size = medGet.get<int>('Size')!;
                                 //final SizeUnit = medGet.get<String>('SizeUnit')!;
                                 //final Strength = medGet.get<double>('Strength')!;
                                 //final StrengthUnit = medGet.get<String>('StrengthUnit')!;
                                 //final PackageSize = medGet.get<int>('PackageSize')!;
                                 //final PackageType = medGet.get<String>('PackageType')!;
+                                var UsageMethod = medGet.get<String>('UsageMethod')!;
                                 var MarketingCompany = medGet.get<String>('MarketingCompany')!;
                                 var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
+                                UsageMethod = UsageMethod.toLowerCase();
                                 MarketingCompany = MarketingCompany.toLowerCase();
                                 PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
                                 return SingleChildScrollView(
@@ -145,7 +146,7 @@ class Prescription extends State<PrescriptionCategory> {
                                         ),
                                             children: <Widget>[
                                               ListTile(
-                                                subtitle: Text('Medication details:'+ '\n' +'• Usage method form: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
+                                                subtitle: Text('Medication details:'+ '\n' +'• Usage method: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 18,
                                                     color: Colors.black
