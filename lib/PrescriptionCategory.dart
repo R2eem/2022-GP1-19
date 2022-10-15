@@ -63,8 +63,8 @@ class Prescription extends State<PrescriptionCategory> {
                       case ConnectionState.waiting:
                         return Center(
                           child: Container(
-                              width: 100,
-                              height: 100,
+                              width: 50,
+                              height: 50,
                               child: CircularProgressIndicator()),
                         );
                       default:
@@ -99,6 +99,9 @@ class Prescription extends State<PrescriptionCategory> {
                                 final MarketingCompany = medGet.get<String>('MarketingCompany')!;
                                 final PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
                                 return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(35.0),
+                                    ),
                                 child: ListTile(
                                   leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
                                     size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
@@ -113,7 +116,6 @@ class Prescription extends State<PrescriptionCategory> {
                                   ),),
                                   trailing: Icon(Icons.add_shopping_cart, color: Colors.black,
                                     size: 25,),
-                                  tileColor: Colors.pink[50],
                                   onTap: (){
                                     print(TradeName);
                                   },
