@@ -99,9 +99,13 @@ class Prescription extends State<PrescriptionCategory> {
                                 final MarketingCompany = medGet.get<String>('MarketingCompany')!;
                                 final PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
                                 return Card(
+                                    elevation: 5,
+                                    margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                    color: Colors.purple[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(35.0),
                                     ),
+                                //shadowColor: Colors.grey,
                                 child: ListTile(
                                   leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
                                     size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
