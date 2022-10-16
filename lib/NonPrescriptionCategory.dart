@@ -200,7 +200,7 @@ class NonPrescription extends State<NonPrescriptionCategory> {
     );
   }
 
-  //query method
+  //query methood
   Future<List<ParseObject>> getNonPresMedication() async {
     QueryBuilder<ParseObject> queryNonPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medication'));
