@@ -14,6 +14,12 @@ class Prescription extends State<PrescriptionCategory> {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
 
+  void search (String value) async{
+    List? list = await getPresMedication() ;
+    setState(() {
+      print(list);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,25 +56,27 @@ class Prescription extends State<PrescriptionCategory> {
             ),),
           ),
           SizedBox(height: 40),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            height: 50,
-            decoration: BoxDecoration(
-                color: Color(0xffEFEFEF),
-                borderRadius: BorderRadius.circular(14)),
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.search),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Search",
+          Material(
+              elevation: 8,
+              shadowColor: Colors.grey,
+              borderRadius: BorderRadius.circular(30),
+            child:
+                TextField(
+                  onChanged: (value) => search(value),
                   style: TextStyle(
                       color: Colors.grey, fontSize: 19),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                    ),
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    prefixIconColor: Colors.pink[100],
+                  ),
                 )
-              ],
-            ),
           ),
           SizedBox(height: 50,),
           Expanded(
@@ -105,15 +113,16 @@ class Prescription extends State<PrescriptionCategory> {
                                 final TradeName = medGet.get<String>('TradeName')!;
                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                 final Publicprice = medGet.get<double>('Publicprice')!;
-                                final UsageMethod = medGet.get<String>('UsageMethod')!;
                                 //final Size = medGet.get<int>('Size')!;
                                 //final SizeUnit = medGet.get<String>('SizeUnit')!;
                                 //final Strength = medGet.get<double>('Strength')!;
                                 //final StrengthUnit = medGet.get<String>('StrengthUnit')!;
                                 //final PackageSize = medGet.get<int>('PackageSize')!;
                                 //final PackageType = medGet.get<String>('PackageType')!;
+                                var UsageMethod = medGet.get<String>('UsageMethod')!;
                                 var MarketingCompany = medGet.get<String>('MarketingCompany')!;
                                 var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
+                                UsageMethod = UsageMethod.toLowerCase();
                                 MarketingCompany = MarketingCompany.toLowerCase();
                                 PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
                                 return SingleChildScrollView(
@@ -145,7 +154,7 @@ class Prescription extends State<PrescriptionCategory> {
                                         ),
                                             children: <Widget>[
                                               ListTile(
-                                                subtitle: Text('Medication details:'+ '\n' +'• Usage method form: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
+                                                subtitle: Text('Medication details:'+ '\n' +'• Usage method: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 18,
                                                     color: Colors.black
@@ -204,7 +213,6 @@ class Prescription extends State<PrescriptionCategory> {
     QueryBuilder<ParseObject>(ParseObject('Medication'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
     final ParseResponse apiResponse = await queryPresMedication.query();
-
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
