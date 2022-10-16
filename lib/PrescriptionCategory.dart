@@ -14,6 +14,12 @@ class Prescription extends State<PrescriptionCategory> {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
 
+  void search (String value) async{
+    List? list = await getPresMedication() ;
+    setState(() {
+      print(list);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,25 +56,27 @@ class Prescription extends State<PrescriptionCategory> {
             ),),
           ),
           SizedBox(height: 40),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            height: 50,
-            decoration: BoxDecoration(
-                color: Color(0xffEFEFEF),
-                borderRadius: BorderRadius.circular(14)),
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.search),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Search",
+          Material(
+              elevation: 8,
+              shadowColor: Colors.grey,
+              borderRadius: BorderRadius.circular(30),
+            child:
+                TextField(
+                  onChanged: (value) => search(value),
                   style: TextStyle(
                       color: Colors.grey, fontSize: 19),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                    ),
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    prefixIconColor: Colors.pink[100],
+                  ),
                 )
-              ],
-            ),
           ),
           SizedBox(height: 50,),
           Expanded(
@@ -205,7 +213,6 @@ class Prescription extends State<PrescriptionCategory> {
     QueryBuilder<ParseObject>(ParseObject('Medication'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
     final ParseResponse apiResponse = await queryPresMedication.query();
-
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
