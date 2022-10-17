@@ -303,17 +303,4 @@ class Login extends State<LoginPage> {
       showError(response.error!.message);
     }
   }
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-
-    if (response.success) {
-      setState(() {
-        isLoggedIn = false;
-      });
-    } else {
-      showError(response.error!.message);
-    }
-  }
 }
