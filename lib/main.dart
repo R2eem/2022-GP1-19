@@ -27,9 +27,55 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+        appBar: AppBar(
+        elevation: 15,
+        backgroundColor: Colors.pink[50],
+        // title: Text("Welcom To Tiryaq",style: TextStyle(color: Colors.purple,fontWeight: FontWeight.bold,fontSize: 25),),
+        // centerTitle: true,
+        // leading: Icon(Icons.arrow_back),
+        // actions: [Icon(Icons.search)],
+        shape: RoundedRectangleBorder(
+        side: BorderSide(
+        width: 3,
+        style: BorderStyle.none
+    ),
+    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(2000),bottomRight:Radius.circular(1000))
+    ),
+    bottom: PreferredSize(
+    preferredSize: Size.fromHeight(200),
+    child: Column(
+    mainAxisAlignment:MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment:MainAxisAlignment.spaceAround,
+    children: [
+    Padding(
+    padding: const EdgeInsets.only(left: 35.0),
+    ),
+
+    Text("Welcom to",style: TextStyle(color: Colors.purple,fontSize: 30,fontWeight: FontWeight.bold),),
+    CircleAvatar(
+    radius: 25,
+    backgroundColor:  Colors.white,
+    )
+    ],
+    ),
+    Padding(
+    padding: const EdgeInsets.only(left: 150.0),
+    child: Text("Tiryaq",style: TextStyle(color: Colors.purple,fontSize: 30,fontWeight: FontWeight.bold),),
+    ),
+    SizedBox(height: 110,)
+    ],
+    )
+    ),
+    ),
+
+
         body: SingleChildScrollView(
       child: SafeArea(
-        child: Container(
+        child: Container( child: Container(
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
@@ -39,27 +85,16 @@ class HomePage extends StatelessWidget {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  FadeAnimation(1, Text("Welcome", style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30
-                  ),)),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 10,),
                   FadeAnimation(1.2, Text("Who are you?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey[700],
-                    fontSize: 15
+                    fontSize: 25
                   ),)),
                 ],
               ),
-              FadeAnimation(1.4, Container(
-                height: MediaQuery.of(context).size.height / 3,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/logo.png')
-                  )
-                ),
-              )),
+
               Column(
                 children: <Widget>[
                   FadeAnimation(1.6, Container(
@@ -147,6 +182,6 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-    ));
+    )));
   }
 }
