@@ -46,10 +46,9 @@ dev_dependencies:
     sdk: flutter
 
   flutter_native_splash: ^2.0.1+1
-
 flutter_native_splash:
   color: "#fce4ec"
-  image: assets/splash.png
+  image: assets/splashh.png
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
