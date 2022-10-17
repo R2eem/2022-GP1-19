@@ -19,17 +19,27 @@ class NonPrescription extends State<NonPrescriptionCategory> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 20,
-              color: Colors.black,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(70.0),
+          child:AppBar(
+            title: Image.asset('assets/logoheader.png', alignment: Alignment.center, width: 70, height: 70,),
+            centerTitle: true,
+            backgroundColor: Colors.pink[100],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))
+            ),
+            elevation: 0,
+            leading:
+            IconButton(
+              padding: EdgeInsets.symmetric(vertical: 25),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
@@ -163,16 +173,15 @@ class NonPrescription extends State<NonPrescriptionCategory> {
         bottomNavigationBar: Container(
             child: Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: GNav(
-                  tabBackgroundColor: Colors.pink.shade100,
                   gap: 8,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home, text: 'Home'),
-                    GButton(icon: Icons.shopping_cart, text: 'Cart'),
-                    GButton(icon: Icons.shopping_bag, text: 'Orders'),
-                    GButton(icon: Icons.account_circle, text: 'Account'),
+                    GButton(icon: Icons.home,),
+                    GButton(icon: Icons.shopping_cart, ),
+                    GButton(icon: Icons.shopping_bag, ),
+                    GButton(icon: Icons.account_circle, ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {

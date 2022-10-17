@@ -28,42 +28,69 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 15,
+          backgroundColor: Colors.pink[100],
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+                  width: 3,
+                  style: BorderStyle.none
+              ),
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(2000),bottomRight:Radius.circular(1000))
+          ),
+          bottom: PreferredSize(
+              preferredSize: Size.fromHeight(200),
+              child: Column(
+                mainAxisAlignment:MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment:MainAxisAlignment.spaceAround,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 35.0),
+                      ),
+
+                      Text("Welcome",style: TextStyle(color: Colors.black54,fontSize: 35,fontWeight: FontWeight.w800,),),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor:  Colors.white,
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 110,)
+                ],
+              )
+          ),
+        ),
         body: SingleChildScrollView(
       child: SafeArea(
         child: Container(
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  FadeAnimation(1, Text("Welcome", style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30
-                  ),)),
-                  SizedBox(height: 20,),
-                  FadeAnimation(1.2, Text("Who are you?",
+                  FadeAnimation(1, Container(
+                    height: MediaQuery.of(context).size.height / 4,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/logo.png')
+                        )
+                    ),
+                  )),
+                  FadeAnimation(1.1, Text("Who are you?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey[700],
-                    fontSize: 15
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
                   ),)),
-                ],
-              ),
-              FadeAnimation(1.4, Container(
-                height: MediaQuery.of(context).size.height / 3,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/logo.png')
-                  )
-                ),
-              )),
-              Column(
-                children: <Widget>[
-                  FadeAnimation(1.6, Container(
+              SizedBox(height: 30,),
+              FadeAnimation(1.2, Container(
                     padding: EdgeInsets.only(top: 0, left: 0),
                     decoration: BoxDecoration(
                         boxShadow: const [
@@ -86,7 +113,7 @@ class HomePage extends StatelessWidget {
                         )
                     ),
                     child: MaterialButton(
-                      minWidth: double.infinity,
+                      minWidth: 370,
                       height: 60,
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -103,7 +130,7 @@ class HomePage extends StatelessWidget {
                     ),
                   )),
                   SizedBox(height: 20,),
-                  FadeAnimation(1.6, Container(
+                  FadeAnimation(1.3, Container(
                     padding: EdgeInsets.only(top: 0, left: 0),
                     decoration: BoxDecoration(
                       boxShadow: const [
@@ -126,7 +153,7 @@ class HomePage extends StatelessWidget {
                       )
                     ),
                     child: MaterialButton(
-                      minWidth: double.infinity,
+                      minWidth: 370,
                       height: 60,
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionCategory()));
@@ -144,10 +171,9 @@ class HomePage extends StatelessWidget {
                   ))
                 ],
               )
-            ],
           ),
         ),
       ),
-    ));
+    );
   }
 }

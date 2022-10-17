@@ -48,16 +48,15 @@ class Account extends State<AccountPage> {
       ),
         bottomNavigationBar: Container(
         child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
     child: GNav(
-    tabBackgroundColor: Colors.pink.shade100,
     gap: 8,
-    padding: const EdgeInsets.all(16),
+    padding: const EdgeInsets.all(10),
     tabs:  [
-    GButton(icon: Icons.home, text: 'Home'),
-    GButton(icon: Icons.shopping_cart, text: 'Cart'),
-    GButton(icon: Icons.shopping_bag, text: 'Orders'),
-    GButton(icon: Icons.account_circle, text: 'Account')
+    GButton(icon: Icons.home,),
+    GButton(icon: Icons.shopping_cart,),
+    GButton(icon: Icons.shopping_bag,),
+    GButton(icon: Icons.account_circle,)
     ],
         selectedIndex: _selectedIndex,
         onTabChange: (index) => setState(() {
