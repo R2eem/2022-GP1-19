@@ -4,7 +4,6 @@ import 'package:untitled/AccountPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/style/colors.dart';
 import 'package:untitled/style/styles.dart';
-
 import 'NonPrescriptionCategory.dart';
 import 'PrescriptionCategory.dart';
 
@@ -46,12 +45,23 @@ class Category extends State<CategoryPage> {
     switch (snapshot.connectionState) {
       case ConnectionState.none:
       case ConnectionState.waiting:
-        return Container(
-            width: 100,
-            height: 100,
-            child: CircularProgressIndicator()
-        );
+      return Center(
+        child: Container(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator()),
+      );
       default:
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Error..."),
+          );
+        }
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text("No Data..."),
+          );
+        } else {
         return  SingleChildScrollView(child:Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +157,7 @@ class Category extends State<CategoryPage> {
                 ),
             ]
         ));
-    }})]),
+    }}})]),
 
         bottomNavigationBar: Container(
             child: Padding(
@@ -165,7 +175,6 @@ class Category extends State<CategoryPage> {
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
-                    print(_selectedIndex);
                     if (_selectedIndex == 1) {
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 2) {

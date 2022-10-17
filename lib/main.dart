@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 15,
           backgroundColor: Colors.pink[100],
           shape: RoundedRectangleBorder(

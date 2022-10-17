@@ -5,6 +5,7 @@ import 'package:untitled/LoginPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import 'LoginPage.dart';
+import 'main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,11 +65,10 @@ class Account extends State<AccountPage> {
                         width: double.infinity,
                         margin: EdgeInsets.symmetric(
                             horizontal: 10), // length of text fields
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceEvenly, // space between text fields
+                        child: SingleChildScrollView(
+                          child:Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // space between text fields
                           crossAxisAlignment: CrossAxisAlignment.end,
-
                           children: <Widget>[
                             FutureBuilder<ParseUser?>(
                                 future: getUser(),
@@ -76,12 +76,23 @@ class Account extends State<AccountPage> {
                                   switch (snapshot.connectionState) {
                                     case ConnectionState.none:
                                     case ConnectionState.waiting:
-                                    // return Container(
-                                    //     width: 100,
-                                    //     height: 100,
-                                    //     child: CircularProgressIndicator()
-                                    // );
+                                    return Center(
+                                      child: Container(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator()),
+                                    );
                                     default:
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text("Error..."),
+                                        );
+                                      }
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                          child: Text("No Data..."),
+                                        );
+                                      } else {
                                       return Column(children: [
                                         Align(
                                           alignment:
@@ -128,17 +139,14 @@ class Account extends State<AccountPage> {
                                             ),
                                           ),
                                         ),
-
                                         SizedBox(
                                           height: 25,
                                         ),
-
                                         textfield(
                                           hintText:
                                               '${snapshot.data!.emailAddress}',
                                           enabled: false,
                                         ),
-
                                         SizedBox(height: 25),
                                         MaterialButton(
                                           minWidth: 200,
@@ -164,9 +172,10 @@ class Account extends State<AccountPage> {
                                         //  ChangeButton((){}),
                                       ]);
                                   }
-                                }),
+                                }}),
                           ],
                         ),
+                      ),
                       ),
                     ],
                   ),
@@ -191,10 +200,7 @@ class Account extends State<AccountPage> {
                 onTabChange: (index) => setState(() {
                       _selectedIndex = index;
                       if (_selectedIndex == 0) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CategoryPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                       } else if (_selectedIndex == 1) {
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                       } else if (_selectedIndex == 2) {
@@ -230,7 +236,7 @@ class Account extends State<AccountPage> {
     var response = await user.logout();
     if (response.success) {
       setState(() {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       });
     } else {
       showError(response.error!.message);
