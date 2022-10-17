@@ -13,6 +13,7 @@ class NonPrescriptionCategory extends StatefulWidget {
 class NonPrescription extends State<NonPrescriptionCategory> {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
+  String searchString ='';
 
   @override
   Widget build(BuildContext context) {
@@ -60,25 +61,31 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                   ),),
                 ),
                 SizedBox(height: 40),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Color(0xffEFEFEF),
-                      borderRadius: BorderRadius.circular(14)),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.search),
-                      SizedBox(
-                        width: 10,
+                Material(
+                    elevation: 8,
+                    shadowColor: Colors.grey,
+                    borderRadius: BorderRadius.circular(30),
+                    child:
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchString = value;
+                        });
+                      },
+                      style: TextStyle(
+                          color: Colors.grey, fontSize: 19),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: 'Search',
+                        prefixIcon: Icon(Icons.search),
+                        prefixIconColor: Colors.pink[100],
                       ),
-                      Text(
-                        "Search",
-                        style: TextStyle(
-                            color: Colors.grey, fontSize: 19),
-                      )
-                    ],
-                  ),
+                    )
                 ),
                 SizedBox(height: 50,),
                 Expanded(
@@ -127,7 +134,7 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                                       MarketingCompany = MarketingCompany.toLowerCase();
                                       PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
                                       UsageMethod = UsageMethod.toLowerCase();
-                                      return SingleChildScrollView(
+                                      return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())? SingleChildScrollView(
                                           child: Card(
                                               elevation: 5,
                                               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -161,7 +168,7 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                                                           fontSize: 18,
                                                           color: Colors.black
                                                       ),),
-                                                    )])));
+                                                    )]))):Container();
                                     });
                               }
                           }
