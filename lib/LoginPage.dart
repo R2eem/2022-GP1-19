@@ -39,11 +39,19 @@ class Login extends State<LoginPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
+        appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70.0),
+    child:AppBar(
+          title: Image.asset('assets/logoheader.png', alignment: Alignment.center, width: 70, height: 70,),
+          centerTitle: true,
+          backgroundColor: Colors.pink[100],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))
+          ),
           elevation: 0,
-          brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          leading: IconButton(
+          leading:
+          IconButton(
+            padding: EdgeInsets.symmetric(vertical: 25),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -53,10 +61,11 @@ class Login extends State<LoginPage> {
               color: Colors.black,
             ),
           ),
+          ),
         ),
         body: SingleChildScrollView(
             child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
           height: MediaQuery.of(context).size.height - 50,
           width: double.infinity,
           child: Form(
@@ -290,19 +299,6 @@ class Login extends State<LoginPage> {
         isLoggedIn = true;
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-    } else {
-      showError(response.error!.message);
-    }
-  }
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-
-    if (response.success) {
-      setState(() {
-        isLoggedIn = false;
-      });
     } else {
       showError(response.error!.message);
     }

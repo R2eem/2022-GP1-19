@@ -13,32 +13,37 @@ class PrescriptionCategory extends StatefulWidget {
 class Prescription extends State<PrescriptionCategory> {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
+  String searchString ='';
 
-  void search (String value) async{
-    List? list = await getPresMedication() ;
-    setState(() {
-      print(list);
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: Colors.black,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(70.0),
+          child:AppBar(
+            title: Image.asset('assets/logoheader.png', alignment: Alignment.center, width: 70, height: 70,),
+            centerTitle: true,
+            backgroundColor: Colors.pink[100],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))
+            ),
+            elevation: 0,
+            leading:
+            IconButton(
+              padding: EdgeInsets.symmetric(vertical: 25),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
-      ),
       body: SingleChildScrollView(
         child: Container(
     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -62,7 +67,11 @@ class Prescription extends State<PrescriptionCategory> {
               borderRadius: BorderRadius.circular(30),
             child:
                 TextField(
-                  onChanged: (value) => search(value),
+                  onChanged: (value) {
+                    setState(() {
+                      searchString = value;
+                    });
+                  },
                   style: TextStyle(
                       color: Colors.grey, fontSize: 19),
                   decoration: InputDecoration(
@@ -125,7 +134,7 @@ class Prescription extends State<PrescriptionCategory> {
                                 UsageMethod = UsageMethod.toLowerCase();
                                 MarketingCompany = MarketingCompany.toLowerCase();
                                 PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
-                                return SingleChildScrollView(
+                                return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())? SingleChildScrollView(
                                       child: Card(
                                            elevation: 5,
                                            margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -159,7 +168,7 @@ class Prescription extends State<PrescriptionCategory> {
                                                     fontSize: 18,
                                                     color: Colors.black
                                                 ),),
-                                )])));
+                                )]))):Container();
                               });
                         }
                     }
@@ -171,16 +180,15 @@ class Prescription extends State<PrescriptionCategory> {
         bottomNavigationBar: Container(
             child: Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: GNav(
-                  tabBackgroundColor: Colors.pink.shade100,
                   gap: 8,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home, text: 'Home'),
-                    GButton(icon: Icons.shopping_cart, text: 'Cart'),
-                    GButton(icon: Icons.shopping_bag, text: 'Orders'),
-                    GButton(icon: Icons.account_circle, text: 'Account'),
+                    GButton(icon: Icons.home,),
+                    GButton(icon: Icons.shopping_cart,),
+                    GButton(icon: Icons.shopping_bag,),
+                    GButton(icon: Icons.account_circle,),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
