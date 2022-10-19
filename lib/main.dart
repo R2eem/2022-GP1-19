@@ -3,8 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:untitled/PrescriptionCategory.dart';
 import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
-import 'package:untitled/CategoryPage.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:untitled/common/theme_hepler.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/widgets/header_widget.dart';
 
 
 Future<void> main() async {
@@ -15,166 +17,88 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomePage(),
-      )
-  );
+  runApp(MyApp());
 }
-
+class MyApp extends StatelessWidget{
+  Color _primaryColor = HexColor('#DC54FE');
+  Color _accentColor = HexColor('#8A02AE');
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Tiryaq',
+      theme: ThemeData(
+        primaryColor: _primaryColor,
+        accentColor: _accentColor,
+        scaffoldBackgroundColor: Colors.grey.shade100,
+        primarySwatch: Colors.grey,
+      ),
+      home: HomePage(),
+    );
+  }
+}
 class HomePage extends StatelessWidget {
+  double _headerHeight = 250;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 15,
-          backgroundColor: Colors.pink[100],
-          shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  width: 3,
-                  style: BorderStyle.none
-              ),
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(2000),bottomRight:Radius.circular(1000))
-          ),
-          bottom: PreferredSize(
-              preferredSize: Size.fromHeight(200),
-              child: Column(
-                mainAxisAlignment:MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment:MainAxisAlignment.spaceAround,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35.0),
-                      ),
-
-                      Text("Welcome",style: TextStyle(color: Colors.black54,fontSize: 35,fontWeight: FontWeight.w800,),),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor:  Colors.white,
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 110,)
-                ],
-              )
-          ),
-        ),
         body: SingleChildScrollView(
-      child: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-          child: Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+        child: Column(
+            children: [
+              Container(
+                height: _headerHeight,
+                child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
+              ),
+              SafeArea(
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),// This will be the login form
+                    child: Column(
+                      children: [
                   FadeAnimation(1, Container(
                     height: MediaQuery.of(context).size.height / 4,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('assets/logo.png')
+                    child: Image.asset('assets/logo.png',height: 400, width: 400,)
                         )
                     ),
-                  )),
                   FadeAnimation(1.1, Text("Who are you?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),)),
+                    style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold),)),
               SizedBox(height: 30,),
               FadeAnimation(1.2, Container(
-                    padding: EdgeInsets.only(top: 0, left: 0),
-                    decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0xFFF06292),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: Offset(4,4),
-                          ),
-                          BoxShadow(
-                            color: Colors.white,
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: Offset(-4,-4),
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border(
-
-                        )
-                    ),
-                    child: MaterialButton(
-                      minWidth: 370,
-                      height: 60,
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                      },
-                      color: Colors.pink[100],
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)
-                      ),
-                      child: Text("Customer", style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18
-                      ),),
-                    ),
-                  )),
+                decoration: ThemeHelper().buttonBoxDecoration(context),
+                child: ElevatedButton(
+                  style: ThemeHelper().buttonStyle(),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(70, 10, 70, 10),
+                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),),
+                  ),
+                  onPressed: (){
+                    //After successful login we will redirect to profile page. Let's create profile page now
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                ),
+              ),),
                   SizedBox(height: 20,),
-                  FadeAnimation(1.3, Container(
-                    padding: EdgeInsets.only(top: 0, left: 0),
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0xFFF06292),
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                          offset: Offset(4,4),
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                          offset: Offset(-4,-4),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border(
-
-                      )
-                    ),
-                    child: MaterialButton(
-                      minWidth: 370,
-                      height: 60,
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionCategory()));
-                      },
-                      color: Colors.pink[100],
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)
-                      ),
-                      child: Text("Pharmacy", style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18
-                      ),),
-                    ),
-                  ))
+                        FadeAnimation(1.3, Container(
+                          decoration: ThemeHelper().buttonBoxDecoration(context),
+                          child: ElevatedButton(
+                            style: ThemeHelper().buttonStyle(),
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(70, 10, 70, 10),
+                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                            ),
+                            onPressed: (){
+                              //After successful login we will redirect to profile page. Let's create profile page now
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                            },
+                          ),
+                        ),),
                 ],
               )
           ),
         ),
-      ),
+      ]),
+    )
     );
   }
 }
