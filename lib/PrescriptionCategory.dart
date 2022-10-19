@@ -13,10 +13,12 @@ class PrescriptionCategory extends StatefulWidget {
 class Prescription extends State<PrescriptionCategory> {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
-  String searchString = "";
+
   void search (String value) async{
     List? list = await getPresMedication() ;
-
+    setState(() {
+      print(list);
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -60,12 +62,7 @@ class Prescription extends State<PrescriptionCategory> {
               borderRadius: BorderRadius.circular(30),
             child:
                 TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchString = value;
-
-                    });
-                  },
+                  onChanged: (value) => search(value),
                   style: TextStyle(
                       color: Colors.grey, fontSize: 19),
                   decoration: InputDecoration(
@@ -128,8 +125,7 @@ class Prescription extends State<PrescriptionCategory> {
                                 UsageMethod = UsageMethod.toLowerCase();
                                 MarketingCompany = MarketingCompany.toLowerCase();
                                 PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
-
-                                return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) && UsageMethod.toLowerCase().startsWith(searchString.toLowerCase())?SingleChildScrollView(
+                                return SingleChildScrollView(
                                       child: Card(
                                            elevation: 5,
                                            margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -163,11 +159,7 @@ class Prescription extends State<PrescriptionCategory> {
                                                     fontSize: 18,
                                                     color: Colors.black
                                                 ),),
-                                )
-                                            ]
-                                    )
-                                      )
-                                ) :Container();
+                                )])));
                               });
                         }
                     }
