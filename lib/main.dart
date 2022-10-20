@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/PrescriptionCategory.dart';
 import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
@@ -16,17 +15,8 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  Color _primaryColor= HexColor('##C280E4');
-  Color _accentColor= HexColor('#F36EAF');
-
   runApp(
       MaterialApp(
-        theme: ThemeData(
-          primaryColor: _primaryColor,
-          accentColor: _accentColor,
-          scaffoldBackgroundColor: Colors.grey.shade100,
-          primarySwatch: Colors.grey,
-        ),
         debugShowCheckedModeBanner: false,
         home: HomePage(),
       )
@@ -34,7 +24,6 @@ Future<void> main() async {
 }
 
 class HomePage extends StatelessWidget {
-  double _headerHeight = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +64,6 @@ class HomePage extends StatelessWidget {
                 ],
               )
           ),
-
         ),
         body: SingleChildScrollView(
       child: SafeArea(

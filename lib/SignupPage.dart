@@ -1,9 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/widgets/header_widget.dart';
+
+import 'common/theme_hepler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,90 +36,69 @@ class Signup extends State<SignupPage> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
+  final controllerFirstname = TextEditingController();
+  final controllerLasttname = TextEditingController();
+  final controllerPhoneNumber = TextEditingController();
+
 
   final _formKey = GlobalKey<FormState>();
+
+  double _headerHeight = 250;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(70.0),
-          child:AppBar(
-            title: Image.asset('assets/logoheader.png', alignment: Alignment.center, width: 70, height: 70,),
-            centerTitle: true,
-            backgroundColor: Colors.pink[100],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))
-            ),
-            elevation: 0,
-            leading:
-            IconButton(
-              padding: EdgeInsets.symmetric(vertical: 25),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                height: MediaQuery.of(context).size.height - 50,
-                width: double.infinity,
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
+            child: Stack(
+                children: [
+                  Container(
+                    height: 150,
+                    child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+                  ),
+                  SafeArea(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              FadeAnimation(
-                                  1,
-                                  Text(
-                                    "Sign up",
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FadeAnimation(
-                                  1.2,
-                                  Text(
-                                    "Create an account, It's free",
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey[700]),
-                                  )),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              //username
-                              FadeAnimation(
-                                1.3,Text(
-                                'Username',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black87),
-                              )),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              FadeAnimation(
-                                1.3,TextFormField(
-                                autovalidateMode:
+                  children: [
+                           Text('Sign up', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
+                           Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
+                           SizedBox(height: 25.0),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                              children: [
+                                //username
+                                Container(
+                                  child: FadeAnimation(1.3, TextFormField(
+                                    autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                controller: controllerUsername,
+                                    controller: controllerUsername,
+                                    keyboardType: TextInputType.text,
+                                    textCapitalization: TextCapitalization.none,
+                                    autocorrect: false,
+                                    obscureText: false,
+                                    validator: MultiValidator([
+                                      RequiredValidator(
+                                          errorText: 'this field is required'),
+                                    ]),
+                                    decoration: ThemeHelper().textInputDecoration('Username', 'Enter your username'),)
+                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                //FisrtName
+                               Container(
+                              child: FadeAnimation(1.3, TextFormField(
+                                autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                                controller: controllerFirstname,
                                 keyboardType: TextInputType.text,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
@@ -122,37 +107,38 @@ class Signup extends State<SignupPage> {
                                   RequiredValidator(
                                       errorText: 'this field is required'),
                                 ]),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey)),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey)),
+                                  decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),)
+                                ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                               ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                                //LastName
+                                Container(
+                                  child: FadeAnimation(1.3, TextFormField(
+                                    autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                    controller: controllerLasttname,
+                                    keyboardType: TextInputType.text,
+                                    textCapitalization: TextCapitalization.none,
+                                    autocorrect: false,
+                                    obscureText: false,
+                                    validator: MultiValidator([
+                                      RequiredValidator(
+                                          errorText: 'this field is required'),
+                                    ]),
+                                    decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),)
+                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                 ),
-                              )),
-                              SizedBox(
-                                height: 30,
-                              ),
-
+                                SizedBox(
+                                  height: 20,
+                                ),
                               //email
-                              FadeAnimation(
-                                1.4,Text(
-                                'Email',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black87),
-                              )),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              FadeAnimation(
+                              Container(
+                                child:FadeAnimation(
                                 1.4,TextFormField(
                                 autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                                 controller: controllerEmail,
                                 keyboardType: TextInputType.emailAddress,
                                 textCapitalization: TextCapitalization.none,
@@ -164,40 +150,44 @@ class Signup extends State<SignupPage> {
                                   EmailValidator(
                                       errorText: 'enter a valid email address')
                                 ]),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey)),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey)),
-                                ),
-                              )),
-                              SizedBox(
-                                height: 30,
+                                  decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),),
+                                ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
                               ),
-
-                              //password
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  FadeAnimation(
-                                    1.5,Text(
-                                    'Password',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black87),
-                                  )),
-                                  SizedBox(
-                                    height: 5,
+                              SizedBox(
+                                height: 20,
+                              ),
+                                Container(
+                                  child: TextFormField(
+                                    autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                    controller: controllerPhoneNumber,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    textCapitalization: TextCapitalization.none,
+                                    autocorrect: false,
+                                    obscureText: false,
+                                    decoration: ThemeHelper().textInputDecoration(
+                                        "Mobile Number",
+                                        "Enter your mobile number"),
+                                    validator: MultiValidator([
+                                      RequiredValidator(
+                                          errorText: 'this field is required'),
+                                      MinLengthValidator(10,
+                                          errorText: 'must be 10 digits long'),
+                                      MaxLengthValidator(10,
+                                          errorText: 'must be 10 digits long')
+                                    ]),
                                   ),
-                                  FadeAnimation(
+                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                ),
+                                SizedBox(height: 20.0),
+                                  Container(
+                                 child: FadeAnimation(
                                     1.5,TextFormField(
                                     autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
+                                    AutovalidateMode.onUserInteraction,
                                     controller: controllerPassword,
                                     keyboardType: TextInputType.text,
                                     textCapitalization: TextCapitalization.none,
@@ -220,31 +210,16 @@ class Signup extends State<SignupPage> {
                                           errorText:
                                               'must have at least one LOWERCASE character')
                                     ]),
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey)),
-                                      border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey)),
+                                   decoration: ThemeHelper().textInputDecoration("Password", "Enter your password"),
                                     ),
-                                  )),
+                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                                   SizedBox(
-                                    height: 30,
+                                    height: 15,
                                   ),
 
                                   //confirm password
-                                  FadeAnimation(
-                                    1.6,Text(
-                                    'Confirm password',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black87),
-                                  )),
-                                  FadeAnimation(
+                                  Container(
+                                    child: FadeAnimation(
                                     1.6,TextFormField(
                                     obscureText: true,
                                     autovalidateMode:
@@ -255,91 +230,59 @@ class Signup extends State<SignupPage> {
                                              if(val != controllerPassword.text)
                                                 return 'password are not matching';
                                               return null;},
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey)),
-                                      border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey)),
-                                    ),
-                                  )
-                                )],
-                              ),
+                                      decoration: ThemeHelper().textInputDecoration("Confirm Password", "Enter same password"),
+                                    )
+                                ),decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                  ),
                               SizedBox(
                                 height: 30,
                               ),
-                              FadeAnimation(
-                                  1.7,
-                                  Container(
-                                    padding: EdgeInsets.only(top: 0, left: 0),
-                                    decoration: BoxDecoration(
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Color(0xFFF06292),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 8,
-                                                    offset: Offset(4,4),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Colors.white,
-                                                    spreadRadius: 1,
-                                                    blurRadius: 8,
-                                                    offset: Offset(-4,-4),
-                                                  )
-                                                ],
-                                        borderRadius: BorderRadius.circular(50),),
-                                    child: MaterialButton(
-                                      minWidth: double.infinity,
-                                      height: 60,
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          doUserRegistration();
-                                        }
-                                      },
-                                      color: Colors.pink[100],
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50)),
-                                      child: Text(
-                                        "Sign up",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18),
-                                      ),
-                                    ),
-                                  )),
-                              FadeAnimation(
-                                  1.7,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text("Already have an account?"),
-                                      TextButton(
-                                        child: Text(
-                                          'Log in',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LoginPage()));
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ],
+                    Container(
+                      decoration: ThemeHelper().buttonBoxDecoration(context),
+                      child: ElevatedButton(
+                        style: ThemeHelper().buttonStyle(),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                          child: Text(
+                            "Sign up".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ]),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            doUserRegistration();
+                          }
+                        },
+                      ),
+                    ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(10,20,10,20),
+                                  //child: Text('Don\'t have an account? Create'),
+                                  child: Text.rich(
+                                      TextSpan(
+                                          children: [
+                                            TextSpan(text: "Already have an account? ", style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Colors.black45)),
+                                            TextSpan(
+                                              text: 'Log in',
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = (){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                                },
+                                              style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            ),
+                                          ]
+                                      )
+                                  ),
+                                )
+                  ]),
+                        )]),
                   ),
-                ))));
+                        ]),
+        )])));
   }
 
   void showSuccess() {
@@ -390,9 +333,15 @@ class Signup extends State<SignupPage> {
     final username = controllerUsername.text.trim();
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
-
+    final firstname = controllerFirstname.text.trim();
+    final lastname = controllerLasttname.text.trim();
+    num phonenumber =num.parse(controllerPhoneNumber.text);
     final user = ParseUser.createUser(username, password, email)
-      ..set('Email', email);
+      ..set('Firstname', firstname)
+      ..set('Lastname', lastname)
+      ..set('Email', email)
+      ..set('Phonenumber', phonenumber);
+
 
     var response = await user.signUp();
 
