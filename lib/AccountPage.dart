@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'animation/FadeAnimation.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:untitled/LoginPage.dart';
@@ -83,116 +84,139 @@ class _AccountPage extends State<AccountPage>{
                         ),
                         child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
                       ),
+
                       SizedBox(height: 10,),
+
                       Form(
                         key: _formKey,
+                        //child: SingleChildScrollView(
                         child: Column(
-                            children: [
-                              Container(
-                                child: TextField(
-                                  obscureText: true,
-                                  decoration: ThemeHelper().textInputDecoration('Username'),
-                                ),
-                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                          children: <Widget>[
+                            //username
+                            FutureBuilder<ParseUser?>(
+                            future: getUser(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                  return Center(
+                                    child: Container(
+                                        width: 50,
+                                        height: 50,
+                                        child: CircularProgressIndicator()),
+                                  );
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text("Error..."),
+                                    );
+                                  }
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: Text("No Data..."),
+                                    );
+                                  } else {
+                                    return Column( children: [
+                                     Container(
+                                      child: TextField(
 
-                              SizedBox(height: 15.0),
+                                     obscureText: true,
+                                     decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Username") ,
+                                                   ),
+                                      decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                              Container(
-                                child: TextField(
-                                  obscureText: true,
-                                  decoration: ThemeHelper().textInputDecoration('First name'),
-                                ),
-                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                                          ),
 
-                              SizedBox(height: 15.0),
+                                       SizedBox(height: 15.0),
 
-                              Container(
-                                child: TextField(
-                                  decoration: ThemeHelper().textInputDecoration('Last name'),
-                                ),
-                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                                      Container(
+                                        child: TextField(
 
-                              SizedBox(height: 15.0),
+                                          obscureText: true,
+                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"First Name") ,
+                                        ),
+                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                              Container(
-                                child: TextField(
-                                  obscureText: true,
-                                  decoration: ThemeHelper().textInputDecoration('Email'),
-                                ),
-                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                                      ),
 
-                              SizedBox(height: 15.0),
+                                      SizedBox(height: 15.0),
 
-                              Container(
-                                child: TextField(
-                                  obscureText: true,
-                                  decoration: ThemeHelper().textInputDecoration('Phone Number'),
-                                ),
-                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                                      Container(
+                                        child: TextField(
 
-                              SizedBox(height: 15.0),
+                                          obscureText: true,
+                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Last Name") ,
+                                        ),
+                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                              Container(
-                                decoration: ThemeHelper().buttonBoxDecoration(context),
-                                child: ElevatedButton(
-                                  style: ThemeHelper().buttonStyle(),
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                    child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                  ),
-                                  onPressed: (){
+                                      ),
 
-                                    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-                                  },
-                                ),
-                              ),
+                                      SizedBox(height: 15.0),
 
-                              SizedBox(height: 10.0),
+                                      Container(
+                                        child: TextField(
 
-                              Container(
-                                decoration: ThemeHelper().buttonBoxDecoration(context),
-                                child: ElevatedButton(
-                                  style: ThemeHelper().buttonStyle(),
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
-                                    child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                  ),
-                                  onPressed: (){
+                                          obscureText: true,
+                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Email") ,
+                                        ),
+                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                    //doUserLogout();
-                                  },
-                                ),
-                              ),
+                                      ),
 
-                              // Container(
-                              //   child: TextField(
-                              //     obscureText: true,
-                              //     decoration: ThemeHelper().textInputDecoration('Password'),
-                              //   ),
-                              //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              // ),
+                                      SizedBox(height: 15.0),
 
+                                      Container(
+                                        child: TextField(
 
+                                          obscureText: true,
+                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Phone Number") ,
+                                        ),
+                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
+                                      ),
 
+                                      SizedBox(height: 15.0),
 
-                            ]
-                        ),
+                                      Container(
+                                        decoration: ThemeHelper().buttonBoxDecoration(context),
+                                        child: ElevatedButton(
+                                          style: ThemeHelper().buttonStyle(),
+                                          child: Padding(
+                                            padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                            child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                          ),
+                                          onPressed: (){
+
+                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                          },
+                                        ),
+                                      ),
+
+                                      SizedBox(height: 10.0),
+
+                                      Container(
+                                        decoration: ThemeHelper().buttonBoxDecoration(context),
+                                        child: ElevatedButton(
+                                          style: ThemeHelper().buttonStyle(),
+                                          child: Padding(
+                                            padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
+                                            child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                          ),
+                                          onPressed: (){
+
+                                            doUserLogout();
+                                          },
+                                        ),
+                                      ),
+
+                                    ] );
+
+                                  }}}),
+                          ] ),
                       ),
-
-                    ]
-                ),
-
-
-
+                    ]),
               ),
-            ]
-        ),
+            ]),
       ),
 
         bottomNavigationBar: Container(
@@ -224,7 +248,6 @@ class _AccountPage extends State<AccountPage>{
   }
 
 
-  }
 
 
 Future<ParseUser?> getUser() async {
@@ -235,37 +258,41 @@ Future<ParseUser?> getUser() async {
 
 
 
-// void showError(String errorMessage) {
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: const Text("Error!"),
-//         content: Text(errorMessage),
-//         actions: <Widget>[
-//           new TextButton(
-//             child: const Text("OK"),
-//             onPressed: () {
-//               Navigator.of(context).pop();
-//             },
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
-//
-//
-// void doUserLogout() async {
-//   final user = await ParseUser.currentUser() as ParseUser;
-//   var response = await user.logout();
-//   if (response.success) {
-//     setState(() {
-//       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-//     });
-//   } else {
-//     showError(response.error!.message);
-//   }
-// }
-// }
+void showError(String errorMessage) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Error!"),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          new TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+void doUserLogout() async {
+  final user = await ParseUser.currentUser() as ParseUser;
+  var response = await user.logout();
+  if (response.success) {
+    setState(() {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+    });
+  } else {
+    showError(response.error!.message);
+  }
+}
+}
+
+
+
+
 
