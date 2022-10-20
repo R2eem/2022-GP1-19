@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/widgets/header_widget.dart';
+import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:untitled/LoginPage.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-
 import 'LoginPage.dart';
 import 'main.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,175 +18,183 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: AccountPage(),
-  ));
+  runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: AccountPage(),
+      )
+  );
 }
 
-class AccountPage extends StatefulWidget {
+class AccountPage extends StatefulWidget{
+
   @override
-  Account createState() => Account();
+  State<StatefulWidget> createState() {
+    return _AccountPage();
+  }
 }
 
-class Account extends State<AccountPage> {
+class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
+  Key _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(70),
-          child: AppBar(
-            title: Text(
-              "My Account",
-              style: TextStyle(fontSize: 30, letterSpacing: 2),
-            ),
-            leading: Icon(Icons.account_circle_rounded),
-            leadingWidth: 100,
-            backgroundColor: Colors.pink[100],
+
+      appBar: AppBar(
+        title: Text("Profile Page",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        elevation: 0.5,
+        flexibleSpace:Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft, //control the colores space in the app bar the purprle color
+                  end: Alignment.bottomRight,//control the colores space in the app bar the pink color
+                  colors: <Color>[Theme.of(context).primaryColor, Theme.of(context).accentColor,]
+              )
           ),
         ),
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                alignment: Alignment
-                    .center, // the location of the circle under under the profile pic
-                children: [
-                  Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // location of text fields
+      ),
 
+
+      body:SingleChildScrollView(
+        child: Stack(
+            children: [
+              Container(height: 100, child: HeaderWidget(100,false,Icons.house_rounded),), //control the space under the app bar to be the same as the app bar
+
+              ///// controls the profile icon
+              Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Column(
                     children: [
                       Container(
-                        height: 400, // height of text fields location
-                        width: double.infinity,
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 10), // length of text fields
-                        child: SingleChildScrollView(
-                          child:Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // space between text fields
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            FutureBuilder<ParseUser?>(
-                                future: getUser(),
-                                builder: (context, snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.none:
-                                    case ConnectionState.waiting:
-                                    return Center(
-                                      child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          child: CircularProgressIndicator()),
-                                    );
-                                    default:
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                          child: Text("Error..."),
-                                        );
-                                      }
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: Text("No Data..."),
-                                        );
-                                      } else {
-                                      return Column(children: [
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          child: Container(
-                                            child: Text(
-                                              "UserName:",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.pink[100],
-                                                letterSpacing: 2, // text color
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-
-                                        textfield(
-                                          hintText:
-                                              '${snapshot.data!.username}',
-                                          enabled: false,
-                                        ),
-
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          child: Container(
-                                            child: Text(
-                                              "Email:",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.pink[100],
-                                                letterSpacing: 2, // text color
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-                                        textfield(
-                                          hintText:
-                                              '${snapshot.data!.emailAddress}',
-                                          enabled: false,
-                                        ),
-                                        SizedBox(height: 25),
-                                        MaterialButton(
-                                          minWidth: 200,
-                                          height: 40,
-                                          splashColor: Colors.red[500],
-                                          onPressed: () {
-                                            doUserLogout();
-                                          },
-                                          color: Colors.red[200],
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                          child: Text(
-                                            "Logout",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 20),
-                                          ),
-                                        ),
-                                        // SizedBox(height: 10,),
-                                        //
-                                        //  ChangeButton((){}),
-                                      ]);
-                                  }
-                                }}),
+                        padding: EdgeInsets.all(5), // control the size of the profile circle
+                        decoration: BoxDecoration( // control the size of the profile circle
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(width: 1, color: Colors.white),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(color: Colors.black12, blurRadius: 20, offset: const Offset(5, 5),), // control the shadow behind the profile circle
                           ],
                         ),
+                        child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
                       ),
+                      SizedBox(height: 10,),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                            children: [
+                              Container(
+                                child: TextField(
+                                  obscureText: true,
+                                  decoration: ThemeHelper().textInputDecoration('Username'),
+                                ),
+                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              ),
+
+                              SizedBox(height: 15.0),
+
+                              Container(
+                                child: TextField(
+                                  obscureText: true,
+                                  decoration: ThemeHelper().textInputDecoration('First name'),
+                                ),
+                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              ),
+
+                              SizedBox(height: 15.0),
+
+                              Container(
+                                child: TextField(
+                                  decoration: ThemeHelper().textInputDecoration('Last name'),
+                                ),
+                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              ),
+
+                              SizedBox(height: 15.0),
+
+                              Container(
+                                child: TextField(
+                                  obscureText: true,
+                                  decoration: ThemeHelper().textInputDecoration('Email'),
+                                ),
+                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              ),
+
+                              SizedBox(height: 15.0),
+
+                              Container(
+                                child: TextField(
+                                  obscureText: true,
+                                  decoration: ThemeHelper().textInputDecoration('Phone Number'),
+                                ),
+                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              ),
+
+                              SizedBox(height: 15.0),
+
+                              Container(
+                                decoration: ThemeHelper().buttonBoxDecoration(context),
+                                child: ElevatedButton(
+                                  style: ThemeHelper().buttonStyle(),
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                    child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                  ),
+                                  onPressed: (){
+
+                                    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(height: 10.0),
+
+                              Container(
+                                decoration: ThemeHelper().buttonBoxDecoration(context),
+                                child: ElevatedButton(
+                                  style: ThemeHelper().buttonStyle(),
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
+                                    child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                  ),
+                                  onPressed: (){
+
+                                    //doUserLogout();
+                                  },
+                                ),
+                              ),
+
+                              // Container(
+                              //   child: TextField(
+                              //     obscureText: true,
+                              //     decoration: ThemeHelper().textInputDecoration('Password'),
+                              //   ),
+                              //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                              // ),
+
+
+
+
+
+                            ]
+                        ),
                       ),
-                    ],
-                  ),
-                ],
+
+                    ]
+                ),
+
+
+
               ),
-            ],
-          ),
+            ]
         ),
+      ),
+
         bottomNavigationBar: Container(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
@@ -198,101 +209,63 @@ class Account extends State<AccountPage> {
                 ],
                 selectedIndex: _selectedIndex,
                 onTabChange: (index) => setState(() {
-                      _selectedIndex = index;
-                      if (_selectedIndex == 0) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      } else if (_selectedIndex == 1) {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      } else if (_selectedIndex == 2) {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      }
-                    })),
+                  _selectedIndex = index;
+                  if (_selectedIndex == 0) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  } else if (_selectedIndex == 1) {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  } else if (_selectedIndex == 2) {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  }
+                })),
           ),
-        ));
-  }
-
-  void showError(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+        )
     );
   }
 
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-      });
-    } else {
-      showError(response.error!.message);
-    }
+
   }
-}
 
-Widget textfield({required String hintText, required enabled}) {
-  return Material(
-    elevation: 10, //the shadow under text fields
-    shadowColor: Colors.grey, // showdow color
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
-    ), //text fields shape
-    child: TextField(
-      enabled: false,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(
-          letterSpacing: 2,
-          color: Colors.blueGrey[200], // text color
-          fontWeight: FontWeight.bold,
-        ),
-        fillColor: Colors.white30, //the text fields color
-        filled: true,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide.none), // text fields outline space
-      ),
-    ),
-  );
-}
-
-// Widget ChangeButton( Function onPressed) {
-//
-//   return MaterialButton(
-//     minWidth: 200,
-//     height: 40,
-//     splashColor: Colors.green[500],
-//     onPressed: () => onPressed(),
-//     color: Colors.green[200],
-//     elevation: 0,
-//     shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(50)
-//     ),
-//     child: Text("Save Changes",
-//       style: TextStyle(
-//           fontWeight: FontWeight.w600,
-//           fontSize: 20
-//       ),
-//     ),
-//
-//   );
-// }
 
 Future<ParseUser?> getUser() async {
   var currentUser = await ParseUser.currentUser() as ParseUser?;
   return currentUser;
 }
+
+
+
+
+// void showError(String errorMessage) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: const Text("Error!"),
+//         content: Text(errorMessage),
+//         actions: <Widget>[
+//           new TextButton(
+//             child: const Text("OK"),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
+//
+//
+// void doUserLogout() async {
+//   final user = await ParseUser.currentUser() as ParseUser;
+//   var response = await user.logout();
+//   if (response.success) {
+//     setState(() {
+//       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+//     });
+//   } else {
+//     showError(response.error!.message);
+//   }
+// }
+// }
+

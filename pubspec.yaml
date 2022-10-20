@@ -40,6 +40,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   simple_animations: ^1.3.3
+  hexcolor: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
      - assets/logo.png
      - assets/logoheader.png
      - assets/
+     - assets/icons/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
