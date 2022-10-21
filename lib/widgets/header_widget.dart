@@ -59,7 +59,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               decoration: new BoxDecoration(
                 gradient: new LinearGradient(
                     colors: [
+<<<<<<< HEAD
+                      Theme.of(context).primaryColor.withOpacity(0.5),
+=======
                       Theme.of(context).primaryColor.withOpacity(0.4),
+>>>>>>> 5ad7c9b073987f2fc313012c3cd0f7180fca7511
                       Theme.of(context).accentColor.withOpacity(0.4),
                     ],
                     begin: const FractionalOffset(0.0, 0.0),
@@ -166,4 +170,8 @@ class ShapeClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 5ad7c9b073987f2fc313012c3cd0f7180fca7511

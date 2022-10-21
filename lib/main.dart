@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:untitled/LoginPage.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:untitled/common/theme_hepler.dart';
+import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/widgets/header_widget.dart';
 
 
 Future<void> main() async {
@@ -15,37 +13,27 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MyApp());
+  runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
+      )
+  );
 }
-class MyApp extends StatelessWidget{
-  Color _primaryColor = HexColor('#DC54FE');
-  Color _accentColor = HexColor('#8A02AE');
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tiryaq',
-      theme: ThemeData(
-        primaryColor: _primaryColor,
-        accentColor: _accentColor,
-        scaffoldBackgroundColor: Colors.grey.shade100,
-        primarySwatch: Colors.grey,
-      ),
-      home: HomePage(),
-    );
-  }
-}
+
 class HomePage extends StatelessWidget {
-  double _headerHeight = 250;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-        child: Column(
-            children: [
-              Container(
-                height: _headerHeight,
-                child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 15,
+          backgroundColor: Colors.pink[100],
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+                  width: 3,
+                  style: BorderStyle.none
               ),
               SafeArea(
                 child: Container(
@@ -94,8 +82,7 @@ class HomePage extends StatelessWidget {
               )
           ),
         ),
-      ]),
-    )
+      ),
     );
   }
 }
