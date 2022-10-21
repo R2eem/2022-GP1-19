@@ -112,13 +112,13 @@ class Prescription extends State<PrescriptionCategory> {
                                 final medGet = snapshot.data![index];
                                 final TradeName = medGet.get<String>('TradeName')!;
                                 final ScientificName = medGet.get<String>('ScientificName')!;
-                                final Publicprice = medGet.get<double>('Publicprice')!;
-                                //final Size = medGet.get<int>('Size')!;
-                                //final SizeUnit = medGet.get<String>('SizeUnit')!;
-                                //final Strength = medGet.get<double>('Strength')!;
-                                //final StrengthUnit = medGet.get<String>('StrengthUnit')!;
-                                //final PackageSize = medGet.get<int>('PackageSize')!;
-                                //final PackageType = medGet.get<String>('PackageType')!;
+                                final Publicprice = medGet.get<num>('Publicprice')!;
+                                final Size = medGet.get<num>('Size')!;
+                                final SizeUnit = medGet.get<String>('SizeUnit')!;
+                                final Strength = medGet.get<num>('Strength')!;
+                                final StrengthUnit = medGet.get<String>('StrengthUnit')!;
+                                final PackageSize = medGet.get<num>('PackageSize')!;
+                                final PackageType = medGet.get<String>('PackageTypes')!;
                                 var UsageMethod = medGet.get<String>('UsageMethod')!;
                                 var MarketingCompany = medGet.get<String>('MarketingCompany')!;
                                 var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
@@ -210,7 +210,7 @@ class Prescription extends State<PrescriptionCategory> {
 
   Future<List<ParseObject>> getPresMedication() async {
     QueryBuilder<ParseObject> queryPresMedication =
-    QueryBuilder<ParseObject>(ParseObject('Medication'));
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
     final ParseResponse apiResponse = await queryPresMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
