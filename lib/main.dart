@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:untitled/PrescriptionCategory.dart';
-import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/common/theme_hepler.dart';
@@ -55,16 +53,15 @@ class HomePage extends StatelessWidget {
                     margin: EdgeInsets.fromLTRB(20, 10, 20, 10),// This will be the login form
                     child: Column(
                       children: [
-                  FadeAnimation(1, Container(
+                Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Image.asset('assets/logo.png',height: 400, width: 400,)
-                        )
-                    ),
-                  FadeAnimation(1.1, Text("Who are you?",
+                        ),
+                  Text("Who are you?",
                   textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold),)),
+                    style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold),),
               SizedBox(height: 30,),
-              FadeAnimation(1.2, Container(
+             Container(
                 decoration: ThemeHelper().buttonBoxDecoration(context),
                 child: ElevatedButton(
                   style: ThemeHelper().buttonStyle(),
@@ -77,9 +74,9 @@ class HomePage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
-              ),),
+              ),
                   SizedBox(height: 20,),
-                        FadeAnimation(1.3, Container(
+                      Container(
                           decoration: ThemeHelper().buttonBoxDecoration(context),
                           child: ElevatedButton(
                             style: ThemeHelper().buttonStyle(),
@@ -92,7 +89,7 @@ class HomePage extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                             },
                           ),
-                        ),),
+                        ),
                 ],
               )
           ),
