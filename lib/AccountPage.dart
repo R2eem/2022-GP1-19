@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'animation/FadeAnimation.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
-import 'package:untitled/LoginPage.dart';
-import 'LoginPage.dart';
 import 'main.dart';
 
 
@@ -37,7 +35,7 @@ class AccountPage extends StatefulWidget{
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
-  Key _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +122,9 @@ class _AccountPage extends State<AccountPage>{
                                             case ConnectionState.waiting:
                                             return Center(
                                             child: Container(
-                                            width: 50,
+                                                margin: EdgeInsets.only(top: 100),
+
+                                                width: 50,
                                             height: 50,
                                             child: CircularProgressIndicator()),
                                             );
@@ -147,17 +147,45 @@ class _AccountPage extends State<AccountPage>{
                                                   itemBuilder: (context, index) {
                                                     //Get Parse Object Values
                                                     final user = snapshot.data![index];
+                                                    final id = user.get<String>('objectId')!;
                                                     final Firstname = user.get<String>('Firstname')!;
                                                     final Lastname = user.get<String>('Lastname')!;
                                                     final Email = user.get<String>('email')!;
                                                     final Phonenumber = user.get<String>('Phonenumber')!;
-
+                                                    final controllerFirstname = TextEditingController(text: Firstname);
+                                                    final controllerLasttname = TextEditingController(text: Lastname);
+                                                    final controllerEmail = TextEditingController(text: Email);
+                                                    final controllerPhoneNumber = TextEditingController(text: Phonenumber);
                                             return Column( children: [
                                               Container(
-                                                child: TextField(
+                                                child: TextFormField(
+                                                  autovalidateMode:
+                                                  AutovalidateMode.onUserInteraction,
+                                                  keyboardType: TextInputType.text,
+                                                  controller: controllerFirstname,
+                                                  validator: MultiValidator([
+                                                    RequiredValidator(
+                                                        errorText: 'this field is required'),
+                                                  ]),
 
-                                                  obscureText: true,
-                                                  decoration: ThemeHelper().textInputDecoration(Firstname,"First Name") ,
+                                                  decoration: ThemeHelper().textInputDecoration('',"First Name") ,
+                                                ),
+                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+
+                                              ),
+                                              SizedBox(height: 15.0),
+
+                                              Container(
+                                                child: TextFormField(
+                                                  autovalidateMode:
+                                                  AutovalidateMode.onUserInteraction,
+                                                  keyboardType: TextInputType.text,
+                                                  controller: controllerLasttname,
+                                                  validator: MultiValidator([
+                                                    RequiredValidator(
+                                                        errorText: 'this field is required'),
+                                                  ]),
+                                                  decoration: ThemeHelper().textInputDecoration('',"Last Name") ,
                                                 ),
                                                 decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -166,10 +194,18 @@ class _AccountPage extends State<AccountPage>{
                                               SizedBox(height: 15.0),
 
                                               Container(
-                                                child: TextField(
-
-                                                  obscureText: true,
-                                                  decoration: ThemeHelper().textInputDecoration(Lastname,"Last Name") ,
+                                                child: TextFormField(
+                                                  autovalidateMode:
+                                                  AutovalidateMode.onUserInteraction,
+                                                  keyboardType: TextInputType.emailAddress,
+                                                  controller: controllerEmail,
+                                                  validator: MultiValidator([
+                                                    RequiredValidator(
+                                                        errorText: 'this field is required'),
+                                                    EmailValidator(
+                                                        errorText: 'enter a valid email address')
+                                                  ]),
+                                                  decoration: ThemeHelper().textInputDecoration('',"Email") ,
                                                 ),
                                                 decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -178,22 +214,20 @@ class _AccountPage extends State<AccountPage>{
                                               SizedBox(height: 15.0),
 
                                               Container(
-                                                child: TextField(
-
-                                                  obscureText: true,
-                                                  decoration: ThemeHelper().textInputDecoration(Email,"Email") ,
-                                                ),
-                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
-
-                                              ),
-
-                                              SizedBox(height: 15.0),
-
-                                              Container(
-                                                child: TextField(
-
-                                                  obscureText: true,
-                                                  decoration: ThemeHelper().textInputDecoration(Phonenumber,"Phone Number") ,
+                                                child: TextFormField(
+                                                  autovalidateMode:
+                                                  AutovalidateMode.onUserInteraction,
+                                                  keyboardType: TextInputType.text,
+                                                  controller: controllerPhoneNumber,
+                                                  validator: MultiValidator([
+                                                    RequiredValidator(
+                                                        errorText: 'this field is required'),
+                                                    MinLengthValidator(12,
+                                                        errorText: 'must be 12 digits long'),
+                                                    MaxLengthValidator(12,
+                                                        errorText: 'must be 12 digits long')
+                                                  ]),
+                                                  decoration: ThemeHelper().textInputDecoration('',"Phone Number") ,
                                                 ),
                                                 decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -210,8 +244,9 @@ class _AccountPage extends State<AccountPage>{
                                                     child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
                                                   ),
                                                   onPressed: (){
-
-                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                                    if (_formKey.currentState!.validate()) {
+                                                    updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
+                                                    }
                                                   },
                                                 ),
                                               ),
@@ -271,7 +306,21 @@ class _AccountPage extends State<AccountPage>{
     );
   }
 
+  Future<void> updateInfo(id, email, editFirstname, editLastname, editEmail, editPhonenumber) async {
+    print(id);
+    var todo = ParseUser(email,null,email)..objectId = id
+      ..set('Firstname', editFirstname)
+      ..set('Lastname', editLastname)
+      ..set('email', editEmail)
+      ..set('Phonenumber', editPhonenumber);
+    final ParseResponse parseResponse = await todo.save();
 
+    if (parseResponse.success) {
+      print('Object updated: $id');
+    } else {
+      print('Object updated with failed: ${parseResponse.error.toString()}');
+    }
+  }
 
 
   Future<ParseUser?> getUser() async {
@@ -284,7 +333,6 @@ class _AccountPage extends State<AccountPage>{
     queryUsers.whereContains('objectId', objectid);
     final ParseResponse apiResponse = await queryUsers.query();
     if (apiResponse.success && apiResponse.results != null) {
-      print(apiResponse.results);
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
