@@ -2,28 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
-
 import 'common/theme_hepler.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SignupPage(),
-  ));
-}
 
 class SignupPage extends StatefulWidget {
   @override
@@ -39,12 +24,37 @@ class Signup extends State<SignupPage> {
   final controllerFirstname = TextEditingController();
   final controllerLasttname = TextEditingController();
   final controllerPhoneNumber = TextEditingController();
-
-
+  bool _isVisible = false;
+  bool _isVisibleConfirm = false;
   final _formKey = GlobalKey<FormState>();
+  bool _isPasswordEightCharacters = false;
+  bool _hasPasswordOneSpecial = false;
+  bool _hasPasswordOneUpper = false;
+  bool _hasPasswordOneLower = false;
 
-  double _headerHeight = 250;
+  onPasswordChanged(String password) {
+    final specialRegex = RegExp(r'(?=.*?[#?!@$%^&*-])');
+    final upperRegex = RegExp(r'(?=.*[A-Z])');
+    final lowerRegex = RegExp(r'(?=.*[a-z])');
 
+    setState(() {
+      _isPasswordEightCharacters = false;
+      if(password.length >= 8)
+        _isPasswordEightCharacters = true;
+
+      _hasPasswordOneSpecial = false;
+      if(specialRegex.hasMatch(password))
+        _hasPasswordOneSpecial = true;
+
+      _hasPasswordOneUpper = false;
+      if(upperRegex.hasMatch(password))
+        _hasPasswordOneUpper = true;
+
+      _hasPasswordOneLower = false;
+      if(lowerRegex.hasMatch(password))
+        _hasPasswordOneLower = true;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,12 +70,19 @@ class Signup extends State<SignupPage> {
                   SafeArea(
                     child: Column(
                   children: [
+                           IconButton(padding: EdgeInsets.fromLTRB(0, 10, 370, 0),
+                                      iconSize: 40,
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }, icon: Icon(Icons.keyboard_arrow_left),),
+                           SizedBox(height: 70,),
                            Text('Sign up', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-                           Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
+                           Text('Create a new account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
                            SizedBox(height: 25.0),
                   Container(
-                    margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     alignment: Alignment.center,
                     child: Column(
                       children: [
@@ -73,29 +90,10 @@ class Signup extends State<SignupPage> {
                           key: _formKey,
                           child: Column(
                               children: [
-                                //username
-                                Container(
-                                  child: FadeAnimation(1.3, TextFormField(
-                                    autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                    controller: controllerUsername,
-                                    keyboardType: TextInputType.text,
-                                    textCapitalization: TextCapitalization.none,
-                                    autocorrect: false,
-                                    obscureText: false,
-                                    validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText: 'this field is required'),
-                                    ]),
-                                    decoration: ThemeHelper().textInputDecoration('Username', 'Enter your username'),)
-                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
+
                                 //FisrtName
                                Container(
-                              child: FadeAnimation(1.3, TextFormField(
+                              child: TextFormField(
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                                 controller: controllerFirstname,
@@ -107,15 +105,14 @@ class Signup extends State<SignupPage> {
                                   RequiredValidator(
                                       errorText: 'this field is required'),
                                 ]),
-                                  decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),)
-                                ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                               ),
+                                  decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),),
+                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                               SizedBox(
                                 height: 20,
                               ),
                                 //LastName
                                 Container(
-                                  child: FadeAnimation(1.3, TextFormField(
+                                  child: TextFormField(
                                     autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
                                     controller: controllerLasttname,
@@ -127,16 +124,14 @@ class Signup extends State<SignupPage> {
                                       RequiredValidator(
                                           errorText: 'this field is required'),
                                     ]),
-                                    decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),)
-                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                                ),
+                                    decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),),
+                                    decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                                 SizedBox(
                                   height: 20,
                                 ),
                               //email
                               Container(
-                                child:FadeAnimation(
-                                1.4,TextFormField(
+                                child:TextFormField(
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                                 controller: controllerEmail,
@@ -151,8 +146,7 @@ class Signup extends State<SignupPage> {
                                       errorText: 'enter a valid email address')
                                 ]),
                                   decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),),
-                                ), decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                              ),
+                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                               SizedBox(
                                 height: 20,
                               ),
@@ -184,56 +178,165 @@ class Signup extends State<SignupPage> {
                                 ),
                                 SizedBox(height: 20.0),
                                   Container(
-                                 child: FadeAnimation(
-                                    1.5,TextFormField(
+                                 child: TextFormField(
                                     autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
                                     controller: controllerPassword,
                                     keyboardType: TextInputType.text,
                                     textCapitalization: TextCapitalization.none,
                                     autocorrect: false,
-                                    obscureText: true,
-                                    onChanged: (val) => password = val,
+                                    obscureText: !_isVisible,
+                                    onChanged: (password) => onPasswordChanged(password),
                                     validator: MultiValidator([
                                       RequiredValidator(
                                           errorText: 'this field is required'),
-                                      MinLengthValidator(8,
-                                          errorText:
-                                              'must be at least 8 digits long'),
-                                      PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-                                          errorText:
-                                              'must have at least one SPECIAL character'),
-                                      PatternValidator(r'(?=.*[A-Z])',
-                                          errorText:
-                                              'must have at least one UPPERCASE character'),
-                                      PatternValidator(r'(?=.*[a-z])',
-                                          errorText:
-                                              'must have at least one LOWERCASE character')
                                     ]),
-                                   decoration: ThemeHelper().textInputDecoration("Password", "Enter your password"),
-                                    ),
-                                  ), decoration: ThemeHelper().inputBoxDecorationShaddow(),),
+                                   decoration: InputDecoration(
+                                     suffixIcon: IconButton(
+                                       onPressed: () {
+                                         setState(() {
+                                           _isVisible = !_isVisible;
+                                         });
+                                       },
+                                       icon: _isVisible ? Icon(Icons.visibility, color: Colors.black,) :
+                                       Icon(Icons.visibility_off, color: Colors.grey,),
+                                     ),
+                                     labelText: 'Password',
+                                     hintText: 'Enter you password',
+                                     fillColor: Colors.white,
+                                     filled: true,
+                                     contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                     errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                     focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                   ),),
+                                    decoration: BoxDecoration(boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 5),
+                                      )
+                                    ]),),
                                   SizedBox(
                                     height: 15,
                                   ),
+                                Row(
+                                  children: [
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: _isPasswordEightCharacters ?  Colors.green : Colors.transparent,
+                                          border: _isPasswordEightCharacters ? Border.all(color: Colors.transparent) :
+                                          Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Center(child: Icon(Icons.check, color: Colors.white, size: 15,),),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    Text("Contains at least 8 characters")
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  children: [
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: _hasPasswordOneSpecial ?  Colors.green : Colors.transparent,
+                                          border: _hasPasswordOneSpecial ? Border.all(color: Colors.transparent) :
+                                          Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Center(child: Icon(Icons.check, color: Colors.white, size: 15,),),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    Text("Contains at least 1 Special character")
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
 
-                                  //confirm password
+                                Row(
+                                  children: [
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: _hasPasswordOneUpper ?  Colors.green : Colors.transparent,
+                                          border: _hasPasswordOneUpper ? Border.all(color: Colors.transparent) :
+                                          Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Center(child: Icon(Icons.check, color: Colors.white, size: 15,),),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    Text("Contains at least 1 uppercase character")
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  children: [
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: _hasPasswordOneLower ?  Colors.green : Colors.transparent,
+                                          border: _hasPasswordOneLower ? Border.all(color: Colors.transparent) :
+                                          Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Center(child: Icon(Icons.check, color: Colors.white, size: 15,),),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    Text("Contains at least 1 lowercase character")
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+
+                                //confirm password
                                   Container(
-                                    child: FadeAnimation(
-                                    1.6,TextFormField(
-                                    obscureText: true,
-                                    autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                  validator: (val){
+                                    child: TextFormField(
+                                      obscureText: !_isVisible,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      validator: (val){
                                              if(val!.isEmpty)
                                                 return 'this field is required';
                                              if(val != controllerPassword.text)
                                                 return 'password are not matching';
                                               return null;},
-                                      decoration: ThemeHelper().textInputDecoration("Confirm Password", "Enter same password"),
-                                    )
-                                ),decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                                  ),
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _isVisibleConfirm = !_isVisibleConfirm;
+                                            });
+                                          },
+                                          icon: _isVisibleConfirm ? Icon(Icons.visibility, color: Colors.black,) :
+                                          Icon(Icons.visibility_off, color: Colors.grey,),
+                                        ),
+                                        labelText: 'Confirm password',
+                                        hintText: 'Enter same password',
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                      ),),
+                                    decoration: BoxDecoration(boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 5),
+                                      )
+                                    ]),),
                               SizedBox(
                                 height: 30,
                               ),
@@ -290,15 +393,12 @@ class Signup extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Success!",
-              style:
-                  TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
-          content: const Text("User was successfully created!"),
+         content: const Text("User was successfully created! Please verify your email before Login!"),
           actions: <Widget>[
             new TextButton(
               child: const Text("OK"),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 }
             ),
           ],
@@ -308,13 +408,19 @@ class Signup extends State<SignupPage> {
   }
 
   void showError(String errorMessage) {
+    if(errorMessage.compareTo('Account already exists for this username.')==0){
+      errorMessage = 'Account already exists for this email address.';
+    }
+    if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
+      errorMessage = 'Account already exists for this phone number.';
+    }
+    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character')==0){
+      return;
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Error!",
-              style:
-                  TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
           content: Text(errorMessage),
           actions: <Widget>[
             new TextButton(
@@ -330,25 +436,24 @@ class Signup extends State<SignupPage> {
   }
 
   void doUserRegistration() async {
-    final username = controllerUsername.text.trim();
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();
-    num phonenumber =num.parse(controllerPhoneNumber.text);
-    final user = ParseUser.createUser(username, password, email)
-      ..set('Firstname', firstname)
-      ..set('Lastname', lastname)
-      ..set('Email', email)
-      ..set('Phonenumber', phonenumber);
+    var phonenumber = controllerPhoneNumber.text.trim();
+    phonenumber = '966'+phonenumber.substring(1,10);
+      final user = ParseUser.createUser(email, password, email)
+        ..set('Firstname', firstname)
+        ..set('Lastname', lastname)
+        ..set('Phonenumber', phonenumber);
 
 
-    var response = await user.signUp();
+      var response = await user.signUp();
 
-    if (response.success) {
-      showSuccess();
-    } else {
-      showError(response.error!.message);
-    }
+      if (response.success) {
+        showSuccess();
+      } else {
+        showError(response.error!.message);
+      }
   }
 }

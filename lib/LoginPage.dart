@@ -1,29 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/SignupPage.dart';
 import 'package:untitled/ForgotPassword.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
-
 import 'common/theme_hepler.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: LoginPage(),
-  ));
-}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}): super(key:key);
@@ -31,14 +17,12 @@ class LoginPage extends StatefulWidget {
   Login createState() => Login();
 }
 
-String password = '';
-
 class Login extends State<LoginPage> {
-  final controllerUsername = TextEditingController();
+  final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   double _headerHeight = 250;
-
+  bool _isVisible = false;
   bool isLoggedIn = false;
 
   @override
@@ -47,34 +31,43 @@ class Login extends State<LoginPage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          child: Column(
+          child: Stack(
             children: [
               Container(
             height: _headerHeight,
             child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
             ),
-              SafeArea(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),// This will be the login form
-                       child: Column(
-                       children: [
-                         Text('Login', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-                         Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
-                         SizedBox(height: 25.0),
+            SafeArea(
+              child: Column(
+                  children: [
+              IconButton(padding: EdgeInsets.fromLTRB(0, 10, 370, 0),
+              iconSize: 40,
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push( context, MaterialPageRoute( builder: (context) => HomePage()), );
+              }, icon: Icon(Icons.keyboard_arrow_left),),
+            SizedBox(height: 170,),
+            Text('Log in', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
+            Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
+            SizedBox(height: 25.0),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              alignment: Alignment.center,
+              child: Column(
+                  children: [
           Form(
             key: _formKey,
             //child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                //username
+                //email
                   Container(
-                  child:FadeAnimation(
-                          1.3,TextFormField(
+                  child:TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: controllerUsername,
+                          controller: controllerEmail,
                           enabled: !isLoggedIn,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.emailAddress,
                           textCapitalization: TextCapitalization.none,
                           autocorrect: false,
                           obscureText: false,
@@ -82,31 +75,52 @@ class Login extends State<LoginPage> {
                             RequiredValidator(
                                 errorText: 'this field is required'),
                           ]),
-                          decoration: ThemeHelper().textInputDecoration('Username', 'Enter your user name'),)
-                         ),
+                          decoration: ThemeHelper().textInputDecoration('Email', 'Enter your email address'),),
                        decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                         SizedBox(
                           height: 30,
                         ),
                         //password
                     Container(
-                      child: FadeAnimation(
-                          1.4,TextFormField(
+                      child:TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: controllerPassword,
                           enabled: !isLoggedIn,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.none,
                           autocorrect: false,
-                          obscureText: true,
+                          obscureText: !_isVisible,
                           validator: MultiValidator([
                             RequiredValidator(
                                 errorText: 'password is required'),
                           ]),
-                        decoration: ThemeHelper().textInputDecoration('Password', 'Enter your password'),),
-                        ),
-                      decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                    ),
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isVisible = !_isVisible;
+                              });
+                            },
+                            icon: _isVisible ? Icon(Icons.visibility, color: Colors.black,) :
+                            Icon(Icons.visibility_off, color: Colors.grey,),
+                          ),
+                          labelText: 'Password',
+                          hintText: 'Enter you password',
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                          focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                        ),),
+                      decoration: BoxDecoration(boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 5),
+                        )
+                      ]),),
                   SizedBox(
                     height: 15,
                   ),
@@ -159,19 +173,24 @@ class Login extends State<LoginPage> {
               ),
           ),
                        ]),
-                  ))
-            ])
+                  )])
+            )])
         ));
   }
 
 
   void showError(String errorMessage) {
+    if(errorMessage.compareTo('Invalid username/password.')==0){
+      errorMessage = 'Invalid email or password. Please try again.';
+    }
+    if(errorMessage.compareTo('User email is not verified.')==0){
+      errorMessage = 'Please verify your email before Login.';
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Invalid!"),
-          content: Text('wrong username or password'),
+          content: Text(errorMessage),
           actions: <Widget>[
             new TextButton(
               child: const Text("OK"),
@@ -186,10 +205,10 @@ class Login extends State<LoginPage> {
   }
 
   void doUserLogin() async {
-    final username = controllerUsername.text.trim();
+    final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    final user = ParseUser(username, password, null);
+    final user = ParseUser(email, password, null);
 
     var response = await user.login();
 
