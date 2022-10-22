@@ -43,181 +43,205 @@ class _AccountPage extends State<AccountPage>{
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(
-        title: Text("Profile Page",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        elevation: 0.5,
-        flexibleSpace:Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft, //control the colores space in the app bar the purprle color
-                  end: Alignment.bottomRight,//control the colores space in the app bar the pink color
-                  colors: <Color>[Theme.of(context).primaryColor, Theme.of(context).accentColor,]
-              )
+        appBar: AppBar(
+          title: Text("Profile Page",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          elevation: 0.5,
+          flexibleSpace:Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft, //control the colores space in the app bar the purprle color
+                    end: Alignment.bottomRight,//control the colores space in the app bar the pink color
+                    colors: <Color>[Theme.of(context).primaryColor, Theme.of(context).accentColor,]
+                )
+            ),
           ),
         ),
-      ),
 
 
-      body:SingleChildScrollView(
-        child: Stack(
-            children: [
-              Container(height: 100, child: HeaderWidget(100,false,Icons.house_rounded),), //control the space under the app bar to be the same as the app bar
+        body:SingleChildScrollView(
+          child: Stack(
+              children: [
+                Container(height: 100, child: HeaderWidget(100,false,Icons.house_rounded),), //control the space under the app bar to be the same as the app bar
 
-              ///// controls the profile icon
-              Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(5), // control the size of the profile circle
-                        decoration: BoxDecoration( // control the size of the profile circle
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(width: 1, color: Colors.white),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Colors.black12, blurRadius: 20, offset: const Offset(5, 5),), // control the shadow behind the profile circle
-                          ],
+                ///// controls the profile icon
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(5), // control the size of the profile circle
+                          decoration: BoxDecoration( // control the size of the profile circle
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 1, color: Colors.white),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black12, blurRadius: 20, offset: const Offset(5, 5),), // control the shadow behind the profile circle
+                            ],
+                          ),
+                          child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
                         ),
-                        child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
-                      ),
 
-                      SizedBox(height: 10,),
+                        SizedBox(height: 10,),
 
-                      Form(
-                        key: _formKey,
-                        //child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            //username
-                            FutureBuilder<ParseUser?>(
-                            future: getUser(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:
-                                  return Center(
-                                    child: Container(
-                                        width: 50,
-                                        height: 50,
-                                        child: CircularProgressIndicator()),
-                                  );
-                                default:
-                                  if (snapshot.hasError) {
-                                    return Center(
-                                      child: Text("Error..."),
-                                    );
-                                  }
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                      child: Text("No Data..."),
-                                    );
-                                  } else {
-                                    return Column( children: [
-                                     Container(
-                                      child: TextField(
+                        Form(
+                          key: _formKey,
+                          //child: SingleChildScrollView(
+                          child: Column(
+                              children: <Widget>[
+                                //username
+                                FutureBuilder<ParseUser?>(
+                                    future: getUser(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState.waiting:
+                                          return Center(
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child: CircularProgressIndicator()),
+                                          );
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text("Error..."),
+                                            );
+                                          }
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: Text("No Data..."),
+                                            );
+                                          } else {
+                                            return FutureBuilder<List>(
+                                            future: currentuser(snapshot.data!.objectId),
+                                            builder: (context, snapshot) {
+                                            switch (snapshot.connectionState) {
+                                            case ConnectionState.none:
+                                            case ConnectionState.waiting:
+                                            return Center(
+                                            child: Container(
+                                            width: 50,
+                                            height: 50,
+                                            child: CircularProgressIndicator()),
+                                            );
+                                            default:
+                                            if (snapshot.hasError) {
+                                            return Center(
+                                            child: Text("Error..."),
+                                            );
+                                            }
+                                            if (!snapshot.hasData) {
+                                            return Center(
+                                            child: Text("No Data..."),
+                                            );
+                                            } else {
+                                              return ListView.builder(
+                                                  padding: EdgeInsets.only(top: 10.0),
+                                                  scrollDirection: Axis.vertical,
+                                                  shrinkWrap: true,
+                                                  itemCount: snapshot.data!.length,
+                                                  itemBuilder: (context, index) {
+                                                    //Get Parse Object Values
+                                                    final user = snapshot.data![index];
+                                                    final Firstname = user.get<String>('Firstname')!;
+                                                    final Lastname = user.get<String>('Lastname')!;
+                                                    final Email = user.get<String>('email')!;
+                                                    final Phonenumber = user.get<String>('Phonenumber')!;
 
-                                     obscureText: true,
-                                     decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Username") ,
-                                                   ),
-                                      decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                            return Column( children: [
+                                              Container(
+                                                child: TextField(
 
-                                          ),
+                                                  obscureText: true,
+                                                  decoration: ThemeHelper().textInputDecoration(Firstname,"First Name") ,
+                                                ),
+                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                       SizedBox(height: 15.0),
+                                              ),
 
-                                      Container(
-                                        child: TextField(
+                                              SizedBox(height: 15.0),
 
-                                          obscureText: true,
-                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"First Name") ,
-                                        ),
-                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                              Container(
+                                                child: TextField(
 
-                                      ),
+                                                  obscureText: true,
+                                                  decoration: ThemeHelper().textInputDecoration(Lastname,"Last Name") ,
+                                                ),
+                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                      SizedBox(height: 15.0),
+                                              ),
 
-                                      Container(
-                                        child: TextField(
+                                              SizedBox(height: 15.0),
 
-                                          obscureText: true,
-                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Last Name") ,
-                                        ),
-                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                              Container(
+                                                child: TextField(
 
-                                      ),
+                                                  obscureText: true,
+                                                  decoration: ThemeHelper().textInputDecoration(Email,"Email") ,
+                                                ),
+                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                      SizedBox(height: 15.0),
+                                              ),
 
-                                      Container(
-                                        child: TextField(
+                                              SizedBox(height: 15.0),
 
-                                          obscureText: true,
-                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Email") ,
-                                        ),
-                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                              Container(
+                                                child: TextField(
 
-                                      ),
+                                                  obscureText: true,
+                                                  decoration: ThemeHelper().textInputDecoration(Phonenumber,"Phone Number") ,
+                                                ),
+                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                      SizedBox(height: 15.0),
+                                              ),
 
-                                      Container(
-                                        child: TextField(
+                                              SizedBox(height: 15.0),
 
-                                          obscureText: true,
-                                          decoration: ThemeHelper().textInputDecoration('${snapshot.data!.username}',"Phone Number") ,
-                                        ),
-                                        decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                              Container(
+                                                decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                child: ElevatedButton(
+                                                  style: ThemeHelper().buttonStyle(),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                                    child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                  ),
+                                                  onPressed: (){
 
-                                      ),
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                                  },
+                                                ),
+                                              ),
 
-                                      SizedBox(height: 15.0),
+                                              SizedBox(height: 10.0),
 
-                                      Container(
-                                        decoration: ThemeHelper().buttonBoxDecoration(context),
-                                        child: ElevatedButton(
-                                          style: ThemeHelper().buttonStyle(),
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                            child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                          ),
-                                          onPressed: (){
+                                              Container(
+                                                decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                child: ElevatedButton(
+                                                  style: ThemeHelper().buttonStyle(),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
+                                                    child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                  ),
+                                                  onPressed: (){
 
-                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountPage()));
-                                          },
-                                        ),
-                                      ),
+                                                    doUserLogout();
+                                                  },
+                                                ),
+                                              ),
 
-                                      SizedBox(height: 10.0),
+                                            ] );
 
-                                      Container(
-                                        decoration: ThemeHelper().buttonBoxDecoration(context),
-                                        child: ElevatedButton(
-                                          style: ThemeHelper().buttonStyle(),
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
-                                            child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                          ),
-                                          onPressed: (){
-
-                                            doUserLogout();
-                                          },
-                                        ),
-                                      ),
-
-                                    ] );
-
-                                  }}}),
-                          ] ),
-                      ),
-                    ]),
-              ),
-            ]),
-      ),
+                                          });}}});
+                              }}})] ),
+                        ),
+                      ]),
+                ),
+              ]),
+        ),
 
         bottomNavigationBar: Container(
           child: Padding(
@@ -250,46 +274,58 @@ class _AccountPage extends State<AccountPage>{
 
 
 
-Future<ParseUser?> getUser() async {
-  var currentUser = await ParseUser.currentUser() as ParseUser?;
-  return currentUser;
-}
-
-
-
-
-void showError(String errorMessage) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Error!"),
-        content: Text(errorMessage),
-        actions: <Widget>[
-          new TextButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
-void doUserLogout() async {
-  final user = await ParseUser.currentUser() as ParseUser;
-  var response = await user.logout();
-  if (response.success) {
-    setState(() {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-    });
-  } else {
-    showError(response.error!.message);
+  Future<ParseUser?> getUser() async {
+    var currentUser = await ParseUser.currentUser() as ParseUser?;
+    return currentUser;
   }
-}
+  Future<List> currentuser(objectid) async {
+    QueryBuilder<ParseUser> queryUsers =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryUsers.whereContains('objectId', objectid);
+    final ParseResponse apiResponse = await queryUsers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      print(apiResponse.results);
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+
+
+
+
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error!"),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      });
+    } else {
+      showError(response.error!.message);
+    }
+  }
 }
 
 

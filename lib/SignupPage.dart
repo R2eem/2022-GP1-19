@@ -26,6 +26,7 @@ class Signup extends State<SignupPage> {
   final controllerPhoneNumber = TextEditingController();
   bool phoneExist = false;
   bool _isVisible = false;
+  bool _isVisibleConfirm = false;
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordEightCharacters = false;
   bool _hasPasswordOneSpecial = false;
@@ -294,7 +295,7 @@ class Signup extends State<SignupPage> {
                                       child: Center(child: Icon(Icons.check, color: Colors.white, size: 15,),),
                                     ),
                                     SizedBox(width: 10,),
-                                    Text("Contains at least 1 lowecase character")
+                                    Text("Contains at least 1 lowercase character")
                                   ],
                                 ),
                                 SizedBox(height: 10,),
@@ -302,18 +303,41 @@ class Signup extends State<SignupPage> {
                                 //confirm password
                                   Container(
                                     child: TextFormField(
-                                    obscureText: true,
-                                    autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                  validator: (val){
+                                      obscureText: !_isVisible,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      validator: (val){
                                              if(val!.isEmpty)
                                                 return 'this field is required';
                                              if(val != controllerPassword.text)
                                                 return 'password are not matching';
                                               return null;},
-                                      decoration: ThemeHelper().textInputDecoration("Confirm Password", "Enter same password"),
-                                    ),
-                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),),
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _isVisibleConfirm = !_isVisibleConfirm;
+                                            });
+                                          },
+                                          icon: _isVisibleConfirm ? Icon(Icons.visibility, color: Colors.black,) :
+                                          Icon(Icons.visibility_off, color: Colors.grey,),
+                                        ),
+                                        labelText: 'Confirm password',
+                                        hintText: 'Enter same password',
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                      ),),
+                                    decoration: BoxDecoration(boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 5),
+                                      )
+                                    ]),),
                               SizedBox(
                                 height: 30,
                               ),
@@ -390,6 +414,9 @@ class Signup extends State<SignupPage> {
     }
     if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
       errorMessage = 'Account already exists for this phone number.';
+    }
+    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character')==0){
+      return;
     }
     showDialog(
       context: context,
