@@ -24,7 +24,6 @@ class Signup extends State<SignupPage> {
   final controllerFirstname = TextEditingController();
   final controllerLasttname = TextEditingController();
   final controllerPhoneNumber = TextEditingController();
-  bool phoneExist = false;
   bool _isVisible = false;
   bool _isVisibleConfirm = false;
   final _formKey = GlobalKey<FormState>();
