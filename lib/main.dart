@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/CategoryPage.dart';
 import 'package:untitled/PrescriptionCategory.dart';
 import 'package:untitled/animation/FadeAnimation.dart';
 import 'package:untitled/LoginPage.dart';
@@ -89,7 +90,7 @@ class HomePage extends StatelessWidget {
                             ),
                             onPressed: (){
                               //After successful login we will redirect to profile page. Let's create profile page now
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                             },
                           ),
                         ),),

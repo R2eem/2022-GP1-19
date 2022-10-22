@@ -6,6 +6,9 @@ import 'package:untitled/style/colors.dart';
 import 'package:untitled/style/styles.dart';
 import 'NonPrescriptionCategory.dart';
 import 'PrescriptionCategory.dart';
+import 'package:untitled/widgets/header_widget.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'common/theme_hepler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +21,7 @@ Future<void> main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: CategoryPage(),
-    theme: ThemeData(
-      fontFamily: 'Gordita',
-    ),
+
   ));
 }
 
@@ -31,7 +32,8 @@ class CategoryPage extends StatefulWidget {
 
 class Category extends State<CategoryPage> {
   int _selectedIndex = 0;
-
+  double _headerHeight = 250;
+  String searchString = "";
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -39,6 +41,10 @@ class Category extends State<CategoryPage> {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         body: Stack(children: <Widget>[
+          Container(
+            height: 150,
+            child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+          ),
         FutureBuilder<ParseUser?>(
         future: getUser(),
     builder: (context, snapshot) {
@@ -47,6 +53,9 @@ class Category extends State<CategoryPage> {
       case ConnectionState.waiting:
       return Center(
         child: Container(
+            margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            alignment: Alignment.center,
             width: 50,
             height: 50,
             child: CircularProgressIndicator()),
@@ -72,9 +81,6 @@ class Category extends State<CategoryPage> {
                     padding: const EdgeInsets.only(left: 15),
                     height: 150,
                     width: size.width,
-                    decoration: const BoxDecoration(
-                      color: AppColors.babypink,
-                    ),
                     child: SafeArea(
                       child: Align(
                           alignment: Alignment.topCenter,
@@ -87,7 +93,7 @@ class Category extends State<CategoryPage> {
                                     'assets/logoheader.png',
                                     fit: BoxFit.contain,
                                     width: 100,
-                                    height: 85,
+                                    height: 75,
                                   ),
                                   //Image.asset('assets/logo.png'),
                                   const SizedBox(
@@ -101,11 +107,12 @@ class Category extends State<CategoryPage> {
                                 height: 1,
                               ),
                               Text(
-                                'Hello, ${snapshot.data!.username}',
+                                'Hello, ${snapshot.data!.username}!',
                                 style: TextStyle(
-                                    color: Colors.black87.withOpacity(0.8),
+                                  fontFamily: "Mulish",
+                                    color: Colors.white.withOpacity(0.8),
                                     fontSize: 20,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           )),
@@ -115,44 +122,167 @@ class Category extends State<CategoryPage> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 10),
+                      horizontal: 20, vertical: 10),
                   height: 500,
                   width: size.width,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(34)),
                   child:  Column(children: [
-                      Text(
-                        'Categories',
-                        style: AppStyle.b33w,
-                      ),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 30.0,),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                MedicationCategories(
-                                    background: AppColors.babypink,
-                                    title: 'Non-Prescription medication',
-                                    subtitle: '',
-                                    image: 'assets/medicationnono.png'),
-                                MedicationCategoriesno(
-                                    background: AppColors.pink,
-                                    title: 'Prescription medication',
-                                    subtitle: '',
-                                    image: 'assets/medecationwith.png'),
-                              ],
+                    Material(
+                        elevation: 8,
+                        shadowColor: Colors.grey,
+                        borderRadius: BorderRadius.circular(30),
+                        child:
+                        TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              searchString = value;
+                            });
+                          },
+                          style: TextStyle(
+                              color: Colors.grey, fontSize: 19),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
                             ),
-                          ],
-                        ),
-                      )
-                    ]),
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search),
+                            prefixIconColor: Colors.pink[100],
+                          ),
+                        )
+                    ),
+                    SizedBox(height: 30,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionCategory()));
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                                width: 110 ,
+                                height: 70 ,
+                                color: HexColor('#F8D4FB'),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text("Prescription Medication", style: TextStyle(
+                                      fontFamily: "Mulish",
+                                      color: Colors.purple,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),),)
+                            ))),
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => NonPrescriptionCategory()));
+                            },
+                        child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                  width: 110 ,
+                                  height: 70 ,
+                                  color: HexColor('#F8D4FB'),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text("Non-Prescription Medication", style: TextStyle(
+                                        fontFamily: "Mulish",
+                                        color: Colors.purple,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),),)
+                              ),
+                         )),
+                    ],),
+                    SizedBox(height: 25,),
+                    Expanded(
+                        child: FutureBuilder<List<ParseObject>>(
+                            future: getMedication(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                  return Center(
+                                    child: Container(
+                                        width: 50,
+                                        height: 50,
+                                        child: CircularProgressIndicator()),
+                                  );
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text("Error..."),
+                                    );
+                                  }
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: Text("No Data..."),
+                                    );
+                                  } else {
+                                    return ListView.builder(
+                                        padding: EdgeInsets.only(top: 10.0),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, index) {
+                                          //Get Parse Object Values
+                                          final medGet = snapshot.data![index];
+                                          final TradeName = medGet.get<String>('TradeName')!;
+                                          final ScientificName = medGet.get<String>('ScientificName')!;
+                                          final Publicprice = medGet.get<num>('Publicprice')!;
+                                          final Size = medGet.get<num>('Size')!;
+                                          final SizeUnit = medGet.get<String>('SizeUnit')!;
+                                          final Strength = medGet.get<num>('Strength')!;
+                                          final StrengthUnit = medGet.get<String>('StrengthUnit')!;
+                                          final PackageSize = medGet.get<num>('PackageSize')!;
+                                          final PackageType = medGet.get<String>('PackageTypes')!;
+                                          var UsageMethod = medGet.get<String>('UsageMethod')!;
+                                          var MarketingCompany = medGet.get<String>('MarketingCompany')!;
+                                          var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
+                                          UsageMethod = UsageMethod.toLowerCase();
+                                          MarketingCompany = MarketingCompany.toLowerCase();
+                                          PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
+                                          return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())? SingleChildScrollView(
+                                              child: Card(
+                                                  elevation: 5,
+                                                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                                  color: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(35.0),
+                                                  ),
+                                                  child: ExpansionTile(
+                                                      title: Text(TradeName,style: TextStyle(
+                                                          fontWeight: FontWeight.w400,
+                                                          fontSize: 20),),
+                                                      subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
+                                                          fontWeight: FontWeight.w400,
+                                                          fontSize: 15,
+                                                          color: Colors.black),),
+                                                      leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
+                                                        size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
+                                                      trailing: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Icon(Icons.keyboard_arrow_down,color: Colors.black,
+                                                            size: 26.0,),
+                                                          IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart,color: Colors.black,
+                                                            size: 25.0,)),
+                                                        ],
+                                                      ),
+                                                      children: <Widget>[
+                                                        ListTile(
+                                                          subtitle: Text('Medication details:'+ '\n' +'• Usage method: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: 18,
+                                                              color: Colors.black
+                                                          ),),
+                                                        )]))):Container();
+                                        });
+                                  }
+                              }
+                            }))
+
+                     ]),
+
                   ),
                 ),
             ]
@@ -187,6 +317,17 @@ class Category extends State<CategoryPage> {
                     }
                   }),
                 ))));
+  }
+
+  Future<List<ParseObject>> getMedication() async {
+    QueryBuilder<ParseObject> queryMedication =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    final ParseResponse apiResponse = await queryMedication.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
   }
 
   Future<ParseUser?> getUser() async {
@@ -285,4 +426,8 @@ class MedicationCategoriesno extends StatelessWidget {
         ]),
       ), );
   }
+
+
+
+
 }
