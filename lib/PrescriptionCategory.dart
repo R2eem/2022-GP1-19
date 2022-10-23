@@ -3,7 +3,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:untitled/AccountPage.dart';
-
+import 'package:untitled/widgets/header_widget.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class PrescriptionCategory extends StatefulWidget {
   @override
@@ -20,47 +21,36 @@ class Prescription extends State<PrescriptionCategory> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(70.0),
-          child:AppBar(
-            title: Image.asset('assets/logoheader.png', alignment: Alignment.center, width: 70, height: 70,),
-            centerTitle: true,
-            backgroundColor: Colors.pink[100],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))
-            ),
-            elevation: 0,
-            leading:
-            IconButton(
-              padding: EdgeInsets.symmetric(vertical: 25),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
         body: SingleChildScrollView(
-          child: Container(
+          child:Stack(children: [
+            Container(
+            height: 150,
+            child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+          ),
+          SafeArea(child:
+          Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             height: MediaQuery.of(context).size.height,
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Container(child: Image.asset(
+                  'assets/logoheader.png',
+                  fit: BoxFit.contain,
+                  width: 100,
+                  height: 70,
+                ),),
                 Container(
                   child: Text('Prescription medications', style: TextStyle(
-                    fontSize: 30,
+                    fontFamily: "Mulish",
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40,),
                 Material(
                     elevation: 8,
                     shadowColor: Colors.grey,
@@ -87,7 +77,7 @@ class Prescription extends State<PrescriptionCategory> {
                       ),
                     )
                 ),
-                SizedBox(height: 50,),
+                SizedBox(height: 20,),
                 Expanded(
                     child: FutureBuilder<List<ParseObject>>(
                         future: getPresMedication(),
@@ -138,7 +128,7 @@ class Prescription extends State<PrescriptionCategory> {
                                           child: Card(
                                               elevation: 5,
                                               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                              color: Colors.purple[100],
+                                              color: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(35.0),
                                               ),
@@ -150,7 +140,7 @@ class Prescription extends State<PrescriptionCategory> {
                                                       fontWeight: FontWeight.w400,
                                                       fontSize: 15,
                                                       color: Colors.black),),
-                                                  leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink,
+                                                  leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.purple,
                                                     size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
                                                   trailing: Row(
                                                     mainAxisSize: MainAxisSize.min,
@@ -175,8 +165,8 @@ class Prescription extends State<PrescriptionCategory> {
                         }))
               ],
             ),
-          ),
-        ),
+          )),
+       ] )),
         bottomNavigationBar: Container(
             child: Padding(
                 padding:
