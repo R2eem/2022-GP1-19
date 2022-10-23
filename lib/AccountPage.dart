@@ -312,6 +312,7 @@ class _AccountPage extends State<AccountPage>{
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
       ..set('email', editEmail)
+      ..set('Username', editEmail)
       ..set('Phonenumber', editPhonenumber);
     final ParseResponse parseResponse = await todo.save();
 
