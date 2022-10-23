@@ -62,7 +62,37 @@ class Category extends State<CategoryPage> {
             child: Text("No Data..."),
           );
         } else {
-        return  SingleChildScrollView(child:Column(
+        return FutureBuilder<List>(
+        future: currentuser(snapshot.data!.objectId),
+    builder: (context, snapshot) {
+    switch (snapshot.connectionState) {
+    case ConnectionState.none:
+    case ConnectionState.waiting:
+    return Center(
+    );
+    default:
+    if (snapshot.hasError) {
+    return Center(
+    child: Text("Error..."),
+    );
+    }
+    if (!snapshot.hasData) {
+    return Center(
+    child: Text("No Data..."),
+    );
+    } else {
+    return ListView.builder(
+    padding: EdgeInsets.only(top: 10.0),
+    scrollDirection: Axis.vertical,
+    shrinkWrap: true,
+    itemCount: snapshot.data!.length,
+    itemBuilder: (context, index) {
+    //Get Parse Object Values
+    final user = snapshot.data![index];
+    final id = user.get<String>('objectId')!;
+    final Firstname = user.get<String>('Firstname')!;
+    final Lastname = user.get<String>('Lastname')!;
+    return SingleChildScrollView(child:Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -101,7 +131,7 @@ class Category extends State<CategoryPage> {
                                 height: 1,
                               ),
                               Text(
-                                'Hello, ${snapshot.data!.username}',
+                                'Hello, ${Firstname} ${Lastname}',
                                 style: TextStyle(
                                     color: Colors.black87.withOpacity(0.8),
                                     fontSize: 20,
@@ -157,7 +187,7 @@ class Category extends State<CategoryPage> {
                 ),
             ]
         ));
-    }}})]),
+    });}}});}}})]),
 
         bottomNavigationBar: Container(
             child: Padding(
@@ -192,6 +222,18 @@ class Category extends State<CategoryPage> {
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
+  }
+
+  Future<List> currentuser(objectid) async {
+    QueryBuilder<ParseUser> queryUsers =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryUsers.whereContains('objectId', objectid);
+    final ParseResponse apiResponse = await queryUsers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
   }
 }
 class MedicationCategories extends StatelessWidget {
