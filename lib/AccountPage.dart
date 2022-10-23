@@ -115,163 +115,163 @@ class _AccountPage extends State<AccountPage>{
                                             );
                                           } else {
                                             return FutureBuilder<List>(
-                                            future: currentuser(snapshot.data!.objectId),
-                                            builder: (context, snapshot) {
-                                            switch (snapshot.connectionState) {
-                                            case ConnectionState.none:
-                                            case ConnectionState.waiting:
-                                            return Center(
-                                            child: Container(
-                                                margin: EdgeInsets.only(top: 100),
+                                                future: currentuser(snapshot.data!.objectId),
+                                                builder: (context, snapshot) {
+                                                  switch (snapshot.connectionState) {
+                                                    case ConnectionState.none:
+                                                    case ConnectionState.waiting:
+                                                      return Center(
+                                                        child: Container(
+                                                            margin: EdgeInsets.only(top: 100),
 
-                                                width: 50,
-                                            height: 50,
-                                            child: CircularProgressIndicator()),
-                                            );
-                                            default:
-                                            if (snapshot.hasError) {
-                                            return Center(
-                                            child: Text("Error..."),
-                                            );
-                                            }
-                                            if (!snapshot.hasData) {
-                                            return Center(
-                                            child: Text("No Data..."),
-                                            );
-                                            } else {
-                                              return ListView.builder(
-                                                  padding: EdgeInsets.only(top: 10.0),
-                                                  scrollDirection: Axis.vertical,
-                                                  shrinkWrap: true,
-                                                  itemCount: snapshot.data!.length,
-                                                  itemBuilder: (context, index) {
-                                                    //Get Parse Object Values
-                                                    final user = snapshot.data![index];
-                                                    final id = user.get<String>('objectId')!;
-                                                    final Firstname = user.get<String>('Firstname')!;
-                                                    final Lastname = user.get<String>('Lastname')!;
-                                                    final Email = user.get<String>('email')!;
-                                                    final Phonenumber = user.get<String>('Phonenumber')!;
-                                                    final controllerFirstname = TextEditingController(text: Firstname);
-                                                    final controllerLasttname = TextEditingController(text: Lastname);
-                                                    final controllerEmail = TextEditingController(text: Email);
-                                                    final controllerPhoneNumber = TextEditingController(text: Phonenumber);
-                                            return Column( children: [
-                                              Container(
-                                                child: TextFormField(
-                                                  autovalidateMode:
-                                                  AutovalidateMode.onUserInteraction,
-                                                  keyboardType: TextInputType.text,
-                                                  controller: controllerFirstname,
-                                                  validator: MultiValidator([
-                                                    RequiredValidator(
-                                                        errorText: 'this field is required'),
-                                                  ]),
+                                                            width: 50,
+                                                            height: 50,
+                                                            child: CircularProgressIndicator()),
+                                                      );
+                                                    default:
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text("Error..."),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child: Text("No Data..."),
+                                                        );
+                                                      } else {
+                                                        return ListView.builder(
+                                                            padding: EdgeInsets.only(top: 10.0),
+                                                            scrollDirection: Axis.vertical,
+                                                            shrinkWrap: true,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
+                                                              //Get Parse Object Values
+                                                              final user = snapshot.data![index];
+                                                              final id = user.get<String>('objectId')!;
+                                                              final Firstname = user.get<String>('Firstname')!;
+                                                              final Lastname = user.get<String>('Lastname')!;
+                                                              final Email = user.get<String>('email')!;
+                                                              final Phonenumber = user.get<String>('Phonenumber')!;
+                                                              final controllerFirstname = TextEditingController(text: Firstname);
+                                                              final controllerLasttname = TextEditingController(text: Lastname);
+                                                              final controllerEmail = TextEditingController(text: Email);
+                                                              final controllerPhoneNumber = TextEditingController(text: Phonenumber);
+                                                              return Column( children: [
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerFirstname,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                    ]),
 
-                                                  decoration: ThemeHelper().textInputDecoration('',"First Name") ,
-                                                ),
-                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"First Name") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                              ),
-                                              SizedBox(height: 15.0),
+                                                                ),
+                                                                SizedBox(height: 15.0),
 
-                                              Container(
-                                                child: TextFormField(
-                                                  autovalidateMode:
-                                                  AutovalidateMode.onUserInteraction,
-                                                  keyboardType: TextInputType.text,
-                                                  controller: controllerLasttname,
-                                                  validator: MultiValidator([
-                                                    RequiredValidator(
-                                                        errorText: 'this field is required'),
-                                                  ]),
-                                                  decoration: ThemeHelper().textInputDecoration('',"Last Name") ,
-                                                ),
-                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerLasttname,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                    ]),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Last Name") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                              ),
+                                                                ),
 
-                                              SizedBox(height: 15.0),
+                                                                SizedBox(height: 15.0),
 
-                                              Container(
-                                                child: TextFormField(
-                                                  autovalidateMode:
-                                                  AutovalidateMode.onUserInteraction,
-                                                  keyboardType: TextInputType.emailAddress,
-                                                  controller: controllerEmail,
-                                                  validator: MultiValidator([
-                                                    RequiredValidator(
-                                                        errorText: 'this field is required'),
-                                                    EmailValidator(
-                                                        errorText: 'enter a valid email address')
-                                                  ]),
-                                                  decoration: ThemeHelper().textInputDecoration('',"Email") ,
-                                                ),
-                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.emailAddress,
+                                                                    controller: controllerEmail,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                      EmailValidator(
+                                                                          errorText: 'enter a valid email address')
+                                                                    ]),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                              ),
+                                                                ),
 
-                                              SizedBox(height: 15.0),
+                                                                SizedBox(height: 15.0),
 
-                                              Container(
-                                                child: TextFormField(
-                                                  autovalidateMode:
-                                                  AutovalidateMode.onUserInteraction,
-                                                  keyboardType: TextInputType.text,
-                                                  controller: controllerPhoneNumber,
-                                                  validator: MultiValidator([
-                                                    RequiredValidator(
-                                                        errorText: 'this field is required'),
-                                                    MinLengthValidator(12,
-                                                        errorText: 'must be 12 digits long'),
-                                                    MaxLengthValidator(12,
-                                                        errorText: 'must be 12 digits long')
-                                                  ]),
-                                                  decoration: ThemeHelper().textInputDecoration('',"Phone Number") ,
-                                                ),
-                                                decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerPhoneNumber,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                      MinLengthValidator(12,
+                                                                          errorText: 'must be 12 digits long'),
+                                                                      MaxLengthValidator(12,
+                                                                          errorText: 'must be 12 digits long')
+                                                                    ]),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Phone Number") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
-                                              ),
+                                                                ),
 
-                                              SizedBox(height: 15.0),
+                                                                SizedBox(height: 15.0),
 
-                                              Container(
-                                                decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                child: ElevatedButton(
-                                                  style: ThemeHelper().buttonStyle(),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                                    child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                  ),
-                                                  onPressed: (){
-                                                    if (_formKey.currentState!.validate()) {
-                                                    updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
-                                                    }
-                                                  },
-                                                ),
-                                              ),
+                                                                Container(
+                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                  child: ElevatedButton(
+                                                                    style: ThemeHelper().buttonStyle(),
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                    ),
+                                                                    onPressed: (){
+                                                                      if (_formKey.currentState!.validate()) {
+                                                                        updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
+                                                                      }
+                                                                    },
+                                                                  ),
+                                                                ),
 
-                                              SizedBox(height: 10.0),
+                                                                SizedBox(height: 10.0),
 
-                                              Container(
-                                                decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                child: ElevatedButton(
-                                                  style: ThemeHelper().buttonStyle(),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
-                                                    child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                  ),
-                                                  onPressed: (){
+                                                                Container(
+                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                  child: ElevatedButton(
+                                                                    style: ThemeHelper().buttonStyle(),
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
+                                                                      child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                    ),
+                                                                    onPressed: (){
 
-                                                    doUserLogout();
-                                                  },
-                                                ),
-                                              ),
+                                                                      doUserLogout();
+                                                                    },
+                                                                  ),
+                                                                ),
 
-                                            ] );
+                                                              ] );
 
-                                          });}}});
-                              }}})] ),
+                                                            });}}});
+                                          }}})] ),
                         ),
                       ]),
                 ),
@@ -376,8 +376,4 @@ class _AccountPage extends State<AccountPage>{
     }
   }
 }
-
-
-
-
 
