@@ -10,13 +10,17 @@ class PrescriptionCategory extends StatefulWidget {
   Prescription createState() => Prescription();
 }
 
-class Prescription extends State<PrescriptionCategory> {
+class Prescription extends State<PrescriptionCategory> with TickerProviderStateMixin {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
   String searchString ='';
-
+  String packageType ='';
+  late int _selectedTab ;
   @override
   Widget build(BuildContext context) {
+    TabController _tabController=
+    TabController(length: 7, vsync: this, initialIndex: 0 );
+    _tabController.animateTo(_selectedTab);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -87,7 +91,41 @@ class Prescription extends State<PrescriptionCategory> {
                   ),
                 )
           ),
-          SizedBox(height: 50,),
+          SizedBox(height: 20,),
+          TabBar(
+              onTap: (index){ //
+                setState(() {
+                _selectedTab = index;
+                print(_selectedTab);
+                if(_selectedTab == 0)
+                  packageType = '';
+                if(_selectedTab == 1)
+                  packageType = 'tablet';
+                if(_selectedTab == 2)
+                  packageType ='drop';
+                if(_selectedTab == 3)
+                  packageType = 'syrup';
+                if(_selectedTab == 4)
+                  packageType ='cream';
+                if(_selectedTab == 5)
+                  packageType = 'gel';
+                if(_selectedTab == 6)
+                  packageType ='capsule';
+                },);},
+              isScrollable: true,//if thr tabs are alot we can scroll them
+              controller: _tabController,
+              labelColor: Colors.grey[900],// the tab is clicked on now color
+              unselectedLabelColor: Colors.grey,
+            tabs: [
+              Tab(icon: Text('All'),),
+              Tab(icon: Text('Tablet'),),
+              Tab(icon: Text('Drop'),),
+              Tab(icon: Text('Syrup'),),
+              Tab(icon: Text('Cream'),),
+              Tab(icon: Text('Gel'),),
+              Tab(icon: Text('Capsule'),),
+            ]),
+
           Expanded(
               child: FutureBuilder<List<ParseObject>>(
                   future: getPresMedication(),
@@ -134,7 +172,7 @@ class Prescription extends State<PrescriptionCategory> {
                                 UsageMethod = UsageMethod.toLowerCase();
                                 MarketingCompany = MarketingCompany.toLowerCase();
                                 PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
-                                return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())? SingleChildScrollView(
+                                return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& PharmaceuticalForm.toLowerCase().contains(packageType))? SingleChildScrollView(
                                       child: Card(
                                            elevation: 5,
                                            margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
