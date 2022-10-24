@@ -8,7 +8,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'common/theme_hepler.dart';
+import 'common/theme_helper.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -46,7 +46,7 @@ class Login extends State<LoginPage> {
               onPressed: () {
                 Navigator.push( context, MaterialPageRoute( builder: (context) => HomePage()), );
               }, icon: Icon(Icons.keyboard_arrow_left),),
-            SizedBox(height: 170,),
+            SizedBox(height: 200,),
             Text('Log in', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
             Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
             SizedBox(height: 25.0),
@@ -92,7 +92,7 @@ class Login extends State<LoginPage> {
                           obscureText: !_isVisible,
                           validator: MultiValidator([
                             RequiredValidator(
-                                errorText: 'password is required'),
+                                errorText: 'this is required'),
                           ]),
                         decoration: InputDecoration(
                           suffixIcon: IconButton(

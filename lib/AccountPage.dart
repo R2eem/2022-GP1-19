@@ -35,39 +35,25 @@ class AccountPage extends StatefulWidget{
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
+  bool _update = false;
+  final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-        appBar: AppBar(
-          title: Text("Profile Page",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          elevation: 0.5,
-          flexibleSpace:Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft, //control the colores space in the app bar the purprle color
-                    end: Alignment.bottomRight,//control the colores space in the app bar the pink color
-                    colors: <Color>[Theme.of(context).primaryColor, Theme.of(context).accentColor,]
-                )
-            ),
-          ),
-        ),
-
-
         body:SingleChildScrollView(
           child: Stack(
               children: [
-                Container(height: 100, child: HeaderWidget(100,false,Icons.house_rounded),), //control the space under the app bar to be the same as the app bar
-
+                Container(
+                  height: 150,
+                  child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+                ),
                 ///// controls the profile icon
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
                   child: Column(
                       children: [
                         Container(
@@ -83,7 +69,7 @@ class _AccountPage extends State<AccountPage>{
                           child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
                         ),
 
-                        SizedBox(height: 10,),
+                        SizedBox(height: 40,),
 
                         Form(
                           key: _formKey,
@@ -168,12 +154,28 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
 
-                                                                    decoration: ThemeHelper().textInputDecoration('',"First Name") ,
+                                                                    decoration: InputDecoration(
+                                                                      labelText: '',
+                                                                      hintText: 'Firstname',
+                                                                      fillColor: Colors.white,
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                   suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
-                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                  decoration: BoxDecoration(boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.black.withOpacity(0.1),
+                                                                      blurRadius: 20,
+                                                                      offset: const Offset(0, 5),
+                                                                    )
+                                                                  ]),
 
                                                                 ),
-                                                                SizedBox(height: 15.0),
+                                                                SizedBox(height: 25.0),
 
                                                                 Container(
                                                                   child: TextFormField(
@@ -185,33 +187,23 @@ class _AccountPage extends State<AccountPage>{
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
                                                                     ]),
-                                                                    decoration: ThemeHelper().textInputDecoration('',"Last Name") ,
+                                                                    decoration: InputDecoration(
+                                                                      labelText: '',
+                                                                      hintText: 'Lastname',
+                                                                      fillColor: Colors.white,
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
                                                                 ),
 
-                                                                SizedBox(height: 15.0),
-
-                                                                Container(
-                                                                  child: TextFormField(
-                                                                    autovalidateMode:
-                                                                    AutovalidateMode.onUserInteraction,
-                                                                    keyboardType: TextInputType.emailAddress,
-                                                                    controller: controllerEmail,
-                                                                    validator: MultiValidator([
-                                                                      RequiredValidator(
-                                                                          errorText: 'this field is required'),
-                                                                      EmailValidator(
-                                                                          errorText: 'enter a valid email address')
-                                                                    ]),
-                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
-                                                                  ),
-                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
-
-                                                                ),
-
-                                                                SizedBox(height: 15.0),
+                                                                SizedBox(height: 25.0),
 
                                                                 Container(
                                                                   child: TextFormField(
@@ -227,44 +219,128 @@ class _AccountPage extends State<AccountPage>{
                                                                       MaxLengthValidator(12,
                                                                           errorText: 'must be 12 digits long')
                                                                     ]),
-                                                                    decoration: ThemeHelper().textInputDecoration('',"Phone Number") ,
-                                                                  ),
+                                                                    decoration: InputDecoration(
+                                                              labelText: '',
+                                                              hintText: 'Phonenumber',
+                                                              fillColor: Colors.white,
+                                                              filled: true,
+                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              suffixIcon: Icon(Icons.edit) ) ,
+                                                              ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
                                                                 ),
+                                                                SizedBox(height: 25.0),
 
-                                                                SizedBox(height: 15.0),
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    readOnly: true,
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.emailAddress,
+                                                                    controller: controllerEmail,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                      EmailValidator(
+                                                                          errorText: 'enter a valid email address')
+                                                                    ]),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                ),
+                                                                SizedBox(height: 35.0),
 
                                                                 Container(
                                                                   decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                   child: ElevatedButton(
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
-                                                                      padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
-                                                                        updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
+                                                                          // set up the buttons
+                                                                          Widget cancelButton = TextButton(
+                                                                            child: Text("Cancel"),
+                                                                            onPressed:  () {
+                                                                              _update = false;
+                                                                              Navigator.of(context).pop();
+
+                                                                            },
+                                                                          );
+                                                                          Widget continueButton = TextButton(
+                                                                            child: Text("Update"),
+                                                                            onPressed:  () {
+                                                                              _update = true;
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          );
+                                                                          // set up the AlertDialog
+                                                                          AlertDialog alert = AlertDialog(
+                                                                            title: Text(""),
+                                                                            content: Text("Are you sure you want to update your account information?"),
+                                                                            actions: [
+                                                                              cancelButton,
+                                                                              continueButton,
+                                                                            ],
+                                                                          );
+                                                                          // show the dialog
+                                                                          showDialog(
+                                                                            context: context,
+                                                                            builder: (BuildContext context) {
+                                                                              return alert;
+                                                                            },
+                                                                          );
+                                                                          if(_update)
+                                                                          updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
                                                                       }
                                                                     },
                                                                   ),
                                                                 ),
 
-                                                                SizedBox(height: 10.0),
+                                                                SizedBox(height: 20.0),
 
                                                                 Container(
                                                                   decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                  child: ElevatedButton(
+                                                                  child: ElevatedButton.icon(
                                                                     style: ThemeHelper().buttonStyle(),
-                                                                    child: Padding(
-                                                                      padding: EdgeInsets.fromLTRB(40, 10, 40, 5),
-                                                                      child: Text('Log out'.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                                    ),
-                                                                    onPressed: (){
 
-                                                                      doUserLogout();
-                                                                    },
+                                                                    onPressed: (){
+                                                                      Widget cancelButton = TextButton(
+                                                                        child: Text("No"),
+                                                                        onPressed:  () {
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                      );
+                                                                      Widget continueButton = TextButton(
+                                                                        child: Text("Yes"),
+                                                                        onPressed:  () {
+                                                                          doUserLogout();
+                                                                        },
+                                                                      );
+                                                                      // set up the AlertDialog
+                                                                      AlertDialog alert = AlertDialog(
+                                                                        title: Text("Are you sure you want to log out from your account?"),
+                                                                        content: Text(""),
+                                                                        actions: [
+                                                                          cancelButton,
+                                                                          continueButton,
+                                                                        ],
+                                                                      );
+                                                                      // show the dialog
+                                                                      showDialog(
+                                                                        context: context,
+                                                                        builder: (BuildContext context) {
+                                                                          return alert;
+                                                                        },
+                                                                      );
+                                                                    }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('LOGOUT' ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                   ),
                                                                 ),
 
@@ -279,6 +355,7 @@ class _AccountPage extends State<AccountPage>{
         ),
 
         bottomNavigationBar: Container(
+          color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
             child: GNav(
@@ -306,13 +383,11 @@ class _AccountPage extends State<AccountPage>{
     );
   }
 
+
   Future<void> updateInfo(id, email, editFirstname, editLastname, editEmail, editPhonenumber) async {
-    print(id);
-    var todo = ParseUser(email,null,email)..objectId = id
+    var todo = ParseUser(null,null,null)..objectId = id
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
-      ..set('email', editEmail)
-      ..set('Username', editEmail)
       ..set('Phonenumber', editPhonenumber);
     final ParseResponse parseResponse = await todo.save();
 

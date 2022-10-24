@@ -11,16 +11,20 @@ class NonPrescriptionCategory extends StatefulWidget {
   NonPrescription createState() => NonPrescription();
 }
 
-class NonPrescription extends State<NonPrescriptionCategory> {
+class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderStateMixin {
   final todoController = TextEditingController();
   int _selectedIndex = 0;
   String searchString ='';
+  String packageType ='';
+  int _selectedTab = 0 ;
 
   @override
   Widget build(BuildContext context) {
+    TabController _tabController=
+    TabController(length: 12, vsync: this, initialIndex: 0 );
+    _tabController.animateTo(_selectedTab);
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
         body: SingleChildScrollView(
             child:Stack(children: [
               Container(
@@ -78,6 +82,54 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                         )
                     ),
                     SizedBox(height: 20,),
+                    TabBar(
+                        onTap: (index){ //
+                          setState(() {
+                            _selectedTab = index;
+                            if(_selectedTab == 0)
+                              packageType = '';
+                            if(_selectedTab == 1)
+                              packageType = 'Caplet';
+                            if(_selectedTab == 2)
+                              packageType ='Cream';
+                            if(_selectedTab == 3)
+                              packageType = 'Drop';
+                            if(_selectedTab == 4)
+                              packageType ='Gel';
+                            if(_selectedTab == 5)
+                              packageType = 'Liquid';
+                            if(_selectedTab == 6)
+                              packageType ='Lozenge';
+                            if(_selectedTab == 7)
+                              packageType = 'Ointment';
+                            if(_selectedTab == 8)
+                              packageType ='Solution';
+                            if(_selectedTab == 9)
+                              packageType = 'Spray';
+                            if(_selectedTab == 10)
+                              packageType ='Syrup';
+                            if(_selectedTab == 11)
+                              packageType = 'Tablet';
+                          },);},
+                        isScrollable: true,//if thr tabs are alot we can scroll them
+                        controller: _tabController,
+                        labelColor: Colors.grey[900],// the tab is clicked on now color
+                        unselectedLabelColor: Colors.grey,
+                        tabs: [
+                          Tab(icon: Text('All', style: TextStyle(fontFamily: "Mulish", fontWeight: FontWeight.w700),),),
+                          Tab(icon: Text('Caplet' ,style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Cream', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Drop', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Gel', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Liquid', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Lozenge', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Ointment', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Solution', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Spray', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Syrup', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                        ]),
+                    SizedBox(height: 20,),
                     Expanded(
                         child: FutureBuilder<List<ParseObject>>(
                             future: getNonPresMedication(),
@@ -112,32 +164,27 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                                           final TradeName = medGet.get<String>('TradeName')!;
                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                           final Publicprice = medGet.get<num>('Publicprice')!;
-                                          final Size = medGet.get<num>('Size')!;
-                                          final SizeUnit = medGet.get<String>('SizeUnit')!;
                                           final Strength = medGet.get<num>('Strength')!;
                                           final StrengthUnit = medGet.get<String>('StrengthUnit')!;
-                                          final PackageSize = medGet.get<num>('PackageSize')!;
                                           final PackageType = medGet.get<String>('PackageTypes')!;
                                           var UsageMethod = medGet.get<String>('UsageMethod')!;
                                           var MarketingCompany = medGet.get<String>('MarketingCompany')!;
-                                          var PharmaceuticalForm = medGet.get<String>('PharmaceuticalForm')!;
-                                          UsageMethod = UsageMethod.toLowerCase();
+                                          var ProductForm = medGet.get<String>('PharmaceuticalForm')!;
                                           MarketingCompany = MarketingCompany.toLowerCase();
-                                          PharmaceuticalForm = PharmaceuticalForm.toLowerCase();
-                                          return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())? SingleChildScrollView(
+                                          return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))? SingleChildScrollView(
                                               child: Card(
                                                   elevation: 5,
                                                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                                   color: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(35.0),
-                                                  ),
+
                                                   child: ExpansionTile(
                                                       title: Text(TradeName,style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
+                                                          fontFamily: "Mulish",
+                                                          fontWeight: FontWeight.w900,
                                                           fontSize: 20),),
                                                       subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
+                                                          fontFamily: "Mulish",
+                                                          fontWeight: FontWeight.w600,
                                                           fontSize: 15,
                                                           color: Colors.black),),
                                                       leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.purple,
@@ -147,14 +194,15 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                                                         children: [
                                                           Icon(Icons.keyboard_arrow_down,color: Colors.black,
                                                             size: 26.0,),
-                                                          IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart,color: Colors.black,
+                                                          IconButton(onPressed: () {}, icon: const Icon(Icons.add,color: Colors.black,
                                                             size: 25.0,)),
                                                         ],
                                                       ),
                                                       children: <Widget>[
                                                         ListTile(
-                                                          subtitle: Text('Medication details:'+ '\n' +'• Usage method: $UsageMethod' + '\n' +'• Pharmaceutical form: $PharmaceuticalForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
+                                                          subtitle: Text('Medication details:'+ '\n' +'• Package type: $PackageType' + '\n' +'• Strength: $Strength$StrengthUnit' +  '\n' +'• Usage method: $UsageMethod' + '\n' +'• Product form: $ProductForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
+                                                              fontFamily: "Mulish",
+                                                              fontWeight: FontWeight.w500,
                                                               fontSize: 18,
                                                               color: Colors.black
                                                           ),),
@@ -163,11 +211,13 @@ class NonPrescription extends State<NonPrescriptionCategory> {
                                   }
                               }
                             }))
-                  ],
+                ,SizedBox(height: 80,)  ],
                 ),
               )),
             ] )),
+
         bottomNavigationBar: Container(
+            color: Colors.white,
             child: Padding(
                 padding:
                 const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),

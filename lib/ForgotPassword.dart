@@ -5,7 +5,7 @@ import 'package:untitled/LoginPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'common/theme_hepler.dart';
+import 'common/theme_helper.dart';
 
 
 class ForgotPassword extends StatefulWidget {
@@ -16,7 +16,7 @@ class ForgotPassword extends StatefulWidget {
 class Forgot extends State<ForgotPassword> {
   final controllerEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  double _headerHeight = 300;
+  double _headerHeight = 250;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class Forgot extends State<ForgotPassword> {
               children: [
             Container(
               height: _headerHeight,
-              child: HeaderWidget(_headerHeight, true,Icons.password_rounded),
+              child: HeaderWidget(_headerHeight, false,Icons.password_rounded),
             ),
             SafeArea(
               child: Column(
@@ -39,8 +39,8 @@ class Forgot extends State<ForgotPassword> {
               onPressed: () {
                 Navigator.push( context, MaterialPageRoute( builder: (context) => LoginPage()), );
               }, icon: Icon(Icons.keyboard_arrow_left),),
-            SizedBox(height: 230,),
-            Text('Forgot Password?', style: TextStyle(fontFamily: 'Mulish',fontSize: 35, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
+            SizedBox(height: 200,),
+            Text('Forgot Password?', style: TextStyle(fontFamily: 'Mulish',fontSize: 40, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
             SizedBox(height: 10,),
             Text('Enter the email address associated with your account.', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
             SizedBox(height: 25.0),
@@ -119,7 +119,8 @@ class Forgot extends State<ForgotPassword> {
                                 },
                               style: TextStyle(
                                   fontFamily: 'Mulish',
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).accentColor),
                             ),
                           ],
                         ),
@@ -158,35 +159,7 @@ class Forgot extends State<ForgotPassword> {
       );
     } else {
       return;
-        };
+    };
   }
 }
 
-Widget makeInput({label, obscureText = false}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      Text(
-        label,
-        style: TextStyle(
-            fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-      ),
-      SizedBox(
-        height: 5,
-      ),
-      TextField(
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          enabledBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-          border:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-        ),
-      ),
-      SizedBox(
-        height: 30,
-      ),
-    ],
-  );
-}

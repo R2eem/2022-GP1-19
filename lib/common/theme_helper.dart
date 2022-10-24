@@ -65,7 +65,7 @@ class ThemeHelper{
         ),
       ),
       minimumSize: MaterialStateProperty.all(Size(50, 50)),
-      backgroundColor: MaterialStateProperty.all(Colors.transparent),
+      backgroundColor: MaterialStateProperty.all(Colors.purple.shade300),
       shadowColor: MaterialStateProperty.all(Colors.transparent),
     );
   }

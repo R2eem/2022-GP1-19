@@ -7,7 +7,7 @@ import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'common/theme_hepler.dart';
+import 'common/theme_helper.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -26,6 +26,7 @@ class Signup extends State<SignupPage> {
   final controllerPhoneNumber = TextEditingController();
   bool _isVisible = false;
   bool _isVisibleConfirm = false;
+  bool _showValidation = false;
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordEightCharacters = false;
   bool _hasPasswordOneSpecial = false;
@@ -179,6 +180,7 @@ class Signup extends State<SignupPage> {
                                 SizedBox(height: 20.0),
                                   Container(
                                  child: TextFormField(
+                                    onTap: () => _showValidation = !_showValidation,
                                     autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
                                     controller: controllerPassword,
@@ -218,10 +220,10 @@ class Signup extends State<SignupPage> {
                                         offset: const Offset(0, 5),
                                       )
                                     ]),),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                Row(
+                    Visibility(
+                      visible: _showValidation,
+                      child:
+                               Row(
                                   children: [
                                     AnimatedContainer(
                                       duration: Duration(milliseconds: 500),
@@ -239,7 +241,11 @@ class Signup extends State<SignupPage> {
                                     Text("Contains at least 8 characters")
                                   ],
                                 ),
-                                SizedBox(height: 10,),
+                    ),
+                                SizedBox(height: 5,),
+                    Visibility(
+                      visible: _showValidation,
+                      child:
                                 Row(
                                   children: [
                                     AnimatedContainer(
@@ -258,8 +264,11 @@ class Signup extends State<SignupPage> {
                                     Text("Contains at least 1 Special character")
                                   ],
                                 ),
-                                SizedBox(height: 10,),
-
+                    ),
+                                SizedBox(height: 5,),
+                    Visibility(
+                      visible: _showValidation,
+                      child:
                                 Row(
                                   children: [
                                     AnimatedContainer(
@@ -278,7 +287,11 @@ class Signup extends State<SignupPage> {
                                     Text("Contains at least 1 uppercase character")
                                   ],
                                 ),
-                                SizedBox(height: 10,),
+                    ),
+                                SizedBox(height: 5,),
+                    Visibility(
+                      visible: _showValidation,
+                      child:
                                 Row(
                                   children: [
                                     AnimatedContainer(
@@ -297,8 +310,7 @@ class Signup extends State<SignupPage> {
                                     Text("Contains at least 1 lowercase character")
                                   ],
                                 ),
-                                SizedBox(height: 10,),
-
+                   ),
                                 //confirm password
                                   Container(
                                     child: TextFormField(
