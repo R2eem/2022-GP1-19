@@ -57,9 +57,10 @@ class HomePage extends StatelessWidget {
                       children: [
                   FadeAnimation(1, Container(
                     height: MediaQuery.of(context).size.height / 4,
-                    child: Image.asset('assets/logo.png',height: 400, width: 400,)
+                    child: Image.asset('assets/tiryaglogo.png',height: 350, width: 400,)
                         )
                     ),
+                        SizedBox(height: 15,),
                   FadeAnimation(1.1, Text("Who are you?",
                   textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold),)),
