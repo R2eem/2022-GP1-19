@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                       children: [
                  Container(
                     height: MediaQuery.of(context).size.height / 4,
-                    child: Image.asset('assets/headerlogo.png',height: 400, width: 400,)
+                    child: Image.asset('assets/tiryaglogo.png',height: 400, width: 400,)
                         ),
                 Text("Who are you?",
                   textAlign: TextAlign.center,
