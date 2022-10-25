@@ -4,6 +4,7 @@ import 'package:untitled/LoginPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'AccountPage.dart';
 import 'common/theme_helper.dart';
 
 

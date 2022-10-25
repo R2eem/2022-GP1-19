@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/CategoryPage.dart';
-import 'package:untitled/AccountPage.dart';
+import 'package:untitled/Settings.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
+
+import 'AccountPage.dart';
 
 class PrescriptionCategory extends StatefulWidget {
   @override
@@ -192,7 +194,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                                     children: [
                                                       Icon(Icons.keyboard_arrow_down,color: Colors.black,
                                                         size: 26.0,),
-                                                      IconButton(onPressed: () {}, icon: const Icon(Icons.add,color: Colors.black,
+                                                      IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart_outlined,color: Colors.black,
                                                         size: 25.0,)),
                                                     ],
                                                   ),
@@ -222,10 +224,10 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                   gap: 8,
                   padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home,),
-                    GButton(icon: Icons.shopping_cart,),
-                    GButton(icon: Icons.shopping_bag,),
-                    GButton(icon: Icons.account_circle,),
+                    GButton(icon: Icons.home, iconActiveColor:  Colors.purple.shade200,iconSize: 35,),
+                    GButton(icon: Icons.shopping_cart, iconActiveColor:  Colors.purple.shade200,  iconSize: 35,),
+                    GButton(icon: Icons.shopping_bag, iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
+                    GButton(icon: Icons.settings,iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
@@ -245,7 +247,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AccountPage()));
+                              builder: (context) => SettingsPage()));
 
                     }
                   }),

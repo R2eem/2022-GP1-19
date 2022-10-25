@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:untitled/AccountPage.dart';
+import 'package:untitled/Settings.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'AccountPage.dart';
 import 'NonPrescriptionCategory.dart';
 import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -319,7 +320,7 @@ class Category extends State<CategoryPage> {
                                                             children: [
                                                               Icon(Icons.keyboard_arrow_down,color: Colors.black,
                                                                 size: 26.0,),
-                                                              IconButton(onPressed: () {}, icon: const Icon(Icons.add,color: Colors.black,
+                                                              IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart_outlined,color: Colors.black,
                                                                 size: 25.0,)),
                                                             ],
                                                           ),
@@ -350,16 +351,16 @@ class Category extends State<CategoryPage> {
                   padding: const EdgeInsets.all(10),
                   tabs: [
                     GButton(
-                      icon: Icons.home,
+                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 35,
                     ),
                     GButton(
-                      icon: Icons.shopping_cart,
+                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 35,
                     ),
                     GButton(
-                      icon: Icons.shopping_bag,
+                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 35,
                     ),
                     GButton(
-                      icon: Icons.account_circle,
+                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 35,
                     ),
                   ],
                   selectedIndex: _selectedIndex,
@@ -373,7 +374,7 @@ class Category extends State<CategoryPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AccountPage()));
+                              builder: (context) => SettingsPage()));
                     }
                   }),
                 ))));
@@ -407,3 +408,5 @@ class Category extends State<CategoryPage> {
     }
   }
 }
+
+

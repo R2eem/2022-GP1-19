@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'main.dart';
@@ -155,16 +156,16 @@ class _AccountPage extends State<AccountPage>{
                                                                     ]),
 
                                                                     decoration: InputDecoration(
-                                                                      labelText: '',
-                                                                      hintText: 'Firstname',
-                                                                      fillColor: Colors.white,
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                   suffixIcon: Icon(Icons.edit) ) ,
+                                                                        labelText: '',
+                                                                        hintText: 'Firstname',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
                                                                     BoxShadow(
@@ -188,16 +189,16 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                      labelText: '',
-                                                                      hintText: 'Lastname',
-                                                                      fillColor: Colors.white,
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              suffixIcon: Icon(Icons.edit) ) ,
+                                                                        labelText: '',
+                                                                        hintText: 'Lastname',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -220,17 +221,17 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'must be 12 digits long')
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                              labelText: '',
-                                                              hintText: 'Phonenumber',
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              suffixIcon: Icon(Icons.edit) ) ,
-                                                              ),
+                                                                        labelText: '',
+                                                                        hintText: 'Phonenumber',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
+                                                                  ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
                                                                 ),
@@ -265,39 +266,39 @@ class _AccountPage extends State<AccountPage>{
                                                                     ),
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
-                                                                          // set up the buttons
-                                                                          Widget cancelButton = TextButton(
-                                                                            child: Text("Cancel"),
-                                                                            onPressed:  () {
-                                                                              _update = false;
-                                                                              Navigator.of(context).pop();
+                                                                        // set up the buttons
+                                                                        Widget cancelButton = TextButton(
+                                                                          child: Text("Cancel"),
+                                                                          onPressed:  () {
+                                                                            _update = false;
+                                                                            Navigator.of(context).pop();
 
-                                                                            },
-                                                                          );
-                                                                          Widget continueButton = TextButton(
-                                                                            child: Text("Update"),
-                                                                            onPressed:  () {
-                                                                              _update = true;
-                                                                              Navigator.of(context).pop();
-                                                                            },
-                                                                          );
-                                                                          // set up the AlertDialog
-                                                                          AlertDialog alert = AlertDialog(
-                                                                            title: Text(""),
-                                                                            content: Text("Are you sure you want to update your account information?"),
-                                                                            actions: [
-                                                                              cancelButton,
-                                                                              continueButton,
-                                                                            ],
-                                                                          );
-                                                                          // show the dialog
-                                                                          showDialog(
-                                                                            context: context,
-                                                                            builder: (BuildContext context) {
-                                                                              return alert;
-                                                                            },
-                                                                          );
-                                                                          if(_update)
+                                                                          },
+                                                                        );
+                                                                        Widget continueButton = TextButton(
+                                                                          child: Text("Update"),
+                                                                          onPressed:  () {
+                                                                            _update = true;
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        );
+                                                                        // set up the AlertDialog
+                                                                        AlertDialog alert = AlertDialog(
+                                                                          title: Text(""),
+                                                                          content: Text("Are you sure you want to update your account information?"),
+                                                                          actions: [
+                                                                            cancelButton,
+                                                                            continueButton,
+                                                                          ],
+                                                                        );
+                                                                        // show the dialog
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder: (BuildContext context) {
+                                                                            return alert;
+                                                                          },
+                                                                        );
+                                                                        if(_update)
                                                                           updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
                                                                       }
                                                                     },
@@ -355,31 +356,42 @@ class _AccountPage extends State<AccountPage>{
         ),
 
         bottomNavigationBar: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: GNav(
-                gap: 8,
-                padding: const EdgeInsets.all(10),
-                tabs: [
-                  GButton(icon: Icons.home,),
-                  GButton(icon: Icons.shopping_cart,),
-                  GButton(icon: Icons.shopping_bag,),
-                  GButton(icon: Icons.account_circle,)
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) => setState(() {
-                  _selectedIndex = index;
-                  if (_selectedIndex == 0) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  } else if (_selectedIndex == 1) {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  } else if (_selectedIndex == 2) {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  }
-                })),
-          ),
-        )
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(icon: Icons.home, iconActiveColor:  Colors.purple.shade200,iconSize: 35,),
+                    GButton(icon: Icons.shopping_cart, iconActiveColor:  Colors.purple.shade200,  iconSize: 35,),
+                    GButton(icon: Icons.shopping_bag, iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
+                    GButton(icon: Icons.settings,iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if(_selectedIndex == 0){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CategoryPage()));
+                    }
+                    else if (_selectedIndex == 1) {
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 2) {
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 3) {
+                      _selectedIndex = 0;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsPage()));
+
+                    }
+                  }),
+                )))
     );
   }
 
