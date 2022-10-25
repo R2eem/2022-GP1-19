@@ -5,6 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 class ThemeHelper{
 
   InputDecoration textInputDecoration([String lableText="", String hintText = ""]){
+
     return InputDecoration(
       labelText: lableText,
       hintText: hintText,
@@ -64,7 +65,7 @@ class ThemeHelper{
         ),
       ),
       minimumSize: MaterialStateProperty.all(Size(50, 50)),
-      backgroundColor: MaterialStateProperty.all(Colors.transparent),
+      backgroundColor: MaterialStateProperty.all(Colors.purple.shade300),
       shadowColor: MaterialStateProperty.all(Colors.transparent),
     );
   }

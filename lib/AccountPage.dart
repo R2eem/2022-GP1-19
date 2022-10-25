@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:untitled/CategoryPage.dart';
-import 'package:untitled/LoginPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-
-import 'LoginPage.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/widgets/header_widget.dart';
+import 'common/theme_helper.dart';
+import 'package:untitled/CategoryPage.dart';
 import 'main.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,176 +17,345 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: AccountPage(),
-  ));
+  runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: AccountPage(),
+      )
+  );
 }
 
-class AccountPage extends StatefulWidget {
+class AccountPage extends StatefulWidget{
+
   @override
-  Account createState() => Account();
+  State<StatefulWidget> createState() {
+    return _AccountPage();
+  }
 }
 
-class Account extends State<AccountPage> {
+class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
+  bool _update = false;
+  final controllerEditEmail = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(70),
-          child: AppBar(
-            title: Text(
-              "My Account",
-              style: TextStyle(fontSize: 30, letterSpacing: 2),
-            ),
-            leading: Icon(Icons.account_circle_rounded),
-            leadingWidth: 100,
-            backgroundColor: Colors.pink[100],
-          ),
-        ),
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                alignment: Alignment
-                    .center, // the location of the circle under under the profile pic
-                children: [
-                  Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // location of text fields
-
-                    children: [
-                      Container(
-                        height: 400, // height of text fields location
-                        width: double.infinity,
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 10), // length of text fields
-                        child: SingleChildScrollView(
-                          child:Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // space between text fields
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            FutureBuilder<ParseUser?>(
-                                future: getUser(),
-                                builder: (context, snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.none:
-                                    case ConnectionState.waiting:
-                                    return Center(
-                                      child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          child: CircularProgressIndicator()),
-                                    );
-                                    default:
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                          child: Text("Error..."),
-                                        );
-                                      }
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: Text("No Data..."),
-                                        );
-                                      } else {
-                                      return Column(children: [
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          child: Container(
-                                            child: Text(
-                                              "UserName:",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.pink[100],
-                                                letterSpacing: 2, // text color
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-
-                                        textfield(
-                                          hintText:
-                                              '${snapshot.data!.username}',
-                                          enabled: false,
-                                        ),
-
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          child: Container(
-                                            child: Text(
-                                              "Email:",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.pink[100],
-                                                letterSpacing: 2, // text color
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-                                        textfield(
-                                          hintText:
-                                              '${snapshot.data!.emailAddress}',
-                                          enabled: false,
-                                        ),
-                                        SizedBox(height: 25),
-                                        MaterialButton(
-                                          minWidth: 200,
-                                          height: 40,
-                                          splashColor: Colors.red[500],
-                                          onPressed: () {
-                                            doUserLogout();
-                                          },
-                                          color: Colors.red[200],
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                          child: Text(
-                                            "Logout",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 20),
-                                          ),
-                                        ),
-                                        // SizedBox(height: 10,),
-                                        //
-                                        //  ChangeButton((){}),
-                                      ]);
-                                  }
-                                }}),
-                          ],
+        body:SingleChildScrollView(
+          child: Stack(
+              children: [
+                Container(
+                  height: 150,
+                  child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+                ),
+                ///// controls the profile icon
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
+                  padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
+                  child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(5), // control the size of the profile circle
+                          decoration: BoxDecoration( // control the size of the profile circle
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 1, color: Colors.white),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black12, blurRadius: 20, offset: const Offset(5, 5),), // control the shadow behind the profile circle
+                            ],
+                          ),
+                          child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
                         ),
-                      ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+
+                        SizedBox(height: 40,),
+
+                        Form(
+                          key: _formKey,
+                          //child: SingleChildScrollView(
+                          child: Column(
+                              children: <Widget>[
+                                //username
+                                FutureBuilder<ParseUser?>(
+                                    future: getUser(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState.waiting:
+                                          return Center(
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child: CircularProgressIndicator()),
+                                          );
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text("Error..."),
+                                            );
+                                          }
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: Text("No Data..."),
+                                            );
+                                          } else {
+                                            return FutureBuilder<List>(
+                                                future: currentuser(snapshot.data!.objectId),
+                                                builder: (context, snapshot) {
+                                                  switch (snapshot.connectionState) {
+                                                    case ConnectionState.none:
+                                                    case ConnectionState.waiting:
+                                                      return Center(
+                                                        child: Container(
+                                                            margin: EdgeInsets.only(top: 100),
+
+                                                            width: 50,
+                                                            height: 50,
+                                                            child: CircularProgressIndicator()),
+                                                      );
+                                                    default:
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text("Error..."),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child: Text("No Data..."),
+                                                        );
+                                                      } else {
+                                                        return ListView.builder(
+                                                            padding: EdgeInsets.only(top: 10.0),
+                                                            scrollDirection: Axis.vertical,
+                                                            shrinkWrap: true,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
+                                                              //Get Parse Object Values
+                                                              final user = snapshot.data![index];
+                                                              final id = user.get<String>('objectId')!;
+                                                              final Firstname = user.get<String>('Firstname')!;
+                                                              final Lastname = user.get<String>('Lastname')!;
+                                                              final Email = user.get<String>('email')!;
+                                                              final Phonenumber = user.get<String>('Phonenumber')!;
+                                                              final controllerFirstname = TextEditingController(text: Firstname);
+                                                              final controllerLasttname = TextEditingController(text: Lastname);
+                                                              final controllerEmail = TextEditingController(text: Email);
+                                                              final controllerPhoneNumber = TextEditingController(text: Phonenumber);
+                                                              return Column( children: [
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerFirstname,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                    ]),
+
+                                                                    decoration: InputDecoration(
+                                                                      labelText: '',
+                                                                      hintText: 'Firstname',
+                                                                      fillColor: Colors.white,
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                   suffixIcon: Icon(Icons.edit) ) ,
+                                                                  ),
+                                                                  decoration: BoxDecoration(boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.black.withOpacity(0.1),
+                                                                      blurRadius: 20,
+                                                                      offset: const Offset(0, 5),
+                                                                    )
+                                                                  ]),
+
+                                                                ),
+                                                                SizedBox(height: 25.0),
+
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerLasttname,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                    ]),
+                                                                    decoration: InputDecoration(
+                                                                      labelText: '',
+                                                                      hintText: 'Lastname',
+                                                                      fillColor: Colors.white,
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              suffixIcon: Icon(Icons.edit) ) ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+
+                                                                ),
+
+                                                                SizedBox(height: 25.0),
+
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerPhoneNumber,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                      MinLengthValidator(12,
+                                                                          errorText: 'must be 12 digits long'),
+                                                                      MaxLengthValidator(12,
+                                                                          errorText: 'must be 12 digits long')
+                                                                    ]),
+                                                                    decoration: InputDecoration(
+                                                              labelText: '',
+                                                              hintText: 'Phonenumber',
+                                                              fillColor: Colors.white,
+                                                              filled: true,
+                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                              suffixIcon: Icon(Icons.edit) ) ,
+                                                              ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+
+                                                                ),
+                                                                SizedBox(height: 25.0),
+
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    readOnly: true,
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.emailAddress,
+                                                                    controller: controllerEmail,
+                                                                    validator: MultiValidator([
+                                                                      RequiredValidator(
+                                                                          errorText: 'this field is required'),
+                                                                      EmailValidator(
+                                                                          errorText: 'enter a valid email address')
+                                                                    ]),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                ),
+                                                                SizedBox(height: 35.0),
+
+                                                                Container(
+                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                  child: ElevatedButton(
+                                                                    style: ThemeHelper().buttonStyle(),
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                    ),
+                                                                    onPressed: (){
+                                                                      if (_formKey.currentState!.validate()) {
+                                                                          // set up the buttons
+                                                                          Widget cancelButton = TextButton(
+                                                                            child: Text("Cancel"),
+                                                                            onPressed:  () {
+                                                                              _update = false;
+                                                                              Navigator.of(context).pop();
+
+                                                                            },
+                                                                          );
+                                                                          Widget continueButton = TextButton(
+                                                                            child: Text("Update"),
+                                                                            onPressed:  () {
+                                                                              _update = true;
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          );
+                                                                          // set up the AlertDialog
+                                                                          AlertDialog alert = AlertDialog(
+                                                                            title: Text(""),
+                                                                            content: Text("Are you sure you want to update your account information?"),
+                                                                            actions: [
+                                                                              cancelButton,
+                                                                              continueButton,
+                                                                            ],
+                                                                          );
+                                                                          // show the dialog
+                                                                          showDialog(
+                                                                            context: context,
+                                                                            builder: (BuildContext context) {
+                                                                              return alert;
+                                                                            },
+                                                                          );
+                                                                          if(_update)
+                                                                          updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
+                                                                      }
+                                                                    },
+                                                                  ),
+                                                                ),
+
+                                                                SizedBox(height: 20.0),
+
+                                                                Container(
+                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                  child: ElevatedButton.icon(
+                                                                    style: ThemeHelper().buttonStyle(),
+
+                                                                    onPressed: (){
+                                                                      Widget cancelButton = TextButton(
+                                                                        child: Text("No"),
+                                                                        onPressed:  () {
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                      );
+                                                                      Widget continueButton = TextButton(
+                                                                        child: Text("Yes"),
+                                                                        onPressed:  () {
+                                                                          doUserLogout();
+                                                                        },
+                                                                      );
+                                                                      // set up the AlertDialog
+                                                                      AlertDialog alert = AlertDialog(
+                                                                        title: Text("Are you sure you want to log out from your account?"),
+                                                                        content: Text(""),
+                                                                        actions: [
+                                                                          cancelButton,
+                                                                          continueButton,
+                                                                        ],
+                                                                      );
+                                                                      // show the dialog
+                                                                      showDialog(
+                                                                        context: context,
+                                                                        builder: (BuildContext context) {
+                                                                          return alert;
+                                                                        },
+                                                                      );
+                                                                    }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('LOGOUT' ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                  ),
+                                                                ),
+
+                                                              ] );
+
+                                                            });}}});
+                                          }}})] ),
+                        ),
+                      ]),
+                ),
+              ]),
         ),
+
         bottomNavigationBar: Container(
+          color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
             child: GNav(
@@ -198,18 +369,54 @@ class Account extends State<AccountPage> {
                 ],
                 selectedIndex: _selectedIndex,
                 onTabChange: (index) => setState(() {
-                      _selectedIndex = index;
-                      if (_selectedIndex == 0) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      } else if (_selectedIndex == 1) {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      } else if (_selectedIndex == 2) {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                      }
-                    })),
+                  _selectedIndex = index;
+                  if (_selectedIndex == 0) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  } else if (_selectedIndex == 1) {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  } else if (_selectedIndex == 2) {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                  }
+                })),
           ),
-        ));
+        )
+    );
   }
+
+
+  Future<void> updateInfo(id, email, editFirstname, editLastname, editEmail, editPhonenumber) async {
+    var todo = ParseUser(null,null,null)..objectId = id
+      ..set('Firstname', editFirstname)
+      ..set('Lastname', editLastname)
+      ..set('Phonenumber', editPhonenumber);
+    final ParseResponse parseResponse = await todo.save();
+
+    if (parseResponse.success) {
+      print('Object updated: $id');
+    } else {
+      print('Object updated with failed: ${parseResponse.error.toString()}');
+    }
+  }
+
+
+  Future<ParseUser?> getUser() async {
+    var currentUser = await ParseUser.currentUser() as ParseUser?;
+    return currentUser;
+  }
+  Future<List> currentuser(objectid) async {
+    QueryBuilder<ParseUser> queryUsers =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryUsers.whereContains('objectId', objectid);
+    final ParseResponse apiResponse = await queryUsers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+
+
+
 
   void showError(String errorMessage) {
     showDialog(
@@ -231,6 +438,7 @@ class Account extends State<AccountPage> {
     );
   }
 
+
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();
@@ -244,55 +452,3 @@ class Account extends State<AccountPage> {
   }
 }
 
-Widget textfield({required String hintText, required enabled}) {
-  return Material(
-    elevation: 10, //the shadow under text fields
-    shadowColor: Colors.grey, // showdow color
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
-    ), //text fields shape
-    child: TextField(
-      enabled: false,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(
-          letterSpacing: 2,
-          color: Colors.blueGrey[200], // text color
-          fontWeight: FontWeight.bold,
-        ),
-        fillColor: Colors.white30, //the text fields color
-        filled: true,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide.none), // text fields outline space
-      ),
-    ),
-  );
-}
-
-// Widget ChangeButton( Function onPressed) {
-//
-//   return MaterialButton(
-//     minWidth: 200,
-//     height: 40,
-//     splashColor: Colors.green[500],
-//     onPressed: () => onPressed(),
-//     color: Colors.green[200],
-//     elevation: 0,
-//     shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(50)
-//     ),
-//     child: Text("Save Changes",
-//       style: TextStyle(
-//           fontWeight: FontWeight.w600,
-//           fontSize: 20
-//       ),
-//     ),
-//
-//   );
-// }
-
-Future<ParseUser?> getUser() async {
-  var currentUser = await ParseUser.currentUser() as ParseUser?;
-  return currentUser;
-}
