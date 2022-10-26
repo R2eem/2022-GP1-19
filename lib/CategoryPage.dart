@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:untitled/AccountPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/Cart.dart';
 import 'NonPrescriptionCategory.dart';
+import 'Orders.dart';
 import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import 'Settings.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -34,111 +36,15 @@ class Category extends State<CategoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                 Container(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: Image.asset(
                     'assets/logoheader.png',
                     fit: BoxFit.contain,
-                    width: 100,
-                    height: 70,
+                    width: 110,
+                    height: 80,
                   ),
                 ),
                 SizedBox(height: 55,),
-                /*Container(
-                    child: FutureBuilder<ParseUser?>(
-                        future: getUser(),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                            case ConnectionState.waiting:
-                              return Center(
-                                child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator()),
-                              );
-                            default:
-                              if (snapshot.hasError) {
-                                return Center(
-                                  child: Text("Error..."),
-                                );
-                              }
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: Text("No Data..."),
-                                );
-                              } else {
-                                return FutureBuilder<List>(
-                                    future:
-                                        currentuser(snapshot.data!.objectId),
-                                    builder: (context, snapshot) {
-                                      switch (snapshot.connectionState) {
-                                        case ConnectionState.none:
-                                        case ConnectionState.waiting:
-                                          return Center();
-                                        default:
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text("Error..."),
-                                            );
-                                          }
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text("No Data..."),
-                                            );
-                                          } else {
-                                            return ListView.builder(
-                                                padding:
-                                                    EdgeInsets.only(top: 10.0),
-                                                scrollDirection: Axis.vertical,
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    snapshot.data!.length,
-                                                itemBuilder: (context, index) {
-                                                  //Get Parse Object Values
-                                                  final user =
-                                                      snapshot.data![index];
-                                                  final id = user
-                                                      .get<String>('objectId')!;
-                                                  final Firstname =
-                                                      user.get<String>(
-                                                          'Firstname')!;
-                                                  final Lastname = user
-                                                      .get<String>('Lastname')!;
-                                                  return Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 15),
-                                                          height: 90,
-                                                          child: Text(
-                                                            'Hello, $Firstname $Lastname',
-                                                            style: TextStyle(
-                                                              fontFamily:
-                                                                  "Mulish",
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ]);
-                                                });
-                                          }
-                                      }
-                                    });
-                              }
-                          }
-                        })),*/
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -148,7 +54,7 @@ class Category extends State<CategoryPage> {
                       width: size.width,
                       child: Column(children: [
                         Material(
-                            elevation: 8,
+                            elevation: 4,
                             shadowColor: Colors.grey,
                             borderRadius: BorderRadius.circular(30),
                             child: TextField(
@@ -186,23 +92,27 @@ class Category extends State<CategoryPage> {
                                               PrescriptionCategory()));
                                 },
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10),
                                   child: Container(
                                       width: 150,
                                       height: 70,
-                                      color: HexColor('#F8D4FB'),
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              colors: [HexColor('#e9c3fa'), HexColor('#fac3f5')])
+                                      ),
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Text(
                                           "Prescription Medication",
                                           style: TextStyle(
-                                              fontFamily: "Mulish",
-                                              color: Colors.purple,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
+                                              fontFamily: "Lato",
+                                              color: HexColor('#884bbd'),
+                                              fontSize: 18,
+                                          fontWeight: FontWeight.bold,),
                                           textAlign: TextAlign.center,
                                         ),
-                                      )),)),
+                                      )),
+                                )),
                             GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -216,16 +126,19 @@ class Category extends State<CategoryPage> {
                                   child: Container(
                                       width: 150,
                                       height: 70,
-                                      color: HexColor('#F8D4FB'),
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              colors: [HexColor('#e9c3fa'), HexColor('#fac3f5')])
+                                      ),
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Text(
                                           "Non-Prescription Medication",
                                           style: TextStyle(
-                                              fontFamily: "Mulish",
-                                              color: Colors.purple,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
+                                              fontFamily: "Lato",
+                                              color: HexColor('#884bbd'),
+                                              fontSize: 18,
+                                          fontWeight: FontWeight.bold,),
                                           textAlign: TextAlign.center,
                                         ),
                                       )),
@@ -298,40 +211,43 @@ class Category extends State<CategoryPage> {
                                                                   .toLowerCase())
                                                   ? SingleChildScrollView(
                                                   child: Card(
-                                                      elevation: 5,
+                                                      elevation: 3,
                                                       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                                       color: Colors.white,
+                                                      child: Column(
+                                                        children:[
 
-                                                      child: ExpansionTile(
+                                                       ExpansionTile(
                                                           title: Text(TradeName,style: TextStyle(
-                                                              fontFamily: "Mulish",
-                                                              fontWeight: FontWeight.w900,
-                                                              fontSize: 20),),
+                                                              fontFamily: "Lato",
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.w700),),
                                                           subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                                              fontFamily: "Mulish",
-                                                              fontWeight: FontWeight.w600,
+                                                              fontFamily: "Lato",
                                                               fontSize: 15,
                                                               color: Colors.black),),
-                                                          leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.pink.shade100,
-                                                            size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
+                                                          leading: Image.asset('assets/listIcon.png',),
                                                           trailing: Row(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: [
                                                               Icon(Icons.keyboard_arrow_down,color: Colors.black,
                                                                 size: 26.0,),
-                                                              IconButton(onPressed: () {}, icon: const Icon(Icons.add,color: Colors.black,
+                                                              IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart_outlined,color: Colors.black,
                                                                 size: 25.0,)),
                                                             ],
                                                           ),
                                                           children: <Widget>[
                                                             ListTile(
-                                                              subtitle: Text('Medication details:'+ '\n' +'• Package type: $PackageType' + '\n' +'• Strength: $Strength$StrengthUnit' +  '\n' +'• Usage method: $UsageMethod' + '\n' +'• Product form: $ProductForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
-                                                                  fontFamily: "Mulish",
-                                                                  fontWeight: FontWeight.w500,
-                                                                  fontSize: 18,
-                                                                  color: Colors.black
-                                                              ),),
-                                                            )]))):Container();
+                                                                  subtitle: Text('Medication details:'+ '\n' +'• Package type:  $PackageType' + '\n' +'• Strength:  $Strength$StrengthUnit' +  '\n' +'• Usage method:  $UsageMethod' + '\n' +'• Product form:  $ProductForm' + '\n' +'• Marketing company:  $MarketingCompany',style: TextStyle(
+                                                                      fontFamily: "Lato",
+                                                                      fontWeight: FontWeight.w500,
+                                                                      fontSize: 18,
+                                                                      color: Colors.black
+                                                                  ),),
+                                                            ),
+                                                                 ]),
+
+                                                         ] ))):Container();
                                             });
                                       }
                                   }
@@ -350,30 +266,29 @@ class Category extends State<CategoryPage> {
                   padding: const EdgeInsets.all(10),
                   tabs: [
                     GButton(
-                      icon: Icons.home,
+                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_cart,
+                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_bag,
+                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.account_circle,
+                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
-                    if (_selectedIndex == 1) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
                     } else if (_selectedIndex == 2) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                     }
                   }),
                 ))));
@@ -382,24 +297,8 @@ class Category extends State<CategoryPage> {
   Future<List<ParseObject>> getMedication() async {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryMedication.setLimit(200);
     final ParseResponse apiResponse = await queryMedication.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
-    }
-  }
-
-  Future<ParseUser?> getUser() async {
-    var currentUser = await ParseUser.currentUser() as ParseUser?;
-    return currentUser;
-  }
-
-  Future<List> currentuser(objectid) async {
-    QueryBuilder<ParseUser> queryUsers =
-        QueryBuilder<ParseUser>(ParseUser.forQuery());
-    queryUsers.whereContains('objectId', objectid);
-    final ParseResponse apiResponse = await queryUsers.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {

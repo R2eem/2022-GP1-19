@@ -4,6 +4,9 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'Cart.dart';
+import 'Orders.dart';
+import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'main.dart';
@@ -155,16 +158,16 @@ class _AccountPage extends State<AccountPage>{
                                                                     ]),
 
                                                                     decoration: InputDecoration(
-                                                                      labelText: '',
-                                                                      hintText: 'Firstname',
-                                                                      fillColor: Colors.white,
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                   suffixIcon: Icon(Icons.edit) ) ,
+                                                                        labelText: '',
+                                                                        hintText: 'Firstname',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
                                                                     BoxShadow(
@@ -188,16 +191,16 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                      labelText: '',
-                                                                      hintText: 'Lastname',
-                                                                      fillColor: Colors.white,
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              suffixIcon: Icon(Icons.edit) ) ,
+                                                                        labelText: '',
+                                                                        hintText: 'Lastname',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -220,17 +223,17 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'must be 12 digits long')
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                              labelText: '',
-                                                              hintText: 'Phonenumber',
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                              suffixIcon: Icon(Icons.edit) ) ,
-                                                              ),
+                                                                        labelText: '',
+                                                                        hintText: 'Phonenumber',
+                                                                        fillColor: Colors.white,
+                                                                        filled: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
+                                                                  ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
                                                                 ),
@@ -261,91 +264,48 @@ class _AccountPage extends State<AccountPage>{
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
                                                                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
-                                                                          // set up the buttons
-                                                                          Widget cancelButton = TextButton(
-                                                                            child: Text("Cancel"),
-                                                                            onPressed:  () {
-                                                                              _update = false;
-                                                                              Navigator.of(context).pop();
-
-                                                                            },
-                                                                          );
-                                                                          Widget continueButton = TextButton(
-                                                                            child: Text("Update"),
-                                                                            onPressed:  () {
-                                                                              _update = true;
-                                                                              Navigator.of(context).pop();
-                                                                            },
-                                                                          );
-                                                                          // set up the AlertDialog
-                                                                          AlertDialog alert = AlertDialog(
-                                                                            title: Text(""),
-                                                                            content: Text("Are you sure you want to update your account information?"),
-                                                                            actions: [
-                                                                              cancelButton,
-                                                                              continueButton,
-                                                                            ],
-                                                                          );
-                                                                          // show the dialog
-                                                                          showDialog(
-                                                                            context: context,
-                                                                            builder: (BuildContext context) {
-                                                                              return alert;
-                                                                            },
-                                                                          );
-                                                                          if(_update)
+                                                                        // set up the buttons
+                                                                        Widget cancelButton = TextButton(
+                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          onPressed:  () {
+                                                                            _update = false;
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        );
+                                                                        Widget continueButton = TextButton(
+                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          onPressed:  () {
+                                                                            _update = true;
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        );
+                                                                        // set up the AlertDialog
+                                                                        AlertDialog alert = AlertDialog(
+                                                                          title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          content: Text(""),
+                                                                          actions: [
+                                                                            cancelButton,
+                                                                            continueButton,
+                                                                          ],
+                                                                        );
+                                                                        // show the dialog
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder: (BuildContext context) {
+                                                                            return alert;
+                                                                          },
+                                                                        );
+                                                                        if(_update)
                                                                           updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
                                                                       }
                                                                     },
                                                                   ),
                                                                 ),
-
-                                                                SizedBox(height: 20.0),
-
-                                                                Container(
-                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                  child: ElevatedButton.icon(
-                                                                    style: ThemeHelper().buttonStyle(),
-
-                                                                    onPressed: (){
-                                                                      Widget cancelButton = TextButton(
-                                                                        child: Text("No"),
-                                                                        onPressed:  () {
-                                                                          Navigator.of(context).pop();
-                                                                        },
-                                                                      );
-                                                                      Widget continueButton = TextButton(
-                                                                        child: Text("Yes"),
-                                                                        onPressed:  () {
-                                                                          doUserLogout();
-                                                                        },
-                                                                      );
-                                                                      // set up the AlertDialog
-                                                                      AlertDialog alert = AlertDialog(
-                                                                        title: Text("Are you sure you want to log out from your account?"),
-                                                                        content: Text(""),
-                                                                        actions: [
-                                                                          cancelButton,
-                                                                          continueButton,
-                                                                        ],
-                                                                      );
-                                                                      // show the dialog
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder: (BuildContext context) {
-                                                                          return alert;
-                                                                        },
-                                                                      );
-                                                                    }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('LOGOUT' ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                                  ),
-                                                                ),
-
                                                               ] );
-
                                                             });}}});
                                           }}})] ),
                         ),
@@ -355,31 +315,41 @@ class _AccountPage extends State<AccountPage>{
         ),
 
         bottomNavigationBar: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: GNav(
-                gap: 8,
-                padding: const EdgeInsets.all(10),
-                tabs: [
-                  GButton(icon: Icons.home,),
-                  GButton(icon: Icons.shopping_cart,),
-                  GButton(icon: Icons.shopping_bag,),
-                  GButton(icon: Icons.account_circle,)
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) => setState(() {
-                  _selectedIndex = index;
-                  if (_selectedIndex == 0) {
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(
+                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if (_selectedIndex == 0) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  } else if (_selectedIndex == 1) {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  } else if (_selectedIndex == 2) {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                  }
-                })),
-          ),
-        )
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                    } else if (_selectedIndex == 2) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                    } else if (_selectedIndex == 3) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                    }
+                  }),
+                )))
     );
   }
 
@@ -394,7 +364,7 @@ class _AccountPage extends State<AccountPage>{
     if (parseResponse.success) {
       print('Object updated: $id');
     } else {
-      print('Object updated with failed: ${parseResponse.error.toString()}');
+      showError(parseResponse.error!.message);
     }
   }
 
@@ -423,11 +393,11 @@ class _AccountPage extends State<AccountPage>{
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
+          title: const Text("Account already exists for this phone number.", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
+          content: Text(""),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -437,18 +407,4 @@ class _AccountPage extends State<AccountPage>{
       },
     );
   }
-
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-      });
-    } else {
-      showError(response.error!.message);
-    }
-  }
 }
-

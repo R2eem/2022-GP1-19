@@ -78,9 +78,16 @@ class Signup extends State<SignupPage> {
                                         Navigator.of(context).pop();
                                       }, icon: Icon(Icons.keyboard_arrow_left),),
                            SizedBox(height: 70,),
-                           Text('Sign up', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-                           Text('Create a new account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
-                           SizedBox(height: 25.0),
+                                 Row(
+                                     mainAxisAlignment: MainAxisAlignment.center,
+                                     children: [
+                                       Text('Sign up', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 50, color: HexColor('#282b2b')),),
+                                       SizedBox(width: 10,),
+                                       Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 50,),
+                                     ]),
+                                 SizedBox(height: 5,),
+                                 Text('Create a new account', style: TextStyle(fontFamily: 'Lato',fontSize: 18, color: Colors.grey[700],),),
+                                 SizedBox(height: 25.0),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -359,13 +366,7 @@ class Signup extends State<SignupPage> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
                           child: Text(
-                            "Sign up".toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                            "Sign up".toUpperCase(),style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -380,14 +381,14 @@ class Signup extends State<SignupPage> {
                                   child: Text.rich(
                                       TextSpan(
                                           children: [
-                                            TextSpan(text: "Already have an account? ", style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Colors.black45)),
+                                            TextSpan(text: "Already have an account? ", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
                                             TextSpan(
                                               text: 'Log in',
                                               recognizer: TapGestureRecognizer()
                                                 ..onTap = (){
                                                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                                                 },
-                                              style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                              style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
                                             ),
                                           ]
                                       )
@@ -405,10 +406,10 @@ class Signup extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-         content: const Text("User was successfully created! Please verify your email before Login!"),
+         content: const Text("User was successfully created! Please verify your email before Login!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 }
@@ -426,17 +427,17 @@ class Signup extends State<SignupPage> {
     if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
       errorMessage = 'Account already exists for this phone number.';
     }
-    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character')==0){
+    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character.')==0){
       return;
     }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(errorMessage),
+          content: Text(errorMessage, style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
