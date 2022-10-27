@@ -222,7 +222,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                   }
                               }
                             }))
-                ,SizedBox(height: 80,)  ],
+                 ],
                 ),
               )),
             ] )))])),

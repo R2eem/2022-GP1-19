@@ -49,11 +49,10 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                 height: 80,
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 13, 0, 0),
-                            child: Text('Prescription Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
-                          ),]),
-
+                             Container(
+                               margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                               child: Text('Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                             ),]),
                 SizedBox(height: 55,),
                           Align(
                               alignment: Alignment.bottomCenter,
@@ -218,7 +217,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                               }
                           }
                         }))
-                ,SizedBox(height: 80,) ],
+               ],
             ),
           )),
        ] )))])),

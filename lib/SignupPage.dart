@@ -321,7 +321,7 @@ class Signup extends State<SignupPage> {
                                 //confirm password
                                   Container(
                                     child: TextFormField(
-                                      obscureText: !_isVisible,
+                                      obscureText: !_isVisibleConfirm,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
                                       validator: (val){
                                              if(val!.isEmpty)
@@ -409,7 +409,7 @@ class Signup extends State<SignupPage> {
          content: const Text("User was successfully created! Please verify your email before Login!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child:  Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 }
@@ -448,22 +448,27 @@ class Signup extends State<SignupPage> {
     );
   }
 
-  void doUserRegistration() async {
+  Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();
     var phonenumber = controllerPhoneNumber.text.trim();
+    var object;
     phonenumber = '966'+phonenumber.substring(1,10);
       final user = ParseUser.createUser(email, password, email)
-        ..set('Firstname', firstname)
-        ..set('Lastname', lastname)
-        ..set('Phonenumber', phonenumber);
-
+    ..set('Firstname', firstname)
+    ..set('Lastname', lastname)
+    ..set('Phonenumber', phonenumber);
 
       var response = await user.signUp();
-
       if (response.success) {
+        final createCustomer = ParseObject('Customer')
+          ..set('Firstname', firstname)
+          ..set('Lastname', lastname)
+          ..set('Phonenumber', phonenumber)
+          ..set('user', user);
+        await createCustomer.save();
         showSuccess();
       } else {
         showError(response.error!.message);

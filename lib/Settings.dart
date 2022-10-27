@@ -48,7 +48,7 @@ class Settings extends State<SettingsPage> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.fromLTRB(62, 13, 0, 0),
+                            margin: EdgeInsets.fromLTRB(26, 13, 0, 0),
                             child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
                           ),]),
 
