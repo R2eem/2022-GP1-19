@@ -9,8 +9,8 @@ import 'common/theme_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
+  final keyApplicationId = '0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5';
+  final keyClientKey = 'Vjbmxk9zpKPkJaU4D6HcGFQZkQWH5em93DvAIlJi';
   final keyParseServerUrl = 'https://parseapi.back4app.com';
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
@@ -41,6 +41,7 @@ class HomePage extends StatelessWidget {
   double _headerHeight = 250;
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: SingleChildScrollView(
         child: Column(

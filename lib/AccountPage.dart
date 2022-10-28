@@ -12,22 +12,6 @@ import 'package:untitled/CategoryPage.dart';
 import 'main.dart';
 
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: AccountPage(),
-      )
-  );
-}
-
 class AccountPage extends StatefulWidget{
 
   @override
@@ -38,7 +22,6 @@ class AccountPage extends StatefulWidget{
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
-  bool _update = false;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -79,7 +62,6 @@ class _AccountPage extends State<AccountPage>{
                           //child: SingleChildScrollView(
                           child: Column(
                               children: <Widget>[
-                                //username
                                 FutureBuilder<ParseUser?>(
                                     future: getUser(),
                                     builder: (context, snapshot) {
@@ -267,7 +249,7 @@ class _AccountPage extends State<AccountPage>{
                                                                         Widget cancelButton = TextButton(
                                                                           child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           onPressed:  () {
-                                                                            Navigator.of(context).pop();
+                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                                                                           },
                                                                         );
                                                                         Widget continueButton = TextButton(
@@ -377,10 +359,10 @@ class _AccountPage extends State<AccountPage>{
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
-  Future<List> currentuser(customerId) async {
+  Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('user', customerId);
+    queryCustomers.whereContains('user', userId);
     final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
@@ -399,7 +381,7 @@ class _AccountPage extends State<AccountPage>{
             new TextButton(
                 child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
                 }
             ),
           ],

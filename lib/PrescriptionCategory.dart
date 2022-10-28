@@ -7,8 +7,11 @@ import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Cart.dart';
 import 'Settings.dart';
+import 'medDetails.dart';
 
 class PrescriptionCategory extends StatefulWidget {
+  final String customerId;
+  const PrescriptionCategory(this.customerId);
   @override
   Prescription createState() => Prescription();
 }
@@ -158,60 +161,46 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                 );
                               } else {
                                 return ListView.builder(
-                                    padding: EdgeInsets.only(top: 10.0),
+                                    padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
                                       //Get Parse Object Values
                                       final medGet = snapshot.data![index];
+                                      final medId = medGet.get<String>('objectId')!;
                                       final TradeName = medGet.get<String>('TradeName')!;
                                       final ScientificName = medGet.get<String>('ScientificName')!;
                                       final Publicprice = medGet.get<num>('Publicprice')!;
-                                      final Strength = medGet.get<num>('Strength')!;
-                                      final StrengthUnit = medGet.get<String>('StrengthUnit')!;
-                                      final PackageType = medGet.get<String>('PackageTypes')!;
-                                      var UsageMethod = medGet.get<String>('UsageMethod')!;
-                                      var MarketingCompany = medGet.get<String>('MarketingCompany')!;
-                                      var ProductForm = medGet.get<String>('PharmaceuticalForm')!;
-                                      MarketingCompany = MarketingCompany.toLowerCase();
-                                      return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))? SingleChildScrollView(
+                                      final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
+                                      return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
+                                          ?  GestureDetector(
+                                          onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
                                           child: Card(
                                               elevation: 3,
                                               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                               color: Colors.white,
                                               child: Column(
                                                   children:[
-
-                                                    ExpansionTile(
-                                                        title: Text(TradeName,style: TextStyle(
-                                                            fontFamily: "Lato",
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.w700),),
-                                                        subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                                            fontFamily: "Lato",
-                                                            fontSize: 15,
-                                                            color: Colors.black),),
-                                                        leading: Image.asset('assets/listIcon.png',),
-                                                        trailing: Row(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Icon(Icons.keyboard_arrow_down,color: Colors.black,
-                                                              size: 26.0,),
-                                                            IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart_outlined,color: Colors.black,
-                                                              size: 25.0,)),
-                                                          ],
-                                                        ),
-                                                        children: <Widget>[
-                                                          ListTile(
-                                                            subtitle: Text('Medication details:'+ '\n' +'• Package type:  $PackageType' + '\n' +'• Strength:  $Strength$StrengthUnit' +  '\n' +'• Usage method:  $UsageMethod' + '\n' +'• Product form:  $ProductForm' + '\n' +'• Marketing company:  $MarketingCompany',style: TextStyle(
-                                                                fontFamily: "Lato",
-                                                                fontWeight: FontWeight.w500,
-                                                                fontSize: 18,
-                                                                color: Colors.black
-                                                            ),),
-                                                          ),
-                                                        ]),
-
+                                                    ListTile(
+                                                      title: Text(TradeName,style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.w700),),
+                                                      subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 17,
+                                                          color: Colors.black),),
+                                                      leading: Image.asset('assets/listIcon.png',),
+                                                      trailing: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          IconButton(onPressed: () {
+                                                          addToCart(medId, widget.customerId);
+                                                          }, icon: const Icon(Icons.add_shopping_cart_rounded,color: Colors.black,
+                                                            size: 25.0,)),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ] ))):Container();
                                     });
                               }
@@ -264,11 +253,45 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
     QueryBuilder<ParseObject> queryPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
+    queryPresMedication.orderByAscending('TradeName');
     final ParseResponse apiResponse = await queryPresMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+  void addToCart(objectId, customerId) async{
+    bool exist = false;
+    var medInCart;
+    var quantity = 0;
+    final apiResponse = await ParseObject('Cart').getAll();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        medInCart = o as ParseObject;
+        if(customerId == medInCart.get('customer').objectId){
+          if(objectId == medInCart.get('medication').objectId){
+            exist = true;
+            quantity = medInCart.get<num>('Quantity');
+            break;
+          }
+        }
+      }
+    }
+    if (!exist) {
+      final addToCart = ParseObject('Cart')
+        ..set('customer', (ParseObject('Customer')
+          ..objectId = customerId)
+            .toPointer())..set('medication', (ParseObject('Medications')
+          ..objectId = objectId)
+            .toPointer())..set('Quantity', 1);
+      await addToCart.save();
+    }
+    else{
+      var incrementQuantity = medInCart
+        ..set('Quantity', ++quantity);
+      await incrementQuantity.save();
     }
   }
 }

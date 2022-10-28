@@ -79,7 +79,7 @@ class Cart extends State<CartPage> {
                 } else if (_selectedIndex == 2) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                 } else if (_selectedIndex == 3) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                 // Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                 }
               }),
             ))));}}

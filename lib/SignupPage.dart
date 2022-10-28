@@ -456,10 +456,7 @@ class Signup extends State<SignupPage> {
     var phonenumber = controllerPhoneNumber.text.trim();
     var object;
     phonenumber = '966'+phonenumber.substring(1,10);
-      final user = ParseUser.createUser(email, password, email)
-    ..set('Firstname', firstname)
-    ..set('Lastname', lastname)
-    ..set('Phonenumber', phonenumber);
+      final user = ParseUser.createUser(email, password, email);
 
       var response = await user.signUp();
       if (response.success) {
