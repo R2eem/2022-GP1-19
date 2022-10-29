@@ -24,6 +24,7 @@ class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var customerId;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,7 @@ class _AccountPage extends State<AccountPage>{
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
                                                               final user = snapshot.data![index];
-                                                              final objectId = user.get<String>('objectId')!;
+                                                              customerId = user.get<String>('objectId')!;
                                                               final Firstname = user.get<String>('Firstname')!;
                                                               final Lastname = user.get<String>('Lastname')!;
                                                               final Phonenumber = user.get<String>('Phonenumber')!;
@@ -249,13 +250,13 @@ class _AccountPage extends State<AccountPage>{
                                                                         Widget cancelButton = TextButton(
                                                                           child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           onPressed:  () {
-                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                                                                           },
                                                                         );
                                                                         Widget continueButton = TextButton(
                                                                           child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           onPressed:  () {
-                                                                            updateInfo(userId,objectId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
+                                                                            updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
@@ -316,11 +317,11 @@ class _AccountPage extends State<AccountPage>{
                     if (_selectedIndex == 0) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
                   }),
                 )))
@@ -381,7 +382,7 @@ class _AccountPage extends State<AccountPage>{
             new TextButton(
                 child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                 }
             ),
           ],

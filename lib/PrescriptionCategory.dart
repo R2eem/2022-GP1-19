@@ -238,11 +238,11 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))

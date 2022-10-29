@@ -310,11 +310,11 @@ class Category extends State<CategoryPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
                   }),
                 ))));
@@ -369,11 +369,9 @@ class Category extends State<CategoryPage> {
     }
     if (!exist) {
       final addToCart = ParseObject('Cart')
-        ..set('customer', (ParseObject('Customer')
-          ..objectId = customerId)
-            .toPointer())..set('medication', (ParseObject('Medications')
-          ..objectId = objectId)
-            .toPointer())..set('Quantity', 1);
+        ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
+        ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
+        ..set('Quantity', 1);
       await addToCart.save();
     }
     else{
