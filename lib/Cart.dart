@@ -8,6 +8,7 @@ import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 
 class CartPage extends StatefulWidget {
@@ -122,22 +123,34 @@ class Cart extends State<CartPage> {
                                                                         final ScientificName = medGet.get<String>('ScientificName')!;
                                                                         final Publicprice = medGet.get<num>('Publicprice')!;
                                                                         return  SingleChildScrollView(
-                                                                            child:Card(
-                                                                            elevation: 3,
-                                                                            color: Colors.white,
-                                                                            child: Column(
-                                                                                children:[
+                                                                            child:
+                                                                                StatefulBuilder(
+                                                                                builder: (BuildContext context, StateSetter setState)=>
+                                                                            Dismissible(
+                                                                                key: UniqueKey(),
+                                                                                background: Container(color: Colors.red),
+                                                                                onDismissed: (direction) {
+                                                                                  setState(() {
+                                                                                    snapshot.data?.removeAt(index);
+                                                                                  });
+                                                                                },
+                                                                              child:Card(
+                                                                                  elevation: 3,
+                                                                                  color: Colors.white,
+                                                                                  child: Column(
+                                                                                  children:[
                                                                                   ListTile(
-                                                                                    title: Text(TradeName,style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 20,
-                                                                                        fontWeight: FontWeight.w700),),
-                                                                                    subtitle: Text('$ScientificName , $quantity SAR',style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 17,
-                                                                                        color: Colors.black),),
+                                                                                  title: Text(TradeName,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 20,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                              subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 17,
+                                                                                  color: Colors.black),),
+                                                                                    trailing: Text('$quantity'),
                                                                                   ),
-                                                                                ] )));
+                                                                                ] )))));
                                                                       });
                                                                 }
                                                             }
@@ -213,5 +226,20 @@ class Cart extends State<CartPage> {
     } else {
       return [];
     }
+  }
+
+  Future<bool> deleteCartMed(medId) async{
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Cart'));
+    parseQuery.whereEqualTo('medication', medId.toPointer());
+    final apiResponse = await parseQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        final object = o as ParseObject;
+        object.delete();
+        return true;
+      }
+    }
+    return false;
   }
 }
