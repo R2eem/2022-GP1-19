@@ -9,6 +9,8 @@ import 'Settings.dart';
 
 
 class OrdersPage extends StatefulWidget {
+  final String customerId;
+  const OrdersPage(this.customerId);
   @override
   Orders createState() => Orders();
 }
@@ -72,9 +74,9 @@ class Orders extends State<OrdersPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                     }

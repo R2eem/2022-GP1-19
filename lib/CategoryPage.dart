@@ -253,15 +253,15 @@ class Category extends State<CategoryPage> {
                                                                   child: Column(
                                                                       children:[
                                                                         ListTile(
-                                                                            title: Text(TradeName,style: TextStyle(
-                                                                                fontFamily: "Lato",
-                                                                                fontSize: 20,
-                                                                                fontWeight: FontWeight.w700),),
-                                                                            subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
-                                                                                fontFamily: "Lato",
-                                                                                fontSize: 17,
-                                                                                color: Colors.black),),
-                                                                            leading: Image.asset('assets/listIcon.png',),
+                                                                          title: Text(TradeName,style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 20,
+                                                                              fontWeight: FontWeight.w700),),
+                                                                          subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 17,
+                                                                              color: Colors.black),),
+                                                                          leading: Image.asset('assets/listIcon.png',),
                                                                           trailing: Row(
                                                                             mainAxisSize: MainAxisSize.min,
                                                                             children: [
@@ -271,7 +271,7 @@ class Category extends State<CategoryPage> {
                                                                                 size: 25.0,)),
                                                                             ],
                                                                           ),
-                                                                            ),
+                                                                        ),
                                                                       ] ))):Container();
                                                         });
                                                   }
@@ -310,11 +310,11 @@ class Category extends State<CategoryPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
                   }),
                 ))));
@@ -381,5 +381,5 @@ class Category extends State<CategoryPage> {
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
     }
-    }
   }
+}

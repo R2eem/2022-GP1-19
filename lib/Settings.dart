@@ -12,6 +12,8 @@ import 'main.dart';
 
 
 class SettingsPage extends StatefulWidget {
+  final String customerId;
+  const SettingsPage(this.customerId);
   @override
   Settings createState() => Settings();
 }
@@ -67,7 +69,7 @@ class Settings extends State<SettingsPage> {
                                 title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 19, color: Colors.black)),
                                 trailing: Icon(Icons.keyboard_arrow_right),
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage(widget.customerId)));
                                 },
                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
                               ),
@@ -158,11 +160,11 @@ class Settings extends State<SettingsPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))
