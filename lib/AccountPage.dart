@@ -28,6 +28,7 @@ class _AccountPage extends State<AccountPage>{
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         body:SingleChildScrollView(
           child: Stack(
@@ -61,19 +62,24 @@ class _AccountPage extends State<AccountPage>{
                         Form(
                           key: _formKey,
                           //child: SingleChildScrollView(
-                          child: Column(
-                              children: <Widget>[
-                                FutureBuilder<ParseUser?>(
+                          child :Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  height: 620,
+                                  width: size.width,
+                                  child: Column(
+                                      children: [
+                                  Expanded(
+                                child: FutureBuilder<List>(
                                     future: getUser(),
                                     builder: (context, snapshot) {
                                       switch (snapshot.connectionState) {
                                         case ConnectionState.none:
                                         case ConnectionState.waiting:
                                           return Center(
-                                            child: Container(
-                                                width: 50,
-                                                height: 50,
-                                                child: CircularProgressIndicator()),
+
                                           );
                                         default:
                                           if (snapshot.hasError) {
@@ -86,9 +92,17 @@ class _AccountPage extends State<AccountPage>{
                                               child: Text("No Data..."),
                                             );
                                           } else {
-                                            var userId = snapshot.data!.objectId;
-                                            var email = snapshot.data!.emailAddress;
-                                            return FutureBuilder<List>(
+                                            return ListView.builder(
+                                                padding: EdgeInsets.only(top: 10.0,bottom: 20.0),
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: snapshot.data!.length,
+                                                itemBuilder: (context, index) {
+                                                  //Get Parse Object Value
+                                                  final user = snapshot.data![index];
+                                                  var userId = user.get('objectId');
+                                                  var email = user.get('email');
+                                                  final Phonenumber = user.get<String>('Phonenumber')!;
+                                                  return  FutureBuilder<List>(
                                                 future: currentuser(userId),
                                                 builder: (context, snapshot) {
                                                   switch (snapshot.connectionState) {
@@ -120,11 +134,10 @@ class _AccountPage extends State<AccountPage>{
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
-                                                              final user = snapshot.data![index];
-                                                              customerId = user.get<String>('objectId')!;
-                                                              final Firstname = user.get<String>('Firstname')!;
-                                                              final Lastname = user.get<String>('Lastname')!;
-                                                              final Phonenumber = user.get<String>('Phonenumber')!;
+                                                              final customer = snapshot.data![index];
+                                                              customerId = customer.get<String>('objectId')!;
+                                                              final Firstname = customer.get<String>('Firstname')!;
+                                                              final Lastname = customer.get<String>('Lastname')!;
                                                               final controllerFirstname = TextEditingController(text: Firstname);
                                                               final controllerLasttname = TextEditingController(text: Lastname);
                                                               final controllerEmail = TextEditingController(text: email);
@@ -194,29 +207,12 @@ class _AccountPage extends State<AccountPage>{
 
                                                                 Container(
                                                                   child: TextFormField(
+                                                                    readOnly: true,
                                                                     autovalidateMode:
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.text,
                                                                     controller: controllerPhoneNumber,
-                                                                    validator: MultiValidator([
-                                                                      RequiredValidator(
-                                                                          errorText: 'this field is required'),
-                                                                      MinLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long'),
-                                                                      MaxLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long')
-                                                                    ]),
-                                                                    decoration: InputDecoration(
-                                                                        labelText: '',
-                                                                        hintText: 'Phonenumber',
-                                                                        fillColor: Colors.white,
-                                                                        filled: true,
-                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                        suffixIcon: Icon(Icons.edit) ) ,
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Phonenumber") ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
 
@@ -248,13 +244,13 @@ class _AccountPage extends State<AccountPage>{
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          child: const Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
-                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+                                                                            Navigator.of(context).pop();
                                                                           },
                                                                         );
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          child: const Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
@@ -262,8 +258,8 @@ class _AccountPage extends State<AccountPage>{
                                                                         );
                                                                         // set up the AlertDialog
                                                                         AlertDialog alert = AlertDialog(
-                                                                          title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
-                                                                          content: Text(""),
+                                                                          title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                                                            content: Text(""),
                                                                           actions: [
                                                                             cancelButton,
                                                                             continueButton,
@@ -282,9 +278,9 @@ class _AccountPage extends State<AccountPage>{
                                                                 ),
                                                               ] );
                                                             });}}});
-                                          }}})] ),
+                                          });}}}))] ),
                         ),
-                      ]),
+        ))]),
                 ),
               ]),
         ),
@@ -343,12 +339,12 @@ class _AccountPage extends State<AccountPage>{
     var todo = object
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
-      ..set('Phonenumber', editPhonenumber)
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();
 
-    if (parseResponse.success) {
+
+    if (parseResponse.success ) {
         showSuccess();
     } else {
       showError(parseResponse.error!.message);
@@ -356,9 +352,18 @@ class _AccountPage extends State<AccountPage>{
   }
 
 
-  Future<ParseUser?> getUser() async {
+  Future<List> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
-    return currentUser;
+    var userId = currentUser?.objectId;
+    QueryBuilder<ParseObject> queryUser =
+    QueryBuilder<ParseObject>(ParseObject('_User'));
+    queryUser.whereContains('objectId', userId!);
+    final ParseResponse apiResponse = await queryUser.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
   }
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
@@ -374,21 +379,18 @@ class _AccountPage extends State<AccountPage>{
 
   void showSuccess() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: const Text("Changes saved!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-          actions: <Widget>[
-            new TextButton(
-                child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
-                }
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext context) {
+          bool manuallyClosed = false;
+          Future.delayed(Duration(seconds: 3)).then((_) {
+            if (!manuallyClosed) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+            }
+          });
+          return AlertDialog(
+              content: Text('Changes saved!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
+
+        });
   }
 
 
@@ -401,7 +403,7 @@ class _AccountPage extends State<AccountPage>{
           content: Text("Account already exists for this phone number."),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

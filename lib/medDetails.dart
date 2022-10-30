@@ -11,6 +11,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
+import 'common/theme_helper.dart';
+
 class medDetailsPage extends StatefulWidget {
   final String objectId;
   final String customerId;
@@ -132,6 +134,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                  TextSpan(
                                                                                                    text: TradeName,
                                                                                                    style: TextStyle(
+                                                                                                     fontFamily: 'Lato',
                                                                                                      height: 2.5,
                                                                                                      fontSize: 30.0,
                                                                                                      fontWeight: FontWeight.w600,
@@ -141,6 +144,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                  TextSpan(
                                                                                                    text: '  $ProductForm',
                                                                                                    style: TextStyle(
+                                                                                                     fontFamily: 'Lato',
                                                                                                      fontSize: 30.0,
                                                                                                      color: Color.fromRGBO(34, 34, 34, 1),
                                                                                                    ),
@@ -151,7 +155,8 @@ class MedDetails extends State<medDetailsPage> {
                                                                                            Text(
                                                                                              ScientificName,
                                                                                              style: TextStyle(
-                                                                                               fontSize: 20.0,
+                                                                                                 fontFamily: 'Lato',
+                                                                                                 fontSize: 20.0,
                                                                                                color: Colors.grey[700],
                                                                                                fontWeight: FontWeight.w600
                                                                                              ),
@@ -178,7 +183,8 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                      Text(
                                                                                                        "${(Publicprice).toStringAsFixed(2) +'SAR'}",
                                                                                                        style: TextStyle(
-                                                                                                         fontWeight: FontWeight.w600,
+                                                                                                           fontFamily: 'Lato',
+                                                                                                           fontWeight: FontWeight.w600,
                                                                                                          fontSize: 24.0,
                                                                                                          color: Color.fromRGBO(34, 34, 34, 1),
                                                                                                            background: Paint()
@@ -190,6 +196,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                      )),
                                                                                            Text('More information: ',
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 20.0,
                                                                                                color: Colors.black87,
                                                                                                height: 1.40,
@@ -200,13 +207,15 @@ class MedDetails extends State<medDetailsPage> {
                                                                                              children:[
                                                                                            Text('Strength:',
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 18.0,
                                                                                                color: Colors.black54,
                                                                                                height: 1.40,
                                                                                              ),
                                                                                            ),Text('  $Strength  $StrengthUnit',
                                                                                              style: TextStyle(
-                                                                                               fontSize: 16.0,
+                                                                                                 fontFamily: 'Lato',
+                                                                                                 fontSize: 16.0,
                                                                                                color: Colors.black45,
                                                                                                height: 1.40,
                                                                                                  fontStyle: FontStyle.italic
@@ -219,6 +228,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                children:[
                                                                                                  Text('Usage method: ',
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 18.0,
                                                                                                color: Colors.black54,
                                                                                                height: 1.40,
@@ -226,7 +236,8 @@ class MedDetails extends State<medDetailsPage> {
                                                                                            ),
                                                                                            Text('$UsageMethod',
                                                                                              style: TextStyle(
-                                                                                               fontSize: 16.0,
+                                                                                                 fontFamily: 'Lato',
+                                                                                                 fontSize: 16.0,
                                                                                                color: Colors.black45,
                                                                                                height: 1.40,
                                                                                                fontStyle: FontStyle.italic
@@ -239,6 +250,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                              children:[
                                                                                                Text('Package type: ',
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 18.0,
                                                                                                color: Colors.black54,
                                                                                                height: 1.40,
@@ -246,7 +258,8 @@ class MedDetails extends State<medDetailsPage> {
                                                                                            ),
                                                                                            Text('$PackageType',
                                                                                              style: TextStyle(
-                                                                                               fontSize: 16.0,
+                                                                                                 fontFamily: 'Lato',
+                                                                                                 fontSize: 16.0,
                                                                                                color: Colors.black45,
                                                                                                height: 1.40,
                                                                                                  fontStyle: FontStyle.italic
@@ -259,6 +272,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                              children:[
                                                                                            Text('Marketing company: ',
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 18.0,
                                                                                                color: Colors.black54,
                                                                                                height: 1.40,
@@ -267,62 +281,58 @@ class MedDetails extends State<medDetailsPage> {
                                                                                            Flexible(
                                                                                              child:
                                                                                            Text(MarketingCompany,
+                                                                                             maxLines: 1,
+                                                                                             softWrap: false,
+                                                                                             overflow: TextOverflow.fade,
                                                                                              style: TextStyle(
+                                                                                               fontFamily: 'Lato',
                                                                                                fontSize: 16.0,
                                                                                                color: Colors.black45,
                                                                                                height: 1.40,
                                                                                                  fontStyle: FontStyle.italic,
                                                                                              ),
                                                                                            ),)]),
-                                                                                            SizedBox(height: 50,),
+                                                                                           SizedBox(
+                                                                                             height: 10.0,
+                                                                                           ),
                                                                                            Row(
                                                                                                children:[
                                                                                                  Text('Marketing country: ',
                                                                                                    style: TextStyle(
+                                                                                                     fontFamily: 'Lato',
                                                                                                      fontSize: 18.0,
                                                                                                      color: Colors.black54,
                                                                                                      height: 1.40,
                                                                                                    ),
                                                                                                  ),
-                                                                                                 Flexible(
-                                                                                                   child:
                                                                                                    Text(MarketingCountry,
                                                                                                      style: TextStyle(
+                                                                                                       fontFamily: 'Lato',
                                                                                                        fontSize: 16.0,
                                                                                                        color: Colors.black45,
                                                                                                        height: 1.40,
                                                                                                        fontStyle: FontStyle.italic,
                                                                                                      ),
-                                                                                                   ),)]),
-                                                                                           SizedBox(height: 50,),
-                                                                                           InkWell(
-                                                                                         onTap: () {
-                                                                                             addToCart(medId, widget.customerId);
-                                                                                         },
-                                                                                             child: Ink(
-                                                                                               decoration: BoxDecoration(
-                                                                                                 borderRadius: BorderRadius.circular(8.0),
-                                                                                                 color: HexColor('#c7a1d1'),
-                                                                                               ),
-                                                                                               child:Container(
-                                                                                                 margin: EdgeInsets.only(right: 15.0),
-                                                                                                 height: 60.0,
-                                                                                                 padding: EdgeInsets.symmetric(
-                                                                                                   horizontal: 32.0,
-                                                                                                 ),
-                                                                                                 child: Center(
-                                                                                                   child: Text(
-                                                                                                     "Add to Cart",
-                                                                                                     style: TextStyle(
-                                                                                                       color: Colors.white,
-                                                                                                       fontWeight: FontWeight.w600,
-                                                                                                       fontSize: 20.0,
-                                                                                                     ),
                                                                                                    ),
-                                                                                                 ),
+                                                                                               ]),
+                                                                                           SizedBox(height: 50,),
+                                                                                     Padding(
+                                                                                         padding: const EdgeInsets.only(left: 70.0, ), //The distance you want
+                                                                                         child:Container(
+                                                                                             decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                             child: ElevatedButton(
+                                                                                               style: ThemeHelper().buttonStyle(),
+                                                                                               child: Padding(
+                                                                                                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                                                                                 child: Text(
+                                                                                                   "Add to cart",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                                                ),
+                                                                                               onPressed: () {
+                                                                                                addToCart(medId, widget.customerId);
+                                                                                                 }
                                                                                              ),
                                                                                            ),
+                                                                                     ),
                                                                                           ]))]))
                                                                      ])
                                                               ])

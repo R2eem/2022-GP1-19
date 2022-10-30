@@ -194,12 +194,23 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                                       trailing: Row(
                                                         mainAxisSize: MainAxisSize.min,
                                                         children: [
-                                                          IconButton(onPressed: () {
-                                                          addToCart(medId, widget.customerId);
-                                                          }, icon: const Icon(Icons.add_shopping_cart_rounded,color: Colors.black,
-                                                            size: 25.0,)),
-                                                        ],
-                                                      ),
+                                                          Ink(
+                                                             decoration: ShapeDecoration.fromBoxDecoration(
+                                                             BoxDecoration(
+                                                                 color: HexColor('#fad2fc'),
+                                                                 borderRadius: BorderRadius.circular(15),
+                                                             )),
+                                                             child: IconButton(
+                                                                      onPressed: () {
+                                                                        addToCart(medId, widget.customerId);
+                                                                        },
+                                                                        icon: const Icon(
+                                                                          Icons.add_shopping_cart_rounded,
+                                                                          color: Colors.black,
+                                                                          size: 25.0,)),
+                                                         ),
+                                                        ]
+                                                       ),
                                                     ),
                                                   ] ))):Container();
                                     });
