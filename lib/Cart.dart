@@ -11,8 +11,6 @@ import 'Settings.dart';
 
 
 class CartPage extends StatefulWidget {
-  final String customerId;
-  const CartPage(this.customerId);
   @override
   Cart createState() => Cart();
 }
@@ -20,7 +18,6 @@ class CartPage extends StatefulWidget {
 class Cart extends State<CartPage> {
   int _selectedIndex = 1;
   String searchString = "";
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -48,9 +45,7 @@ class Cart extends State<CartPage> {
       ),
     ),
     SizedBox(height: 55,),
-    ]))),
-
-        ])
+    ])))])
       ),
         bottomNavigationBar: Container(
         color: Colors.white,
@@ -80,39 +75,11 @@ class Cart extends State<CartPage> {
                 if (_selectedIndex == 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                 } else if (_selectedIndex == 1) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
                 } else if (_selectedIndex == 2) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                 } else if (_selectedIndex == 3) {
                  // Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                 }
               }),
-            ))));}
-
-  Future<List<ParseObject>> getMedicationId() async {
-    QueryBuilder<ParseObject> queryMedication =
-    QueryBuilder<ParseObject>(ParseObject('Cart'));
-    queryMedication.whereEqualTo('customer',(ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final ParseResponse apiResponse = await queryMedication.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
-    }
-  }
-
-  Future<List<ParseObject>> getMedicationss(String id) async {
-    QueryBuilder<ParseObject> queryMedication =
-    QueryBuilder<ParseObject>(ParseObject('Medications'));
-    queryMedication.whereEqualTo('objectId', id);
-    final ParseResponse apiResponse = await queryMedication.query();
-    print(apiResponse.results);
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
-    }
-  }
-
-
-}
+            ))));}}

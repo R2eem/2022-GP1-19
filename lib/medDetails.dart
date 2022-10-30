@@ -100,6 +100,7 @@ class MedDetails extends State<medDetailsPage> {
                                             final PackageType = medDetails.get<String>('PackageTypes')!;
                                             final UsageMethod = medDetails.get<String>('UsageMethod')!;
                                             final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
+                                            final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                             final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                             return SingleChildScrollView(
                                                       child: Container(
@@ -274,7 +275,27 @@ class MedDetails extends State<medDetailsPage> {
                                                                                              ),
                                                                                            ),)]),
                                                                                             SizedBox(height: 50,),
-                                                                                     InkWell(
+                                                                                           Row(
+                                                                                               children:[
+                                                                                                 Text('Marketing country: ',
+                                                                                                   style: TextStyle(
+                                                                                                     fontSize: 18.0,
+                                                                                                     color: Colors.black54,
+                                                                                                     height: 1.40,
+                                                                                                   ),
+                                                                                                 ),
+                                                                                                 Flexible(
+                                                                                                   child:
+                                                                                                   Text(MarketingCountry,
+                                                                                                     style: TextStyle(
+                                                                                                       fontSize: 16.0,
+                                                                                                       color: Colors.black45,
+                                                                                                       height: 1.40,
+                                                                                                       fontStyle: FontStyle.italic,
+                                                                                                     ),
+                                                                                                   ),)]),
+                                                                                           SizedBox(height: 50,),
+                                                                                           InkWell(
                                                                                          onTap: () {
                                                                                              addToCart(medId, widget.customerId);
                                                                                          },

@@ -369,11 +369,9 @@ class Category extends State<CategoryPage> {
     }
     if (!exist) {
       final addToCart = ParseObject('Cart')
-        ..set('customer', (ParseObject('Customer')
-          ..objectId = customerId)
-            .toPointer())..set('medication', (ParseObject('Medications')
-          ..objectId = objectId)
-            .toPointer())..set('Quantity', 1);
+        ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
+        ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
+        ..set('Quantity', 1);
       await addToCart.save();
     }
     else{

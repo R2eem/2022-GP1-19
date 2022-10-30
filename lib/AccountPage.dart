@@ -13,8 +13,7 @@ import 'main.dart';
 
 
 class AccountPage extends StatefulWidget{
-  final String customerId;
-  const AccountPage(this.customerId);
+
   @override
   State<StatefulWidget> createState() {
     return _AccountPage();
@@ -250,7 +249,7 @@ class _AccountPage extends State<AccountPage>{
                                                                         Widget cancelButton = TextButton(
                                                                           child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           onPressed:  () {
-                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                                                                           },
                                                                         );
                                                                         Widget continueButton = TextButton(
@@ -317,11 +316,11 @@ class _AccountPage extends State<AccountPage>{
                     if (_selectedIndex == 0) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                     }
                   }),
                 )))
@@ -382,7 +381,7 @@ class _AccountPage extends State<AccountPage>{
             new TextButton(
                 child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
                 }
             ),
           ],
