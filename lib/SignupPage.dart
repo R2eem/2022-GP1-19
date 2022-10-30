@@ -8,6 +8,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -78,9 +79,16 @@ class Signup extends State<SignupPage> {
                                         Navigator.of(context).pop();
                                       }, icon: Icon(Icons.keyboard_arrow_left),),
                            SizedBox(height: 70,),
-                           Text('Sign up', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-                           Text('Create a new account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
-                           SizedBox(height: 25.0),
+                                 Row(
+                                     mainAxisAlignment: MainAxisAlignment.center,
+                                     children: [
+                                       Text('Sign up', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 50, color: HexColor('#282b2b')),),
+                                       SizedBox(width: 10,),
+                                       Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 50,),
+                                     ]),
+                                 SizedBox(height: 5,),
+                                 Text('Create a new account', style: TextStyle(fontFamily: 'Lato',fontSize: 18, color: Colors.grey[700],),),
+                                 SizedBox(height: 25.0),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -311,10 +319,11 @@ class Signup extends State<SignupPage> {
                                   ],
                                 ),
                    ),
+                                SizedBox(height: 20,),
                                 //confirm password
                                   Container(
                                     child: TextFormField(
-                                      obscureText: !_isVisible,
+                                      obscureText: !_isVisibleConfirm,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
                                       validator: (val){
                                              if(val!.isEmpty)
@@ -350,7 +359,7 @@ class Signup extends State<SignupPage> {
                                       )
                                     ]),),
                               SizedBox(
-                                height: 30,
+                                height: 20,
                               ),
                     Container(
                       decoration: ThemeHelper().buttonBoxDecoration(context),
@@ -359,13 +368,7 @@ class Signup extends State<SignupPage> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
                           child: Text(
-                            "Sign up".toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                            "Sign up".toUpperCase(),style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -380,14 +383,14 @@ class Signup extends State<SignupPage> {
                                   child: Text.rich(
                                       TextSpan(
                                           children: [
-                                            TextSpan(text: "Already have an account? ", style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Colors.black45)),
+                                            TextSpan(text: "Already have an account? ", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
                                             TextSpan(
                                               text: 'Log in',
                                               recognizer: TapGestureRecognizer()
                                                 ..onTap = (){
                                                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                                                 },
-                                              style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                              style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
                                             ),
                                           ]
                                       )
@@ -402,21 +405,18 @@ class Signup extends State<SignupPage> {
 
   void showSuccess() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-         content: const Text("User was successfully created! Please verify your email before Login!"),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("OK"),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                }
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext context) {
+           bool manuallyClosed = false;
+           Future.delayed(Duration(seconds: 5)).then((_) {
+           if (!manuallyClosed) {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+           }
+           });
+           return AlertDialog(
+               content: Text('Account was successfully created! Please verify your email before log in!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
+
+        });
   }
 
   void showError(String errorMessage) {
@@ -426,17 +426,17 @@ class Signup extends State<SignupPage> {
     if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
       errorMessage = 'Account already exists for this phone number.';
     }
-    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character')==0){
+    if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character.')==0){
       return;
     }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(errorMessage),
+          content: Text(errorMessage, style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -447,25 +447,45 @@ class Signup extends State<SignupPage> {
     );
   }
 
-  void doUserRegistration() async {
+  Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();
     var phonenumber = controllerPhoneNumber.text.trim();
-    phonenumber = '966'+phonenumber.substring(1,10);
       final user = ParseUser.createUser(email, password, email)
-        ..set('Firstname', firstname)
-        ..set('Lastname', lastname)
-        ..set('Phonenumber', phonenumber);
+       ..set('Phonenumber', phonenumber);
 
-
-      var response = await user.signUp();
-
+    var response = await user.signUp();
       if (response.success) {
-        showSuccess();
+        final createCustomer = ParseObject('Customer')
+          ..set('Firstname', firstname)
+          ..set('Lastname', lastname)
+          ..set('user', user);
+        var response2 = await createCustomer.save();
+        if(response2.success){
+          showSuccess();
+        }
+        else{
+          showError(response2.error!.message);
+        }
       } else {
         showError(response.error!.message);
       }
   }
+
+  var snackBar = SnackBar(
+    /// need to set following properties for best effect of awesome_snackbar_content
+    elevation: 0,
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.transparent,
+    content: AwesomeSnackbarContent(
+      title: 'Welcome!',
+      message:
+      'Account was successfully created. Please verify your email before log in!',
+
+      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+      contentType: ContentType.success,
+    ),
+  );
 }

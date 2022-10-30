@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/CategoryPage.dart';
-import 'package:untitled/AccountPage.dart';
+import 'package:untitled/Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'Cart.dart';
+import 'Settings.dart';
+import 'medDetails.dart';
 
 class PrescriptionCategory extends StatefulWidget {
+  final String customerId;
+  const PrescriptionCategory(this.customerId);
   @override
   Prescription createState() => Prescription();
 }
@@ -19,8 +24,9 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
   int _selectedTab = 0 ;
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     TabController _tabController=
-    TabController(length: 12, vsync: this, initialIndex: 0 );
+    TabController(length: 11, vsync: this, initialIndex: 0 );
     _tabController.animateTo(_selectedTab);
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -30,57 +36,62 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-            SafeArea(child:
             Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(child: Image.asset(
-                  'assets/logoheader.png',
-                  fit: BoxFit.contain,
-                  width: 100,
-                  height: 70,
-                ),),
-                Container(
-                  child: Text('Prescription medications', style: TextStyle(
-                    fontFamily: "Mulish",
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),),
-                ),
-                SizedBox(height: 40,),
-                Material(
-                    elevation: 8,
-                    shadowColor: Colors.grey,
-                    borderRadius: BorderRadius.circular(30),
-                    child:
-                    TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          searchString = value;
-                        });
-                      },
-                      style: TextStyle(
-                          color: Colors.grey, fontSize: 19),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Search',
-                        prefixIcon: Icon(Icons.search),
-                        prefixIconColor: Colors.pink[100],
-                      ),
-                    )
-                ),
-                SizedBox(height: 20,),
+                child: SafeArea(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                           children:[
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Image.asset('assets/logoheader.png',
+                                fit: BoxFit.contain,
+                                width: 110,
+                                height: 80,
+                            ),
+                          ),
+                             Container(
+                               margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                               child: Text('Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                             ),]),
+                SizedBox(height: 55,),
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                height: 667,
+                                width: size.width,
+                                child: Column(children: [
+                                  Material(
+                                      elevation: 4,
+                                      shadowColor: Colors.grey,
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: TextField(
+                                        onChanged: (value) {
+                                          setState(() {
+                                            searchString = value;
+                                          });
+                                        },
+                                        style:
+                                        TextStyle(color: Colors.grey, fontSize: 19),
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          hintText: 'Search',
+                                          prefixIcon: Icon(Icons.search),
+                                          prefixIconColor: Colors.pink[100],
+                                        ),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                 TabBar(
                     onTap: (index){ //
                       setState(() {
@@ -94,20 +105,18 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                         if(_selectedTab == 3)
                           packageType = 'Drop';
                         if(_selectedTab == 4)
-                          packageType ='Gel';
-                        if(_selectedTab == 5)
                           packageType = 'Granules';
-                        if(_selectedTab == 6)
+                        if(_selectedTab == 5)
                           packageType ='Ointment';
-                        if(_selectedTab == 7)
+                        if(_selectedTab == 6)
                           packageType = 'Powder';
-                        if(_selectedTab == 8)
+                        if(_selectedTab == 7)
                           packageType ='Solution';
-                        if(_selectedTab == 9)
+                        if(_selectedTab == 8)
                           packageType = 'Spray';
-                        if(_selectedTab == 10)
+                        if(_selectedTab == 9)
                           packageType ='Syrup';
-                        if(_selectedTab == 11)
+                        if(_selectedTab == 10)
                           packageType = 'Tablet';
                       },);},
                     isScrollable: true,//if thr tabs are alot we can scroll them
@@ -115,18 +124,17 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                     labelColor: Colors.grey[900],// the tab is clicked on now color
                     unselectedLabelColor: Colors.grey,
                     tabs: [
-                      Tab(icon: Text('All', style: TextStyle(fontFamily: "Mulish", fontWeight: FontWeight.w700),),),
-                      Tab(icon: Text('Capsule' ,style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Cream', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Drop', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Gel', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Granules', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Ointment', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Powder', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Solution', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Spray', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Syrup', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                      Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                      Tab(icon: Text('All', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                      Tab(icon: Text('Capsule' ,style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Cream', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Drop', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Granules', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Ointment', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Powder', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Solution', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Spray', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Syrup', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
+                      Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
                     ]),
                 Expanded(
                     child: FutureBuilder<List<ParseObject>>(
@@ -153,66 +161,66 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                 );
                               } else {
                                 return ListView.builder(
-                                    padding: EdgeInsets.only(top: 10.0),
+                                    padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
                                       //Get Parse Object Values
                                       final medGet = snapshot.data![index];
+                                      final medId = medGet.get<String>('objectId')!;
                                       final TradeName = medGet.get<String>('TradeName')!;
                                       final ScientificName = medGet.get<String>('ScientificName')!;
                                       final Publicprice = medGet.get<num>('Publicprice')!;
-                                      final Strength = medGet.get<num>('Strength')!;
-                                      final StrengthUnit = medGet.get<String>('StrengthUnit')!;
-                                      final PackageType = medGet.get<String>('PackageTypes')!;
-                                      var UsageMethod = medGet.get<String>('UsageMethod')!;
-                                      var MarketingCompany = medGet.get<String>('MarketingCompany')!;
-                                      var ProductForm = medGet.get<String>('PharmaceuticalForm')!;
-                                      MarketingCompany = MarketingCompany.toLowerCase();
-                                      return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))? SingleChildScrollView(
+                                      final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
+                                      return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
+                                          ?  GestureDetector(
+                                          onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
                                           child: Card(
-                                              elevation: 5,
+                                              elevation: 3,
                                               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                               color: Colors.white,
-
-                                              child: ExpansionTile(
-                                                  title: Text(TradeName,style: TextStyle(
-                                                      fontFamily: "Mulish",
-                                                      fontWeight: FontWeight.w900,
-                                                      fontSize: 20),),
-                                                  subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                                      fontFamily: "Mulish",
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15,
-                                                      color: Colors.black),),
-                                                  leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.purple,
-                                                    size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
-                                                  trailing: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Icon(Icons.keyboard_arrow_down,color: Colors.black,
-                                                        size: 26.0,),
-                                                      IconButton(onPressed: () {}, icon: const Icon(Icons.add,color: Colors.black,
-                                                        size: 25.0,)),
-                                                    ],
-                                                  ),
-                                                  children: <Widget>[
+                                              child: Column(
+                                                  children:[
                                                     ListTile(
-                                                      subtitle: Text('Medication details:'+ '\n' +'• Package type: $PackageType' + '\n' +'• Strength: $Strength$StrengthUnit' +  '\n' +'• Usage method: $UsageMethod' + '\n' +'• Product form: $ProductForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
-                                                          fontFamily: "Mulish",
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 18,
-                                                          color: Colors.black
-                                                      ),),
-                                                    )]))):Container();
+                                                      title: Text(TradeName,style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.w700),),
+                                                      subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 17,
+                                                          color: Colors.black),),
+                                                      leading: Image.asset('assets/listIcon.png',),
+                                                      trailing: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Ink(
+                                                             decoration: ShapeDecoration.fromBoxDecoration(
+                                                             BoxDecoration(
+                                                                 color: HexColor('#fad2fc'),
+                                                                 borderRadius: BorderRadius.circular(15),
+                                                             )),
+                                                             child: IconButton(
+                                                                      onPressed: () {
+                                                                        addToCart(medId, widget.customerId);
+                                                                        },
+                                                                        icon: const Icon(
+                                                                          Icons.add_shopping_cart_rounded,
+                                                                          color: Colors.black,
+                                                                          size: 25.0,)),
+                                                         ),
+                                                        ]
+                                                       ),
+                                                    ),
+                                                  ] ))):Container();
                                     });
                               }
                           }
                         }))
-                ,SizedBox(height: 80,) ],
+               ],
             ),
           )),
-       ] )),
+       ] )))])),
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -222,31 +230,30 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                   gap: 8,
                   padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home,),
-                    GButton(icon: Icons.shopping_cart,),
-                    GButton(icon: Icons.shopping_bag,),
-                    GButton(icon: Icons.account_circle,),
+                    GButton(
+                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
-                    if(_selectedIndex == 0){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
-                    }
-                    else if (_selectedIndex == 1) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      _selectedIndex = 0;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountPage()));
-
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))
@@ -257,11 +264,45 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
     QueryBuilder<ParseObject> queryPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
+    queryPresMedication.orderByAscending('TradeName');
     final ParseResponse apiResponse = await queryPresMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+  void addToCart(objectId, customerId) async{
+    bool exist = false;
+    var medInCart;
+    var quantity = 0;
+    final apiResponse = await ParseObject('Cart').getAll();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        medInCart = o as ParseObject;
+        if(customerId == medInCart.get('customer').objectId){
+          if(objectId == medInCart.get('medication').objectId){
+            exist = true;
+            quantity = medInCart.get<num>('Quantity');
+            break;
+          }
+        }
+      }
+    }
+    if (!exist) {
+      final addToCart = ParseObject('Cart')
+        ..set('customer', (ParseObject('Customer')
+          ..objectId = customerId)
+            .toPointer())..set('medication', (ParseObject('Medications')
+          ..objectId = objectId)
+            .toPointer())..set('Quantity', 1);
+      await addToCart.save();
+    }
+    else{
+      var incrementQuantity = medInCart
+        ..set('Quantity', ++quantity);
+      await incrementQuantity.save();
     }
   }
 }
