@@ -188,14 +188,16 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                   child: Column(
                                                       children:[
                                                         ListTile(
+                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
                                                           title: Text(TradeName,style: TextStyle(
                                                               fontFamily: "Lato",
-                                                              fontSize: 20,
+                                                              fontSize: 22,
                                                               fontWeight: FontWeight.w700),),
                                                           subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
                                                               fontFamily: "Lato",
-                                                              fontSize: 17,
-                                                              color: Colors.black),),
+                                                              fontSize: 19,
+                                                              color: Colors.black,
+                                                              fontStyle: FontStyle.italic),),
                                                           leading: Image.asset('assets/listIcon.png',),
                                                           trailing: Row(
                                                             mainAxisSize: MainAxisSize.min,

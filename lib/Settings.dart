@@ -65,9 +65,9 @@ class Settings extends State<SettingsPage> {
                             children: <Widget>[
 
                               ListTile(
-                                leading:Icon(Icons.person , color: Colors.purple.shade200) ,
-                                title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 19, color: Colors.black)),
-                                trailing: Icon(Icons.keyboard_arrow_right),
+                                leading:Icon(Icons.person , color: Colors.purple.shade200, size: 30,) ,
+                                title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
+                                trailing: Icon(Icons.keyboard_arrow_right, size: 30,),
                                 onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
                                 },
@@ -75,9 +75,9 @@ class Settings extends State<SettingsPage> {
                               ),
                               _buildDriver(),
                               ListTile(
-                                leading:Icon(Icons.location_on , color: Colors.purple.shade200) ,
-                                title: Text("My Locations",style: TextStyle(fontFamily: 'Lato',fontSize: 19, color: Colors.black)),
-                                trailing: Icon(Icons.keyboard_arrow_right),
+                                leading:Icon(Icons.location_on , color: Colors.purple.shade200, size: 30,) ,
+                                title: Text("My Locations",style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
+                                trailing: Icon(Icons.keyboard_arrow_right, size: 30),
                                 onTap: (){
                                   //Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
                                 },

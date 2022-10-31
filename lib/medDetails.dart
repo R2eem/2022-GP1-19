@@ -324,10 +324,20 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                style: ThemeHelper().buttonStyle(),
                                                                                                child: Padding(
                                                                                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                                                                                 child: Text(
-                                                                                                   "Add to cart",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                                                               ),
-                                                                                               onPressed: () {
+                                                                                                 child: Text.rich(
+                                                                                                   TextSpan(
+                                                                                                     children: [
+                                                                                                       TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                       WidgetSpan(
+                                                                                                           child: Icon(
+                                                                                                             Icons.add_shopping_cart_rounded,
+                                                                                                             color: Colors.white,
+                                                                                                             size: 25.0,)),
+                                                                                                     ],
+                                                                                                   ),
+                                                                                                 )),
+
+                                                                                                 onPressed: () {
                                                                                                 addToCart(medId, widget.customerId);
                                                                                                  }
                                                                                              ),
