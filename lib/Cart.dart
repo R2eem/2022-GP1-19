@@ -64,6 +64,7 @@ class Cart extends State<CartPage> {
                     ),
                   ),
                 ]),
+                SizedBox(height: 20,),
                 SingleChildScrollView(
                     child:Align(
                     alignment: Alignment.bottomCenter,
