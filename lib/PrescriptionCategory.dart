@@ -84,7 +84,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                             borderRadius: BorderRadius.circular(30),
                                             borderSide: BorderSide.none,
                                           ),
-                                          hintText: 'Search',
+                                          hintText: 'Search by Scientific or Trade name',
                                           prefixIcon: Icon(Icons.search),
                                           prefixIconColor: Colors.pink[100],
                                         ),
