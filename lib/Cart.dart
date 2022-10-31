@@ -242,6 +242,7 @@ class Cart extends State<CartPage> {
                                                                                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                                                                                   children: <Widget>[
                                                                                                                                     CircleAvatar(
+                                                                                                                                      backgroundColor: HexColor('#e8cafc'),
                                                                                                                                      child:IconButton(onPressed: () {
                                                                                                                                       decrement(medId, widget.customerId,counter!);
                                                                                                                                       setState(() {
@@ -253,7 +254,6 @@ class Cart extends State<CartPage> {
                                                                                                                                     }, icon: const Icon(Icons.remove,color: Colors.black,
                                                                                                                                       size: 24.0,))),
                                                                                                                                     Container(
-                                                                                                                                      color: Colors.grey.shade200,
                                                                                                                                       padding: const EdgeInsets.only(bottom: 2, right: 12, left: 12),
                                                                                                                                       child: Text(
                                                                                                                                         '$counter',style: TextStyle(
@@ -263,6 +263,7 @@ class Cart extends State<CartPage> {
                                                                                                                                       ),
                                                                                                                                     ),
                                                                                                                                 CircleAvatar(
+                                                                                                                                    backgroundColor: HexColor('#fad2fc'),
                                                                                                                                     child:IconButton(onPressed: () {
                                                                                                                                       increment(medId, widget.customerId,counter!);
                                                                                                                                       setState(() {
