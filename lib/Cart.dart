@@ -299,23 +299,14 @@ class Cart extends State<CartPage> {
             ])),
 
         persistentFooterButtons: [
-
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, ), //The distance you want
-            child:Container(
-              decoration: ThemeHelper().buttonBoxDecoration(context),
-              child: ElevatedButton(
-                  style: ThemeHelper().buttonStyle(),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: Text(
-                      "Continue",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                  ),
-                  onPressed: () {
-                  }
-              ),
-            ),
-          ),
+          Text('Continue',style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold, )),
+          CircleAvatar(
+            backgroundColor: Colors.purple.shade300,
+              child:IconButton(onPressed: () {
+                setState(() {
+                });
+              }, icon: const Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,
+                size: 24.0,))),
         ],
         bottomNavigationBar: Container(
             color: Colors.white,
