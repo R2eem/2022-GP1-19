@@ -1,16 +1,20 @@
-# untitled
+# Tiryaq
 
-A new Flutter project.
+A new graduation project.
 
-## Getting Started
+## Introduction
+Tiryaq project is an Android app, will be launched in Saudi Arabia.
+It's an app that gives you the opportunity to order your medications from the nearest pharmacies for pickup.
 
-This project is a starting point for a Flutter application.
+Our goal from this project is to:
 
-A few resources to get you started if this is your first Flutter project:
+- Help people save their time and effort in searching for their medications.
+- Gather different pharmacies in one app.
+- Help pharmacies reach their customers in an efficient manner.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Technologies
+Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Launching instructions
+
+# missing

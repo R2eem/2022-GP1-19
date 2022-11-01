@@ -90,7 +90,7 @@ class HomePage extends StatelessWidget {
                             ),
                             onPressed: (){
                               //After successful login we will redirect to profile page. Let's create profile page now
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                             // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                             },
                           ),
                         ),
