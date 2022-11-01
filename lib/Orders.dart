@@ -47,7 +47,7 @@ class Orders extends State<OrdersPage> {
                                   ),
                                   Container(
                                     margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                                    child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
+                                    child: Text('Orders', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
                                   ),]),
                             SizedBox(height: 55,),
                           ])))])),
