@@ -40,10 +40,16 @@ class Forgot extends State<ForgotPassword> {
                 Navigator.push( context, MaterialPageRoute( builder: (context) => LoginPage()), );
               }, icon: Icon(Icons.keyboard_arrow_left),),
             SizedBox(height: 200,),
-            Text('Forgot Password?', style: TextStyle(fontFamily: 'Mulish',fontSize: 40, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-            SizedBox(height: 10,),
-            Text('Enter the email address associated with your account.', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
-            SizedBox(height: 25.0),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Forgot password', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 40, color: HexColor('#282b2b')),),
+                          SizedBox(width: 10,),
+                          Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 40,),
+                        ]),
+                    SizedBox(height: 5,),
+                    Text('Enter your email address associated to your account', style: TextStyle(fontFamily: 'Lato',fontSize: 16, color: Colors.grey[700],),),
+                    SizedBox(height: 25.0),
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -83,9 +89,8 @@ class Forgot extends State<ForgotPassword> {
                             child: Text(
                               "Send".toUpperCase(),
                               style: TextStyle(
-                                fontFamily: 'Mulish',
+                                fontFamily: 'Lato',
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
@@ -103,10 +108,7 @@ class Forgot extends State<ForgotPassword> {
                           children: [
                             TextSpan(
                                 text: "Remember your password? ",
-                                style: TextStyle(
-                                    fontFamily: 'Mulish',
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black45)),
+                                style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
                             TextSpan(
                               text: 'Login',
                               recognizer: TapGestureRecognizer()
@@ -117,10 +119,7 @@ class Forgot extends State<ForgotPassword> {
                                         builder: (context) => LoginPage()),
                                   );
                                 },
-                              style: TextStyle(
-                                  fontFamily: 'Mulish',
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).accentColor),
+                              style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
                             ),
                           ],
                         ),
@@ -142,12 +141,12 @@ class Forgot extends State<ForgotPassword> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Thank you!"),
+            title: const Text("Thank you!", style: TextStyle(fontFamily: 'Lato', fontSize: 25,)),
             content: Text(
-                'You will recieve a password reset link if you have Tiryaq account'),
+                'You will recieve a password reset link if you have Tiryaq account.', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
             actions: <Widget>[
               new TextButton(
-                child: const Text("OK"),
+                child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => LoginPage()));

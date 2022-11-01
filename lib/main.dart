@@ -10,8 +10,8 @@ import 'common/theme_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
+  final keyApplicationId = '0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5';
+  final keyClientKey = 'Vjbmxk9zpKPkJaU4D6HcGFQZkQWH5em93DvAIlJi';
   final keyParseServerUrl = 'https://parseapi.back4app.com';
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
@@ -21,7 +21,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget{
   //Color _primaryColor = HexColor('#DC54FE');
   //Color _accentColor = HexColor('#8A02AE');
-  //Color _primaryColor = HexColor('#f5a9f1');
+  //Color _primaryColor = HexColor('#ffc7fb');
   //primaryColor: HexColor('#e04ad2'),
   //Color _accentColor = HexColor('#ad5bf5');
   @override
@@ -42,6 +42,7 @@ class HomePage extends StatelessWidget {
   double _headerHeight = 250;
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: SingleChildScrollView(
         child: Column(
@@ -53,24 +54,25 @@ class HomePage extends StatelessWidget {
               SafeArea(
                 child: Container(
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),// This will be the login form
+                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Column(
                       children: [
-                 Container(
-                    height: MediaQuery.of(context).size.height / 4,
-                    child: Image.asset('assets/headerlogo.png',height: 400, width: 400,)
+                        Container(
+                            height: MediaQuery.of(context).size.height / 4,
+                            child: Image.asset('assets/tiryaglogo.png',height: 400, width: 400,)
                         ),
-                Text("Who are you?",
+                        SizedBox(height: 20,),
+                        Text("Who are you?",
                   textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'Mulish',fontSize: 25, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
               SizedBox(height: 50,),
               Container(
                 decoration: ThemeHelper().buttonBoxDecoration(context),
                 child: ElevatedButton(
                   style: ThemeHelper().buttonStyle(),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(80, 20, 80, 20),
-                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),),
+                    padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                   onPressed: (){
                     //After successful login we will redirect to profile page. Let's create profile page now
@@ -84,8 +86,8 @@ class HomePage extends StatelessWidget {
                           child: ElevatedButton(
                             style: ThemeHelper().buttonStyle(),
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(80, 20, 80, 20),
-                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                              padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                             ),
                             onPressed: (){
                               //After successful login we will redirect to profile page. Let's create profile page now

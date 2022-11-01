@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/CategoryPage.dart';
-import 'package:untitled/Settings.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-import 'AccountPage.dart';
+import 'Cart.dart';
+import 'Orders.dart';
+import 'Settings.dart';
+import 'medDetails.dart';
 
 class NonPrescriptionCategory extends StatefulWidget {
+  final String customerId;
+  const NonPrescriptionCategory(this.customerId);
+
   @override
   NonPrescription createState() => NonPrescription();
 }
@@ -22,6 +26,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     TabController _tabController=
     TabController(length: 12, vsync: this, initialIndex: 0 );
     _tabController.animateTo(_selectedTab);
@@ -33,43 +38,47 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              SafeArea(child:
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
+            Container(
+              child: SafeArea(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(child: Image.asset(
-                      'assets/logoheader.png',
-                      fit: BoxFit.contain,
-                      width: 100,
-                      height: 70,
-                    ),),
-                    Container(
-                      child: Text('Non-Prescription medications', style: TextStyle(
-                        fontFamily: "Mulish",
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),),
-                    ),
-                    SizedBox(height: 40,),
-                    Material(
-                        elevation: 8,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Row(
+                        children:[
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: Image.asset('assets/logoheader.png',
+                              fit: BoxFit.contain,
+                              width: 110,
+                              height: 80,
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                            child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                          ),]),
+              SizedBox(height: 55,),
+
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    height: 667,
+                    width: size.width,
+                    child: Column(children: [
+                        Material(
+                        elevation: 4,
                         shadowColor: Colors.grey,
                         borderRadius: BorderRadius.circular(30),
-                        child:
-                        TextField(
+                        child: TextField(
                           onChanged: (value) {
                             setState(() {
                               searchString = value;
                             });
                           },
-                          style: TextStyle(
-                              color: Colors.grey, fontSize: 19),
+                          style:
+                          TextStyle(color: Colors.grey, fontSize: 19),
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -77,15 +86,16 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'Search',
+                            hintText: 'Search by Scientific or Trade name',
                             prefixIcon: Icon(Icons.search),
                             prefixIconColor: Colors.pink[100],
                           ),
-                        )
+                        )),
+                    SizedBox(
+                      height: 20,
                     ),
-                    SizedBox(height: 20,),
-                    TabBar(
-                        onTap: (index){ //
+
+                    TabBar(onTap: (index){ //
                           setState(() {
                             _selectedTab = index;
                             if(_selectedTab == 0)
@@ -118,18 +128,18 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                         labelColor: Colors.grey[900],// the tab is clicked on now color
                         unselectedLabelColor: Colors.grey,
                         tabs: [
-                          Tab(icon: Text('All', style: TextStyle(fontFamily: "Mulish", fontWeight: FontWeight.w700),),),
-                          Tab(icon: Text('Caplet' ,style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Cream', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Drop', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Gel', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Liquid', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Lozenge', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Ointment', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Solution', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Spray', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Syrup', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
-                          Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Mulish",fontWeight: FontWeight.w700)),),
+                          Tab(icon: Text('All', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Caplet' ,style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Cream', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Drop', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Gel', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Liquid', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Lozenge', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Ointment', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Solution', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Spray', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Syrup', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
+                          Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                         ]),
                     SizedBox(height: 20,),
                     Expanded(
@@ -157,69 +167,75 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                     );
                                   } else {
                                     return ListView.builder(
-                                        padding: EdgeInsets.only(top: 10.0),
+                                        padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                         scrollDirection: Axis.vertical,
                                         itemCount: snapshot.data!.length,
                                         itemBuilder: (context, index) {
                                           //Get Parse Object Values
                                           final medGet = snapshot.data![index];
+                                          final medId = medGet.get<String>('objectId')!;
                                           final TradeName = medGet.get<String>('TradeName')!;
                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                           final Publicprice = medGet.get<num>('Publicprice')!;
-                                          final Strength = medGet.get<num>('Strength')!;
-                                          final StrengthUnit = medGet.get<String>('StrengthUnit')!;
-                                          final PackageType = medGet.get<String>('PackageTypes')!;
-                                          var UsageMethod = medGet.get<String>('UsageMethod')!;
-                                          var MarketingCompany = medGet.get<String>('MarketingCompany')!;
-                                          var ProductForm = medGet.get<String>('PharmaceuticalForm')!;
-                                          MarketingCompany = MarketingCompany.toLowerCase();
-                                          return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))? SingleChildScrollView(
+                                          final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
+                                          return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
+                                              ?  GestureDetector(
+                                              onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
                                               child: Card(
-                                                  elevation: 5,
+                                                  elevation: 3,
                                                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                                   color: Colors.white,
-
-                                                  child: ExpansionTile(
-                                                      title: Text(TradeName,style: TextStyle(
-                                                          fontFamily: "Mulish",
-                                                          fontWeight: FontWeight.w900,
-                                                          fontSize: 20),),
-                                                      subtitle: Text('$ScientificName , $Publicprice SR',style: TextStyle(
-                                                          fontFamily: "Mulish",
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 15,
-                                                          color: Colors.black),),
-                                                      leading: CircleAvatar(child: Icon(Icons.medication, color: Colors.purple,
-                                                        size: 36.0,), backgroundColor: Colors.grey.shade100, radius: 25,),
-                                                      trailing: Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                          Icon(Icons.keyboard_arrow_down,color: Colors.black,
-                                                            size: 26.0,),
-                                                          IconButton(onPressed: () {}, icon: const Icon(Icons.add_shopping_cart_outlined,color: Colors.black,
-                                                            size: 25.0,)),
-                                                        ],
-                                                      ),
-                                                      children: <Widget>[
+                                                  child: Column(
+                                                      children:[
                                                         ListTile(
-                                                          subtitle: Text('Medication details:'+ '\n' +'• Package type: $PackageType' + '\n' +'• Strength: $Strength$StrengthUnit' +  '\n' +'• Usage method: $UsageMethod' + '\n' +'• Product form: $ProductForm' + '\n' +'• Marketing company: $MarketingCompany',style: TextStyle(
-                                                              fontFamily: "Mulish",
-                                                              fontWeight: FontWeight.w500,
-                                                              fontSize: 18,
-                                                              color: Colors.black
-                                                          ),),
-                                                        )]))):Container();
+                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                                                          title: Text(TradeName,style: TextStyle(
+                                                              fontFamily: "Lato",
+                                                              fontSize: 22,
+                                                              fontWeight: FontWeight.w700),),
+                                                          subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                              fontFamily: "Lato",
+                                                              fontSize: 19,
+                                                              color: Colors.black,
+                                                              fontStyle: FontStyle.italic),),
+                                                          leading: Image.asset('assets/listIcon.png',),
+                                                          trailing: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Ink(
+                                                                  decoration: ShapeDecoration.fromBoxDecoration(
+                                                                      BoxDecoration(
+                                                                        color: HexColor('#fad2fc'),
+                                                                        borderRadius: BorderRadius.circular(15),
+                                                                      )),
+                                                                  child: IconButton(
+                                                                      onPressed: () async {
+                                                                        if(await addToCart(medId, widget.customerId)) {
+                                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                                              SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                duration: Duration(milliseconds: 3000),
+                                                                              ));
+                                                                        };
+                                                                      },
+                                                                      icon: const Icon(
+                                                                        Icons.add_shopping_cart_rounded,
+                                                                        color: Colors.black,
+                                                                        size: 25.0,)),
+                                                                ),
+                                                              ]
+                                                          ),
+                                                        ),
+                                                      ] ))):Container();
                                         });
                                   }
                               }
                             }))
-                ,SizedBox(height: 80,)  ],
+                 ],
                 ),
               )),
-            ] )),
+            ] )))])),
 
         bottomNavigationBar: Container(
-
             color: Colors.white,
             child: Padding(
                 padding:
@@ -228,31 +244,30 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                   gap: 8,
                   padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home, iconActiveColor:  Colors.purple.shade200,iconSize: 35,),
-                    GButton(icon: Icons.shopping_cart, iconActiveColor:  Colors.purple.shade200,  iconSize: 35,),
-                    GButton(icon: Icons.shopping_bag, iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
-                    GButton(icon: Icons.settings,iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
+                    GButton(
+                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
-                    if(_selectedIndex == 0){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
-                    }
-                    else if (_selectedIndex == 1) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      _selectedIndex = 0;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SettingsPage()));
-
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))
@@ -264,12 +279,49 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     QueryBuilder<ParseObject> queryNonPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryNonPresMedication.whereContains('LegalStatus', 'OTC');
+    queryNonPresMedication.orderByAscending('TradeName');
     final ParseResponse apiResponse = await queryNonPresMedication.query();
 
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+  Future<bool> addToCart(objectId, customerId) async{
+    bool exist = false;
+    var medInCart;
+    var quantity = 0;
+    final apiResponse = await ParseObject('Cart').getAll();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        medInCart = o as ParseObject;
+        if(customerId == medInCart.get('customer').objectId){
+          if(objectId == medInCart.get('medication').objectId){
+            exist = true;
+            quantity = medInCart.get<num>('Quantity');
+            break;
+          }
+        }
+      }
+    }
+    else{
+      return false;
+    }
+    if (!exist) {
+      final addToCart = ParseObject('Cart')
+        ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
+        ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
+        ..set('Quantity', 1);
+      await addToCart.save();
+      return true;
+    }
+    else{
+      var incrementQuantity = medInCart
+        ..set('Quantity', ++quantity);
+      await incrementQuantity.save();
+      return true;
     }
   }
 }

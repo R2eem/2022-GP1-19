@@ -28,7 +28,7 @@ class Login extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Stack(
@@ -46,10 +46,17 @@ class Login extends State<LoginPage> {
               onPressed: () {
                 Navigator.push( context, MaterialPageRoute( builder: (context) => HomePage()), );
               }, icon: Icon(Icons.keyboard_arrow_left),),
-            SizedBox(height: 200,),
-            Text('Log in', style: TextStyle(fontFamily: 'Mulish',fontSize: 50, fontWeight: FontWeight.bold, color: HexColor('#282b2b')),),
-            Text('Log in to your account', style: TextStyle(fontFamily: 'Mulish',color: Colors.black45, fontWeight: FontWeight.bold),),
-            SizedBox(height: 25.0),
+              SizedBox(height: 200,),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Log in', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 50, color: HexColor('#282b2b')),),
+                          SizedBox(width: 10,),
+                          Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 50,),
+                        ]),
+                    SizedBox(height: 5,),
+                    Text('Log in to your account', style: TextStyle(fontFamily: 'Lato',fontSize: 18, color: Colors.grey[700],),),
+                    SizedBox(height: 25.0),
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -131,7 +138,7 @@ class Login extends State<LoginPage> {
                       onTap: () {
                         Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
                       },
-                      child: Text( "Forgot your password?", style: TextStyle(fontFamily: 'Mulish', fontWeight: FontWeight.bold,color: Theme.of(context).accentColor, ),
+                      child: Text( "Forgot your password?", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Theme.of(context).accentColor, ),
                       ),
                     ),
                   ),
@@ -140,8 +147,8 @@ class Login extends State<LoginPage> {
                       child: ElevatedButton(
                         style: ThemeHelper().buttonStyle(),
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                          child: Text('Log In'.toUpperCase(), style: TextStyle(fontFamily: 'Mulish',fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                          padding: EdgeInsets.fromLTRB(35, 7, 35, 7),
+                          child: Text('Log In'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -156,14 +163,14 @@ class Login extends State<LoginPage> {
                       child: Text.rich(
                           TextSpan(
                               children: [
-                                TextSpan(text: "Don\'t have an account? ", style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Colors.black45)),
+                                TextSpan(text: "Don\'t have an account? ", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
                                 TextSpan(
                                   text: 'Sign up',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = (){
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
                                     },
-                                  style: TextStyle(fontFamily: 'Mulish',fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                  style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
                                 ),
                               ]
                           )
@@ -190,10 +197,10 @@ class Login extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(errorMessage),
+          content: Text(errorMessage, style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
                 Navigator.of(context).pop();
               },

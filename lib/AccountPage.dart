@@ -4,27 +4,13 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'Cart.dart';
+import 'Orders.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'main.dart';
 
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: AccountPage(),
-      )
-  );
-}
 
 class AccountPage extends StatefulWidget{
 
@@ -36,9 +22,9 @@ class AccountPage extends StatefulWidget{
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
-  bool _update = false;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var customerId;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +63,6 @@ class _AccountPage extends State<AccountPage>{
                           //child: SingleChildScrollView(
                           child: Column(
                               children: <Widget>[
-                                //username
                                 FutureBuilder<ParseUser?>(
                                     future: getUser(),
                                     builder: (context, snapshot) {
@@ -101,8 +86,10 @@ class _AccountPage extends State<AccountPage>{
                                               child: Text("No Data..."),
                                             );
                                           } else {
+                                            var userId = snapshot.data!.objectId;
+                                            var email = snapshot.data!.emailAddress;
                                             return FutureBuilder<List>(
-                                                future: currentuser(snapshot.data!.objectId),
+                                                future: currentuser(userId),
                                                 builder: (context, snapshot) {
                                                   switch (snapshot.connectionState) {
                                                     case ConnectionState.none:
@@ -134,14 +121,13 @@ class _AccountPage extends State<AccountPage>{
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
                                                               final user = snapshot.data![index];
-                                                              final id = user.get<String>('objectId')!;
+                                                              customerId = user.get<String>('objectId')!;
                                                               final Firstname = user.get<String>('Firstname')!;
                                                               final Lastname = user.get<String>('Lastname')!;
-                                                              final Email = user.get<String>('email')!;
                                                               final Phonenumber = user.get<String>('Phonenumber')!;
                                                               final controllerFirstname = TextEditingController(text: Firstname);
                                                               final controllerLasttname = TextEditingController(text: Lastname);
-                                                              final controllerEmail = TextEditingController(text: Email);
+                                                              final controllerEmail = TextEditingController(text: email);
                                                               final controllerPhoneNumber = TextEditingController(text: Phonenumber);
                                                               return Column( children: [
                                                                 Container(
@@ -215,10 +201,10 @@ class _AccountPage extends State<AccountPage>{
                                                                     validator: MultiValidator([
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
-                                                                      MinLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long'),
-                                                                      MaxLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long')
+                                                                      MinLengthValidator(10,
+                                                                          errorText: 'must be 10 digits long'),
+                                                                      MaxLengthValidator(10,
+                                                                          errorText: 'must be 10 digits long')
                                                                     ]),
                                                                     decoration: InputDecoration(
                                                                         labelText: '',
@@ -244,12 +230,6 @@ class _AccountPage extends State<AccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.emailAddress,
                                                                     controller: controllerEmail,
-                                                                    validator: MultiValidator([
-                                                                      RequiredValidator(
-                                                                          errorText: 'this field is required'),
-                                                                      EmailValidator(
-                                                                          errorText: 'enter a valid email address')
-                                                                    ]),
                                                                     decoration: ThemeHelper().textInputDecoration('',"Email") ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -262,30 +242,28 @@ class _AccountPage extends State<AccountPage>{
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
                                                                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel"),
+                                                                          child: Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
-                                                                            _update = false;
+                                                                            updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
-
                                                                           },
                                                                         );
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update"),
+                                                                          child: Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
-                                                                            _update = true;
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
                                                                         // set up the AlertDialog
                                                                         AlertDialog alert = AlertDialog(
-                                                                          title: Text(""),
-                                                                          content: Text("Are you sure you want to update your account information?"),
+                                                                          title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          content: Text(""),
                                                                           actions: [
                                                                             cancelButton,
                                                                             continueButton,
@@ -298,55 +276,11 @@ class _AccountPage extends State<AccountPage>{
                                                                             return alert;
                                                                           },
                                                                         );
-                                                                        if(_update)
-                                                                          updateInfo(id,Email,controllerFirstname.text, controllerLasttname.text, controllerEmail.text, controllerPhoneNumber.text);
                                                                       }
                                                                     },
                                                                   ),
                                                                 ),
-
-                                                                SizedBox(height: 20.0),
-
-                                                                Container(
-                                                                  decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                  child: ElevatedButton.icon(
-                                                                    style: ThemeHelper().buttonStyle(),
-
-                                                                    onPressed: (){
-                                                                      Widget cancelButton = TextButton(
-                                                                        child: Text("No"),
-                                                                        onPressed:  () {
-                                                                          Navigator.of(context).pop();
-                                                                        },
-                                                                      );
-                                                                      Widget continueButton = TextButton(
-                                                                        child: Text("Yes"),
-                                                                        onPressed:  () {
-                                                                          doUserLogout();
-                                                                        },
-                                                                      );
-                                                                      // set up the AlertDialog
-                                                                      AlertDialog alert = AlertDialog(
-                                                                        title: Text("Are you sure you want to log out from your account?"),
-                                                                        content: Text(""),
-                                                                        actions: [
-                                                                          cancelButton,
-                                                                          continueButton,
-                                                                        ],
-                                                                      );
-                                                                      // show the dialog
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder: (BuildContext context) {
-                                                                          return alert;
-                                                                        },
-                                                                      );
-                                                                    }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('LOGOUT' ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
-                                                                  ),
-                                                                ),
-
                                                               ] );
-
                                                             });}}});
                                           }}})] ),
                         ),
@@ -364,31 +298,30 @@ class _AccountPage extends State<AccountPage>{
                   gap: 8,
                   padding: const EdgeInsets.all(10),
                   tabs: [
-                    GButton(icon: Icons.home, iconActiveColor:  Colors.purple.shade200,iconSize: 35,),
-                    GButton(icon: Icons.shopping_cart, iconActiveColor:  Colors.purple.shade200,  iconSize: 35,),
-                    GButton(icon: Icons.shopping_bag, iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
-                    GButton(icon: Icons.settings,iconActiveColor:  Colors.purple.shade200,iconSize: 35, ),
+                    GButton(
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
-                    if(_selectedIndex == 0){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
-                    }
-                    else if (_selectedIndex == 1) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
                     } else if (_selectedIndex == 3) {
-                      _selectedIndex = 0;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SettingsPage()));
-
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
                   }),
                 )))
@@ -396,17 +329,29 @@ class _AccountPage extends State<AccountPage>{
   }
 
 
-  Future<void> updateInfo(id, email, editFirstname, editLastname, editEmail, editPhonenumber) async {
-    var todo = ParseUser(null,null,null)..objectId = id
+  Future<void> updateInfo(userId, CustomerId, editFirstname, editLastname, editPhonenumber) async {
+    var object;
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Customer'));
+    parseQuery.whereEqualTo('objectId', CustomerId);
+
+    final apiResponse = await parseQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        object = o as ParseObject;
+      }
+    }
+    var todo = object
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
-      ..set('Phonenumber', editPhonenumber);
+      ..set('Phonenumber', editPhonenumber)
+      ..set('user', (ParseObject('_User')..objectId = userId)
+          .toPointer());
     final ParseResponse parseResponse = await todo.save();
 
     if (parseResponse.success) {
-      print('Object updated: $id');
+      showSuccess();
     } else {
-      print('Object updated with failed: ${parseResponse.error.toString()}');
+      showError(parseResponse.error!.message);
     }
   }
 
@@ -415,11 +360,11 @@ class _AccountPage extends State<AccountPage>{
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
-  Future<List> currentuser(objectid) async {
-    QueryBuilder<ParseUser> queryUsers =
-    QueryBuilder<ParseUser>(ParseUser.forQuery());
-    queryUsers.whereContains('objectId', objectid);
-    final ParseResponse apiResponse = await queryUsers.query();
+  Future<List> currentuser(userId) async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('user', userId);
+    final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
@@ -427,7 +372,21 @@ class _AccountPage extends State<AccountPage>{
     }
   }
 
+  void showSuccess() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          bool manuallyClosed = false;
+          Future.delayed(Duration(seconds: 3)).then((_) {
+            if (!manuallyClosed) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+            }
+          });
+          return AlertDialog(
+              content: Text('Changes saved!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
 
+        });
+  }
 
 
   void showError(String errorMessage) {
@@ -435,11 +394,11 @@ class _AccountPage extends State<AccountPage>{
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
+          title:  Text("Update failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+          content: Text("Account already exists for this phone number.", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -449,18 +408,4 @@ class _AccountPage extends State<AccountPage>{
       },
     );
   }
-
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-      });
-    } else {
-      showError(response.error!.message);
-    }
-  }
 }
-
