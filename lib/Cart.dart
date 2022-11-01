@@ -322,53 +322,35 @@ class Cart extends State<CartPage> {
             color: Colors.white,
             child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: GNav(
                   gap: 8,
                   padding: const EdgeInsets.all(10),
                   tabs: [
                     GButton(
-                        icon: Icons.home,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                     GButton(
-                        icon: Icons.shopping_cart,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                     GButton(
-                        icon: Icons.shopping_bag,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                     GButton(
-                        icon: Icons.settings,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
                     if (_selectedIndex == 0) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
-                      }
-                    else if (_selectedIndex == 1) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CartPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  SettingsPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 ))));
