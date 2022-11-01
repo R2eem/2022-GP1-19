@@ -423,7 +423,7 @@ class Signup extends State<SignupPage> {
     if(errorMessage.compareTo('Account already exists for this username.')==0){
       errorMessage = 'Account already exists for this email address.';
     }
-    if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
+    if(errorMessage.compareTo('phonenumber')==0){
       errorMessage = 'Account already exists for this phone number.';
     }
     if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character.')==0){
@@ -453,25 +453,31 @@ class Signup extends State<SignupPage> {
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();
     var phonenumber = controllerPhoneNumber.text.trim();
-      final user = ParseUser.createUser(email, password, email)
-       ..set('Phonenumber', phonenumber);
+      final user = ParseUser.createUser(email, password, email);
 
-    var response = await user.signUp();
-      if (response.success) {
-        final createCustomer = ParseObject('Customer')
-          ..set('Firstname', firstname)
-          ..set('Lastname', lastname)
-          ..set('user', user);
-        var response2 = await createCustomer.save();
-        if(response2.success){
+    QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queyPhonenumber.whereEqualTo('Phonenumber', phonenumber);
+    var apiResponse = await queyPhonenumber.query();
+    if (apiResponse.success) {
+      if(apiResponse.count == 0){
+        var response = await user.signUp();
+        print("si");
+        if (response.success) {
+          print(response.success);
+          final createCustomer = ParseObject('Customer')
+            ..set('Firstname', firstname)
+            ..set('Lastname', lastname)
+            ..set('Phonenumber', phonenumber)
+            ..set('user', user);
+          await createCustomer.save();
           showSuccess();
+        } else {
+          print('erero');
+          showError(response.error!.message);
         }
-        else{
-          showError(response2.error!.message);
-        }
-      } else {
-        showError(response.error!.message);
       }
+      else(showError('phonenumber'));
+    }
   }
 
   var snackBar = SnackBar(
