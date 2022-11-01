@@ -1,111 +1,80 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/animation/FadeAnimation.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/SignupPage.dart';
 import 'package:untitled/ForgotPassword.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/main.dart';
+import 'package:untitled/widgets/header_widget.dart';
+import 'common/theme_helper.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final keyApplicationId = 'dztgYRZyOeHtmWYAD93X2QJSuMSbGuelhHVpsQ3p';
-  final keyClientKey = 'H4yYM9tUlHZQ59JbYcNL33rfxSrkNf1Ll0g5Dqf1';
-  final keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: LoginPage(),
-  ));
-}
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}): super(key:key);
   @override
   Login createState() => Login();
 }
 
-String password = '';
-
 class Login extends State<LoginPage> {
-  final controllerUsername = TextEditingController();
+  final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  double _headerHeight = 250;
+  bool _isVisible = false;
   bool isLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 20,
-              color: Colors.black,
-            ),
-          ),
-        ),
         body: SingleChildScrollView(
-            child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          height: MediaQuery.of(context).size.height - 50,
-          width: double.infinity,
-          child: Form(
+          child: Stack(
+            children: [
+              Container(
+            height: _headerHeight,
+            child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
+            ),
+            SafeArea(
+              child: Column(
+                  children: [
+              IconButton(padding: EdgeInsets.fromLTRB(0, 10, 370, 0),
+              iconSize: 40,
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push( context, MaterialPageRoute( builder: (context) => HomePage()), );
+              }, icon: Icon(Icons.keyboard_arrow_left),),
+              SizedBox(height: 200,),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Log in', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 50, color: HexColor('#282b2b')),),
+                          SizedBox(width: 10,),
+                          Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 50,),
+                        ]),
+                    SizedBox(height: 5,),
+                    Text('Log in to your account', style: TextStyle(fontFamily: 'Lato',fontSize: 18, color: Colors.grey[700],),),
+                    SizedBox(height: 25.0),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              alignment: Alignment.center,
+              child: Column(
+                  children: [
+          Form(
             key: _formKey,
             //child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      FadeAnimation(
-                          1,
-                          Text(
-                            "Login",
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      FadeAnimation(
-                          1.2,
-                          Text(
-                            "Login to your account",
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[700]),
-                          )),
-                    ],
-                  ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        //username
-                        FadeAnimation(
-                          1.3, Text(
-                          'Username',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black87),
-                        )),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        FadeAnimation(
-                          1.3,TextFormField(
+                //email
+                  Container(
+                  child:TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: controllerUsername,
+                          controller: controllerEmail,
                           enabled: !isLoggedIn,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.emailAddress,
                           textCapitalization: TextCapitalization.none,
                           autocorrect: false,
                           obscureText: false,
@@ -113,160 +82,125 @@ class Login extends State<LoginPage> {
                             RequiredValidator(
                                 errorText: 'this field is required'),
                           ]),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey)),
-                          ),
-                        )),
+                          decoration: ThemeHelper().textInputDecoration('Email', 'Enter your email address'),),
+                       decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                         SizedBox(
                           height: 30,
                         ),
                         //password
-                        FadeAnimation(
-                          1.4,Text(
-                          'Password',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black87),
-                        )),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        FadeAnimation(
-                          1.4,TextFormField(
+                    Container(
+                      child:TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: controllerPassword,
                           enabled: !isLoggedIn,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.none,
                           autocorrect: false,
-                          obscureText: true,
+                          obscureText: !_isVisible,
                           validator: MultiValidator([
                             RequiredValidator(
-                                errorText: 'password is required'),
+                                errorText: 'this is required'),
                           ]),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey)),
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isVisible = !_isVisible;
+                              });
+                            },
+                            icon: _isVisible ? Icon(Icons.visibility, color: Colors.black,) :
+                            Icon(Icons.visibility_off, color: Colors.grey,),
                           ),
-                        ),
-                      )],
-                    ),
+                          labelText: 'Password',
+                          hintText: 'Enter you password',
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                          focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                        ),),
+                      decoration: BoxDecoration(boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 5),
+                        )
+                      ]),),
                   SizedBox(
-                    height: 30,
+                    height: 15,
                   ),
-                  FadeAnimation(
-                      1.4,
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Container(
-                          padding: EdgeInsets.only(top: 0, left: 0),
-                          decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0xFFF06292),
-                                      spreadRadius: 1,
-                                      blurRadius: 8,
-                                      offset: Offset(4,4),
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.white,
-                                      spreadRadius: 1,
-                                      blurRadius: 8,
-                                      offset: Offset(-4,-4),
-                                    )
-                                  ],
-                              borderRadius: BorderRadius.circular(50),
-                              ),
-                          child: MaterialButton(
-                            minWidth: double.infinity,
-                            height: 60,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                doUserLogin();
-                              }
-                            },
-                            color: Colors.pink[100],
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
-                            ),
-                          ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(10,0,10,20),
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
+                      },
+                      child: Text( "Forgot your password?", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Theme.of(context).accentColor, ),
+                      ),
+                    ),
+                  ),
+                    Container(
+                      decoration: ThemeHelper().buttonBoxDecoration(context),
+                      child: ElevatedButton(
+                        style: ThemeHelper().buttonStyle(),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(35, 7, 35, 7),
+                          child: Text('Log In'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                         ),
-                      )),
-                  FadeAnimation(
-                      1.5,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Don't have an account?"),
-                          TextButton(
-                            child: Text(
-                              'Sign up',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignupPage()));
-                            },
-                          ),
-                        ],
-                      )),
-                  FadeAnimation(
-                      1.6,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          TextButton(
-                            child: Text(
-                              'Forgot password?',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ForgotPassword()));
-                            },
-                          ),
-                        ],
-                      ))
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            doUserLogin();
+                          };
+                        }
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10,20,10,20),
+                      //child: Text('Don\'t have an account? Create'),
+                      child: Text.rich(
+                          TextSpan(
+                              children: [
+                                TextSpan(text: "Don\'t have an account? ", style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
+                                TextSpan(
+                                  text: 'Sign up',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                                    },
+                                  style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
+                                ),
+                              ]
+                          )
+                        ),
+                    )
                 ],
               ),
-            ),
           ),
+                       ]),
+                  )])
+            )])
         ));
   }
 
 
   void showError(String errorMessage) {
+    if(errorMessage.compareTo('Invalid username/password.')==0){
+      errorMessage = 'Invalid email or password. Please try again.';
+    }
+    if(errorMessage.compareTo('User email is not verified.')==0){
+      errorMessage = 'Please verify your email before Login.';
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
+          content: Text(errorMessage, style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK"),
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -278,10 +212,10 @@ class Login extends State<LoginPage> {
   }
 
   void doUserLogin() async {
-    final username = controllerUsername.text.trim();
+    final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    final user = ParseUser(username, password, null);
+    final user = ParseUser(email, password, null);
 
     var response = await user.login();
 
@@ -290,19 +224,6 @@ class Login extends State<LoginPage> {
         isLoggedIn = true;
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-    } else {
-      showError(response.error!.message);
-    }
-  }
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-
-    if (response.success) {
-      setState(() {
-        isLoggedIn = false;
-      });
     } else {
       showError(response.error!.message);
     }
