@@ -8,6 +8,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -318,6 +319,7 @@ class Signup extends State<SignupPage> {
                                   ],
                                 ),
                    ),
+                                SizedBox(height: 20,),
                                 //confirm password
                                   Container(
                                     child: TextFormField(
@@ -357,7 +359,7 @@ class Signup extends State<SignupPage> {
                                       )
                                     ]),),
                               SizedBox(
-                                height: 30,
+                                height: 20,
                               ),
                     Container(
                       decoration: ThemeHelper().buttonBoxDecoration(context),
@@ -403,28 +405,25 @@ class Signup extends State<SignupPage> {
 
   void showSuccess() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-         content: const Text("User was successfully created! Please verify your email before Login!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-          actions: <Widget>[
-            new TextButton(
-              child:  Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                }
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext context) {
+           bool manuallyClosed = false;
+           Future.delayed(Duration(seconds: 5)).then((_) {
+           if (!manuallyClosed) {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+           }
+           });
+           return AlertDialog(
+               content: Text('Account was successfully created! Please verify your email before log in!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
+
+        });
   }
 
   void showError(String errorMessage) {
     if(errorMessage.compareTo('Account already exists for this username.')==0){
       errorMessage = 'Account already exists for this email address.';
     }
-    if(errorMessage.compareTo('A duplicate value for a field with unique values was provided')==0){
+    if(errorMessage.compareTo('phonenumber')==0){
       errorMessage = 'Account already exists for this phone number.';
     }
     if(errorMessage.compareTo('Password must be at least 8 characters, contains one upper, one lower and one special character.')==0){
@@ -454,21 +453,45 @@ class Signup extends State<SignupPage> {
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();
     var phonenumber = controllerPhoneNumber.text.trim();
-    var object;
-    phonenumber = '966'+phonenumber.substring(1,10);
       final user = ParseUser.createUser(email, password, email);
 
-      var response = await user.signUp();
-      if (response.success) {
-        final createCustomer = ParseObject('Customer')
-          ..set('Firstname', firstname)
-          ..set('Lastname', lastname)
-          ..set('Phonenumber', phonenumber)
-          ..set('user', user);
-        await createCustomer.save();
-        showSuccess();
-      } else {
-        showError(response.error!.message);
+    QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queyPhonenumber.whereEqualTo('Phonenumber', phonenumber);
+    var apiResponse = await queyPhonenumber.query();
+    if (apiResponse.success) {
+      if(apiResponse.count == 0){
+        var response = await user.signUp();
+        print("si");
+        if (response.success) {
+          print(response.success);
+          final createCustomer = ParseObject('Customer')
+            ..set('Firstname', firstname)
+            ..set('Lastname', lastname)
+            ..set('Phonenumber', phonenumber)
+            ..set('user', user);
+          await createCustomer.save();
+          showSuccess();
+        } else {
+          print('erero');
+          showError(response.error!.message);
+        }
       }
+      else(showError('phonenumber'));
+    }
   }
+
+  var snackBar = SnackBar(
+    /// need to set following properties for best effect of awesome_snackbar_content
+    elevation: 0,
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.transparent,
+    content: AwesomeSnackbarContent(
+      title: 'Welcome!',
+      message:
+      'Account was successfully created. Please verify your email before log in!',
+
+      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+      contentType: ContentType.success,
+    ),
+  );
 }
