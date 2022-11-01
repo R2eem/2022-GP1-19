@@ -274,8 +274,13 @@ class Category extends State<CategoryPage> {
                                                                                     borderRadius: BorderRadius.circular(15),
                                                                                 )),
                                                                                 child: IconButton(
-                                                                                    onPressed: () {
-                                                                                      addToCart(medId, customerId);
+                                                                                    onPressed: () async {
+                                                                                      if(await addToCart(medId, customerId)) {
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                                                            SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                              duration: Duration(milliseconds: 3000),
+                                                                                            ));
+                                                                                      };
                                                                                       },
                                                                                     icon: const Icon(
                                                                                       Icons.add_shopping_cart_rounded,
@@ -362,7 +367,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  void addToCart(objectId, customerId) async{
+  Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
@@ -380,17 +385,22 @@ class Category extends State<CategoryPage> {
         }
       }
     }
+    else{
+      return false;
+    }
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
         ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
         ..set('Quantity', 1);
       await addToCart.save();
+      return true;
     }
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
+      return true;
     }
     }
   }

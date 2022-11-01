@@ -181,7 +181,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                margin: EdgeInsets.only(right: 15.0, left: 15.0,top: 25.0),
                                                                                                child:
                                                                                                      Text(
-                                                                                                       "${(Publicprice).toStringAsFixed(2) +'SAR'}",
+                                                                                                       "${(Publicprice).toStringAsFixed(2) +' SAR'}",
                                                                                                        style: TextStyle(
                                                                                                            fontFamily: 'Lato',
                                                                                                            fontWeight: FontWeight.w600,
@@ -337,9 +337,14 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                    ),
                                                                                                  )),
 
-                                                                                                 onPressed: () {
-                                                                                                addToCart(medId, widget.customerId);
-                                                                                                 }
+                                                                                               onPressed: () async {
+                                                                                                 if(await addToCart(medId, widget.customerId)) {
+                                                                                                   ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                       SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                                         duration: Duration(milliseconds: 3000),
+                                                                                                       ));
+                                                                                                 };
+                                                                                               },
                                                                                              ),
                                                                                            ),
                                                                                      ),
@@ -409,7 +414,7 @@ class MedDetails extends State<medDetailsPage> {
     return object;
   }
 
-  void addToCart(objectId, customerId) async{
+  Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
@@ -427,19 +432,22 @@ class MedDetails extends State<medDetailsPage> {
         }
       }
     }
+    else{
+      return false;
+    }
     if (!exist) {
       final addToCart = ParseObject('Cart')
-        ..set('customer', (ParseObject('Customer')
-          ..objectId = customerId)
-            .toPointer())..set('medication', (ParseObject('Medications')
-          ..objectId = objectId)
-            .toPointer())..set('Quantity', 1);
+        ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
+        ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
+        ..set('Quantity', 1);
       await addToCart.save();
+      return true;
     }
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
+      return true;
     }
   }
 }

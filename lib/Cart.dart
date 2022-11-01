@@ -151,15 +151,17 @@ class Cart extends State<CartPage> {
                                                                                         Dismissible(
                                                                                             key: UniqueKey(),
                                                                                             background: Container(
+                                                                                              alignment: Alignment.centerRight,
+                                                                                              padding: EdgeInsets.symmetric(horizontal: 30),
                                                                                                 margin: EdgeInsets.only(left: 16, right: 16, top: 16),
                                                                                                 decoration: BoxDecoration(
-                                                                                                    color: Colors.red,
+                                                                                                    color: Colors.red[100],
                                                                                                     borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                                 child: Icon(
-                                                                                                  Icons.delete,
-                                                                                                  size: 30,
+                                                                                                  Icons.delete_outline,
+                                                                                                  size: 40,
                                                                                                   semanticLabel: 'Delete'
-                                                                                                  ,color: Colors.white,)),
+                                                                                                  ,color: Colors.red,)),
                                                                                             direction: DismissDirection.endToStart,
                                                                                             confirmDismiss: (DismissDirection direction) async {
                                                                                               return await showDialog(
@@ -181,8 +183,14 @@ class Cart extends State<CartPage> {
                                                                                                 },
                                                                                               );
                                                                                             },
-                                                                                            onDismissed: (direction){
-                                                                                              deleteCartMed(medId, quantity);
+                                                                                            onDismissed: (direction) async {
+                                                                                              if(await deleteCartMed(medId, quantity)){
+                                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                                  content: Text("$TradeName deleted from your cart", style:  TextStyle(fontSize: 20),),
+                                                                                                  duration: Duration(milliseconds: 3000),
+                                                                                                ));
+                                                                                              }
+
                                                                                             },
 
                                                                                             child:
@@ -258,7 +266,7 @@ class Cart extends State<CartPage> {
                                                                                                                                       child: Text(
                                                                                                                                         '$counter',style: TextStyle(
                                                                                                                                           fontFamily: "Lato",
-                                                                                                                                          fontSize: 18,
+                                                                                                                                          fontSize: 22,
                                                                                                                                           color: Colors.black),
                                                                                                                                       ),
                                                                                                                                     ),
@@ -344,6 +352,12 @@ class Cart extends State<CartPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CategoryPage()));
+                      }
+                    else if (_selectedIndex == 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
                       Navigator.push(
                           context,
@@ -374,10 +388,10 @@ class Cart extends State<CartPage> {
     }
   }
 
-  Future<List<ParseObject>> getCustomerCartMed(medId) async {
+  Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
-    customerCartMed.whereEqualTo('objectId', medId.objectId);
+    customerCartMed.whereEqualTo('objectId', medIdCart.objectId);
     final apiResponse = await customerCartMed.query();
 
     if (apiResponse.success && apiResponse.results != null) {
@@ -388,6 +402,7 @@ class Cart extends State<CartPage> {
   }
 
   Future<bool> deleteCartMed(medId, Quantity) async {
+    print('ooo');
     final QueryBuilder<ParseObject> parseQuery =
         QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
@@ -399,15 +414,6 @@ class Cart extends State<CartPage> {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
         object.delete();
-        final apiResponse2 = await ParseObject('Medications').get(medId);
-
-        if (apiResponse2.success && apiResponse2.results != null) {
-          for (var o in apiResponse2.results) {
-            final object = o as ParseObject;
-            TotalPrice = TotalPrice - (object.get('Publicprice')*Quantity);
-            TotalPrice = num.parse(TotalPrice.toStringAsFixed(2));
-          }
-        }
         return true;
       }
     }
