@@ -13,7 +13,8 @@ import 'main.dart';
 
 
 class AccountPage extends StatefulWidget{
-
+  final String customerId;
+  const AccountPage(this.customerId);
   @override
   State<StatefulWidget> createState() {
     return _AccountPage();
@@ -319,7 +320,7 @@ class _AccountPage extends State<AccountPage>{
                     } else if (_selectedIndex == 1) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
                     } else if (_selectedIndex == 3) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }

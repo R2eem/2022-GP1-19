@@ -312,7 +312,7 @@ class Category extends State<CategoryPage> {
                     } else if (_selectedIndex == 1) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
                     } else if (_selectedIndex == 3) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
