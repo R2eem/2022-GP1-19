@@ -9,7 +9,6 @@ import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-import 'medDetails.dart';
 class CategoryPage extends StatefulWidget {
   @override
   Category createState() => Category();

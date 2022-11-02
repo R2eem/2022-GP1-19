@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
-import 'NonPrescriptionCategory.dart';
 import 'Orders.dart';
 import 'CategoryPage.dart';
-import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-
 import 'common/theme_helper.dart';
 
 class medDetailsPage extends StatefulWidget {
