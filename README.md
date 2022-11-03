@@ -88,3 +88,15 @@ Resource: https://pub.dev/packages/flutter_launcher_icons
 
 Imports: No imports
 
+### Configuration:
+
+- Sound null safety
+
+  Sound null safety prevent some libraries from running
+  
+  - Run command:
+  
+               - flutter run --no-sound-null-safety
+  
+  
+
