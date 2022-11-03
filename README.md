@@ -24,73 +24,73 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 ### Packages and dependencies:
 - *First:* 
 
-Name: parse_server_sdk_flutter
+         - Name: parse_server_sdk_flutter
 
-Version: 3.1.0
+         - Version: 3.1.0
 
-Usage: Install flutter plugin to get access to parse server backend 
+         - Usage: Install flutter plugin to get access to parse server backend 
 
-Resource: https://pub.dev/packages/parse_server_sdk_flutter/score
+         - Resource: https://pub.dev/packages/parse_server_sdk_flutter/score
 
-Imports: 
+         - Imports: 
 
-        -import 'package:flutter/material.dart';
+                   - import 'package:flutter/material.dart';
         
-        -import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+                   - import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
     
 - *Second:* 
 
-Name: form_field_validator
+         - Name: form_field_validator
 
-Version: 1.1.0
+         - Version: 1.1.0
 
-Usage: Provides common form fields validations
+         - Usage: Provides common form fields validations
 
-Resource: https://pub.dev/packages/form_field_validator
+         - Resource: https://pub.dev/packages/form_field_validator
 
-Imports: 
+         - Imports: 
 
-        -import 'package:form_field_validator/form_field_validator.dart';
+                   - import 'package:form_field_validator/form_field_validator.dart';
 
 - *Third:* 
 
-Name: google_nav_bar
+         - Name: google_nav_bar
 
-Version: 5.0.6
+         - Version: 5.0.6
 
-Usage: Bottom navigation bar
+         - Usage: Bottom navigation bar
 
-Resource: https://pub.dev/packages/google_nav_bar
+         - Resource: https://pub.dev/packages/google_nav_bar
 
-Imports: 
+         - Imports: 
 
-        -import 'package:google_nav_bar/google_nav_bar.dart';
+                   - import 'package:google_nav_bar/google_nav_bar.dart';
 
 - *Fourth:* 
 
-Name: hexcolor
+         - Name: hexcolor
 
-Version: 2.0.4
+         - Version: 2.0.4
 
-Usage: Include hex colors in the application
+         -         -Usage: Include hex colors in the application
 
-Resource: https://pub.dev/packages/hexcolor
+         - Resource: https://pub.dev/packages/hexcolor
 
-Imports:
+         -Imports:
 
-        -import 'package:hexcolor/hexcolor.dart';
+                  - import 'package:hexcolor/hexcolor.dart';
 
 - *Fifth:* 
 
-Name: flutter_launcher_icons
+         - Name: flutter_launcher_icons
 
-Version: 0.10.0
+         - Version: 0.10.0
 
-Usage: Update the application launcher ison
+         - Usage: Update the application launcher ison
 
-Resource: https://pub.dev/packages/flutter_launcher_icons
+         - Resource: https://pub.dev/packages/flutter_launcher_icons
 
-Imports: No imports
+         - Imports: No imports
 
 ### Configuration:
 
