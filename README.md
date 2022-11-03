@@ -86,7 +86,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
    - Version: 0.10.0
 
-   - Usage: Update the application launcher ison
+   - Usage: Update the application launcher icon
 
    - Resource: https://pub.dev/packages/flutter_launcher_icons
 
