@@ -362,7 +362,7 @@ class Cart extends State<CartPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OrdersPage()));
+                              builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
                       Navigator.push(
                           context,
