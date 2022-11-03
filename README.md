@@ -109,4 +109,11 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
   
   Font used in Tiryaq application is 'Lato'
 
-        
+  - Font:
+
+            - family: Lato
+                   fonts:
+                         - asset: fonts/Lato-Black.ttf
+                         - asset: fonts/Lato-Bold.ttf
+                         - asset: fonts/Lato-Regular.ttf
+
