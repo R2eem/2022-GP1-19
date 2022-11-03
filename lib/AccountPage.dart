@@ -13,8 +13,7 @@ import 'main.dart';
 
 
 class AccountPage extends StatefulWidget{
-  final String customerId;
-  const AccountPage(this.customerId);
+
   @override
   State<StatefulWidget> createState() {
     return _AccountPage();
@@ -202,10 +201,10 @@ class _AccountPage extends State<AccountPage>{
                                                                     validator: MultiValidator([
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
-                                                                      MinLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long'),
-                                                                      MaxLengthValidator(12,
-                                                                          errorText: 'must be 12 digits long')
+                                                                      MinLengthValidator(10,
+                                                                          errorText: 'must be 10 digits long'),
+                                                                      MaxLengthValidator(10,
+                                                                          errorText: 'must be 10 digits long')
                                                                     ]),
                                                                     decoration: InputDecoration(
                                                                         labelText: '',
@@ -248,16 +247,16 @@ class _AccountPage extends State<AccountPage>{
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
-                                                                        Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
-                                                                          onPressed:  () {
-                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
-                                                                          },
-                                                                        );
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          child: Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        );
+                                                                        Widget cancelButton = TextButton(
+                                                                          child: Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
@@ -266,8 +265,8 @@ class _AccountPage extends State<AccountPage>{
                                                                           title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           content: Text(""),
                                                                           actions: [
-                                                                            cancelButton,
                                                                             continueButton,
+                                                                            cancelButton,
                                                                           ],
                                                                         );
                                                                         // show the dialog
@@ -300,23 +299,23 @@ class _AccountPage extends State<AccountPage>{
                   padding: const EdgeInsets.all(10),
                   tabs: [
                     GButton(
-                      icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                   ],
                   selectedIndex: _selectedIndex,
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
                     if (_selectedIndex == 0) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
@@ -350,7 +349,7 @@ class _AccountPage extends State<AccountPage>{
     final ParseResponse parseResponse = await todo.save();
 
     if (parseResponse.success) {
-        showSuccess();
+      showSuccess();
     } else {
       showError(parseResponse.error!.message);
     }
@@ -375,21 +374,18 @@ class _AccountPage extends State<AccountPage>{
 
   void showSuccess() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: const Text("Changes saved!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-          actions: <Widget>[
-            new TextButton(
-                child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
-                }
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext context) {
+          bool manuallyClosed = false;
+          Future.delayed(Duration(seconds: 3)).then((_) {
+            if (!manuallyClosed) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+            }
+          });
+          return AlertDialog(
+              content: Text('Changes saved!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
+
+        });
   }
 
 
@@ -398,8 +394,8 @@ class _AccountPage extends State<AccountPage>{
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text("Update failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
-          content: Text("Account already exists for this phone number."),
+          title:  Text("Update failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+          content: Text("Account already exists for this phone number.", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
           actions: <Widget>[
             new TextButton(
               child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),

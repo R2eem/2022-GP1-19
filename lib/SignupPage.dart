@@ -405,18 +405,21 @@ class Signup extends State<SignupPage> {
 
   void showSuccess() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-           bool manuallyClosed = false;
-           Future.delayed(Duration(seconds: 5)).then((_) {
-           if (!manuallyClosed) {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-           }
-           });
-           return AlertDialog(
-               content: Text('Account was successfully created! Please verify your email before log in!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
-
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text('Account was successfully created! Please verify your email before log in!', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showError(String errorMessage) {
@@ -479,19 +482,4 @@ class Signup extends State<SignupPage> {
       else(showError('phonenumber'));
     }
   }
-
-  var snackBar = SnackBar(
-    /// need to set following properties for best effect of awesome_snackbar_content
-    elevation: 0,
-    behavior: SnackBarBehavior.floating,
-    backgroundColor: Colors.transparent,
-    content: AwesomeSnackbarContent(
-      title: 'Welcome!',
-      message:
-      'Account was successfully created. Please verify your email before log in!',
-
-      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-      contentType: ContentType.success,
-    ),
-  );
 }

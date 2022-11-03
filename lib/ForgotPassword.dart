@@ -48,7 +48,7 @@ class Forgot extends State<ForgotPassword> {
                           Image.asset('assets/logoheader.png', fit: BoxFit.contain, width: 50, height: 40,),
                         ]),
                     SizedBox(height: 5,),
-                    Text('Enter your email address associated to your account', style: TextStyle(fontFamily: 'Lato',fontSize: 16, color: Colors.grey[700],),),
+                    Text('Enter your email address associated to your account',textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 16, color: Colors.grey[700],),),
                     SizedBox(height: 25.0),
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
