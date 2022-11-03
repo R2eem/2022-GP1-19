@@ -5,8 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:resize/resize.dart';
+
 
 
 Future<void> main() async {
@@ -27,9 +26,6 @@ class MyApp extends StatelessWidget {
   //Color _accentColor = HexColor('#ad5bf5');
   @override
   Widget build(BuildContext context) {
-    return Resize(
-        allowtextScaling: true,
-        builder: () {
           // print(ResizeUtil().deviceType);
           // print(ResizeUtil().orientation);
           // print(ResizeUtil().screenHeight);
@@ -44,8 +40,6 @@ class MyApp extends StatelessWidget {
             ),
             home: HomePage(),
           );
-        }
-    );
   }
 }
 class HomePage extends StatelessWidget {
@@ -63,26 +57,26 @@ class HomePage extends StatelessWidget {
               ),
               SafeArea(
                 child: Container(
-                    padding: EdgeInsets.fromLTRB(2.vw, 1.vh, 2.vw, 1.vh),
-                    margin: EdgeInsets.fromLTRB(2.vw, 1.vh, 2.vw, 1.vh),
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Column(
                       children: [
                         Container(
                             height: MediaQuery.of(context).size.height / 4,
-                            child: Image.asset('assets/tiryaglogo.png',height: 40.vh, width: 40.vw,)
+                            child: Image.asset('assets/tiryaglogo.png',height: 400, width: 400,)
                         ),
-                        SizedBox(height: 2.vh,),
+                        SizedBox(height: 20,),
                         Text("Who are you?",
                   textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'Lato',fontSize: 25.sp, fontWeight: FontWeight.bold),),
-              SizedBox(height: 5.vh,),
+                    style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
+              SizedBox(height: 50,),
               Container(
                 decoration: ThemeHelper().buttonBoxDecoration(context),
                 child: ElevatedButton(
                   style: ThemeHelper().buttonStyle(),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(7.vw, 1.vh, 7.vw, 1.vh),
-                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23.sp, fontWeight: FontWeight.bold, color: Colors.white),),
+                    padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                   onPressed: (){
                     //After successful login we will redirect to profile page. Let's create profile page now
@@ -90,14 +84,14 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
-                  SizedBox(height: 3.vh,),
+                  SizedBox(height: 35,),
                         Container(
                           decoration: ThemeHelper().buttonBoxDecoration(context),
                           child: ElevatedButton(
                             style: ThemeHelper().buttonStyle(),
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(7.vw, 1.vh, 7.vw, 1.vh),
-                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23.sp, fontWeight: FontWeight.bold, color: Colors.white),),
+                              padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                             ),
                             onPressed: (){
                               //After successful login we will redirect to profile page. Let's create profile page now

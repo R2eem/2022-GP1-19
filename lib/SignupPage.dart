@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/LoginPage.dart';
-import 'package:untitled/CategoryPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 
 class SignupPage extends StatefulWidget {
