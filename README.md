@@ -103,4 +103,10 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
                 flutter run --no-sound-null-safety
   
   
+### Fonts:
 
+- FontFamily
+  
+  Font used in Tiryaq application is 'Lato'
+
+        
