@@ -23,6 +23,7 @@ class Cart extends State<CartPage> {
   int _selectedIndex = 1;
   String searchString = "";
   bool cartEmpty = false;
+  int cartItemNum = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +104,7 @@ class Cart extends State<CartPage> {
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
+                                                              cartItemNum = snapshot.data!.length;
                                                               final customerCart = snapshot.data![index];
                                                               final medId = customerCart.get('medication')!;
                                                               final quantity = customerCart.get<num>('Quantity')!;
@@ -186,8 +188,10 @@ class Cart extends State<CartPage> {
                                                                                                   content: Text("$TradeName deleted from your cart", style:  TextStyle(fontSize: 20),),
                                                                                                   duration: Duration(milliseconds: 3000),
                                                                                                 ));
+                                                                                                }
+                                                                                              if(cartItemNum == 0){
+                                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                                                                                               }
-
                                                                                             },
 
                                                                                             child:
@@ -340,8 +344,8 @@ class Cart extends State<CartPage> {
                                     ))),
                             SizedBox(height: 15,),]))),
             ])),
-
-        persistentFooterButtons: [
+       //Button continue
+       /* persistentFooterButtons: [
           Text('Continue',style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold, )),
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
@@ -350,7 +354,7 @@ class Cart extends State<CartPage> {
                 });
               }, icon: const Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,
                 size: 24.0,))),
-        ],
+        ],*/
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -381,27 +385,14 @@ class Cart extends State<CartPage> {
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
                     if (_selectedIndex == 0) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     }
                     else if (_selectedIndex == 1) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CartPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrdersPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  SettingsPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 ))));
@@ -437,7 +428,6 @@ class Cart extends State<CartPage> {
   }
 
   Future<bool> deleteCartMed(medId, Quantity) async {
-    print('ooo');
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
@@ -449,6 +439,7 @@ class Cart extends State<CartPage> {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
         object.delete();
+        cartItemNum = cartItemNum - 1;
         return true;
       }
     }
@@ -474,13 +465,13 @@ class Cart extends State<CartPage> {
     }
   }
 
-  Future<void> decrement(objectId, customerId, Quantity) async {
+  Future<void> decrement(medId, customerId, Quantity) async {
     var medInCart;
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    parseQuery.whereEqualTo('medication', objectId.toPointer());
+    parseQuery.whereEqualTo('medication', medId.toPointer());
     final apiResponse = await parseQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
@@ -490,7 +481,28 @@ class Cart extends State<CartPage> {
       if (Quantity != 1) {
         var decrementQuantity = medInCart..set('Quantity', --Quantity);
         await decrementQuantity.save();
-
+      }
+      if (Quantity == 1){
+        Widget okButton = TextButton(
+          child: Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+          onPressed:  () {
+            Navigator.of(context).pop();
+          },
+        );
+        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+          title:  Text("Swipe to the left if tou want to delete this medication", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+          actions: [
+            okButton,
+          ],
+        );
+        // show the dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       }
 
     }

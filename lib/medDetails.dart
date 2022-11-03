@@ -313,7 +313,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                ]),
                                                                                            SizedBox(height: 50,),
                                                                                      Padding(
-                                                                                         padding: const EdgeInsets.only(left: 70.0, ), //The distance you want
+                                                                                         padding: const EdgeInsets.only(left: 60.0, ), //The distance you want
                                                                                          child:Container(
                                                                                              decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                                              child: ElevatedButton(
@@ -344,7 +344,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                              ),
                                                                                            ),
                                                                                      ),
-                                                                                          ]))]))
+                                                                                        SizedBox(height: 10,)  ]))]))
                                                                      ])
                                                               ])
                                                       )

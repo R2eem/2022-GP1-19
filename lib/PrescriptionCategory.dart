@@ -53,7 +53,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                             ),
                           ),
                              Container(
-                               margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                               margin: EdgeInsets.fromLTRB(40, 13, 0, 0),
                                child: Text('Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                              ),]),
                 SizedBox(height: 55,),
@@ -119,7 +119,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                         if(_selectedTab == 10)
                           packageType = 'Tablet';
                       },);},
-                    isScrollable: true,//if thr tabs are alot we can scroll them
+                    isScrollable: true,//if the tabs are a lot we can scroll them
                     controller: _tabController,
                     labelColor: Colors.grey[900],// the tab is clicked on now color
                     unselectedLabelColor: Colors.grey,

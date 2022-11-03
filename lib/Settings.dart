@@ -97,16 +97,16 @@ class Settings extends State<SettingsPage> {
                             style: ThemeHelper().buttonStyle(),
                             onPressed: (){
                               Widget cancelButton = TextButton(
-                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                              Widget continueButton = TextButton(
                                 child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                 onPressed:  () {
                                   doUserLogout();
                                 },
+                              );
+                              Widget continueButton = TextButton(
+                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                onPressed:  () {
+                                  Navigator.of(context).pop();
+                                  },
                               );
                               // set up the AlertDialog
                               AlertDialog alert = AlertDialog(

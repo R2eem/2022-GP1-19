@@ -17,14 +17,7 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-  runApp(
-      DevicePreview(
-      enabled: true,
-      tools: [
-        ...DevicePreview.defaultTools,
-      ],
-      builder: (context) => MyApp())
-  );
+  runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
   //Color _primaryColor = HexColor('#DC54FE');
@@ -66,7 +59,7 @@ class HomePage extends StatelessWidget {
             children: [
               Container(
                 height: _headerHeight,
-                child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
+                child: HeaderWidget(_headerHeight, false, Icons.login_rounded),
               ),
               SafeArea(
                 child: Container(

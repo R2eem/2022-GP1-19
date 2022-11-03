@@ -247,14 +247,14 @@ class _AccountPage extends State<AccountPage>{
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
-                                                                        Widget cancelButton = TextButton(
+                                                                        Widget continueButton = TextButton(
                                                                           child: Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
-                                                                        Widget continueButton = TextButton(
+                                                                        Widget cancelButton = TextButton(
                                                                           child: Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
@@ -265,8 +265,8 @@ class _AccountPage extends State<AccountPage>{
                                                                           title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           content: Text(""),
                                                                           actions: [
-                                                                            cancelButton,
                                                                             continueButton,
+                                                                            cancelButton,
                                                                           ],
                                                                         );
                                                                         // show the dialog
