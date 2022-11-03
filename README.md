@@ -19,7 +19,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
 ### Targeted environment:
 
-    The application soon will be only available on Google play store and would run on Android devices.
+ - The application soon will be only available on Google play store and would run on Android devices.
 
 ### Packages and dependencies:
 - *First:* 
