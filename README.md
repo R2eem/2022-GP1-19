@@ -34,9 +34,9 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
    - Imports: 
 
-                   - import 'package:flutter/material.dart';
+                    import 'package:flutter/material.dart';
         
-                   - import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+                    import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
     
 - *Second:* 
 
@@ -50,7 +50,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
    - Imports: 
 
-                   - import 'package:form_field_validator/form_field_validator.dart';
+                    import 'package:form_field_validator/form_field_validator.dart';
 
 - *Third:* 
 
@@ -64,7 +64,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
    - Imports: 
 
-                   - import 'package:google_nav_bar/google_nav_bar.dart';
+                    import 'package:google_nav_bar/google_nav_bar.dart';
 
 - *Fourth:* 
 
@@ -78,7 +78,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
    - Imports:
 
-                  - import 'package:hexcolor/hexcolor.dart';
+                   import 'package:hexcolor/hexcolor.dart';
 
 - *Fifth:* 
 
@@ -100,7 +100,7 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
   
   - Run command:
   
-               - flutter run --no-sound-null-safety
+                flutter run --no-sound-null-safety
   
   
 
