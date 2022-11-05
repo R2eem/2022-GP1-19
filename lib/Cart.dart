@@ -168,11 +168,11 @@ class Cart extends State<CartPage> {
                                                                                                     actions: <Widget>[
                                                                                                       TextButton(
                                                                                                         onPressed: () => Navigator.of(context).pop(true),
-                                                                                                        child: const Text("DELETE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                        child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                       ),
                                                                                                       TextButton(
                                                                                                         onPressed: () => Navigator.of(context).pop(false),
-                                                                                                        child: const Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                        child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                       ),
                                                                                                     ],
                                                                                                   );
@@ -185,7 +185,7 @@ class Cart extends State<CartPage> {
                                                                                                   content: Text("$TradeName deleted from your cart", style:  TextStyle(fontSize: 20),),
                                                                                                   duration: Duration(milliseconds: 3000),
                                                                                                 ));
-                                                                                                }
+                                                                                              }
                                                                                               if(cartItemNum == 0){
                                                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                                                                                               }
@@ -297,42 +297,42 @@ class Cart extends State<CartPage> {
                                                                     }
                                                                   });
                                                             }): Container(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            //mainAxisAlignment: MainAxisAlignment.center,
-                                                            children:[
-                                                              SizedBox(height: 20,),
-                                                              Text('Your cart is empty',
-                                                                style: TextStyle(
-                                                                  fontFamily: "Lato",
-                                                                  fontSize: 20,
-                                                                  fontWeight: FontWeight.w700),),
-                                                              Row(
+                                                            child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: [
-                                                                  Text('Click',
-                                                                style: TextStyle(
-                                                                  fontFamily: "Lato",
-                                                                  fontSize: 20,
-                                                                  fontWeight: FontWeight.w700),),
-                                                                  TextButton(onPressed: (){
-                                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CategoryPage()));
-                                                                  }, child: Text('here',
+                                                                //mainAxisAlignment: MainAxisAlignment.center,
+                                                                children:[
+                                                                  SizedBox(height: 20,),
+                                                                  Text('Your cart is empty',
                                                                     style: TextStyle(
-                                                                      fontFamily: "Lato",
-                                                                      fontSize: 20,
-                                                                      fontWeight: FontWeight.w700,
-                                                                      color: Theme.of(context).accentColor),),),
-                                                                  Text('to browse our app',
-                                                                    style: TextStyle(
-                                                                      fontFamily: "Lato",
-                                                                      fontSize: 20,
-                                                                      fontWeight: FontWeight.w700),),
-                                                                ],
-                                                              )
-                                                            ]
-                                                          )
+                                                                        fontFamily: "Lato",
+                                                                        fontSize: 20,
+                                                                        fontWeight: FontWeight.w700),),
+                                                                  Row(
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text('Click',
+                                                                        style: TextStyle(
+                                                                            fontFamily: "Lato",
+                                                                            fontSize: 20,
+                                                                            fontWeight: FontWeight.w700),),
+                                                                      TextButton(onPressed: (){
+                                                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CategoryPage()));
+                                                                      }, child: Text('here',
+                                                                        style: TextStyle(
+                                                                            fontFamily: "Lato",
+                                                                            fontSize: 20,
+                                                                            fontWeight: FontWeight.w700,
+                                                                            color: Theme.of(context).accentColor),),),
+                                                                      Text('to browse our app',
+                                                                        style: TextStyle(
+                                                                            fontFamily: "Lato",
+                                                                            fontSize: 20,
+                                                                            fontWeight: FontWeight.w700),),
+                                                                    ],
+                                                                  )
+                                                                ]
+                                                            )
                                                         );
                                                       }
                                                   }
@@ -341,8 +341,8 @@ class Cart extends State<CartPage> {
                                     ))),
                             SizedBox(height: 15,),]))),
             ])),
-       //Button continue
-       /* persistentFooterButtons: [
+        //Button continue
+        /* persistentFooterButtons: [
           Text('Continue',style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold, )),
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
@@ -481,7 +481,7 @@ class Cart extends State<CartPage> {
       }
       if (Quantity == 1){
         Widget okButton = TextButton(
-          child: Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+          child: Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
           onPressed:  () {
             Navigator.of(context).pop();
           },

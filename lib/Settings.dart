@@ -40,19 +40,19 @@ class Settings extends State<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        children:[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Image.asset('assets/logoheader.png',
-                              fit: BoxFit.contain,
-                              width: 110,
-                              height: 80,
+                          children:[
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Image.asset('assets/logoheader.png',
+                                fit: BoxFit.contain,
+                                width: 110,
+                                height: 80,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                            child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                          ),]),
+                            Container(
+                              margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
+                              child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
+                            ),]),
 
                       SizedBox(height: 80,),
 
@@ -106,7 +106,7 @@ class Settings extends State<SettingsPage> {
                                 child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                 onPressed:  () {
                                   Navigator.of(context).pop();
-                                  },
+                                },
                               );
                               // set up the AlertDialog
                               AlertDialog alert = AlertDialog(
@@ -125,7 +125,7 @@ class Settings extends State<SettingsPage> {
                                 },
                               );
                             }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('Log out'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                      ),
+                          ),
                         ),),
                     ]),
               ),
@@ -180,7 +180,7 @@ class Settings extends State<SettingsPage> {
           content: Text(errorMessage),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
