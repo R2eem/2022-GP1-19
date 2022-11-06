@@ -26,10 +26,6 @@ class MyApp extends StatelessWidget {
   //Color _accentColor = HexColor('#ad5bf5');
   @override
   Widget build(BuildContext context) {
-          // print(ResizeUtil().deviceType);
-          // print(ResizeUtil().orientation);
-          // print(ResizeUtil().screenHeight);
-          // print(ResizeUtil().screenWidth);
           return MaterialApp(
             title: 'Tiryaq',
             theme: ThemeData(
@@ -51,10 +47,12 @@ class HomePage extends StatelessWidget {
         body: SingleChildScrollView(
         child: Column(
             children: [
+              //Header
               Container(
                 height: _headerHeight,
                 child: HeaderWidget(_headerHeight, false, Icons.login_rounded),
               ),
+              //Controls page logo and title
               SafeArea(
                 child: Container(
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -70,6 +68,7 @@ class HomePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
               SizedBox(height: 50,),
+              //Customer button
               Container(
                 decoration: ThemeHelper().buttonBoxDecoration(context),
                 child: ElevatedButton(
@@ -79,27 +78,26 @@ class HomePage extends StatelessWidget {
                     child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                   onPressed: (){
-                    //After successful login we will redirect to profile page. Let's create profile page now
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
               ),
                   SizedBox(height: 35,),
-                        Container(
-                          decoration: ThemeHelper().buttonBoxDecoration(context),
-                          child: ElevatedButton(
-                            style: ThemeHelper().buttonStyle(),
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
-                              child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
-                            ),
-                            onPressed: (){
-                              //After successful login we will redirect to profile page. Let's create profile page now
-                             // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                            },
-                          ),
-                        ),
-                ],
+              //Pharmacy button
+              Container(
+                decoration: ThemeHelper().buttonBoxDecoration(context),
+                child: ElevatedButton(
+                  style: ThemeHelper().buttonStyle(),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                    child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
+                  ),
+                  onPressed: (){
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                ),
+              ),
+                      ],
               )
           ),
         ),

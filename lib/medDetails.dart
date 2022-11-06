@@ -10,6 +10,7 @@ import 'Settings.dart';
 import 'common/theme_helper.dart';
 
 class medDetailsPage extends StatefulWidget {
+  //Get customer id and medication id as a parameter
   final String objectId;
   final String customerId;
   const medDetailsPage(this.objectId, this.customerId);
@@ -28,10 +29,12 @@ class MedDetails extends State<medDetailsPage> {
         body: SingleChildScrollView(
             child: Stack(
                 children: [
+                  //Header
                   Container(
                     height: 150,
                     child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
                   ),
+                  //Controls app logo
                   Container(
                       child: SafeArea(
                           child: Column(
@@ -53,6 +56,7 @@ class MedDetails extends State<medDetailsPage> {
                                         child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                                       ),
                                     ]),SizedBox(height: 55,),
+                                //Controls medication details page display
                                 Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
@@ -62,6 +66,7 @@ class MedDetails extends State<medDetailsPage> {
                                         width: size.width,
                                         child: Column(children: [
                                           Expanded(
+                                              //Get medication
                                               child: FutureBuilder<ParseObject>(
                                                   future: getMedDetails(),
                                                   builder: (context, snapshot) {
@@ -91,6 +96,7 @@ class MedDetails extends State<medDetailsPage> {
                                                               itemCount: 1,
                                                               itemBuilder: (context, index) {
                                                                 //Get Parse Object Values
+                                                                //Get medication information from Medications table
                                                                 final medDetails = snapshot.data!;
                                                                 final medId = medDetails.get<String>('objectId');
                                                                 final TradeName = medDetails.get<String>('TradeName')!;
@@ -103,6 +109,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                //Display medication information
                                                                 return SingleChildScrollView(
                                                                     child: Container(
                                                                         child: Column(
@@ -315,6 +322,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                               ),
                                                                                                             ]),
                                                                                                         SizedBox(height: 50,),
+                                                                                                        //Add to cart button
                                                                                                         Padding(
                                                                                                           padding: const EdgeInsets.only(left: 60.0, ), //The distance you want
                                                                                                           child:Container(
@@ -359,6 +367,7 @@ class MedDetails extends State<medDetailsPage> {
                                                   }))
                                         ])))])))])
         ),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -397,7 +406,7 @@ class MedDetails extends State<medDetailsPage> {
                 )))
     );
   }
-
+  //Function to get medication
   Future<ParseObject> getMedDetails() async {
     var object;
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -413,17 +422,20 @@ class MedDetails extends State<medDetailsPage> {
     return object;
   }
 
+  //Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
-    final apiResponse = await ParseObject('Cart').getAll();
 
+    //Search for medications in customer cart
+    final apiResponse = await ParseObject('Cart').getAll();
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
         if(customerId == medInCart.get('customer').objectId){
           if(objectId == medInCart.get('medication').objectId){
+            //If medication exist in customer cart
             exist = true;
             quantity = medInCart.get<num>('Quantity');
             break;
@@ -431,9 +443,7 @@ class MedDetails extends State<medDetailsPage> {
         }
       }
     }
-    else{
-      return false;
-    }
+    //If medication doesn't exist then add
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
@@ -442,6 +452,7 @@ class MedDetails extends State<medDetailsPage> {
       await addToCart.save();
       return true;
     }
+    //If medication exist then increment quantity
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);

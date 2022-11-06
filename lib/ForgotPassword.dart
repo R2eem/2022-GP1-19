@@ -26,10 +26,12 @@ class Forgot extends State<ForgotPassword> {
         body: SingleChildScrollView(
           child: Stack(
               children: [
+                //Header
                 Container(
                   height: _headerHeight,
                   child: HeaderWidget(_headerHeight, false,Icons.password_rounded),
                 ),
+                //Controls app logo, back button and title
                 SafeArea(
                   child: Column(
                       children: [
@@ -56,10 +58,12 @@ class Forgot extends State<ForgotPassword> {
                           alignment: Alignment.center,
                           child: Column(
                               children: [
+                                //Form
                                 Form(
                                   key: _formKey,
                                   child: Column(
                                     children: <Widget>[
+                                      //Email field
                                       Container(
                                         child: TextFormField(
                                           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -80,6 +84,7 @@ class Forgot extends State<ForgotPassword> {
                                         decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                       ),
                                       SizedBox(height: 30.0),
+                                      //Send button
                                       Container(
                                         decoration: ThemeHelper().buttonBoxDecoration(context),
                                         child: ElevatedButton(
@@ -96,13 +101,16 @@ class Forgot extends State<ForgotPassword> {
                                             ),
                                           ),
                                           onPressed: () {
+                                            //Check validation
                                             if (_formKey.currentState!.validate()) {
+                                              //Validation successful call function
                                               doUserResetPassword();
                                             }
                                           },
                                         ),
                                       ),
                                       SizedBox(height: 15.0),
+                                      //Navigation to login page
                                       Text.rich(
                                         TextSpan(
                                           children: [
@@ -133,6 +141,7 @@ class Forgot extends State<ForgotPassword> {
         ));
   }
 
+  //Function to send reset password link
   void doUserResetPassword() async {
     final ParseUser user = ParseUser(null, null, controllerEmail.text.trim());
     final ParseResponse parseResponse = await user.requestPasswordReset();
@@ -158,6 +167,6 @@ class Forgot extends State<ForgotPassword> {
       );
     } else {
       return;
-    };
+    }
   }
 }

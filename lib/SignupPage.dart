@@ -32,6 +32,7 @@ class Signup extends State<SignupPage> {
   bool _hasPasswordOneUpper = false;
   bool _hasPasswordOneLower = false;
 
+  //Password validation caller
   onPasswordChanged(String password) {
     final specialRegex = RegExp(r'(?=.*?[#?!@$%^&*-])');
     final upperRegex = RegExp(r'(?=.*[A-Z])');
@@ -63,10 +64,12 @@ class Signup extends State<SignupPage> {
         body: SingleChildScrollView(
             child: Stack(
                 children: [
+                  //Header
                   Container(
                     height: 150,
                     child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
                   ),
+                  //Controls app logo and page title
                   SafeArea(
                     child: Column(
                         children: [
@@ -93,12 +96,12 @@ class Signup extends State<SignupPage> {
                             alignment: Alignment.center,
                             child: Column(
                                 children: [
+                                  //Form
                                   Form(
                                     key: _formKey,
                                     child: Column(
                                         children: [
-
-                                          //FisrtName
+                                          //FirstName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -157,6 +160,7 @@ class Signup extends State<SignupPage> {
                                           SizedBox(
                                             height: 20,
                                           ),
+                                          //Phonenumber
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -170,8 +174,8 @@ class Signup extends State<SignupPage> {
                                               autocorrect: false,
                                               obscureText: false,
                                               decoration: ThemeHelper().textInputDecoration(
-                                                  "Mobile Number",
-                                                  "Enter your mobile number"),
+                                                  "Phone Number",
+                                                  "Enter your Phone number"),
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
@@ -184,6 +188,7 @@ class Signup extends State<SignupPage> {
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                           ),
                                           SizedBox(height: 20.0),
+                                          //Password
                                           Container(
                                             child: TextFormField(
                                               onTap: () => _showValidation = !_showValidation,
@@ -202,6 +207,7 @@ class Signup extends State<SignupPage> {
                                               decoration: InputDecoration(
                                                 suffixIcon: IconButton(
                                                   onPressed: () {
+                                                    //Visibilty of password validation list
                                                     setState(() {
                                                       _isVisible = !_isVisible;
                                                     });
@@ -226,6 +232,7 @@ class Signup extends State<SignupPage> {
                                                 offset: const Offset(0, 5),
                                               )
                                             ]),),
+                                          //Password validation list
                                           Visibility(
                                             visible: _showValidation,
                                             child:
@@ -359,6 +366,7 @@ class Signup extends State<SignupPage> {
                                           SizedBox(
                                             height: 20,
                                           ),
+                                          //Signup button
                                           Container(
                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                             child: ElevatedButton(
@@ -375,9 +383,9 @@ class Signup extends State<SignupPage> {
                                               },
                                             ),
                                           ),
+                                          //Navigation to login page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(10,20,10,20),
-                                            //child: Text('Don\'t have an account? Create'),
                                             child: Text.rich(
                                                 TextSpan(
                                                     children: [
@@ -401,6 +409,7 @@ class Signup extends State<SignupPage> {
                   )])));
   }
 
+  //Show success message function
   void showSuccess() {
     showDialog(
       context: context,
@@ -420,6 +429,7 @@ class Signup extends State<SignupPage> {
     );
   }
 
+  //Show error message function
   void showError(String errorMessage) {
     if(errorMessage.compareTo('Account already exists for this username.')==0){
       errorMessage = 'Account already exists for this email address.';
@@ -448,6 +458,7 @@ class Signup extends State<SignupPage> {
     );
   }
 
+  //User signup function
   Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
@@ -456,14 +467,14 @@ class Signup extends State<SignupPage> {
     var phonenumber = controllerPhoneNumber.text.trim();
     final user = ParseUser.createUser(email, password, email);
 
+    //Check unique phone number in Customer table
     QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(ParseObject('Customer'));
     queyPhonenumber.whereEqualTo('Phonenumber', phonenumber);
     var apiResponse = await queyPhonenumber.query();
     if (apiResponse.success) {
-      if(apiResponse.count == 0){
+      if(apiResponse.count == 0){//If no same phone number exist create user account
         var response = await user.signUp();
         if (response.success) {
-          print(response.success);
           final createCustomer = ParseObject('Customer')
             ..set('Firstname', firstname)
             ..set('Lastname', lastname)
