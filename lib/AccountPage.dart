@@ -9,7 +9,6 @@ import 'Orders.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
-import 'main.dart';
 
 
 class AccountPage extends StatefulWidget{
@@ -32,11 +31,21 @@ class _AccountPage extends State<AccountPage>{
         body:SingleChildScrollView(
           child: Stack(
               children: [
+                //Header
                 Container(
                   height: 150,
                   child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
                 ),
-                ///// controls the profile icon
+                //Back button
+                Container(
+                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 370, 0),
+                    iconSize: 40,
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }, icon: Icon(Icons.keyboard_arrow_left),),
+                ),
+                //Controls the profile icon
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
@@ -53,16 +62,15 @@ class _AccountPage extends State<AccountPage>{
                               BoxShadow(color: Colors.black12, blurRadius: 20, offset: const Offset(5, 5),), // control the shadow behind the profile circle
                             ],
                           ),
-                          child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),////control the profile icon
+                          child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),//control the profile icon
                         ),
-
                         SizedBox(height: 40,),
-
+                        //Current user account information
                         Form(
                           key: _formKey,
-                          //child: SingleChildScrollView(
                           child: Column(
                               children: <Widget>[
+                                //Get user from user table
                                 FutureBuilder<ParseUser?>(
                                     future: getUser(),
                                     builder: (context, snapshot) {
@@ -86,8 +94,10 @@ class _AccountPage extends State<AccountPage>{
                                               child: Text("No Data..."),
                                             );
                                           } else {
+                                            //Get user Email from user table
                                             var userId = snapshot.data!.objectId;
                                             var email = snapshot.data!.emailAddress;
+                                            //Get user from customer table
                                             return FutureBuilder<List>(
                                                 future: currentuser(userId),
                                                 builder: (context, snapshot) {
@@ -97,7 +107,6 @@ class _AccountPage extends State<AccountPage>{
                                                       return Center(
                                                         child: Container(
                                                             margin: EdgeInsets.only(top: 100),
-
                                                             width: 50,
                                                             height: 50,
                                                             child: CircularProgressIndicator()),
@@ -120,6 +129,7 @@ class _AccountPage extends State<AccountPage>{
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
+                                                              //Get user information from Customer table
                                                               final user = snapshot.data![index];
                                                               customerId = user.get<String>('objectId')!;
                                                               final Firstname = user.get<String>('Firstname')!;
@@ -129,7 +139,9 @@ class _AccountPage extends State<AccountPage>{
                                                               final controllerLasttname = TextEditingController(text: Lastname);
                                                               final controllerEmail = TextEditingController(text: email);
                                                               final controllerPhoneNumber = TextEditingController(text: Phonenumber);
+                                                              //Display information
                                                               return Column( children: [
+                                                                //Firstname
                                                                 Container(
                                                                   child: TextFormField(
                                                                     autovalidateMode:
@@ -140,7 +152,6 @@ class _AccountPage extends State<AccountPage>{
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
                                                                     ]),
-
                                                                     decoration: InputDecoration(
                                                                         labelText: '',
                                                                         hintText: 'Firstname',
@@ -160,10 +171,9 @@ class _AccountPage extends State<AccountPage>{
                                                                       offset: const Offset(0, 5),
                                                                     )
                                                                   ]),
-
                                                                 ),
                                                                 SizedBox(height: 25.0),
-
+                                                                //Lastname
                                                                 Container(
                                                                   child: TextFormField(
                                                                     autovalidateMode:
@@ -187,11 +197,9 @@ class _AccountPage extends State<AccountPage>{
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
-
                                                                 ),
-
                                                                 SizedBox(height: 25.0),
-
+                                                                //Phonenumber
                                                                 Container(
                                                                   child: TextFormField(
                                                                     autovalidateMode:
@@ -219,10 +227,9 @@ class _AccountPage extends State<AccountPage>{
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
-
                                                                 ),
                                                                 SizedBox(height: 25.0),
-
+                                                                //Email
                                                                 Container(
                                                                   child: TextFormField(
                                                                     readOnly: true,
@@ -236,6 +243,7 @@ class _AccountPage extends State<AccountPage>{
                                                                 ),
                                                                 SizedBox(height: 35.0),
 
+                                                                //Save changes button
                                                                 Container(
                                                                   decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                   child: ElevatedButton(
@@ -244,32 +252,33 @@ class _AccountPage extends State<AccountPage>{
                                                                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                                                       child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
+                                                                    //Show confirmation dialog
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
-                                                                        Widget cancelButton = TextButton(
-                                                                          child: Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                        Widget continueButton = TextButton(
+                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
+                                                                            //Call updateInfo function when user confirms the update
+                                                                            //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
                                                                             updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
-                                                                        Widget continueButton = TextButton(
-                                                                          child: Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                        Widget cancelButton = TextButton(
+                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
-                                                                        // set up the AlertDialog
                                                                         AlertDialog alert = AlertDialog(
                                                                           title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           content: Text(""),
                                                                           actions: [
-                                                                            cancelButton,
                                                                             continueButton,
+                                                                            cancelButton,
                                                                           ],
                                                                         );
-                                                                        // show the dialog
                                                                         showDialog(
                                                                           context: context,
                                                                           builder: (BuildContext context) {
@@ -281,14 +290,19 @@ class _AccountPage extends State<AccountPage>{
                                                                   ),
                                                                 ),
                                                               ] );
-                                                            });}}});
-                                          }}})] ),
+                                                            });
+                                                      }}
+                                                });
+                                          }
+                                      }
+                                    })
+                              ]),
                         ),
                       ]),
                 ),
               ]),
         ),
-
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -328,38 +342,46 @@ class _AccountPage extends State<AccountPage>{
     );
   }
 
-
+  //Function to update user information
   Future<void> updateInfo(userId, CustomerId, editFirstname, editLastname, editPhonenumber) async {
     var object;
+    //Query the user from Customer table using CustomerId
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Customer'));
     parseQuery.whereEqualTo('objectId', CustomerId);
 
+    //Get as a single object
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         object = o as ParseObject;
       }
     }
+    //Update the information in Customer table
     var todo = object
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
       ..set('Phonenumber', editPhonenumber)
+      //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();
 
     if (parseResponse.success) {
+      //If the update succeed call showSuccess function
       showSuccess();
     } else {
+      //If update fails cal showError function
       showError(parseResponse.error!.message);
     }
   }
 
-
+  //Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
+
+  //Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -371,7 +393,8 @@ class _AccountPage extends State<AccountPage>{
       return [];
     }
   }
-
+  //Function called when update is successful
+  //Show message for 3 seconds then navigate to setting page
   void showSuccess() {
     showDialog(
         context: context,
@@ -388,7 +411,8 @@ class _AccountPage extends State<AccountPage>{
         });
   }
 
-
+  //Function called when update is not successful
+  //Show Alertdialog and wait for user interaction
   void showError(String errorMessage) {
     showDialog(
       context: context,
@@ -398,7 +422,7 @@ class _AccountPage extends State<AccountPage>{
           content: Text("Account already exists for this phone number.", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
