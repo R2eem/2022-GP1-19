@@ -9,6 +9,7 @@ import 'Settings.dart';
 
 
 class OrdersPage extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const OrdersPage(this.customerId);
   @override
