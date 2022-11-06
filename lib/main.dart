@@ -27,13 +27,6 @@ class MyApp extends StatelessWidget {
   //Color _accentColor = HexColor('#ad5bf5');
   @override
   Widget build(BuildContext context) {
-    return Resize(
-        allowtextScaling: true,
-        builder: () {
-          // print(ResizeUtil().deviceType);
-          // print(ResizeUtil().orientation);
-          // print(ResizeUtil().screenHeight);
-          // print(ResizeUtil().screenWidth);
           return MaterialApp(
             title: 'Tiryaq',
             theme: ThemeData(
@@ -45,9 +38,9 @@ class MyApp extends StatelessWidget {
             home: HomePage(),
           );
         }
-    );
+
   }
-}
+
 class HomePage extends StatelessWidget {
   double _headerHeight = 250;
   @override

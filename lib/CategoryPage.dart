@@ -139,7 +139,7 @@ class Category extends State<CategoryPage> {
                                               borderRadius: BorderRadius.circular(30),
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: 'Search',
+                                            hintText: 'Search by Scientific or Trade name',
                                             prefixIcon: Icon(Icons.search),
                                             prefixIconColor: Colors.pink[100],
                                           ),
@@ -252,25 +252,43 @@ class Category extends State<CategoryPage> {
                                                                   child: Column(
                                                                       children:[
                                                                         ListTile(
-                                                                            title: Text(TradeName,style: TextStyle(
-                                                                                fontFamily: "Lato",
-                                                                                fontSize: 20,
-                                                                                fontWeight: FontWeight.w700),),
-                                                                            subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
-                                                                                fontFamily: "Lato",
-                                                                                fontSize: 17,
-                                                                                color: Colors.black),),
-                                                                            leading: Image.asset('assets/listIcon.png',),
+                                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                                                                          title: Text(TradeName,style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 22,
+                                                                              fontWeight: FontWeight.w700),),
+                                                                          subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 19,
+                                                                              color: Colors.black,
+                                                                              fontStyle: FontStyle.italic),),
+                                                                          leading: Image.asset('assets/listIcon.png',),
                                                                           trailing: Row(
                                                                             mainAxisSize: MainAxisSize.min,
                                                                             children: [
-                                                                              IconButton(onPressed: () {
-                                                                                addToCart(medId, customerId);
-                                                                              }, icon: const Icon(Icons.add_shopping_cart_rounded,color: Colors.black,
-                                                                                size: 25.0,)),
+                                                                              Ink(
+                                                                                decoration: ShapeDecoration.fromBoxDecoration(
+                                                                                    BoxDecoration(
+                                                                                      color: HexColor('#fad2fc'),
+                                                                                      borderRadius: BorderRadius.circular(15),
+                                                                                    )),
+                                                                                child: IconButton(
+                                                                                    onPressed: () async {
+                                                                                      if(await addToCart(medId, customerId)) {
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                                                            SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                              duration: Duration(milliseconds: 3000),
+                                                                                            ));
+                                                                                      };
+                                                                                    },
+                                                                                    icon: const Icon(
+                                                                                      Icons.add_shopping_cart_rounded,
+                                                                                      color: Colors.black,
+                                                                                      size: 25.0,)),
+                                                                              ),
                                                                             ],
                                                                           ),
-                                                                            ),
+                                                                        ),
                                                                       ] ))):Container();
                                                         });
                                                   }
@@ -348,7 +366,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  void addToCart(objectId, customerId) async{
+  Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
@@ -366,17 +384,22 @@ class Category extends State<CategoryPage> {
         }
       }
     }
+    else{
+      return false;
+    }
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
         ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
         ..set('Quantity', 1);
       await addToCart.save();
+      return true;
     }
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
-    }
+      return true;
     }
   }
+}
