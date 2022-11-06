@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
-import 'NonPrescriptionCategory.dart';
 import 'Orders.dart';
-import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'common/theme_helper.dart';
+
 
 class CartPage extends StatefulWidget {
   final String customerId;
@@ -171,11 +168,11 @@ class Cart extends State<CartPage> {
                                                                                                     actions: <Widget>[
                                                                                                       TextButton(
                                                                                                         onPressed: () => Navigator.of(context).pop(true),
-                                                                                                        child: const Text("DELETE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                        child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                       ),
                                                                                                       TextButton(
                                                                                                         onPressed: () => Navigator.of(context).pop(false),
-                                                                                                        child: const Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                        child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                       ),
                                                                                                     ],
                                                                                                   );
@@ -484,14 +481,14 @@ class Cart extends State<CartPage> {
       }
       if (Quantity == 1){
         Widget okButton = TextButton(
-          child: Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+          child: Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
           onPressed:  () {
             Navigator.of(context).pop();
           },
         );
         // set up the AlertDialog
         AlertDialog alert = AlertDialog(
-          title:  Text("Swipe to the left if tou want to delete this medication", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+          title:  Text("Swipe to the left if you want to delete this medication", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
           actions: [
             okButton,
           ],

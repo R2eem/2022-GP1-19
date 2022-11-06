@@ -248,14 +248,14 @@ class _AccountPage extends State<AccountPage>{
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("UPDATE", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("CANCEL", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
@@ -398,7 +398,7 @@ class _AccountPage extends State<AccountPage>{
           content: Text("Account already exists for this phone number.", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

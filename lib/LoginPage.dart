@@ -200,7 +200,7 @@ class Login extends State<LoginPage> {
           content: Text(errorMessage, style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
                 Navigator.of(context).pop();
               },

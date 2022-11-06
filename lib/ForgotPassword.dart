@@ -146,7 +146,7 @@ class Forgot extends State<ForgotPassword> {
                 'You will recieve a password reset link if you have Tiryaq account.', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
             actions: <Widget>[
               new TextButton(
-                child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => LoginPage()));
