@@ -19,6 +19,8 @@ Tiryaq is an app developed in Android studio using Flutter, Dart language.
 
 If you want to experience Tiryaq app, you should download Android Studio and flutter plugin then download the APK to run the app, or you can download the code files of main branch and use Pixel 3a XL emulator to run the app.
 
+- The app must run with no sound null safety
+
 ### Targeted environment:
 
  - The application soon will be only available on Google play store and would run on Android devices.
