@@ -9,6 +9,9 @@ import 'Settings.dart';
 
 
 class OrdersPage extends StatefulWidget {
+  //Get customer id as a parameter
+  final String customerId;
+  const OrdersPage(this.customerId);
   @override
   Orders createState() => Orders();
 }
@@ -23,27 +26,35 @@ class Orders extends State<OrdersPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child: Stack(children: [
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo and page title
               Container(
                   child: SafeArea(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Image.asset(
-                                'assets/logoheader.png',
-                                fit: BoxFit.contain,
-                                width: 110,
-                                height: 80,
-                              ),
-                            ),
+                            Row(
+                                children:[
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Image.asset('assets/logoheader.png',
+                                      fit: BoxFit.contain,
+                                      width: 110,
+                                      height: 80,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
+                                    child: Text('Orders', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
+                                  ),]),
                             SizedBox(height: 55,),
                           ])))])),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -72,11 +83,11 @@ class Orders extends State<OrdersPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 ))));}}

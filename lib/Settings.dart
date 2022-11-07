@@ -5,13 +5,13 @@ import 'AccountPage.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'Orders.dart';
 import 'common/theme_helper.dart';
 import 'main.dart';
 
 
 class SettingsPage extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const SettingsPage(this.customerId);
   @override
@@ -29,10 +29,12 @@ class Settings extends State<SettingsPage> {
         resizeToAvoidBottomInset: true,
         body:SingleChildScrollView(
           child: Stack(children: [
+            //Header
             Container(
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
+            //Controls app logo and page title
             Container(
               child: SafeArea(
                 child: Column(
@@ -40,22 +42,22 @@ class Settings extends State<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        children:[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Image.asset('assets/logoheader.png',
-                              fit: BoxFit.contain,
-                              width: 110,
-                              height: 80,
+                          children:[
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Image.asset('assets/logoheader.png',
+                                fit: BoxFit.contain,
+                                width: 110,
+                                height: 80,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                            child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                          ),]),
+                            Container(
+                              margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
+                              child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
+                            ),]),
 
                       SizedBox(height: 80,),
-
+                      //Controls settings page display
                       Container(
                         child:Card(
                           elevation: 4.0,
@@ -63,7 +65,7 @@ class Settings extends State<SettingsPage> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                           child:Column(
                             children: <Widget>[
-
+                              //My account
                               ListTile(
                                 leading:Icon(Icons.person , color: Colors.purple.shade200, size: 30,) ,
                                 title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
@@ -73,7 +75,8 @@ class Settings extends State<SettingsPage> {
                                 },
                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
                               ),
-                              _buildDriver(),
+                              _buildDriver(),//Design
+                              //My locations
                               ListTile(
                                 leading:Icon(Icons.location_on , color: Colors.purple.shade200, size: 30,) ,
                                 title: Text("My Locations",style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
@@ -89,6 +92,7 @@ class Settings extends State<SettingsPage> {
                         ),
                       ),
                       SizedBox(height: 20,),
+                      //Logout confirmation message and button
                       Align(
                         alignment: Alignment.center,
                         child:Container(
@@ -97,15 +101,15 @@ class Settings extends State<SettingsPage> {
                             style: ThemeHelper().buttonStyle(),
                             onPressed: (){
                               Widget cancelButton = TextButton(
-                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                              Widget continueButton = TextButton(
                                 child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                 onPressed:  () {
                                   doUserLogout();
+                                },
+                              );
+                              Widget continueButton = TextButton(
+                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                onPressed:  () {
+                                  Navigator.of(context).pop();
                                 },
                               );
                               // set up the AlertDialog
@@ -125,13 +129,14 @@ class Settings extends State<SettingsPage> {
                                 },
                               );
                             }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('Log out'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                      ),
+                          ),
                         ),),
                     ]),
               ),
             ),
           ]),
         ),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -162,7 +167,7 @@ class Settings extends State<SettingsPage> {
                     } else if (_selectedIndex == 1) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
@@ -170,7 +175,7 @@ class Settings extends State<SettingsPage> {
                 )))
     );
   }
-
+  //Show error message function
   void showError(String errorMessage) {
     showDialog(
       context: context,
@@ -180,7 +185,7 @@ class Settings extends State<SettingsPage> {
           content: Text(errorMessage),
           actions: <Widget>[
             new TextButton(
-              child: const Text("OK", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -192,6 +197,7 @@ class Settings extends State<SettingsPage> {
     );
   }
 
+  //User logout function
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();
@@ -205,6 +211,7 @@ class Settings extends State<SettingsPage> {
   }
 }
 
+//Design
 Container _buildDriver(){
   return Container(
     margin:const EdgeInsets.symmetric(horizontal: 8.0),
