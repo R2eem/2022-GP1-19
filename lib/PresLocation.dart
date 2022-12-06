@@ -18,7 +18,8 @@ import 'package:image_picker/image_picker.dart';
 class PresLocation extends StatefulWidget{
 //Get customer id as a parameter
   final String customerId;
-  const PresLocation(this.customerId);
+  final totalPrice;
+  const PresLocation(this.customerId, this.totalPrice);
   @override
   State<StatefulWidget> createState() {
     return _PresLocationPage();
@@ -152,10 +153,6 @@ class _PresLocationPage extends State<PresLocation> {
                             }),
                             shadowColor: MaterialStateProperty.all(Colors.transparent),
                           ),
-
-
-
-
                           onPressed:
                           isLoading || pickedFile == null
                               ? null
@@ -198,7 +195,23 @@ class _PresLocationPage extends State<PresLocation> {
                                 backgroundColor: Colors.purple.shade300,
                               ));
                           },
-                        ))
+                        )),
+                    SizedBox(height: 30,),
+                    Row(
+                      children: [
+                        Text('Total price:  ', style: TextStyle(
+                          fontFamily: 'Lato',
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        )),
+                        Text(widget.totalPrice.toString(), style: TextStyle(
+                          fontFamily: 'Lato',
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red
+                        )),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -219,7 +232,6 @@ class _PresLocationPage extends State<PresLocation> {
               child: IconButton(
                   onPressed: () {
                    // Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId)));
-
                   },
                   icon: const Icon(
                     Icons.arrow_forward_ios_outlined,
