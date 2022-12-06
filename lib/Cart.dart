@@ -24,6 +24,8 @@ class Cart extends State<CartPage> {
   bool cartNotEmpty = false;
   int cartItemNum = 0;
   num TotalPrice  = 0;
+  bool presRequired = false;
+  int numOfPres = 0;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -181,12 +183,14 @@ class Cart extends State<CartPage> {
                                                                                 //Get medication information from Medications table
                                                                                 final medGet =
                                                                                 snapshot.data![index];
-                                                                                final TradeName =
-                                                                                medGet.get<String>('TradeName')!;
-                                                                                final ScientificName =
-                                                                                medGet.get<String>('ScientificName')!;
-                                                                                final Publicprice =
-                                                                                medGet.get<num>('Publicprice')!;
+                                                                                final TradeName = medGet.get<String>('TradeName')!;
+                                                                                final ScientificName = medGet.get<String>('ScientificName')!;
+                                                                                final Publicprice = medGet.get<num>('Publicprice')!;
+                                                                                final legalStatus = medGet.get<String>('LegalStatus')!;
+                                                                                if ((legalStatus.compareTo('Prescription')==0)){
+                                                                                  presRequired = true;
+                                                                                  numOfPres++;
+                                                                                }
                                                                                 //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
@@ -235,7 +239,7 @@ class Cart extends State<CartPage> {
                                                                                         //If deletion confirmed call delete function
                                                                                         onDismissed: (direction) async {
                                                                                           //Send medication id and the quantity of it
-                                                                                          if (await deleteCartMed(medId, quantity, Publicprice)) {
+                                                                                          if (await deleteCartMed(medId, quantity, Publicprice, legalStatus)) {
                                                                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                               content: Text(
                                                                                                 "$TradeName deleted from your cart",
@@ -454,7 +458,7 @@ class Cart extends State<CartPage> {
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
@@ -557,7 +561,7 @@ class Cart extends State<CartPage> {
 
   //Delete medication from cart function
   //Quantity will be used in next sprint
-  Future<bool> deleteCartMed(medId, Quantity, Publicprice) async {
+  Future<bool> deleteCartMed(medId, Quantity, Publicprice, legalStatus) async {
     //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
@@ -570,6 +574,15 @@ class Cart extends State<CartPage> {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
         TotalPrice = num.parse((TotalPrice - (Publicprice*Quantity)).toStringAsFixed(2));
+        if(legalStatus.compareTo('Prescription')==0){
+          if(numOfPres==1){
+            presRequired = false;
+          }
+          else{
+            numOfPres--;
+            print(numOfPres);
+          }
+        }
         //Delete medication
         object.delete();
         //Decrement number of medications in customer table

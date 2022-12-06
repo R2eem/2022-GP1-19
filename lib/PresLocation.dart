@@ -19,7 +19,8 @@ class PresLocation extends StatefulWidget{
 //Get customer id as a parameter
   final String customerId;
   final totalPrice;
-  const PresLocation(this.customerId, this.totalPrice);
+  final bool presRequired;
+  const PresLocation(this.customerId, this.totalPrice, this.presRequired);
   @override
   State<StatefulWidget> createState() {
     return _PresLocationPage();
@@ -76,6 +77,7 @@ class _PresLocationPage extends State<PresLocation> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: 130),
+                    widget.presRequired ?
                     GestureDetector(
                       child: pickedFile != null
                           ? Container(
@@ -127,75 +129,10 @@ class _PresLocationPage extends State<PresLocation> {
 
 
                       },
-                    ),
+                    ): Container(),
 
                     SizedBox(height: 16),
-                    Container(
-                        height: 50,
-                        child: ElevatedButton(
-                          child: Text('Upload Image'.toUpperCase(),
-                            style: TextStyle(fontFamily: 'Lato',
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),),
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                            minimumSize: MaterialStateProperty.all(Size(50, 50)),
-                            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                              if (states.contains(MaterialState.disabled)) {
-                                return Colors.grey.shade400; // Disabled color
-                              }
-                              return Colors.purple.shade300; // Regular color
-                            }),
-                            shadowColor: MaterialStateProperty.all(Colors.transparent),
-                          ),
-                          onPressed:
-                          isLoading || pickedFile == null
-                              ? null
-                              : () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            ParseFileBase? parseFile;
 
-                            if (kIsWeb) {
-                              //Flutter Web
-                              parseFile = ParseWebFile(
-                                  await pickedFile!.readAsBytes(),
-                                  name: 'image.jpg'); //Name for file is required
-                            } else {
-                              //Flutter Mobile/Desktop
-                              parseFile = ParseFile(File(pickedFile!.path));
-                            }
-                            await parseFile.save();
-
-                            final AttachPrescription = ParseObject('Orders')
-                              ..set('Prescription', parseFile);
-                            await AttachPrescription.save();
-
-                            setState(() {
-                              isLoading = false;
-                              pickedFile = null;
-                            });
-
-                            ScaffoldMessenger.of(context)
-                              ..removeCurrentSnackBar()
-                              ..showSnackBar(SnackBar(
-                                content: Text(
-                                  'Image is saved',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                duration: Duration(seconds: 2),
-                                backgroundColor: Colors.purple.shade300,
-                              ));
-                          },
-                        )),
                     SizedBox(height: 30,),
                     Row(
                       children: [
@@ -230,9 +167,64 @@ class _PresLocationPage extends State<PresLocation> {
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
-                  onPressed: () {
-                   // Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId)));
-                  },
+                  onPressed:
+                          isLoading || pickedFile == null
+                              ? widget.presRequired ? () {showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Text("Please attach a prescription!!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                actions: <Widget>[
+                                  new TextButton(
+                                    child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );} : () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            final AttachPrescription = ParseObject('Orders')
+                              ..set('TotalPrice', widget.totalPrice);
+                            await AttachPrescription.save();
+
+                            setState(() {
+                              isLoading = false;
+                              pickedFile = null;
+                            });
+                            }
+                              : () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            ParseFileBase? parseFile;
+
+                            if (kIsWeb) {
+                              //Flutter Web
+                              parseFile = ParseWebFile(
+                                  await pickedFile!.readAsBytes(),
+                                  name: 'image.jpg'); //Name for file is required
+                            } else {
+                              //Flutter Mobile/Desktop
+                              parseFile = ParseFile(File(pickedFile!.path));
+                            }
+                            await parseFile.save();
+
+                            final AttachPrescription = ParseObject('Orders')
+                              ..set('Prescription', parseFile)
+                              ..set('TotalPrice', widget.totalPrice);
+                            await AttachPrescription.save();
+
+                            setState(() {
+                              isLoading = false;
+                              pickedFile = null;
+                            });
+                            },
                   icon: const Icon(
                     Icons.arrow_forward_ios_outlined,
                     color: Colors.white,
