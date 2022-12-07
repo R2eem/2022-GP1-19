@@ -25,6 +25,7 @@ class Category extends State<CategoryPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child: Stack(children: [
+              //Get user from user table
               FutureBuilder<ParseUser?>(
                   future: getUser(),
                   builder: (context, snapshot) {
@@ -50,6 +51,7 @@ class Category extends State<CategoryPage> {
                         } else {
                           var userId = snapshot.data!.objectId;
                           var email = snapshot.data!.emailAddress;
+                          //Get user from customer table
                           return FutureBuilder<List>(
                               future: currentuser(userId),
                               builder: (context, snapshot) {
@@ -92,10 +94,12 @@ class Category extends State<CategoryPage> {
                         }
                     }
                   }),
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo
               Container(
                   child: SafeArea(
                       child: Column(
@@ -112,19 +116,21 @@ class Category extends State<CategoryPage> {
                               ),
                             ),
                             SizedBox(height: 55,),
+                            //Controls category page display
                             Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                   height: 620,
                                   width: size.width,
                                   child: Column(children: [
+                                    //Search bar
                                     Material(
                                         elevation: 4,
                                         shadowColor: Colors.grey,
                                         borderRadius: BorderRadius.circular(30),
                                         child: TextField(
+                                          //Whenever value in text field changes set state
                                           onChanged: (value) {
                                             setState(() {
                                               searchString = value;
@@ -147,6 +153,7 @@ class Category extends State<CategoryPage> {
                                     SizedBox(
                                       height: 30,
                                     ),
+                                    //Categories navigation buttons
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
@@ -207,7 +214,9 @@ class Category extends State<CategoryPage> {
                                     SizedBox(
                                       height: 15,
                                     ),
+                                    //Medications list diplay
                                     Expanded(
+                                      //Get medications
                                         child: FutureBuilder<List<ParseObject>>(
                                             future: getMedication(),
                                             builder: (context, snapshot) {
@@ -237,14 +246,18 @@ class Category extends State<CategoryPage> {
                                                         itemCount: snapshot.data!.length,
                                                         itemBuilder: (context, index) {
                                                           //Get Parse Object Values
+                                                          //Get medication information from Medications table
                                                           final medGet = snapshot.data![index];
                                                           final medId = medGet.get<String>('objectId')!;
                                                           final TradeName = medGet.get<String>('TradeName')!;
                                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                                           final Publicprice = medGet.get<num>('Publicprice')!;
+                                                          //Display medication that matches the search string if exist
                                                           return TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase())
                                                               ?  GestureDetector(
+                                                            //Navigate to medication details page
                                                               onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, customerId))),
+                                                              //Medication card information
                                                               child: Card(
                                                                   elevation: 3,
                                                                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -272,6 +285,7 @@ class Category extends State<CategoryPage> {
                                                                                       color: HexColor('#fad2fc'),
                                                                                       borderRadius: BorderRadius.circular(15),
                                                                                     )),
+                                                                                //Add to cart button
                                                                                 child: IconButton(
                                                                                     onPressed: () async {
                                                                                       if(await addToCart(medId, customerId)) {
@@ -289,7 +303,9 @@ class Category extends State<CategoryPage> {
                                                                             ],
                                                                           ),
                                                                         ),
-                                                                      ] ))):Container();
+                                                                      ] )))
+                                                          //If the medication doesn't matches the search string then don't display
+                                                              :Container();
                                                         });
                                                   }
                                               }
@@ -299,6 +315,7 @@ class Category extends State<CategoryPage> {
                           ]))),
             ])
         ),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -337,11 +354,12 @@ class Category extends State<CategoryPage> {
                 ))));
   }
 
+  //Function to get medications
   Future<List<ParseObject>> getMedication() async {
     QueryBuilder<ParseObject> queryMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
-    queryMedication.setLimit(200);
-    queryMedication.orderByAscending('TradeName');
+    queryMedication.setLimit(200);//We have 200 medication
+    queryMedication.orderByAscending('TradeName');//Order medications
     final ParseResponse apiResponse = await queryMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
@@ -350,10 +368,13 @@ class Category extends State<CategoryPage> {
     }
   }
 
+  //Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
+
+  //Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -366,17 +387,20 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  Future<bool> addToCart(objectId, customerId) async{
+  //Function add medication to cart
+  Future<bool> addToCart(medId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
-    final apiResponse = await ParseObject('Cart').getAll();
 
+    //Search for medications in customer cart
+    final apiResponse = await ParseObject('Cart').getAll();
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
         if(customerId == medInCart.get('customer').objectId){
-          if(objectId == medInCart.get('medication').objectId){
+          if(medId == medInCart.get('medication').objectId){
+            //If medication exist in customer cart
             exist = true;
             quantity = medInCart.get<num>('Quantity');
             break;
@@ -384,17 +408,16 @@ class Category extends State<CategoryPage> {
         }
       }
     }
-    else{
-      return false;
-    }
+    //If medication doesn't exist then add
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
-        ..set('medication', (ParseObject('Medications')..objectId = objectId).toPointer())
+        ..set('medication', (ParseObject('Medications')..objectId = medId).toPointer())
         ..set('Quantity', 1);
       await addToCart.save();
       return true;
     }
+    //If medication exist then increment quantity
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);

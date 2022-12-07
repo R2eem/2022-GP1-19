@@ -4,12 +4,14 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
+import 'PresLocation.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 
 
 class CartPage extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const CartPage(this.customerId);
   @override
@@ -19,7 +21,8 @@ class CartPage extends StatefulWidget {
 class Cart extends State<CartPage> {
   int _selectedIndex = 1;
   String searchString = "";
-  bool cartEmpty = false;
+  //We will consider the cart empty
+  bool cartNotEmpty = false;
   int cartItemNum = 0;
 
   @override
@@ -29,10 +32,12 @@ class Cart extends State<CartPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child: Stack(children: [
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo
               Container(
                   child: SafeArea(
                       child: Column(
@@ -49,6 +54,7 @@ class Cart extends State<CartPage> {
                                   height: 80,
                                 ),
                               ),
+                              //Controls Cart page title
                               Container(
                                 margin: EdgeInsets.fromLTRB(70, 13, 0, 0),
                                 child: Text(
@@ -63,6 +69,7 @@ class Cart extends State<CartPage> {
                               ),
                             ]),
                             SizedBox(height: 20,),
+                            //Controls cart page display
                             SingleChildScrollView(
                                 child:Align(
                                     alignment: Alignment.bottomCenter,
@@ -73,8 +80,9 @@ class Cart extends State<CartPage> {
                                       width: size.width,
                                       child: Column(children: [
                                         Expanded(
+                                          //Get cart medications for customer
                                             child: FutureBuilder<List<ParseObject>>(
-                                                future: getCustomerCart(),
+                                                future: getCustomerCart(),//Will change cartNotEmpty value
                                                 builder: (context, snapshot) {
                                                   switch (snapshot.connectionState) {
                                                     case ConnectionState.none:
@@ -96,17 +104,20 @@ class Cart extends State<CartPage> {
                                                           child: Text("No Data..."),
                                                         );
                                                       } else {
-                                                        return  cartEmpty ? ListView.builder(
+                                                        //If cartNotEmpty true then display medications
+                                                        return  cartNotEmpty ? ListView.builder(
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
                                                               //Get Parse Object Values
-                                                              cartItemNum = snapshot.data!.length;
+                                                              //Get customer medications from cart table
+                                                              cartItemNum = snapshot.data!.length;//Save number of medications in customer cart
                                                               final customerCart = snapshot.data![index];
                                                               final medId = customerCart.get('medication')!;
                                                               final quantity = customerCart.get<num>('Quantity')!;
+                                                              //Get customer medications information from Medications table
                                                               return FutureBuilder<List<ParseObject>>(
-                                                                  future: getCustomerCartMed(medId),
+                                                                  future: getCustomerCartMed(medId),//Send medications id that exist in customer cart
                                                                   builder: (context, snapshot) {
                                                                     switch (snapshot.connectionState) {
                                                                       case ConnectionState.none:
@@ -137,166 +148,179 @@ class Cart extends State<CartPage> {
                                                                               itemCount: snapshot.data!.length,
                                                                               itemBuilder: (context, index) {
                                                                                 //Get Parse Object Values
+                                                                                //Get medication information from Medications table
                                                                                 final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')!;
+                                                                                //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 return StatefulBuilder(
                                                                                     builder: (BuildContext context, StateSetter setState)=>
-                                                                                        Dismissible(
-                                                                                            key: UniqueKey(),
-                                                                                            background: Container(
-                                                                                                alignment: Alignment.centerRight,
-                                                                                                padding: EdgeInsets.symmetric(horizontal: 30),
-                                                                                                margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                                                decoration: BoxDecoration(
-                                                                                                    color: Colors.red[100],
-                                                                                                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                                                child: Icon(
-                                                                                                  Icons.delete_outline,
-                                                                                                  size: 40,
-                                                                                                  semanticLabel: 'Delete'
-                                                                                                  ,color: Colors.red,)),
-                                                                                            direction: DismissDirection.endToStart,
-                                                                                            confirmDismiss: (DismissDirection direction) async {
-                                                                                              return await showDialog(
-                                                                                                context: context,
-                                                                                                builder: (BuildContext context) {
-                                                                                                  return AlertDialog(
-                                                                                                    title:  Text("Are you sure you wish to delete this item?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                                                                                                    actions: <Widget>[
-                                                                                                      TextButton(
-                                                                                                        onPressed: () => Navigator.of(context).pop(true),
-                                                                                                        child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                                      ),
-                                                                                                      TextButton(
-                                                                                                        onPressed: () => Navigator.of(context).pop(false),
-                                                                                                        child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                                      ),
-                                                                                                    ],
-                                                                                                  );
-                                                                                                },
+                                                                                    //Delete medication from cart
+                                                                                    Dismissible(
+                                                                                        key: UniqueKey(),
+                                                                                        background: Container(
+                                                                                            alignment: Alignment.centerRight,
+                                                                                            padding: EdgeInsets.symmetric(horizontal: 30),
+                                                                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                            decoration: BoxDecoration(
+                                                                                                color: Colors.red[100],
+                                                                                                borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                            child: Icon(
+                                                                                              Icons.delete_outline,
+                                                                                              size: 40,
+                                                                                              semanticLabel: 'Delete'
+                                                                                              ,color: Colors.red,)),
+                                                                                        direction: DismissDirection.endToStart,
+                                                                                        confirmDismiss: (DismissDirection direction) async {
+                                                                                          //Deletion confirmation dialog
+                                                                                          return await showDialog(
+                                                                                            context: context,
+                                                                                            builder: (BuildContext context) {
+                                                                                              return AlertDialog(
+                                                                                                title:  Text("Are you sure you wish to delete this item?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                                                                                actions: <Widget>[
+                                                                                                  TextButton(
+                                                                                                    onPressed: () => Navigator.of(context).pop(true),
+                                                                                                    child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                  ),
+                                                                                                  TextButton(
+                                                                                                    onPressed: () => Navigator.of(context).pop(false),
+                                                                                                    child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                  ),
+                                                                                                ],
                                                                                               );
                                                                                             },
-                                                                                            onDismissed: (direction) async {
-                                                                                              if(await deleteCartMed(medId, quantity)){
-                                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                                  content: Text("$TradeName deleted from your cart", style:  TextStyle(fontSize: 20),),
-                                                                                                  duration: Duration(milliseconds: 3000),
-                                                                                                ));
-                                                                                              }
-                                                                                              if(cartItemNum == 0){
-                                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
-                                                                                              }
-                                                                                            },
-
-                                                                                            child:
-                                                                                            Stack(
-                                                                                              children: <
-                                                                                                  Widget>[
-                                                                                                Container(
-                                                                                                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                                                  decoration: BoxDecoration(
-                                                                                                      color: Colors.white,
-                                                                                                      borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                                                  child:
-                                                                                                  Row(
-                                                                                                    children: <Widget>[
-                                                                                                      Expanded(
-                                                                                                        child: Container(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Column(
-                                                                                                            mainAxisSize: MainAxisSize.max,
-                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                            children: <Widget>[
-                                                                                                              Container(
-                                                                                                                padding: EdgeInsets.only(right: 8, top: 4),
-                                                                                                                child: Text(
-                                                                                                                  TradeName,
-                                                                                                                  maxLines: 2,
-                                                                                                                  softWrap: true,
+                                                                                          );
+                                                                                        },
+                                                                                        //If deletion confirmed call delete function
+                                                                                        onDismissed: (direction) async {
+                                                                                          //Send medication id and the quantity of it
+                                                                                          if(await deleteCartMed(medId, quantity)){
+                                                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                              content: Text("$TradeName deleted from your cart", style:  TextStyle(fontSize: 20),),
+                                                                                              duration: Duration(milliseconds: 3000),
+                                                                                            ));
+                                                                                          }
+                                                                                          //If no medications left in cart reload page to show empty message
+                                                                                          //Value will be changed in deleteCartMed function
+                                                                                          if(cartItemNum == 0){
+                                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
+                                                                                          }
+                                                                                        },
+                                                                                        //Controls medications display
+                                                                                        child: Stack(
+                                                                                          children: <Widget>[
+                                                                                            Container(
+                                                                                              margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: Colors.white,
+                                                                                                  borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                              child: Row(
+                                                                                                children: <Widget>[
+                                                                                                  Expanded(
+                                                                                                    child: Container(
+                                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                                      child: Column(
+                                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                        children: <Widget>[
+                                                                                                          Container(
+                                                                                                            padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                            child: Text(
+                                                                                                              TradeName,
+                                                                                                              maxLines: 2,
+                                                                                                              softWrap: true,
+                                                                                                              style: TextStyle(
+                                                                                                                  fontFamily: "Lato",
+                                                                                                                  fontSize: 20,
+                                                                                                                  fontWeight: FontWeight.w700),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          SizedBox(height: 6),
+                                                                                                          Text(
+                                                                                                            ScientificName,
+                                                                                                            style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 17,
+                                                                                                                color: Colors.black),
+                                                                                                          ),
+                                                                                                          Container(
+                                                                                                            child: Row(
+                                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                                              children: <Widget>[
+                                                                                                                Text(
+                                                                                                                  '$Publicprice SAR',
                                                                                                                   style: TextStyle(
                                                                                                                       fontFamily: "Lato",
-                                                                                                                      fontSize: 20,
-                                                                                                                      fontWeight: FontWeight.w700),
+                                                                                                                      fontSize: 17,
+                                                                                                                      color: Colors.black,
+                                                                                                                      fontWeight: FontWeight.w600),
                                                                                                                 ),
-                                                                                                              ),
-                                                                                                              SizedBox(height: 6),
-                                                                                                              Text(
-                                                                                                                ScientificName,
-                                                                                                                style: TextStyle(
-                                                                                                                    fontFamily: "Lato",
-                                                                                                                    fontSize: 17,
-                                                                                                                    color: Colors.black),
-                                                                                                              ),
-                                                                                                              Container(
-                                                                                                                child: Row(
-                                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                                  children: <Widget>[
-                                                                                                                    Text(
-                                                                                                                      '$Publicprice SAR',
-                                                                                                                      style: TextStyle(
-                                                                                                                          fontFamily: "Lato",
-                                                                                                                          fontSize: 17,
-                                                                                                                          color: Colors.black,
-                                                                                                                          fontWeight: FontWeight.w600),
-                                                                                                                    ),
-                                                                                                                    Padding(
-                                                                                                                      padding: const EdgeInsets.all(0.0),
-                                                                                                                      child: Row(
-                                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                                        children: <Widget>[
-                                                                                                                          CircleAvatar(
-                                                                                                                              backgroundColor: HexColor('#e8cafc'),
-                                                                                                                              child:IconButton(onPressed: () {
-                                                                                                                                decrement(medId, widget.customerId,counter!);
-                                                                                                                                setState(() {
-                                                                                                                                  if(counter>1){
-                                                                                                                                    counter--;
-                                                                                                                                  }
-                                                                                                                                });
-                                                                                                                              }, icon: const Icon(Icons.remove,color: Colors.black,
-                                                                                                                                size: 24.0,))),
-                                                                                                                          Container(
-                                                                                                                            padding: const EdgeInsets.only(bottom: 2, right: 12, left: 12),
-                                                                                                                            child: Text(
-                                                                                                                              '$counter',style: TextStyle(
-                                                                                                                                fontFamily: "Lato",
-                                                                                                                                fontSize: 22,
-                                                                                                                                color: Colors.black),
-                                                                                                                            ),
-                                                                                                                          ),
-                                                                                                                          CircleAvatar(
-                                                                                                                              backgroundColor: HexColor('#fad2fc'),
-                                                                                                                              child:IconButton(onPressed: () {
-                                                                                                                                increment(medId, widget.customerId,counter!);
-                                                                                                                                setState(() {
-                                                                                                                                  counter++;
-                                                                                                                                });
-                                                                                                                              }, icon: const Icon(Icons.add,color: Colors.black,
-                                                                                                                                size: 24.0,))),
-                                                                                                                        ],
+                                                                                                                //Increment and decrement of medication
+                                                                                                                Padding(
+                                                                                                                  padding: const EdgeInsets.all(0.0),
+                                                                                                                  child: Row(
+                                                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                    children: <Widget>[
+                                                                                                                      CircleAvatar(
+                                                                                                                          backgroundColor: HexColor('#e8cafc'),
+                                                                                                                          child:IconButton(onPressed: () {
+                                                                                                                            //Call decrement function
+                                                                                                                            //Send medication id. customer id and the counter after modification
+                                                                                                                            decrement(medId, widget.customerId,counter!);
+                                                                                                                            setState(() {
+                                                                                                                              //Modify the counter
+                                                                                                                              if(counter>1){
+                                                                                                                                counter--;
+                                                                                                                              }
+                                                                                                                            });
+                                                                                                                          }, icon: const Icon(Icons.remove,color: Colors.black,
+                                                                                                                            size: 24.0,))),
+                                                                                                                      Container(
+                                                                                                                        padding: const EdgeInsets.only(bottom: 2, right: 12, left: 12),
+                                                                                                                        child: Text(
+                                                                                                                          '$counter',style: TextStyle(
+                                                                                                                            fontFamily: "Lato",
+                                                                                                                            fontSize: 22,
+                                                                                                                            color: Colors.black),
+                                                                                                                        ),
                                                                                                                       ),
-                                                                                                                    )
-                                                                                                                  ],
-                                                                                                                ),
-                                                                                                              ),
-                                                                                                            ],
+                                                                                                                      CircleAvatar(
+                                                                                                                          backgroundColor: HexColor('#fad2fc'),
+                                                                                                                          child:IconButton(onPressed: () {
+                                                                                                                            //Call increment function
+                                                                                                                            //Send medication id. customer id and the counter after modification
+                                                                                                                            increment(medId, widget.customerId,counter!);
+                                                                                                                            setState(() {
+                                                                                                                              counter++;
+                                                                                                                            });
+                                                                                                                          }, icon: const Icon(Icons.add,color: Colors.black,
+                                                                                                                            size: 24.0,))),
+                                                                                                                    ],
+                                                                                                                  ),
+                                                                                                                )
+                                                                                                              ],
+                                                                                                            ),
                                                                                                           ),
-                                                                                                        ),
-                                                                                                        flex: 100,
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ],
-                                                                                            )));
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    flex: 100,
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        )));
                                                                               });
                                                                         }
                                                                     }
                                                                   });
-                                                            }): Container(
+                                                            })
+                                                        //If cartnotEmpty is false; cart is empty show this message
+                                                            : Container(
                                                             child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                 //mainAxisAlignment: MainAxisAlignment.center,
@@ -342,16 +366,16 @@ class Cart extends State<CartPage> {
                             SizedBox(height: 15,),]))),
             ])),
         //Button continue
-        /* persistentFooterButtons: [
+        persistentFooterButtons: [
           Text('Continue',style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold, )),
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child:IconButton(onPressed: () {
-                setState(() {
-                });
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId)));
               }, icon: const Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,
                 size: 24.0,))),
-        ],*/
+        ],
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -395,7 +419,9 @@ class Cart extends State<CartPage> {
                 ))));
   }
 
+  //Get customer medications from cart table
   Future<List<ParseObject>> getCustomerCart() async {
+    //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     customerCart.whereEqualTo('customer',
@@ -403,14 +429,17 @@ class Cart extends State<CartPage> {
     final apiResponse = await customerCart.query();
 
     if (apiResponse.success && apiResponse.results != null) {
-      cartEmpty = true;
+      //If query have objects then set true
+      cartNotEmpty = true;
       return apiResponse.results as List<ParseObject>;
     } else {
-      cartEmpty = false;
+      //If query have no object then set false
+      cartNotEmpty = false;
       return [];
     }
   }
 
+  //Get customer's medication information from Medications table
   Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -423,8 +452,10 @@ class Cart extends State<CartPage> {
       return [];
     }
   }
-
+  //Delete medication from cart function
+  //Quantity will be used in next sprint
   Future<bool> deleteCartMed(medId, Quantity) async {
+    //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
@@ -435,7 +466,9 @@ class Cart extends State<CartPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
+        //Delete medication
         object.delete();
+        //Decrement number of medications in customer table
         cartItemNum = cartItemNum - 1;
         return true;
       }
@@ -443,8 +476,10 @@ class Cart extends State<CartPage> {
     return false;
   }
 
+  //Increment medication quantity
   Future<void> increment(objectId, customerId, Quantity) async {
     var medInCart;
+    //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
@@ -452,18 +487,22 @@ class Cart extends State<CartPage> {
     parseQuery.whereEqualTo('medication', objectId.toPointer());
     final apiResponse = await parseQuery.query();
 
+    //Get as a single object
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
       }
+      //Update quantity in database
       var incrementQuantity = medInCart..set('Quantity', ++Quantity);
       await incrementQuantity.save();
 
     }
   }
 
+  //Decrement medication quantity
   Future<void> decrement(medId, customerId, Quantity) async {
     var medInCart;
+    //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
@@ -471,14 +510,18 @@ class Cart extends State<CartPage> {
     parseQuery.whereEqualTo('medication', medId.toPointer());
     final apiResponse = await parseQuery.query();
 
+    //Get as a single object
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
       }
+
+      //Update quantity in database If quantity not 1
       if (Quantity != 1) {
         var decrementQuantity = medInCart..set('Quantity', --Quantity);
         await decrementQuantity.save();
       }
+      //If quantity is 1 show message
       if (Quantity == 1){
         Widget okButton = TextButton(
           child: Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),

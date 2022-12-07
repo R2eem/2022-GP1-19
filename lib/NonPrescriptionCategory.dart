@@ -10,6 +10,7 @@ import 'Settings.dart';
 import 'medDetails.dart';
 
 class NonPrescriptionCategory extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const NonPrescriptionCategory(this.customerId);
 
@@ -18,7 +19,6 @@ class NonPrescriptionCategory extends StatefulWidget {
 }
 
 class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderStateMixin {
-  final todoController = TextEditingController();
   int _selectedIndex = 0;
   String searchString ='';
   String packageType ='';
@@ -27,6 +27,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    //Filter tabs
     TabController _tabController=
     TabController(length: 12, vsync: this, initialIndex: 0 );
     _tabController.animateTo(_selectedTab);
@@ -34,10 +35,12 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child:Stack(children: [
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo and page title
               Container(
                   child: SafeArea(
                       child: Column(
@@ -58,7 +61,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                   child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                                 ),]),
                             SizedBox(height: 55,),
-
+                            //Controls Non-prescription category page display
                             Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
@@ -67,11 +70,13 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                   height: 667,
                                   width: size.width,
                                   child: Column(children: [
+                                    //Search bar
                                     Material(
                                         elevation: 4,
                                         shadowColor: Colors.grey,
                                         borderRadius: BorderRadius.circular(30),
                                         child: TextField(
+                                          //Whenever value in text field changes set state
                                           onChanged: (value) {
                                             setState(() {
                                               searchString = value;
@@ -94,7 +99,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                     SizedBox(
                                       height: 20,
                                     ),
-
+                                    //Filter tabs
                                     TabBar(onTap: (index){ //
                                       setState(() {
                                         _selectedTab = index;
@@ -143,6 +148,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                         ]),
                                     SizedBox(height: 20,),
                                     Expanded(
+                                      //Get Non-prescription medications
                                         child: FutureBuilder<List<ParseObject>>(
                                             future: getNonPresMedication(),
                                             builder: (context, snapshot) {
@@ -172,15 +178,19 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                         itemCount: snapshot.data!.length,
                                                         itemBuilder: (context, index) {
                                                           //Get Parse Object Values
+                                                          //Get medication information from Medications table
                                                           final medGet = snapshot.data![index];
                                                           final medId = medGet.get<String>('objectId')!;
                                                           final TradeName = medGet.get<String>('TradeName')!;
                                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                                           final Publicprice = medGet.get<num>('Publicprice')!;
                                                           final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
+                                                          //Display medication that matches the search string if exist and matches the filter
                                                           return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
                                                               ?  GestureDetector(
+                                                            //Navigate to medication details page
                                                               onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
+                                                              //Medication card information
                                                               child: Card(
                                                                   elevation: 3,
                                                                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -208,6 +218,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                                         color: HexColor('#fad2fc'),
                                                                                         borderRadius: BorderRadius.circular(15),
                                                                                       )),
+                                                                                  //Add to cart button
                                                                                   child: IconButton(
                                                                                       onPressed: () async {
                                                                                         if(await addToCart(medId, widget.customerId)) {
@@ -225,7 +236,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                               ]
                                                                           ),
                                                                         ),
-                                                                      ] ))):Container();
+                                                                      ] )))
+                                                          //If the medication doesn't matches the search string then don't display
+                                                              :Container();
                                                         });
                                                   }
                                               }
@@ -234,7 +247,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                   ),
                                 )),
                           ] )))])),
-
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -274,7 +287,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     );
   }
 
-  //query meethoodd
+  //Function to get Non-prescription medications
   Future<List<ParseObject>> getNonPresMedication() async {
     QueryBuilder<ParseObject> queryNonPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -288,17 +301,21 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
       return [];
     }
   }
+
+  //Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
-    final apiResponse = await ParseObject('Cart').getAll();
 
+    //Search for medications in customer cart
+    final apiResponse = await ParseObject('Cart').getAll();
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
         if(customerId == medInCart.get('customer').objectId){
           if(objectId == medInCart.get('medication').objectId){
+            //If medication exist in customer cart
             exist = true;
             quantity = medInCart.get<num>('Quantity');
             break;
@@ -306,9 +323,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
         }
       }
     }
-    else{
-      return false;
-    }
+    //If medication doesn't exist then add
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
@@ -317,6 +332,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
       await addToCart.save();
       return true;
     }
+    //If medication exist then increment quantity
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);

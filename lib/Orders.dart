@@ -9,6 +9,7 @@ import 'Settings.dart';
 
 
 class OrdersPage extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const OrdersPage(this.customerId);
   @override
@@ -25,10 +26,12 @@ class Orders extends State<OrdersPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child: Stack(children: [
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo and page title
               Container(
                   child: SafeArea(
                       child: Column(
@@ -51,6 +54,7 @@ class Orders extends State<OrdersPage> {
                                   ),]),
                             SizedBox(height: 55,),
                           ])))])),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(

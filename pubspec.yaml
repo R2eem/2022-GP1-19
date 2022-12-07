@@ -40,9 +40,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor: ^2.0.4
 
+  google_maps_flutter: ^2.2.1
+  #location: ^4.1.1
+  geolocator: ^9.0.1
+  flutter_google_places: ^0.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  image_picker: ^0.8.6
   flutter_launcher_icons: ^0.10.0
 
 

@@ -10,6 +10,7 @@ import 'Settings.dart';
 import 'medDetails.dart';
 
 class PrescriptionCategory extends StatefulWidget {
+  //Get customer id as a parameter
   final String customerId;
   const PrescriptionCategory(this.customerId);
   @override
@@ -17,7 +18,6 @@ class PrescriptionCategory extends StatefulWidget {
 }
 
 class Prescription extends State<PrescriptionCategory> with TickerProviderStateMixin {
-  final todoController = TextEditingController();
   int _selectedIndex = 0;
   String searchString ='';
   String packageType ='';
@@ -25,6 +25,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    //Filter tabs
     TabController _tabController=
     TabController(length: 11, vsync: this, initialIndex: 0 );
     _tabController.animateTo(_selectedTab);
@@ -32,10 +33,12 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child:Stack(children: [
+              //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
+              //Controls app logo and page title
               Container(
                   child: SafeArea(
                       child: Column(
@@ -57,6 +60,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                     child: Text('Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                                   ),]),
                             SizedBox(height: 55,),
+                            //Controls prescription category page display
                             Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
@@ -65,11 +69,13 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                   height: 667,
                                   width: size.width,
                                   child: Column(children: [
+                                    //Search bar
                                     Material(
                                         elevation: 4,
                                         shadowColor: Colors.grey,
                                         borderRadius: BorderRadius.circular(30),
                                         child: TextField(
+                                          //Whenever value in text field changes set state
                                           onChanged: (value) {
                                             setState(() {
                                               searchString = value;
@@ -92,6 +98,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                     SizedBox(
                                       height: 20,
                                     ),
+                                    //Filter tabs
                                     TabBar(
                                         onTap: (index){ //
                                           setState(() {
@@ -137,6 +144,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                           Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Lato",fontWeight: FontWeight.w700, fontSize: 17)),),
                                         ]),
                                     Expanded(
+                                      //Get prescription medications
                                         child: FutureBuilder<List<ParseObject>>(
                                             future: getPresMedication(),
                                             builder: (context, snapshot) {
@@ -166,15 +174,19 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                                         itemCount: snapshot.data!.length,
                                                         itemBuilder: (context, index) {
                                                           //Get Parse Object Values
+                                                          //Get medication information from Medications table
                                                           final medGet = snapshot.data![index];
                                                           final medId = medGet.get<String>('objectId')!;
                                                           final TradeName = medGet.get<String>('TradeName')!;
                                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                                           final Publicprice = medGet.get<num>('Publicprice')!;
                                                           final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
+                                                          //Display medication that matches the search string if exist and matches the filter
                                                           return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
                                                               ?  GestureDetector(
+                                                            //Navigate to medication details page
                                                               onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
+                                                              //Medication card information
                                                               child: Card(
                                                                   elevation: 3,
                                                                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
@@ -202,6 +214,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                                                                         color: HexColor('#fad2fc'),
                                                                                         borderRadius: BorderRadius.circular(15),
                                                                                       )),
+                                                                                  //Add to cart button
                                                                                   child: IconButton(
                                                                                       onPressed: () async {
                                                                                         if(await addToCart(medId, widget.customerId)) {
@@ -219,7 +232,9 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                                                               ]
                                                                           ),
                                                                         ),
-                                                                      ] ))):Container();
+                                                                      ] )))
+                                                          //If the medication doesn't matches the search string then don't display
+                                                              :Container();
                                                         });
                                                   }
                                               }
@@ -228,6 +243,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                                   ),
                                 )),
                           ] )))])),
+        //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
             child: Padding(
@@ -266,7 +282,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
                 )))
     );
   }
-
+  //Function to get prescription medications
   Future<List<ParseObject>> getPresMedication() async {
     QueryBuilder<ParseObject> queryPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -279,17 +295,21 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
       return [];
     }
   }
+
+  //Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
     var quantity = 0;
-    final apiResponse = await ParseObject('Cart').getAll();
 
+    //Search for medications in customer cart
+    final apiResponse = await ParseObject('Cart').getAll();
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
         if(customerId == medInCart.get('customer').objectId){
           if(objectId == medInCart.get('medication').objectId){
+            //If medication exist in customer cart
             exist = true;
             quantity = medInCart.get<num>('Quantity');
             break;
@@ -297,9 +317,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
         }
       }
     }
-    else{
-      return false;
-    }
+    //If medication doesn't exist then add
     if (!exist) {
       final addToCart = ParseObject('Cart')
         ..set('customer', (ParseObject('Customer')..objectId = customerId).toPointer())
@@ -308,6 +326,7 @@ class Prescription extends State<PrescriptionCategory> with TickerProviderStateM
       await addToCart.save();
       return true;
     }
+    //If medication exist then increment quantity
     else{
       var incrementQuantity = medInCart
         ..set('Quantity', ++quantity);
