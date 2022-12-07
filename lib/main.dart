@@ -4,6 +4,7 @@ import 'package:untitled/LoginPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'AccountPage.dart';
 import 'common/theme_helper.dart';
 
 
@@ -26,16 +27,16 @@ class MyApp extends StatelessWidget {
   //Color _accentColor = HexColor('#ad5bf5');
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tiryaq',
-      theme: ThemeData(
-        primaryColor: HexColor('#f5a9f1'),
-        accentColor: HexColor('#ad5bf5'),
-        scaffoldBackgroundColor: Colors.grey.shade100,
-        primarySwatch: Colors.grey,
-      ),
-      home: HomePage(),
-    );
+          return MaterialApp(
+            title: 'Tiryaq',
+            theme: ThemeData(
+              primaryColor: HexColor('#f5a9f1'),
+              accentColor: HexColor('#ad5bf5'),
+              scaffoldBackgroundColor: Colors.grey.shade100,
+              primarySwatch: Colors.grey,
+            ),
+            home: HomePage(),
+          );
   }
 }
 class HomePage extends StatelessWidget {
@@ -45,64 +46,64 @@ class HomePage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: SingleChildScrollView(
-          child: Column(
-              children: [
-                //Header
-                Container(
-                  height: _headerHeight,
-                  child: HeaderWidget(_headerHeight, false, Icons.login_rounded),
-                ),
-                //Controls page logo and title
-                SafeArea(
-                  child: Container(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      child: Column(
-                        children: [
-                          Container(
-                              height: MediaQuery.of(context).size.height / 4,
-                              child: Image.asset('assets/tiryaglogo.png',height: 400, width: 400,)
-                          ),
-                          SizedBox(height: 20,),
-                          Text("Who are you?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
-                          SizedBox(height: 50,),
-                          //Customer button
-                          Container(
-                            decoration: ThemeHelper().buttonBoxDecoration(context),
-                            child: ElevatedButton(
-                              style: ThemeHelper().buttonStyle(),
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
-                                child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
-                              ),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 35,),
-                          //Pharmacy button
-                          Container(
-                            decoration: ThemeHelper().buttonBoxDecoration(context),
-                            child: ElevatedButton(
-                              style: ThemeHelper().buttonStyle(),
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
-                                child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
-                              ),
-                              onPressed: (){
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                              },
-                            ),
-                          ),
-                        ],
-                      )
+        child: Column(
+            children: [
+              //Header
+              Container(
+                height: _headerHeight,
+                child: HeaderWidget(_headerHeight, false, Icons.login_rounded),
+              ),
+              //Controls page logo and title
+              SafeArea(
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: Column(
+                      children: [
+                        Container(
+                            height: MediaQuery.of(context).size.height / 4,
+                            child: Image.asset('assets/tiryaglogo.png',height: 400, width: 400,)
+                        ),
+                        SizedBox(height: 20,),
+                        Text("Who are you?",
+                  textAlign: TextAlign.center,
+                    style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
+              SizedBox(height: 50,),
+              //Customer button
+              Container(
+                decoration: ThemeHelper().buttonBoxDecoration(context),
+                child: ElevatedButton(
+                  style: ThemeHelper().buttonStyle(),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                    child: Text('Customer'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
                 ),
-              ]),
-        )
+              ),
+                  SizedBox(height: 35,),
+              //Pharmacy button
+              Container(
+                decoration: ThemeHelper().buttonBoxDecoration(context),
+                child: ElevatedButton(
+                  style: ThemeHelper().buttonStyle(),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(73, 18, 73, 18),
+                    child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
+                  ),
+                  onPressed: (){
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                ),
+              ),
+                      ],
+              )
+          ),
+        ),
+      ]),
+    )
     );
   }
 }

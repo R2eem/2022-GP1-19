@@ -90,8 +90,23 @@ class ThemeHelper{
     );
   }
 
+  ButtonStyle buttonStyle2() {
+    return ButtonStyle(
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      minimumSize: MaterialStateProperty.all(Size(50, 50)),
+      backgroundColor: MaterialStateProperty.all(Colors.purple.shade300),
+      shadowColor: MaterialStateProperty.all(Colors.transparent),
+    );
+  }
+
 }
 
 class LoginFormStyle{
 
 }
+
+

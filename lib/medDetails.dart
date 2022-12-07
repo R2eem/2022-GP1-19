@@ -66,7 +66,7 @@ class MedDetails extends State<medDetailsPage> {
                                         width: size.width,
                                         child: Column(children: [
                                           Expanded(
-                                            //Get medication
+                                              //Get medication
                                               child: FutureBuilder<ParseObject>(
                                                   future: getMedDetails(),
                                                   builder: (context, snapshot) {

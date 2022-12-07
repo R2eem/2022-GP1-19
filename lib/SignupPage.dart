@@ -168,21 +168,36 @@ class Signup extends State<SignupPage> {
                                               controller: controllerPhoneNumber,
                                               keyboardType: TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
-                                                FilteringTextInputFormatter.digitsOnly
-                                              ],
+                                                FilteringTextInputFormatter.digitsOnly,
+                                                FilteringTextInputFormatter.deny(
+                                                  RegExp(r'^[0-4]+'),
+                                                  ),
+                                                FilteringTextInputFormatter.deny(
+                                                  RegExp(r'^[6-9]+'),
+                                                ),
+                                                ],
                                               textCapitalization: TextCapitalization.none,
                                               autocorrect: false,
                                               obscureText: false,
-                                              decoration: ThemeHelper().textInputDecoration(
-                                                  "Phone Number",
-                                                  "Enter your Phone number"),
+                                              decoration: InputDecoration(
+                                                prefixText: '+966',
+                                                labelText: 'Phone Number',
+                                                hintText: '5xxxxxxxx',
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                              ),
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
-                                                MinLengthValidator(10,
-                                                    errorText: 'must be 10 digits long'),
-                                                MaxLengthValidator(10,
-                                                    errorText: 'must be 10 digits long')
+                                                MinLengthValidator(9,
+                                                    errorText: 'must be 9 digits long'),
+                                                MaxLengthValidator(9,
+                                                    errorText: 'must be 9 digits long'),
                                               ]),
                                             ),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -469,7 +484,7 @@ class Signup extends State<SignupPage> {
 
     //Check unique phone number in Customer table
     QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queyPhonenumber.whereEqualTo('Phonenumber', phonenumber);
+    queyPhonenumber.whereEqualTo('Phonenumber', '0$phonenumber');
     var apiResponse = await queyPhonenumber.query();
     if (apiResponse.success) {
       if(apiResponse.count == 0){//If no same phone number exist create user account
@@ -478,7 +493,7 @@ class Signup extends State<SignupPage> {
           final createCustomer = ParseObject('Customer')
             ..set('Firstname', firstname)
             ..set('Lastname', lastname)
-            ..set('Phonenumber', phonenumber)
+            ..set('Phonenumber', '0$phonenumber')
             ..set('user', user);
           await createCustomer.save();
           showSuccess();
