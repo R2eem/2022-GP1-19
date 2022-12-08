@@ -7,6 +7,7 @@ import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'PresLocation.dart';
+import 'Location.dart';
 import 'Settings.dart';
 
 class CartPage extends StatefulWidget {
@@ -458,7 +459,7 @@ class Cart extends State<CartPage> {
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Location(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
