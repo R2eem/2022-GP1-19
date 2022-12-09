@@ -25,6 +25,7 @@ class PresLocation extends StatefulWidget{
   State<StatefulWidget> createState() {
     return _PresLocationPage();
   }
+
 }
 
 class _PresLocationPage extends State<PresLocation> {
@@ -32,6 +33,9 @@ class _PresLocationPage extends State<PresLocation> {
   String searchString = "";
   PickedFile? pickedFile;
   bool isLoading = false;
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +75,13 @@ class _PresLocationPage extends State<PresLocation> {
                                 ]),
                             SizedBox(height: 55,),
                           ]))),
+
+
               Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+
                   children: [
                     SizedBox(height: 130),
                     widget.presRequired ?
@@ -106,6 +113,7 @@ class _PresLocationPage extends State<PresLocation> {
                         if (image != null && image.path.contains("PNG") | image.path.contains("png") | image.path.contains("jpg") | image.path.contains("JPG") | image.path.contains("jpeg") | image.path.contains("JPEG")) {
                           setState(() {
                             pickedFile = image;
+
                           });
                         }
                         else{
@@ -126,8 +134,6 @@ class _PresLocationPage extends State<PresLocation> {
                             },
                           );
                         }
-
-
                       },
                     ): Container(),
 
@@ -149,6 +155,7 @@ class _PresLocationPage extends State<PresLocation> {
                         )),
                       ],
                     ),
+
                   ],
                 ),
               ),
@@ -158,79 +165,87 @@ class _PresLocationPage extends State<PresLocation> {
             ])),
 
         persistentFooterButtons: [
-          Text('Send Order',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              )),
-          CircleAvatar(
-              backgroundColor: Colors.purple.shade300,
-              child: IconButton(
-                  onPressed:
-                          isLoading || pickedFile == null
-                              ? widget.presRequired ? () {showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: Text("Please attach a prescription!!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                                actions: <Widget>[
-                                  new TextButton(
-                                    child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );} : () async {
-                            setState(() {
-                              isLoading = true;
-                            });
+            Text('Send Order',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                )),
+            CircleAvatar(
+                backgroundColor: Colors.purple.shade300,
+                child: IconButton(
+                    onPressed:
+                    isLoading || pickedFile == null
+                        ? widget.presRequired ? () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text("Please attach a prescription!!",
+                                style: TextStyle(
+                                  fontFamily: 'Lato', fontSize: 20,)),
+                            actions: <Widget>[
+                              new TextButton(
+                                child: const Text("Ok", style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } : () async {
+                      setState(() {
+                        isLoading = true;
+                      });
 
-                            final AttachPrescription = ParseObject('Orders')
-                              ..set('TotalPrice', widget.totalPrice);
-                            await AttachPrescription.save();
+                      final AttachPrescription = ParseObject('Orders')
+                        ..set('TotalPrice', widget.totalPrice);
+                      await AttachPrescription.save();
 
-                            setState(() {
-                              isLoading = false;
-                              pickedFile = null;
-                            });
-                            }
-                              : () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            ParseFileBase? parseFile;
+                      setState(() {
+                        isLoading = false;
+                        pickedFile = null;
+                      });
+                    }
+                        : () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      ParseFileBase? parseFile;
 
-                            if (kIsWeb) {
-                              //Flutter Web
-                              parseFile = ParseWebFile(
-                                  await pickedFile!.readAsBytes(),
-                                  name: 'image.jpg'); //Name for file is required
-                            } else {
-                              //Flutter Mobile/Desktop
-                              parseFile = ParseFile(File(pickedFile!.path));
-                            }
-                            await parseFile.save();
+                      if (kIsWeb) {
+                        //Flutter Web
+                        parseFile = ParseWebFile(
+                            await pickedFile!.readAsBytes(),
+                            name: 'image.jpg'); //Name for file is required
+                      } else {
+                        //Flutter Mobile/Desktop
+                        parseFile = ParseFile(File(pickedFile!.path));
+                      }
+                      await parseFile.save();
 
-                            final AttachPrescription = ParseObject('Orders')
-                              ..set('Prescription', parseFile)
-                              ..set('TotalPrice', widget.totalPrice);
-                            await AttachPrescription.save();
+                      final AttachPrescription = ParseObject('Orders')
+                        ..set('Prescription', parseFile)..set(
+                            'TotalPrice', widget.totalPrice);
+                      await AttachPrescription.save();
 
-                            setState(() {
-                              isLoading = false;
-                              pickedFile = null;
-                            });
-                            },
-                  icon: const Icon(
-                    Icons.arrow_forward_ios_outlined,
-                    color: Colors.white,
-                    size: 24.0,
-                  ))),
-        ],
+                      setState(() {
+                        isLoading = false;
+                        pickedFile = null;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: Colors.white,
+                      size: 24.0,
+                    ))),
+          ],
 
         //Bottom navigation bar
         bottomNavigationBar: Container(
