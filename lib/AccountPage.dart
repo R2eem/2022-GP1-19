@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -138,7 +139,7 @@ class _AccountPage extends State<AccountPage>{
                                                               final controllerFirstname = TextEditingController(text: Firstname);
                                                               final controllerLasttname = TextEditingController(text: Lastname);
                                                               final controllerEmail = TextEditingController(text: email);
-                                                              final controllerPhoneNumber = TextEditingController(text: Phonenumber);
+                                                              final controllerPhoneNumber = TextEditingController(text: Phonenumber.substring(1,));
                                                               //Display information
                                                               return Column( children: [
                                                                 //Firstname
@@ -206,17 +207,30 @@ class _AccountPage extends State<AccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.text,
                                                                     controller: controllerPhoneNumber,
+                                                                    inputFormatters: <TextInputFormatter>[
+                                                                      FilteringTextInputFormatter.digitsOnly,
+                                                                      FilteringTextInputFormatter.deny(
+                                                                        RegExp(r'^[0-4]+'),
+                                                                      ),
+                                                                      FilteringTextInputFormatter.deny(
+                                                                        RegExp(r'^[6-9]+'),
+                                                                      ),
+                                                                    ],
                                                                     validator: MultiValidator([
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
-                                                                      MinLengthValidator(10,
-                                                                          errorText: 'must be 10 digits long'),
-                                                                      MaxLengthValidator(10,
-                                                                          errorText: 'must be 10 digits long')
+                                                                      MinLengthValidator(9,
+                                                                          errorText: 'must be 9 digits long'),
+                                                                      MaxLengthValidator(9,
+                                                                          errorText: 'must be 9 digits long'),
                                                                     ]),
+                                                                    textCapitalization: TextCapitalization.none,
+                                                                    autocorrect: false,
+                                                                    obscureText: false,
                                                                     decoration: InputDecoration(
-                                                                        labelText: '',
-                                                                        hintText: 'Phonenumber',
+                                                                        prefixText: '+966',
+                                                                        labelText: 'Phone Number',
+                                                                        hintText: '5xxxxxxxx',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -360,7 +374,7 @@ class _AccountPage extends State<AccountPage>{
     var todo = object
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
-      ..set('Phonenumber', editPhonenumber)
+      ..set('Phonenumber', '0$editPhonenumber')
       //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());

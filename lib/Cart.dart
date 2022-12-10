@@ -23,7 +23,9 @@ class Cart extends State<CartPage> {
   //We will consider the cart empty
   bool cartNotEmpty = false;
   int cartItemNum = 0;
-
+  num TotalPrice  = 0;
+  bool presRequired = false;
+  int numOfPres = 0;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -31,167 +33,169 @@ class Cart extends State<CartPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
             child: Stack(children: [
-          //Header
-          Container(
-            height: 150,
-            child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
-          ),
-          //Controls app logo
-          Container(
-              child: SafeArea(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                Row(children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Image.asset(
-                      'assets/logoheader.png',
-                      fit: BoxFit.contain,
-                      width: 110,
-                      height: 80,
-                    ),
-                  ),
-                  //Controls Cart page title
-                  Container(
-                    margin: EdgeInsets.fromLTRB(70, 13, 0, 0),
-                    child: Text(
-                      'Cart',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 27,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: 20,
-                ),
-                //Controls cart page display
-                SingleChildScrollView(
-                    child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          height: 620,
-                          width: size.width,
-                          child: Column(children: [
-                            Expanded(
-                                //Get cart medications for customer
-                                child: FutureBuilder<List<ParseObject>>(
-                                    future:
-                                        getCustomerCart(), //Will change cartNotEmpty value
-                                    builder: (context, snapshot) {
-                                      switch (snapshot.connectionState) {
-                                        case ConnectionState.none:
-                                        case ConnectionState.waiting:
-                                          return Center(
-                                            child: Container(
-                                                width: 200,
-                                                height: 10,
-                                                child:
-                                                    LinearProgressIndicator()),
-                                          );
-                                        default:
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text("Error..."),
-                                            );
-                                          }
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text("No Data..."),
-                                            );
-                                          } else {
-                                            //If cartNotEmpty true then display medications
-                                            return cartNotEmpty
-                                                ? ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    itemCount:
-                                                        snapshot.data!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      //Get Parse Object Values
-                                                      //Get customer medications from cart table
-                                                      cartItemNum = snapshot
-                                                          .data!
-                                                          .length; //Save number of medications in customer cart
-                                                      final customerCart =
-                                                          snapshot.data![index];
-                                                      final medId = customerCart
-                                                          .get('medication')!;
-                                                      final quantity =
-                                                          customerCart.get<num>(
-                                                              'Quantity')!;
-                                                      //Get customer medications information from Medications table
-                                                      return FutureBuilder<
-                                                              List<
-                                                                  ParseObject>>(
-                                                          future: getCustomerCartMed(
-                                                              medId), //Send medications id that exist in customer cart
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            switch (snapshot
-                                                                .connectionState) {
-                                                              case ConnectionState
-                                                                  .none:
-                                                              case ConnectionState
-                                                                  .waiting:
-                                                                return Center(
-                                                                  child:
-                                                                      Container(
-                                                                    width: 50,
-                                                                    height: 50,
-                                                                  ),
-                                                                );
-                                                              default:
-                                                                if (snapshot
-                                                                    .hasError) {
-                                                                  return Center(
-                                                                    child: Text(
-                                                                        "Error..."),
-                                                                  );
-                                                                }
-                                                                if (!snapshot
-                                                                    .hasData) {
-                                                                  return Center(
-                                                                    child: Text(
-                                                                        "No Data..."),
-                                                                  );
-                                                                } else {
-                                                                  return ListView
-                                                                      .builder(
-                                                                          scrollDirection: Axis
-                                                                              .vertical,
-                                                                          shrinkWrap:
+              //Header
+              Container(
+                height: 150,
+                child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+              ),
+              //Controls app logo
+              Container(
+                  child: SafeArea(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Image.asset(
+                                  'assets/logoheader.png',
+                                  fit: BoxFit.contain,
+                                  width: 110,
+                                  height: 80,
+                                ),
+                              ),
+                              //Controls Cart page title
+                              Container(
+                                margin: EdgeInsets.fromLTRB(70, 13, 0, 0),
+                                child: Text(
+                                  'Cart',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 27,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            //Controls cart page display
+                            SingleChildScrollView(
+                                child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      height: 620,
+                                      width: size.width,
+                                      child: Column(children: [
+                                        Expanded(
+                                          //Get cart medications for customer
+                                            child: FutureBuilder<List<ParseObject>>(
+                                                future:
+                                                getCustomerCart(), //Will change cartNotEmpty value
+                                                builder: (context, snapshot) {
+                                                  switch (snapshot.connectionState) {
+                                                    case ConnectionState.none:
+                                                    case ConnectionState.waiting:
+                                                      return Center(
+                                                        child: Container(
+                                                            width: 200,
+                                                            height: 10,
+                                                            child:
+                                                            LinearProgressIndicator()),
+                                                      );
+                                                    default:
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text("Error..."),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child: Text("No Data..."),
+                                                        );
+                                                      } else {
+                                                        //If cartNotEmpty true then display medications
+                                                        return cartNotEmpty
+                                                            ? ListView.builder(
+                                                            scrollDirection:
+                                                            Axis.vertical,
+                                                            itemCount:
+                                                            snapshot.data!.length,
+                                                            itemBuilder:
+                                                                (context, index) {
+                                                              //Get Parse Object Values
+                                                              //Get customer medications from cart table
+                                                              cartItemNum = snapshot
+                                                                  .data!
+                                                                  .length; //Save number of medications in customer cart
+                                                              final customerCart =
+                                                              snapshot.data![index];
+                                                              final medId = customerCart
+                                                                  .get('medication')!;
+                                                              final quantity =
+                                                              customerCart.get<num>(
+                                                                  'Quantity')!;
+                                                              //Get customer medications information from Medications table
+                                                              return FutureBuilder<
+                                                                  List<
+                                                                      ParseObject>>(
+                                                                  future: getCustomerCartMed(
+                                                                      medId), //Send medications id that exist in customer cart
+                                                                  builder: (context,
+                                                                      snapshot) {
+                                                                    switch (snapshot
+                                                                        .connectionState) {
+                                                                      case ConnectionState
+                                                                          .none:
+                                                                      case ConnectionState
+                                                                          .waiting:
+                                                                        return Center(
+                                                                          child:
+                                                                          Container(
+                                                                            width: 50,
+                                                                            height: 50,
+                                                                          ),
+                                                                        );
+                                                                      default:
+                                                                        if (snapshot
+                                                                            .hasError) {
+                                                                          return Center(
+                                                                            child: Text(
+                                                                                "Error..."),
+                                                                          );
+                                                                        }
+                                                                        if (!snapshot
+                                                                            .hasData) {
+                                                                          return Center(
+                                                                            child: Text(
+                                                                                "No Data..."),
+                                                                          );
+                                                                        } else {
+                                                                          return ListView
+                                                                              .builder(
+                                                                              scrollDirection: Axis
+                                                                                  .vertical,
+                                                                              shrinkWrap:
                                                                               true,
-                                                                          physics:
+                                                                              physics:
                                                                               ClampingScrollPhysics(),
-                                                                          itemCount: snapshot
-                                                                              .data!
-                                                                              .length,
-                                                                          itemBuilder:
-                                                                              (context, index) {
-                                                                            //Get Parse Object Values
-                                                                            //Get medication information from Medications table
-                                                                            final medGet =
+                                                                              itemCount: snapshot
+                                                                                  .data!
+                                                                                  .length,
+                                                                              itemBuilder:
+                                                                                  (context, index) {
+                                                                                //Get Parse Object Values
+                                                                                //Get medication information from Medications table
+                                                                                final medGet =
                                                                                 snapshot.data![index];
-                                                                            final TradeName =
-                                                                                medGet.get<String>('TradeName')!;
-                                                                            final ScientificName =
-                                                                                medGet.get<String>('ScientificName')!;
-                                                                            final Publicprice =
-                                                                                medGet.get<num>('Publicprice')!;
-                                                                            //Save quantity value in counter
-                                                                            num counter =
-                                                                                quantity;
-                                                                            return StatefulBuilder(
-                                                                                builder: (BuildContext context, StateSetter setState) =>
+                                                                                final TradeName = medGet.get<String>('TradeName')!;
+                                                                                final ScientificName = medGet.get<String>('ScientificName')!;
+                                                                                final Publicprice = medGet.get<num>('Publicprice')!;
+                                                                                final legalStatus = medGet.get<String>('LegalStatus')!;
+                                                                                if ((legalStatus.compareTo('Prescription')==0)){
+                                                                                  presRequired = true;
+                                                                                  numOfPres++;
+                                                                                }
+                                                                                //Save quantity value in counter
+                                                                                num counter = quantity;
+                                                                                TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
+                                                                                return StatefulBuilder(
+                                                                                    builder: (BuildContext context, StateSetter setState) =>
                                                                                     //Delete medication from cart
                                                                                     Dismissible(
                                                                                         key: UniqueKey(),
@@ -235,7 +239,7 @@ class Cart extends State<CartPage> {
                                                                                         //If deletion confirmed call delete function
                                                                                         onDismissed: (direction) async {
                                                                                           //Send medication id and the quantity of it
-                                                                                          if (await deleteCartMed(medId, quantity)) {
+                                                                                          if (await deleteCartMed(medId, quantity, Publicprice, legalStatus)) {
                                                                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                               content: Text(
                                                                                                 "$TradeName deleted from your cart",
@@ -284,7 +288,7 @@ class Cart extends State<CartPage> {
                                                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                                               children: <Widget>[
                                                                                                                 Text(
-                                                                                                                  '$Publicprice SAR',
+                                                                                                                  '$Publicprice SAR  x$counter',
                                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
                                                                                                                 ),
                                                                                                                 //Increment and decrement of medication
@@ -299,7 +303,7 @@ class Cart extends State<CartPage> {
                                                                                                                               onPressed: () {
                                                                                                                                 //Call decrement function
                                                                                                                                 //Send medication id. customer id and the counter after modification
-                                                                                                                                decrement(medId, widget.customerId, counter!);
+                                                                                                                                decrement(medId, widget.customerId, counter!, Publicprice );
                                                                                                                                 setState(() {
                                                                                                                                   //Modify the counter
                                                                                                                                   if (counter > 1) {
@@ -325,7 +329,7 @@ class Cart extends State<CartPage> {
                                                                                                                               onPressed: () {
                                                                                                                                 //Call increment function
                                                                                                                                 //Send medication id. customer id and the counter after modification
-                                                                                                                                increment(medId, widget.customerId, counter!);
+                                                                                                                                increment(medId, widget.customerId, counter! ,Publicprice);
                                                                                                                                 setState(() {
                                                                                                                                   counter++;
                                                                                                                                 });
@@ -351,97 +355,97 @@ class Cart extends State<CartPage> {
                                                                                             ),
                                                                                           ],
                                                                                         )));
-                                                                          });
-                                                                }
-                                                            }
-                                                          });
-                                                    })
-                                                //If cartnotEmpty is false; cart is empty show this message
-                                                : Container(
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        //mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                        SizedBox(
-                                                          height: 20,
-                                                        ),
-                                                        Text(
-                                                          'Your cart is empty',
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  "Lato",
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
-                                                        ),
-                                                        Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                              'Click',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "Lato",
-                                                                  fontSize: 20,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .push(MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                CategoryPage()));
-                                                              },
-                                                              child: Text(
-                                                                'here',
-                                                                style: TextStyle(
-                                                                    fontFamily:
+                                                                              });
+                                                                        }
+                                                                    }
+                                                                  });
+                                                            })
+                                                        //If cartnotEmpty is false; cart is empty show this message
+                                                            : Container(
+                                                            child: Column(
+                                                                crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                                //mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 20,
+                                                                  ),
+                                                                  Text(
+                                                                    'Your cart is empty',
+                                                                    style: TextStyle(
+                                                                        fontFamily:
                                                                         "Lato",
-                                                                    fontSize:
-                                                                        20,
-                                                                    fontWeight:
+                                                                        fontSize: 20,
+                                                                        fontWeight:
                                                                         FontWeight
-                                                                            .w700,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .accentColor),
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              'to browse our app',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "Lato",
-                                                                  fontSize: 20,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ]));
-                                          }
-                                      }
-                                    }))
-                          ]),
-                        ))),
-                SizedBox(
-                  height: 15,
-                ),
-              ]))),
-        ])),
+                                                                            .w700),
+                                                                  ),
+                                                                  Row(
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                    mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        'Click',
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                            "Lato",
+                                                                            fontSize: 20,
+                                                                            fontWeight:
+                                                                            FontWeight
+                                                                                .w700),
+                                                                      ),
+                                                                      TextButton(
+                                                                        onPressed: () {
+                                                                          Navigator.of(
+                                                                              context)
+                                                                              .push(MaterialPageRoute(
+                                                                              builder:
+                                                                                  (context) =>
+                                                                                  CategoryPage()));
+                                                                        },
+                                                                        child: Text(
+                                                                          'here',
+                                                                          style: TextStyle(
+                                                                              fontFamily:
+                                                                              "Lato",
+                                                                              fontSize:
+                                                                              20,
+                                                                              fontWeight:
+                                                                              FontWeight
+                                                                                  .w700,
+                                                                              color: Theme.of(
+                                                                                  context)
+                                                                                  .accentColor),
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        'to browse our app',
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                            "Lato",
+                                                                            fontSize: 20,
+                                                                            fontWeight:
+                                                                            FontWeight
+                                                                                .w700),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ]));
+                                                      }
+                                                  }
+                                                }))
+                                      ]),
+                                    ))),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ]))),
+            ])),
         //Button continue
         persistentFooterButtons: [
           Text('Continue',
@@ -454,7 +458,7 @@ class Cart extends State<CartPage> {
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
@@ -468,7 +472,7 @@ class Cart extends State<CartPage> {
             color: Colors.white,
             child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: GNav(
                   gap: 8,
                   padding: const EdgeInsets.all(10),
@@ -525,7 +529,7 @@ class Cart extends State<CartPage> {
   Future<List<ParseObject>> getCustomerCart() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
-        QueryBuilder<ParseObject>(ParseObject('Cart'));
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
     customerCart.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     final apiResponse = await customerCart.query();
@@ -544,7 +548,7 @@ class Cart extends State<CartPage> {
   //Get customer's medication information from Medications table
   Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
-        QueryBuilder<ParseObject>(ParseObject('Medications'));
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
     customerCartMed.whereEqualTo('objectId', medIdCart.objectId);
     final apiResponse = await customerCartMed.query();
 
@@ -557,10 +561,10 @@ class Cart extends State<CartPage> {
 
   //Delete medication from cart function
   //Quantity will be used in next sprint
-  Future<bool> deleteCartMed(medId, Quantity) async {
+  Future<bool> deleteCartMed(medId, Quantity, Publicprice, legalStatus) async {
     //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('Cart'));
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     parseQuery.whereEqualTo('medication', medId.toPointer());
@@ -569,6 +573,16 @@ class Cart extends State<CartPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
+        TotalPrice = num.parse((TotalPrice - (Publicprice*Quantity)).toStringAsFixed(2));
+        if(legalStatus.compareTo('Prescription')==0){
+          if(numOfPres==1){
+            presRequired = false;
+          }
+          else{
+            numOfPres--;
+            print(numOfPres);
+          }
+        }
         //Delete medication
         object.delete();
         //Decrement number of medications in customer table
@@ -580,11 +594,11 @@ class Cart extends State<CartPage> {
   }
 
   //Increment medication quantity
-  Future<void> increment(objectId, customerId, Quantity) async {
+  Future<void> increment(objectId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('Cart'));
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     parseQuery.whereEqualTo('medication', objectId.toPointer());
@@ -594,6 +608,7 @@ class Cart extends State<CartPage> {
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
+        TotalPrice = num.parse((TotalPrice + Publicprice).toStringAsFixed(2));
       }
       //Update quantity in database
       var incrementQuantity = medInCart..set('Quantity', ++Quantity);
@@ -602,11 +617,11 @@ class Cart extends State<CartPage> {
   }
 
   //Decrement medication quantity
-  Future<void> decrement(medId, customerId, Quantity) async {
+  Future<void> decrement(medId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('Cart'));
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
     parseQuery.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     parseQuery.whereEqualTo('medication', medId.toPointer());
@@ -616,6 +631,7 @@ class Cart extends State<CartPage> {
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         medInCart = o as ParseObject;
+        TotalPrice = num.parse((TotalPrice - Publicprice).toStringAsFixed(2));
       }
 
       //Update quantity in database If quantity not 1
