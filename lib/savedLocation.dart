@@ -12,6 +12,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:geopoint/geopoint.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'common/theme_helper.dart';
 import 'medDetails.dart';
@@ -33,11 +34,9 @@ class Locations extends State<SavedLocationPage> {
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var customerId;
-  bool cartNotEmpty = false;
-  int cartItemNum = 0;
-  num TotalPrice  = 0;
-  bool presRequired = false;
-  int numOfPres = 0;
+  bool LocationPageNotEmpty = false;
+  int NoOfLocation = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +61,7 @@ class Locations extends State<SavedLocationPage> {
                 default:
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text("Error..."),
+                      child: Text("Error1..."),
                     );
                   }
                   if (!snapshot.hasData) {
@@ -88,7 +87,7 @@ class Locations extends State<SavedLocationPage> {
                             default:
                               if (snapshot.hasError) {
                                 return Center(
-                                  child: Text("Error..."),
+                                  child: Text("Error2..."),
                                 );
                               }
                               if (!snapshot.hasData) {
@@ -137,7 +136,7 @@ class Locations extends State<SavedLocationPage> {
                         height: 80,
                       ),
                     ),
-                    //Controls Cart page title
+                    //Controls location page title
                     Container(
                       margin: EdgeInsets.fromLTRB(30, 13, 0, 0),
                       child: Text(
@@ -166,7 +165,7 @@ class Locations extends State<SavedLocationPage> {
                               Expanded(
                           child: FutureBuilder<List<ParseObject>>(
                                     future:
-                                   getSavedLocations(customerId), //Will change cartNotEmpty value
+                                   getSavedLocations(), //Will change LocationNotEmpty value
                                    builder: (context, snapshot) {
                                    switch (snapshot.connectionState) {
                                      case ConnectionState.none:
@@ -181,7 +180,7 @@ class Locations extends State<SavedLocationPage> {
                                      default:
                                        if (snapshot.hasError) {
                                          return Center(
-                                           child: Text("Error..."),
+                                           child: Text("Error3..."),
                                          );
                                        }
                                        if (!snapshot.hasData) {
@@ -189,7 +188,7 @@ class Locations extends State<SavedLocationPage> {
                                            child: Text("No Data..."),
                                          );
                                        } else {
-                                         return cartNotEmpty
+                                         return LocationPageNotEmpty
                                             ? ListView.builder(
                                               scrollDirection:
                                               Axis.vertical,
@@ -198,21 +197,22 @@ class Locations extends State<SavedLocationPage> {
                                              itemBuilder:
                                             (context, index) {
                                               //Get Parse Object Values
-                                              //Get customer medications from cart table
-                                              cartItemNum = snapshot
+                                              //Get customer locations from Locations table
+                                              NoOfLocation = snapshot
                                                   .data!
-                                                  .length; //Save number of medications in customer cart
+                                                  .length; //Save number of Locations
                                               final LocationTable =
                                               snapshot.data![index];
                                               final LocID = LocationTable
-                                                  .get<String>('objectId')!;
-                                              final Location = LocationTable
-                                                  .get<String>('customer')!;
+                                                  .get('objectId')!;
+                                              ParseGeoPoint Location = LocationTable
+                                                  .get<ParseGeoPoint>('SavedLocations')!;
+
 
 
                                        return StatefulBuilder(
                                                   builder: (BuildContext context, StateSetter setState) =>
-                                                  //Delete medication from cart
+                                                  //Delete Locations from Location table
                                                   Dismissible(
                                                       key: UniqueKey(),
                                                       background: Container(
@@ -233,7 +233,7 @@ class Locations extends State<SavedLocationPage> {
                                                           context: context,
                                                           builder: (BuildContext context) {
                                                             return AlertDialog(
-                                                              title: Text("Are you sure you wish to delete this item?",
+                                                              title: Text("Are you sure you wish to delete this Location?",
                                                                   style: TextStyle(
                                                                     fontFamily: 'Lato',
                                                                     fontSize: 20,
@@ -254,20 +254,19 @@ class Locations extends State<SavedLocationPage> {
                                                       },
                                                       //If deletion confirmed call delete function
                                                       onDismissed: (direction) async {
-                                                        //Send medication id and the quantity of it
+                                                        //Send location id
                                                         if (await deleteCartMed(LocID)) {
                                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                             content: Text(
-                                                              " $Location deleted from your cart",
+                                                              "the Location is deleted",
                                                               style: TextStyle(fontSize: 20),
                                                             ),
                                                             duration: Duration(milliseconds: 3000),
                                                           ));
                                                         }
-                                                        //If no medications left in cart reload page to show empty message
-                                                        //Value will be changed in deleteCartMed function
-                                                        if (cartItemNum == 0) {
-                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
+                                                        //If no location left in location page reload page to show empty message
+                                                        if (NoOfLocation == 0) {
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => SavedLocationPage(widget.customerId)));
                                                         }
                                                       },
 
@@ -288,7 +287,8 @@ class Locations extends State<SavedLocationPage> {
                                                          Container(
                                                            padding: EdgeInsets.only(right: 8, top: 4),
                                                            child: Text(
-                                                             Location,
+                                                             "$Location",
+
                                                              maxLines: 2,
                                                              softWrap: true,
                                                              style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
@@ -311,7 +311,7 @@ class Locations extends State<SavedLocationPage> {
 
 
 
-                                     //If cartnotEmpty is false; cart is empty show this message
+                                     //If LocationNotEmpty is false; Location is empty show this message
                                          : Container(
                                      child: Column(
                                      crossAxisAlignment:
@@ -342,6 +342,43 @@ class Locations extends State<SavedLocationPage> {
           ),)
         ,])
         ,),
+        //Bottom navigation bar
+        bottomNavigationBar: Container(
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
+                    } else if (_selectedIndex == 2) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
+                    } else if (_selectedIndex == 3) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+                    }
+                  }),
+                )))
     );
 
   }
@@ -365,63 +402,52 @@ class Locations extends State<SavedLocationPage> {
     }
   }
 
-  // Future<List<ParseObject>> getSavedLocations() async {
-  //   //Query customer cart
-  //   final QueryBuilder<ParseObject> SavedLocations =
-  //   QueryBuilder<ParseObject>(ParseObject('Locations'));
-  //   SavedLocations.whereEqualTo('customer',
-  //       (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-  //   final apiResponse = await SavedLocations.query();
-  //
-  //   if (apiResponse.success && apiResponse.results != null) {
-  //     //If query have objects then set true
-  //     cartNotEmpty=true;
-  //     return apiResponse.results as List<ParseObject>;
-  //   } else {
-  //     //If query have no object then set false
-  //     cartNotEmpty=false;
-  //     return [];
-  //   }
-  // }
 
-
-  //Get customer's medication information from Medications table
-  Future<List<ParseObject>> getSavedLocations(customerId) async {
+  //Get customer's locations  from Locations table
+  Future<List<ParseObject>> getSavedLocations() async {
+    // var locationtable = ParseObject('Locations')
+    //   ..set('SavedLocations',ParseGeoPoint(latitude: -20.2523818, longitude: -40.2665611))
+    //   ..set('customer',
+    //       (ParseObject('Customer')..objectId = customerId).toPointer());
+    // await locationtable.save();
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
-    SavedLocations.whereEqualTo('customer', 'DPSlCFx8Ro');
+    SavedLocations.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+
     final apiResponse = await SavedLocations.query();
 
     if (apiResponse.success && apiResponse.results != null) {
       //If query have objects then set true
-       cartNotEmpty=true;
+      LocationPageNotEmpty=true;
+
       return apiResponse.results as List<ParseObject>;
     } else {
       //If query have no object then set false
-      cartNotEmpty=false;
+      LocationPageNotEmpty=false;
       return [];
     }
   }
 
 
-  //Delete medication from cart function
-  //Quantity will be used in next sprint
+
+
+
+  //Delete location from locations table
   Future<bool> deleteCartMed(LocID) async {
-    //Query the medication from customers' cart
+    //Query the location from locations table
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
-    parseQuery.whereEqualTo('customer',
-        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    parseQuery.whereEqualTo('SavedLocations', LocID.toPointer());
+    parseQuery.whereEqualTo('objectId', LocID);
     final apiResponse1 = await parseQuery.query();
 
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         final object = o as ParseObject;
-        //Delete medication
+        //Delete location
         object.delete();
-        //Decrement number of medications in customer table
-        cartItemNum = cartItemNum - 1;
+        //Decrement number of location in location table
+        NoOfLocation = NoOfLocation - 1;
         return true;
       }
     }
