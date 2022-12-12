@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/Location.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresLocation.dart';
+import 'PresAttach.dart';
 import 'Settings.dart';
+import 'Location.dart';
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -458,7 +460,7 @@ class Cart extends State<CartPage> {
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Location(widget.customerId, TotalPrice, presRequired)));//PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
