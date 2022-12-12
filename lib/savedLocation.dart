@@ -31,8 +31,6 @@ class SavedLocationPage extends StatefulWidget {
 
 class Locations extends State<SavedLocationPage> {
   int _selectedIndex = 3;
-  final controllerEditEmail = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   var customerId;
   bool LocationPageNotEmpty = false;
   int NoOfLocation = 0;
