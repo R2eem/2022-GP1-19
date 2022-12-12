@@ -26,6 +26,7 @@ class Cart extends State<CartPage> {
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -191,6 +192,7 @@ class Cart extends State<CartPage> {
                                                                                   presRequired = true;
                                                                                   numOfPres++;
                                                                                 }
+
                                                                                 //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
@@ -448,12 +450,14 @@ class Cart extends State<CartPage> {
             ])),
         //Button continue
         persistentFooterButtons: [
+          if(cartItemNum != 0)
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               )),
+          if(cartItemNum !=0)
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
