@@ -5,6 +5,7 @@ import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'OrderDetails.dart';
 import 'Settings.dart';
 
 
@@ -19,9 +20,12 @@ class OrdersPage extends StatefulWidget {
 class Orders extends State<OrdersPage> {
   int _selectedIndex = 2;
   String searchString = "";
+  int orderNum = 1;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
@@ -39,7 +43,7 @@ class Orders extends State<OrdersPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                                children:[
+                                children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Image.asset('assets/logoheader.png',
@@ -50,10 +54,199 @@ class Orders extends State<OrdersPage> {
                                   ),
                                   Container(
                                     margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                                    child: Text('Orders', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                                  ),]),
+                                    child: Text('Orders', textAlign: TextAlign
+                                        .center, style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 27,
+                                        color: Colors.white70,
+                                        fontWeight: FontWeight.bold),),
+                                  ),
+                                ]),
                             SizedBox(height: 55,),
-                          ])))])),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
+                            child:Text('Current Orders', textAlign: TextAlign
+                                        .center, style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 27,
+                                        fontWeight: FontWeight.bold)),),
+                            SingleChildScrollView(
+                                child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      height: 130,
+                                      width: size.width,
+                                      child: Column(children: [
+                                        Expanded(
+                                            child: FutureBuilder<List<ParseObject>>(
+                                                future: getCustomerCurrentOrders(),
+                                                builder: (context, snapshot) {
+                                                  switch (snapshot
+                                                      .connectionState) {
+                                                    case ConnectionState.none:
+                                                    case ConnectionState
+                                                        .waiting:
+                                                      return Center(
+                                                        child: Container(
+                                                            width: 200,
+                                                            height: 10,
+                                                            child:
+                                                            LinearProgressIndicator()),
+                                                      );
+                                                    default:
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text(
+                                                              "Error..."),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child: Text(
+                                                              "No Data..."),
+                                                        );
+                                                      } else {
+                                                        return  ListView.builder(
+                                                            scrollDirection: Axis.vertical,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
+                                                              final customerCurrentOrders = snapshot.data![index];
+                                                              final OrderId = customerCurrentOrders.get('objectId');
+                                                              final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                              final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                              final Prescription = customerCurrentOrders.get('Prescription')!;
+                                                              final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
+
+                                                              return  GestureDetector(
+                                                                  //Navigate to medication details page
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                              //Medication card information
+                                                              child: Card(
+                                                                  elevation: 3,
+                                                                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                                                  color: Colors.white,
+                                                                  child: Column(
+                                                                      children:[
+                                                                        ListTile(
+                                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                                                                          title: Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf('.')) +'     '+ OrderStatus,style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.w700),),
+                                                                          subtitle: Text('$TotalPrice SAR',style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 19,
+                                                                              color: Colors.red,
+                                                                              fontStyle: FontStyle.italic,
+                                                                              fontWeight: FontWeight.w600),),
+
+
+                                                                        ),
+                                                                      ] )));
+
+                                                            });
+                                                      }
+                                                  }
+                                                }))
+                                      ]),
+                                    ))),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
+                              child:Text('Previous Orders', textAlign: TextAlign
+                                  .center, style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.bold)),),
+                            SingleChildScrollView(
+                                child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      height: 130,
+                                      width: size.width,
+                                      child: Column(children: [
+                                        Expanded(
+                                            child: FutureBuilder<List<ParseObject>>(
+                                                future: getCustomerPreviousOrders(),
+                                                builder: (context, snapshot) {
+                                                  switch (snapshot
+                                                      .connectionState) {
+                                                    case ConnectionState.none:
+                                                    case ConnectionState
+                                                        .waiting:
+                                                      return Center(
+                                                        child: Container(
+                                                            width: 200,
+                                                            height: 10,
+                                                            child:
+                                                            LinearProgressIndicator()),
+                                                      );
+                                                    default:
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text(
+                                                              "Error..."),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child: Text(
+                                                              "No Data..."),
+                                                        );
+                                                      } else {
+                                                        return  ListView.builder(
+                                                            scrollDirection: Axis.vertical,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
+                                                              final customerCurrentOrders = snapshot.data![index];
+                                                              final OrderId = customerCurrentOrders.get('objectId');
+                                                              final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                              final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                              final Prescription = customerCurrentOrders.get('Prescription')!;
+                                                              final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
+
+                                                              return  GestureDetector(
+                                                                //Navigate to medication details page
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                                  //Medication card information
+                                                                  child: Card(
+                                                                      elevation: 3,
+                                                                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                                                      color: Colors.white,
+                                                                      child: Column(
+                                                                          children:[
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                                                                              title: Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf('.')) +'     '+ OrderStatus,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                              subtitle: Text('$TotalPrice SAR',style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 19,
+                                                                                  color: Colors.red,
+                                                                                  fontStyle: FontStyle.italic,
+                                                                                  fontWeight: FontWeight.w600),),
+
+
+                                                                            ),
+                                                                          ] )));
+
+                                                            });
+                                                      }
+                                                  }
+                                                }))
+                                      ]),
+                                    ))),
+                          ]))),
+            ])),
+
         //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
@@ -65,29 +258,104 @@ class Orders extends State<OrdersPage> {
                   padding: const EdgeInsets.all(10),
                   tabs: [
                     GButton(
-                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.home,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.shopping_bag,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.settings,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30
                     ),
                   ],
                   selectedIndex: _selectedIndex,
-                  onTabChange: (index) => setState(() {
-                    _selectedIndex = index;
-                    if (_selectedIndex == 0) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                    } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
-                    } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
-                    } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
-                    }
-                  }),
-                ))));}}
+                  onTabChange: (index) =>
+                      setState(() {
+                        _selectedIndex = index;
+                        if (_selectedIndex == 0) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => CategoryPage()));
+                        } else if (_selectedIndex == 1) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) =>
+                                  CartPage(widget.customerId)));
+                        } else if (_selectedIndex == 2) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) =>
+                                  OrdersPage(widget.customerId)));
+                        } else if (_selectedIndex == 3) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) =>
+                                  SettingsPage(widget.customerId)));
+                        }
+                      }),
+                ))));
+  }
+
+  //Get customer current orders from orders table
+  Future<List<ParseObject>> getCustomerCurrentOrders() async {
+
+    //Query customer current orders
+    final QueryBuilder<ParseObject> query1 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query1.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+        query1.whereEqualTo('OrderStatus','Under processing');
+    final QueryBuilder<ParseObject> query2 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query2.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+        query2.whereEqualTo('OrderStatus','Ready for pick up');
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("Orders"),
+      [query1, query2],
+    );
+    final apiResponse = await mainQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+
+  //Get customer previous orders from orders table
+  Future<List<ParseObject>> getCustomerPreviousOrders() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> query1 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query1.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query1.whereEqualTo('OrderStatus','Cancelled');
+    final QueryBuilder<ParseObject> query2 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query2.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query2.whereEqualTo('OrderStatus','Collected');
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("Orders"),
+      [query1, query2],
+    );
+    final apiResponse = await mainQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+}

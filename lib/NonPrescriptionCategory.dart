@@ -23,6 +23,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
   String searchString ='';
   String packageType ='';
   int _selectedTab = 0 ;
+  num counter = 71;
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +173,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                       child: Text("No Data..."),
                                     );
                                   } else {
+                                    counter = 71;
                                     return ListView.builder(
                                         padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                         scrollDirection: Axis.vertical,
@@ -238,7 +240,40 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                         ),
                                                       ] )))
                                                //If the medication doesn't matches the search string then don't display
-                                              :Container();
+                                              : (--counter <= 0)?
+                                          Container(
+                                              child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .center,
+                                                  //mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Text(
+                                                      "Sorry we could't find any match,",
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                          "Lato",
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w700),
+                                                      textAlign: TextAlign.center,
+                                                    ),Text(
+                                                      "try another search or continue shopping through the categories.",
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                          "Lato",
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w700),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ]))
+                                              : Container();
                                         });
                                   }
                               }
