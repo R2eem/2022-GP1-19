@@ -1,21 +1,15 @@
 import 'dart:async';
-//import 'dart:html';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-import 'package:geopoint/geopoint.dart';
-import 'package:geolocator/geolocator.dart';
-
-import 'common/theme_helper.dart';
-import 'medDetails.dart';
+import 'package:geocoder2/geocoder2.dart';
 
 
 
@@ -34,6 +28,9 @@ class Locations extends State<SavedLocationPage> {
   var customerId;
   bool LocationPageNotEmpty = false;
   int NoOfLocation = 0;
+  String loc ="";
+
+
 
 
   @override
@@ -206,6 +203,15 @@ class Locations extends State<SavedLocationPage> {
                                               ParseGeoPoint Location = LocationTable
                                                   .get<ParseGeoPoint>('SavedLocations')!;
 
+                                              // getUserLocation(Location).then((value) {
+                                              //   log(value);
+                                              // });
+
+
+
+
+
+
 
 
                                        return StatefulBuilder(
@@ -285,6 +291,8 @@ class Locations extends State<SavedLocationPage> {
                                                          Container(
                                                            padding: EdgeInsets.only(right: 8, top: 4),
                                                            child: Text(
+
+
                                                              "$Location",
 
                                                              maxLines: 2,
@@ -403,11 +411,6 @@ class Locations extends State<SavedLocationPage> {
 
   //Get customer's locations  from Locations table
   Future<List<ParseObject>> getSavedLocations() async {
-    // var locationtable = ParseObject('Locations')
-    //   ..set('SavedLocations',ParseGeoPoint(latitude: -20.2523818, longitude: -40.2665611))
-    //   ..set('customer',
-    //       (ParseObject('Customer')..objectId = customerId).toPointer());
-    // await locationtable.save();
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
     SavedLocations.whereEqualTo('customer',
@@ -450,6 +453,17 @@ class Locations extends State<SavedLocationPage> {
       }
     }
     return false;
+  }
+Future<String> getUserLocation(ParseGeoPoint location) async {//call this async method from whereever you need
+    GeoData address = await Geocoder2.getDataFromCoordinates(
+        latitude: location.latitude,
+        longitude: location.longitude,
+        googleMapApiKey: "AIzaSyCXhcqxPyXKgR88wE3V2Ol0eug30pJoV84");
+
+    String city = address.address;
+
+
+    return address.toString();
   }
 
 

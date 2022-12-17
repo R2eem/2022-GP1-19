@@ -5,6 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'AccountPage.dart';
+import 'PharmcyOrders.dart';
 import 'common/theme_helper.dart';
 
 
@@ -94,7 +95,7 @@ class HomePage extends StatelessWidget {
                     child: Text('Pharmacy'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                   onPressed: (){
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => PharmcyOrdersPage()));
                   },
                 ),
               ),
