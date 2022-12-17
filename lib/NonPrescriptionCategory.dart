@@ -299,7 +299,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                       icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                       icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30

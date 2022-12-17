@@ -19,8 +19,8 @@ class OrdersPage extends StatefulWidget {
 
 class Orders extends State<OrdersPage> {
   int _selectedIndex = 2;
-  String searchString = "";
   int orderNum = 1;
+  bool currentOrders = true;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery
@@ -64,22 +64,17 @@ class Orders extends State<OrdersPage> {
                                 ]),
                             SizedBox(height: 55,),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
-                            child:Text('Current Orders', textAlign: TextAlign
-                                        .center, style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 27,
-                                        fontWeight: FontWeight.bold)),),
+                              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0),
+                              child:Text('Current Orders', textAlign: TextAlign
+                                  .center, style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.bold)),),
+
                             SingleChildScrollView(
-                                child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      height: 130,
-                                      width: size.width,
-                                      child: Column(children: [
-                                        Expanded(
+                              scrollDirection: Axis.vertical,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
                                             child: FutureBuilder<List<ParseObject>>(
                                                 future: getCustomerCurrentOrders(),
                                                 builder: (context, snapshot) {
@@ -107,8 +102,24 @@ class Orders extends State<OrdersPage> {
                                                           child: Text(
                                                               "No Data..."),
                                                         );
-                                                      } else {
+                                                      }
+                                                      if(snapshot.data!.length == 0){
+                                                        return Center(
+                                                             child:Column(
+                                                               children:[
+                                                                 Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
+                                                                 Text("You don't have orders now.",style: TextStyle(
+                                                                     fontFamily: "Lato",
+                                                                     fontSize: 18,
+                                                                     color: Colors.black45,
+                                                                     fontWeight: FontWeight.w700),)
+                                                               ]
+                                                             )
+                                                        );
+                                                      }
+                                                        else {
                                                         return  ListView.builder(
+                                                            shrinkWrap: true,
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
@@ -116,63 +127,76 @@ class Orders extends State<OrdersPage> {
                                                               final OrderId = customerCurrentOrders.get('objectId');
                                                               final CreatedDate = customerCurrentOrders.get('createdAt')!;
                                                               final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              final Prescription = customerCurrentOrders.get('Prescription')!;
+                                                              //final Prescription = customerCurrentOrders.get('Prescription')!;
                                                               final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
                                                               return  GestureDetector(
-                                                                  //Navigate to medication details page
+                                                                //Navigate to order details page
                                                                   onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
-                                                              //Medication card information
-                                                              child: Card(
-                                                                  elevation: 3,
-                                                                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                                                  color: Colors.white,
-                                                                  child: Column(
-                                                                      children:[
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-                                                                          title: Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf('.')) +'     '+ OrderStatus,style: TextStyle(
-                                                                              fontFamily: "Lato",
-                                                                              fontSize: 18,
-                                                                              fontWeight: FontWeight.w700),),
-                                                                          subtitle: Text('$TotalPrice SAR',style: TextStyle(
-                                                                              fontFamily: "Lato",
-                                                                              fontSize: 19,
-                                                                              color: Colors.red,
-                                                                              fontStyle: FontStyle.italic,
-                                                                              fontWeight: FontWeight.w600),),
-
-
-                                                                        ),
-                                                                      ] )));
-
+                                                                  //Order card information
+                                                                  child: Card(
+                                                                      elevation: 3,
+                                                                      color: Colors.white,
+                                                                      child: ClipPath(
+                                                                             child: Container(
+                                                                                   decoration: BoxDecoration(
+                                                                                     border: Border(
+                                                                                       left: BorderSide(color: Colors.purple.shade200, width:5),
+                                                                                       bottom: BorderSide(color: Colors.grey, width: 3),
+                                                                                     ),
+                                                                                   ),
+                                                                      child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                                                                      child:  Row(
+                                                                          children:[
+                                                                            Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children:[
+                                                                                Text('Order ID:  $OrderId',style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 19,
+                                                                                    color: Colors.black,
+                                                                                    fontWeight: FontWeight.w600),),
+                                                                                Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 18,
+                                                                                    color: Colors.black54,
+                                                                                    fontWeight: FontWeight.w700),),
+                                                                                Text(OrderStatus ,style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 17,
+                                                                                    color: Colors.black45,
+                                                                                    fontWeight: FontWeight.w700),),
+                                                                                SizedBox(height: 10),
+                                                                              ]),
+                                                                                Spacer(),
+                                                                                Text('$TotalPrice SAR',style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 19,
+                                                                                    color: Colors.black,
+                                                                                    fontWeight: FontWeight.w600),),
+                                                                                Spacer(),
+                                                                                Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
+                                                                              ]) )))));
                                                             });
                                                       }
                                                   }
-                                                }))
-                                      ]),
-                                    ))),
+                                                })
+                                    ),
                             SizedBox(
                               height: 15,
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
+                              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0),
                               child:Text('Previous Orders', textAlign: TextAlign
                                   .center, style: TextStyle(
                                   fontFamily: 'Lato',
                                   fontSize: 27,
                                   fontWeight: FontWeight.bold)),),
                             SingleChildScrollView(
-                                child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
+                                scrollDirection: Axis.vertical,
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      height: 130,
-                                      width: size.width,
-                                      child: Column(children: [
-                                        Expanded(
-                                            child: FutureBuilder<List<ParseObject>>(
+                                          horizontal: 10, vertical: 10),
+                                      child:  FutureBuilder<List<ParseObject>>(
                                                 future: getCustomerPreviousOrders(),
                                                 builder: (context, snapshot) {
                                                   switch (snapshot
@@ -199,8 +223,23 @@ class Orders extends State<OrdersPage> {
                                                           child: Text(
                                                               "No Data..."),
                                                         );
-                                                      } else {
+                                                      } if(snapshot.data!.length == 0){
+                                                        return Center(
+                                                            child:Column(
+                                                                children:[
+                                                                  Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
+                                                                  Text("You don't have orders now.",style: TextStyle(
+                                                                      fontFamily: "Lato",
+                                                                      fontSize: 18,
+                                                                      color: Colors.black45,
+                                                                      fontWeight: FontWeight.w700),)
+                                                                ]
+                                                            )
+                                                        );
+                                                      }
+                                                      else {
                                                         return  ListView.builder(
+                                                            shrinkWrap: true,
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
@@ -212,38 +251,56 @@ class Orders extends State<OrdersPage> {
                                                               final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
                                                               return  GestureDetector(
-                                                                //Navigate to medication details page
+                                                                //Navigate to order details page
                                                                   onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
-                                                                  //Medication card information
+                                                                  //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
-                                                                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                                                                       color: Colors.white,
-                                                                      child: Column(
-                                                                          children:[
-                                                                            ListTile(
-                                                                              contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-                                                                              title: Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf('.')) +'     '+ OrderStatus,style: TextStyle(
-                                                                                  fontFamily: "Lato",
-                                                                                  fontSize: 18,
-                                                                                  fontWeight: FontWeight.w700),),
-                                                                              subtitle: Text('$TotalPrice SAR',style: TextStyle(
-                                                                                  fontFamily: "Lato",
-                                                                                  fontSize: 19,
-                                                                                  color: Colors.red,
-                                                                                  fontStyle: FontStyle.italic,
-                                                                                  fontWeight: FontWeight.w600),),
-
-
-                                                                            ),
-                                                                          ] )));
-
+                                                                      child: ClipPath(
+                                                                          child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                border: Border(
+                                                                                  left: BorderSide(color: Colors.purple.shade200, width:5),
+                                                                                  bottom: BorderSide(color: Colors.grey, width: 3),
+                                                                                ),
+                                                                              ),
+                                                                              child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                                                                                  child:  Row(
+                                                                                      children:[
+                                                                                        Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children:[
+                                                                                              Text('Order ID:  $OrderId',style: TextStyle(
+                                                                                                  fontFamily: "Lato",
+                                                                                                  fontSize: 19,
+                                                                                                  color: Colors.black,
+                                                                                                  fontWeight: FontWeight.w600),),
+                                                                                              Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
+                                                                                                  fontFamily: "Lato",
+                                                                                                  fontSize: 18,
+                                                                                                  color: Colors.black54,
+                                                                                                  fontWeight: FontWeight.w700),),
+                                                                                              Text(OrderStatus ,style: TextStyle(
+                                                                                                  fontFamily: "Lato",
+                                                                                                  fontSize: 17,
+                                                                                                  color: Colors.black45,
+                                                                                                  fontWeight: FontWeight.w700),),
+                                                                                              SizedBox(height: 10),
+                                                                                            ]),
+                                                                                        Spacer(),
+                                                                                        Text('$TotalPrice SAR',style: TextStyle(
+                                                                                            fontFamily: "Lato",
+                                                                                            fontSize: 19,
+                                                                                            color: Colors.black,
+                                                                                            fontWeight: FontWeight.w600),),
+                                                                                        Spacer(),
+                                                                                        Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
+                                                                                      ]) )))));
                                                             });
                                                       }
                                                   }
                                                 }))
-                                      ]),
-                                    ))),
                           ]))),
             ])),
 
@@ -268,7 +325,7 @@ class Orders extends State<OrdersPage> {
                         iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30
                     ),

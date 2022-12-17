@@ -35,7 +35,7 @@ class _PresAttachPage extends State<PresAttach> {
   String searchString = "";
   PickedFile? pickedFile;
   bool isLoading = false;
-
+  List medicationsList = [];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -75,6 +75,19 @@ class _PresAttachPage extends State<PresAttach> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  Text('Attach prescription:  ', style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                                  SizedBox(height: 10,),
+                                  Text('* The accepted image format are (png,jpg,jpeg)', style: TextStyle(
+                                      fontFamily: "Lato",
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.w700),),
+                                  SizedBox(height: 10,),
+                                  
                                   widget.presRequired ?
                                   GestureDetector(
                                     child: pickedFile != null
@@ -117,7 +130,7 @@ class _PresAttachPage extends State<PresAttach> {
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               content: Text(
-                                                  "the accepted image format are (png,jpg,jpeg) ",
+                                                  "The accepted image format are (png,jpg,jpeg) ",
                                                   style: TextStyle(
                                                     fontFamily: 'Lato', fontSize: 20,)),
                                               actions: <Widget>[
@@ -152,12 +165,23 @@ class _PresAttachPage extends State<PresAttach> {
                                         fontSize: 23,
                                         fontWeight: FontWeight.bold,
                                       )),
-                                      Text(widget.totalPrice.toString(), style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red
-                                      )),
+                                      Container(
+                                          margin: EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0, bottom: 10.0),
+                                          child:
+                                          Text(
+                                            "${(widget.totalPrice).toStringAsFixed(2) +' SAR'}",
+                                            style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 20.0,
+                                                color: Color.fromRGBO(34, 34, 34, 1),
+                                                background: Paint()
+                                                  ..strokeWidth = 30.0
+                                                  ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                  ..style = PaintingStyle.stroke
+                                                  ..strokeJoin = StrokeJoin.round
+                                            ),
+                                          )),
                                     ],
                                   ),
                                 ],
@@ -202,35 +226,33 @@ class _PresAttachPage extends State<PresAttach> {
                                                       } else {
                                                         //If cartNotEmpty true then display medications
                                                         return ListView.builder(
-                                                            scrollDirection:
-                                                            Axis.vertical,
-                                                            itemCount:
-                                                            snapshot.data!.length,
-                                                            itemBuilder:
-                                                                (context, index) {
+                                                            scrollDirection: Axis.vertical,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
                                                               //Get Parse Object Values
                                                               //Get customer medications from cart table
-                                                              final customerCart =
-                                                              snapshot.data![index];
-                                                              final medId = customerCart
-                                                                  .get('medication')!;
-                                                              final quantity =
-                                                              customerCart.get<num>(
-                                                                  'Quantity')!;
+                                                              final customerCart = snapshot.data![index];
+                                                              final medId = customerCart.get('medication')!;
+                                                              final quantity = customerCart.get<num>('Quantity')!;
+                                                              //Store customer medications in list
+                                                              for (int i = 0; i < snapshot.data!.length; i++) {
+                                                                var medications = {
+                                                                  'medId': medId['objectId'],
+                                                                  'quantity': quantity.toString(),
+                                                                };
+                                                                var contain = medicationsList.where((element) => element['medId'] == medId['objectId']);
+                                                                if (contain.isEmpty) {
+                                                                  medicationsList.add(medications);
+                                                                }
+                                                              }
                                                               //Get customer medications information from Medications table
                                                               return FutureBuilder<
-                                                                  List<
-                                                                      ParseObject>>(
-                                                                  future: getCustomerCartMed(
-                                                                      medId), //Send medications id that exist in customer cart
-                                                                  builder: (context,
-                                                                      snapshot) {
-                                                                    switch (snapshot
-                                                                        .connectionState) {
-                                                                      case ConnectionState
-                                                                          .none:
-                                                                      case ConnectionState
-                                                                          .waiting:
+                                                                  List<ParseObject>>(
+                                                                  future: getCustomerCartMed(medId), //Send medications id that exist in customer cart
+                                                                  builder: (context, snapshot) {
+                                                                    switch (snapshot.connectionState) {
+                                                                      case ConnectionState.none:
+                                                                      case ConnectionState.waiting:
                                                                         return Center(
                                                                           child:
                                                                           Container(
@@ -239,37 +261,27 @@ class _PresAttachPage extends State<PresAttach> {
                                                                           ),
                                                                         );
                                                                       default:
-                                                                        if (snapshot
-                                                                            .hasError) {
+                                                                        if (snapshot.hasError) {
                                                                           return Center(
                                                                             child: Text(
                                                                                 "Error..."),
                                                                           );
                                                                         }
-                                                                        if (!snapshot
-                                                                            .hasData) {
+                                                                        if (!snapshot.hasData) {
                                                                           return Center(
                                                                             child: Text(
                                                                                 "No Data..."),
                                                                           );
                                                                         } else {
-                                                                          return ListView
-                                                                              .builder(
-                                                                              scrollDirection: Axis
-                                                                                  .vertical,
-                                                                              shrinkWrap:
-                                                                              true,
-                                                                              physics:
-                                                                              ClampingScrollPhysics(),
-                                                                              itemCount: snapshot
-                                                                                  .data!
-                                                                                  .length,
-                                                                              itemBuilder:
-                                                                                  (context, index) {
+                                                                          return ListView.builder(
+                                                                              scrollDirection: Axis.vertical,
+                                                                              shrinkWrap: true,
+                                                                              physics: ClampingScrollPhysics(),
+                                                                              itemCount: snapshot.data!.length,
+                                                                              itemBuilder: (context, index) {
                                                                                 //Get Parse Object Values
                                                                                 //Get medication information from Medications table
-                                                                                final medGet =
-                                                                                snapshot.data![index];
+                                                                                final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')! * quantity;
 
@@ -390,9 +402,11 @@ class _PresAttachPage extends State<PresAttach> {
                         latitude: widget.lat, longitude: widget.lng);
                     final orderInfo = ParseObject('Orders')
                       ..set('Customer_id', (ParseObject('Customer')
-                        ..objectId = widget.customerId).toPointer())..set(
-                          'TotalPrice', widget.totalPrice)..set(
-                          'Location', point);
+                        ..objectId = widget.customerId).toPointer())
+                      ..set('TotalPrice', widget.totalPrice)
+                      ..set('Location', point)
+                      ..setAddUnique('MedicationsList', medicationsList);
+
                     await orderInfo.save();
 
                     final saveLocation = ParseObject('Locations')
@@ -454,10 +468,11 @@ class _PresAttachPage extends State<PresAttach> {
                         latitude: widget.lat, longitude: widget.lng);
                     final orderInfo = ParseObject('Orders')
                       ..set('Customer_id', (ParseObject('Customer')
-                        ..objectId = widget.customerId).toPointer())..set(
-                          'Prescription', parseFile)..set(
-                          'TotalPrice', widget.totalPrice)..set(
-                          'Location', point);
+                        ..objectId = widget.customerId).toPointer())
+                      ..set('Prescription', parseFile)
+                      ..set('TotalPrice', widget.totalPrice)
+                      ..set('Location', point)
+                      ..setAddUnique('MedicationsList', medicationsList);
                     await orderInfo.save();
 
                     final saveLocation = ParseObject('Locations')
@@ -526,7 +541,7 @@ class _PresAttachPage extends State<PresAttach> {
                         iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30
                     ),
