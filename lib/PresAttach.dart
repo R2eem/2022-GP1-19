@@ -75,6 +75,10 @@ class _PresAttachPage extends State<PresAttach> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  widget.presRequired ?
+                              Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
                                   Text('Attach prescription:  ', style: TextStyle(
                                     fontFamily: 'Lato',
                                     fontSize: 25,
@@ -87,8 +91,6 @@ class _PresAttachPage extends State<PresAttach> {
                                       color: Colors.black45,
                                       fontWeight: FontWeight.w700),),
                                   SizedBox(height: 10,),
-                                  
-                                  widget.presRequired ?
                                   GestureDetector(
                                     child: pickedFile != null
                                         ? Container(
@@ -150,7 +152,7 @@ class _PresAttachPage extends State<PresAttach> {
                                         );
                                       }
                                     },
-                                  ) : Container(),
+                                  )]) : Container(),
                                   SizedBox(height: 10,),
                                   Text('Order summary:  ', style: TextStyle(
                                     fontFamily: 'Lato',
