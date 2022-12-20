@@ -178,8 +178,7 @@ class Cart extends State<CartPage> {
                                                                                   (context, index) {
                                                                                 //Get Parse Object Values
                                                                                 //Get medication information from Medications table
-                                                                                final medGet =
-                                                                                snapshot.data![index];
+                                                                                final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')!;

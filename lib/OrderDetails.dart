@@ -4,7 +4,8 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:full_screen_image/full_screen_image.dart';
+import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 
@@ -20,9 +21,11 @@ class OrderDetailsPage extends StatefulWidget {
 
 class OrderDetails extends State<OrderDetailsPage> {
   int _selectedIndex = 2;
+  bool presRequired = false;
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
@@ -50,7 +53,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                       }, icon: Icon(Icons.keyboard_arrow_left),),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(65, 23, 0, 0),
+                                    margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
                                     child: Text('Order details',
                                       textAlign: TextAlign.center, style: TextStyle(
                                         fontFamily: 'Lato',
@@ -60,32 +63,22 @@ class OrderDetails extends State<OrderDetailsPage> {
                                   ),
                                 ]),
                             SizedBox(height: 55,),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
-                              child:Text('Current Orders', textAlign: TextAlign
-                                  .center, style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 27,
-                                  fontWeight: FontWeight.bold)),),
-
                             SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
                                 child: FutureBuilder<List<ParseObject>>(
-                                    future: getCustomerCurrentOrders(),
+                                    future: getOrderDetails(),
                                     builder: (context, snapshot) {
-                                      switch (snapshot
-                                          .connectionState) {
+                                      switch (snapshot.connectionState) {
                                         case ConnectionState.none:
-                                        case ConnectionState
-                                            .waiting:
+                                        case ConnectionState.waiting:
                                           return Center(
                                             child: Container(
-                                                width: 200,
-                                                height: 10,
+                                                width: 50,
+                                                height: 50,
                                                 child:
-                                                LinearProgressIndicator()),
+                                                CircularProgressIndicator()),
                                           );
                                         default:
                                           if (snapshot.hasError) {
@@ -109,172 +102,188 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                   final OrderId = customerCurrentOrders.get('objectId');
                                                   final CreatedDate = customerCurrentOrders.get('createdAt')!;
                                                   final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                  //final Prescription = customerCurrentOrders.get('Prescription')!;
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
+                                                  final location = customerCurrentOrders.get<ParseGeoPoint>('Location')!.toJson();
+                                                  final address = getUserLocation(location);
+                                                  var prescription = null;
+                                                  if(customerCurrentOrders.get('Prescription') != null){
+                                                    presRequired = true;
+                                                    prescription = customerCurrentOrders.get<ParseFile>('Prescription')!;
+                                                  }
+                                                  return Card(
+                                                      elevation: 3,
+                                                      color: Colors.white,
+                                                      child: ClipPath(
+                                                          child: Container(
 
-                                                  return  GestureDetector(
-                                                    //Navigate to order details page
-                                                      onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
-                                                      //Order card information
-                                                      child: Card(
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              color: Colors.purple,
-                                                            ),
-                                                            borderRadius: BorderRadius.circular(20.0),
-                                                          ),                                                                    elevation: 3,
-                                                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                                          color: Colors.white,
-                                                          child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                                                              child: Column(
-                                                                  children:[
-                                                                    Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        fontWeight: FontWeight.w700),),
-                                                                    Text(OrderStatus ,style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        fontWeight: FontWeight.w700),),
-                                                                    SizedBox(height: 10),
-                                                                    Container(
-                                                                        margin: EdgeInsets.only(),
-                                                                        width: 330.0,
-                                                                        decoration: BoxDecoration(
-                                                                          borderRadius:
-                                                                          BorderRadius.circular(8.0),
-                                                                          border: Border.all(
-                                                                            color: Colors.grey.withOpacity(0.5),
-                                                                          ),
-                                                                        )),                                                                 SizedBox(height: 20,),
-                                                                    Text('Order ID:  $OrderId',style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        color: Colors.black,
-                                                                        fontWeight: FontWeight.w600),),
-                                                                    SizedBox(width: 10,),
-                                                                    Text('$medicationsList SAR',style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        color: Colors.red,
-                                                                        fontStyle: FontStyle.italic,
-                                                                        fontWeight: FontWeight.w600),),
-                                                                  ]) )));
+                                                              child: Padding(padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                                                                  child:  Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children:[
+                                                                              Text('Order placed at  ' + (CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')),style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 19,
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.w600),),
+                                                                              SizedBox(height: 20,),
+                                                                              ///Track order timeline
+                                                                              Container(
+                                                                                alignment: Alignment.center,
+                                                                                width: size.width,
+                                                                                color: Colors.green,
+                                                                                child:
+                                                                                Text(OrderStatus ,style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 18,
+                                                                                    color: Colors.black45,
+                                                                                    fontWeight: FontWeight.w700),),
+                                                                              ),
+                                                                              SizedBox(height: 20,),
+                                                                              ///customer name and phone number
+                                                                              Text(address.toString() ,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 18,
+                                                                                  color: Colors.black45,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                              SizedBox(height: 20,),
+                                                                              Container(
+                                                                                padding: EdgeInsets.all(5),
+                                                                                alignment: Alignment.center,
+                                                                                width: size.width,
+                                                                                color: Colors.grey.shade300,
+                                                                                child:
+                                                                                Text('Total price: $TotalPrice SAR' ,style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 18,
+                                                                                    color: Colors.black,
+                                                                                    fontWeight: FontWeight.w700),),
+                                                                              ),
+                                                                              SizedBox(height: 20,),
+                                                                              Text('Items:' ,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 19,
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                              SizedBox(height: 10,),
+                                                              for (int i = 0; i < medicationsList[0].length; i++) ...[
+                                                                              FutureBuilder<List<ParseObject>>(
+                                                                                            future: getMedDetails(medicationsList[0][i]['medId'].toString()),
+                                                                                            builder: (context, snapshot) {
+                                                                                            switch (snapshot.connectionState) {
+                                                                                            case ConnectionState.none:
+                                                                                            case ConnectionState.waiting:
+                                                                                            return Center(
+                                                                                            child: Container(
+                                                                                                width: 200,
+                                                                                                height: 5,
+                                                                                                child:
+                                                                                                LinearProgressIndicator()),
+                                                                                            );
+                                                                                            default:
+                                                                                              if (snapshot.hasError) {
+                                                                                                return Center(
+                                                                                                  child: Text(
+                                                                                                      "Error..."),
+                                                                                                );
+                                                                                              }
+                                                                                              if (!snapshot.hasData) {
+                                                                                                return Center(
+                                                                                                  child: Text(
+                                                                                                      "No Data..."),
+                                                                                                );
+                                                                                              } else {
+                                                                                                return  ListView.builder(
+                                                                                                    shrinkWrap: true,
+                                                                                                    scrollDirection: Axis.vertical,
+                                                                                                    itemCount: snapshot.data!.length,
+                                                                                                    itemBuilder: (context, index) {
+                                                                                                      final medDetails = snapshot.data![index];
+                                                                                                      final medications = medDetails.get('TradeName')!;
+                                                                                                      final quantity = medicationsList[0][i]['quantity'];
+                                                                                                      final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                                                      final Strength = medDetails.get<num>('Strength')!;
+                                                                                                      final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
 
+                                                                                                      return Card(
+                                                                                                          child: Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            children:[
+                                                                                                              Container(
+                                                                                                                padding: EdgeInsets.all(5),
+                                                                                                                width: size.width,
+                                                                                                                color: Colors.grey.shade200,
+                                                                                                                child:
+                                                                                                                    Column(
+                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                        children:[
+                                                                                                                          Text('$quantity X  $medications ' ,style: TextStyle(
+                                                                                                                              fontFamily: "Lato",
+                                                                                                                              fontSize: 17,
+                                                                                                                              color: Colors.black,
+                                                                                                                              fontWeight: FontWeight.w600),),
+                                                                                                                          Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                              fontFamily: "Lato",
+                                                                                                                              fontSize: 15,
+                                                                                                                              color: Colors.black,
+                                                                                                                              fontWeight: FontWeight.w500),)
+                                                                                                                        ]
+                                                                                                                    )
+                                                                                                              )
+                                                                                                            ],
+                                                                                                          )
+                                                                                                      );
+                                                                                                    });
+                                                                                              }
+                                                                                            }}
+                                                                              ),],
+                                                                              SizedBox(height: 20,),
+                                                                        presRequired ?
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                                  children:[
+                                                                                    Text('Prescription: ' ,style: TextStyle(
+                                                                                        fontFamily: "Lato",
+                                                                                        fontSize: 19,
+                                                                                        color: Colors.black,
+                                                                                        fontWeight: FontWeight.w700),),
+                                                                                    Text(' click to view the image' ,style: TextStyle(
+                                                                                        fontFamily: "Lato",
+                                                                                        fontSize: 14,
+                                                                                        color: Colors.black54,
+                                                                                        fontWeight: FontWeight.w700),),
+                                                                                    FullScreenWidget(
+                                                                                      child:Container(
+                                                                                        height: 100,
+                                                                                        width: 100,
+                                                                                        child:Image.network(
+                                                                                          prescription!.url!,
+                                                                                          fit: BoxFit.cover,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(height: 20,),
+                                                                                  ])
+                                                                            :Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                            children:[
+                                                                              Text('Prescription: ' ,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 19,
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                              Text('No prescription attached' ,style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 18,
+                                                                                  color: Colors.black54,
+                                                                                  fontWeight: FontWeight.w700),),
+                                                                            ])
+                                                                        ]) ))));
                                                 });
                                           }
                                       }
                                     })
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0),
-                              child:Text('Previous Orders', textAlign: TextAlign
-                                  .center, style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 27,
-                                  fontWeight: FontWeight.bold)),),
-                            SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                child:  FutureBuilder<List<ParseObject>>(
-                                    future: getCustomerPreviousOrders(),
-                                    builder: (context, snapshot) {
-                                      switch (snapshot
-                                          .connectionState) {
-                                        case ConnectionState.none:
-                                        case ConnectionState
-                                            .waiting:
-                                          return Center(
-                                            child: Container(
-                                                width: 200,
-                                                height: 10,
-                                                child:
-                                                LinearProgressIndicator()),
-                                          );
-                                        default:
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text(
-                                                  "Error..."),
-                                            );
-                                          }
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text(
-                                                  "No Data..."),
-                                            );
-                                          } else {
-                                            return  ListView.builder(
-                                                shrinkWrap: true,
-                                                scrollDirection: Axis.vertical,
-                                                itemCount: snapshot.data!.length,
-                                                itemBuilder: (context, index) {
-                                                  final customerCurrentOrders = snapshot.data![index];
-                                                  final OrderId = customerCurrentOrders.get('objectId');
-                                                  final CreatedDate = customerCurrentOrders.get('createdAt')!;
-                                                  final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                  final Prescription = customerCurrentOrders.get('Prescription')!;
-                                                  final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
-
-                                                  return  GestureDetector(
-                                                    //Navigate to order details page
-                                                      onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
-                                                      //Order card information
-                                                      child: Card(
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              color: Colors.purple,
-                                                            ),
-                                                            borderRadius: BorderRadius.circular(20.0),
-                                                          ),
-                                                          elevation: 3,
-                                                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                                          color: Colors.white,
-                                                          child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                                                              child: Column(
-                                                                  children:[
-                                                                    Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        fontWeight: FontWeight.w700),),
-                                                                    Text(OrderStatus ,style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        fontWeight: FontWeight.w700),),
-                                                                    SizedBox(height: 10),
-                                                                    Container(
-                                                                        margin: EdgeInsets.only(),
-                                                                        width: 330.0,
-                                                                        decoration: BoxDecoration(
-                                                                          borderRadius:
-                                                                          BorderRadius.circular(8.0),
-                                                                          border: Border.all(
-                                                                            color: Colors.grey.withOpacity(0.5),
-                                                                          ),
-                                                                        )),                                                                 SizedBox(height: 20,),
-                                                                    Text('Order ID:  $OrderId',style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        color: Colors.black,
-                                                                        fontWeight: FontWeight.w600),),
-                                                                    SizedBox(width: 10,),
-                                                                    Text('$TotalPrice SAR',style: TextStyle(
-                                                                        fontFamily: "Lato",
-                                                                        fontSize: 19,
-                                                                        color: Colors.red,
-                                                                        fontStyle: FontStyle.italic,
-                                                                        fontWeight: FontWeight.w600),),
-                                                                  ]) )));
-
-                                                });
-                                          }
-                                      }
-                                    }))
                           ]))),
             ])),
 
@@ -334,26 +343,13 @@ class OrderDetails extends State<OrderDetailsPage> {
   }
 
   //Get customer current orders from orders table
-  Future<List<ParseObject>> getCustomerCurrentOrders() async {
+  Future<List<ParseObject>> getOrderDetails() async {
+    //Query order details
+    final QueryBuilder<ParseObject> order =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    order.whereEqualTo('objectId', widget.orderId);
 
-    //Query customer current orders
-    final QueryBuilder<ParseObject> query1 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query1.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-    query1.whereEqualTo('OrderStatus','Under processing');
-    final QueryBuilder<ParseObject> query2 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query2.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-    query2.whereEqualTo('OrderStatus','Ready for pick up');
-    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
-      ParseObject("Orders"),
-      [query1, query2],
-    );
-    final apiResponse = await mainQuery.query();
+    final apiResponse = await order.query();
 
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
@@ -361,32 +357,40 @@ class OrderDetails extends State<OrderDetailsPage> {
       return [];
     }
   }
+  //Function to get medication details
+  Future<List<ParseObject>> getMedDetails(medicationsList) async {
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
+    parseQuery.whereEqualTo('objectId', medicationsList);
 
-  //Get customer previous orders from orders table
-  Future<List<ParseObject>> getCustomerPreviousOrders() async {
-    //Query customer cart
-    final QueryBuilder<ParseObject> query1 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query1.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-    query1.whereEqualTo('OrderStatus','Cancelled');
-    final QueryBuilder<ParseObject> query2 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query2.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-    query2.whereEqualTo('OrderStatus','Collected');
-    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
-      ParseObject("Orders"),
-      [query1, query2],
-    );
-    final apiResponse = await mainQuery.query();
+    final apiResponse = await parseQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
     }
+    return [];
+  }
+
+  //Function to get customer details
+  Future<String?> getCustomerDetails() async {
+    var object;
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
+        ParseObject('Customer'));
+    parseQuery.whereEqualTo('objectId', widget.customerId);
+
+    final apiResponse = await parseQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        object = o as ParseObject;
+      }
+      return ('${object.get<String>('Firstname')}${object.get<String>('Lastname')}');
+    }
+  }
+  Future<String?> getUserLocation(currentPostion) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        currentPostion['latitude'], currentPostion['longitude']);
+    Placemark place = placemarks[0];
+    print(place);
+    return place.name;
   }
 }

@@ -23,9 +23,7 @@ class Orders extends State<OrdersPage> {
   bool currentOrders = true;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
@@ -85,10 +83,10 @@ class Orders extends State<OrdersPage> {
                                                         .waiting:
                                                       return Center(
                                                         child: Container(
-                                                            width: 200,
-                                                            height: 10,
+                                                            width: 50,
+                                                            height: 50,
                                                             child:
-                                                            LinearProgressIndicator()),
+                                                            CircularProgressIndicator()),
                                                       );
                                                     default:
                                                       if (snapshot.hasError) {
@@ -127,7 +125,6 @@ class Orders extends State<OrdersPage> {
                                                               final OrderId = customerCurrentOrders.get('objectId');
                                                               final CreatedDate = customerCurrentOrders.get('createdAt')!;
                                                               final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              //final Prescription = customerCurrentOrders.get('Prescription')!;
                                                               final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
                                                               return  GestureDetector(
@@ -206,10 +203,10 @@ class Orders extends State<OrdersPage> {
                                                         .waiting:
                                                       return Center(
                                                         child: Container(
-                                                            width: 200,
-                                                            height: 10,
+                                                            width: 50,
+                                                            height: 50,
                                                             child:
-                                                            LinearProgressIndicator()),
+                                                            CircularProgressIndicator()),
                                                       );
                                                     default:
                                                       if (snapshot.hasError) {
@@ -378,7 +375,7 @@ class Orders extends State<OrdersPage> {
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
       [query1, query2],
-    );
+    )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
@@ -402,11 +399,11 @@ class Orders extends State<OrdersPage> {
     query2.whereEqualTo('Customer_id',
         (ParseObject('Customer')
           ..objectId = widget.customerId).toPointer());
-    query2.whereEqualTo('OrderStatus','Collected');
+    query2.whereEqualTo('OrderStatus','Completed');
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
       [query1, query2],
-    );
+    )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
