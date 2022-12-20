@@ -36,6 +36,8 @@ class _PresAttachPage extends State<PresAttach> {
   PickedFile? pickedFile;
   bool isLoading = false;
   List medicationsList = [];
+  bool locationExist = false;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -411,11 +413,14 @@ class _PresAttachPage extends State<PresAttach> {
 
                     await orderInfo.save();
 
-                    final saveLocation = ParseObject('Locations')
-                      ..set('customer', (ParseObject('Customer')
-                        ..objectId = widget.customerId).toPointer())
-                      ..set('SavedLocations', point);
-                    await saveLocation.save();
+                    if(!locationExist)
+                    {
+                      final saveLocation = ParseObject('Locations')
+                        ..set('customer', (ParseObject('Customer')
+                          ..objectId = widget.customerId).toPointer())..set(
+                            'SavedLocations', point);
+                      await saveLocation.save();
+                    }
 
                     showDialog(
                       context: context,
@@ -477,11 +482,14 @@ class _PresAttachPage extends State<PresAttach> {
                       ..setAddUnique('MedicationsList', medicationsList);
                     await orderInfo.save();
 
-                    final saveLocation = ParseObject('Locations')
-                      ..set('customer', (ParseObject('Customer')
-                        ..objectId = widget.customerId).toPointer())
-                      ..set('SavedLocations', point);
-                    await saveLocation.save();
+                    if(!locationExist)
+                    {
+                      final saveLocation = ParseObject('Locations')
+                        ..set('customer', (ParseObject('Customer')
+                          ..objectId = widget.customerId).toPointer())..set(
+                            'SavedLocations', point);
+                      await saveLocation.save();
+                    }
 
                     showDialog(
                       context: context,
@@ -593,17 +601,33 @@ class _PresAttachPage extends State<PresAttach> {
       }
     }
   }
-  //Get customer medications from cart table
+  //Get customer medications from cart table + check existence of location
   Future<List<ParseObject>> getCustomerCart() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
     QueryBuilder<ParseObject>(ParseObject('Cart'));
     customerCart.whereEqualTo('customer',
         (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final apiResponse = await customerCart.query();
+    final apiResponse1 = await customerCart.query();
 
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
+    var object;
+    final QueryBuilder<ParseObject> savedLocations =
+    QueryBuilder<ParseObject>(ParseObject('Locations'));
+    savedLocations.whereEqualTo('customer', (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse2 = await savedLocations.query();
+
+    if (apiResponse1.success && apiResponse1.results != null) {
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          object = o as ParseObject;
+          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'] == widget.lat){
+            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'] == widget.lng){
+              locationExist = true;
+            }
+          }
+        }
+      }
+      return apiResponse1.results as List<ParseObject>;
     } else {
       return [];
     }

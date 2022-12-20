@@ -126,105 +126,196 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   fontSize: 19,
                                                                                   color: Colors.black,
                                                                                   fontWeight: FontWeight.w600),),
-                                                                              SizedBox(height: 20,),
+                                                                              SizedBox(height: 10,),
+                                                                              SizedBox(height: 10,),
                                                                               ///Track order timeline
-                                                                              Container(
-                                                                                alignment: Alignment.center,
-                                                                                width: size.width,
-                                                                                color: Colors.green,
-                                                                                child:
-                                                                                Text(OrderStatus ,style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 18,
-                                                                                    color: Colors.black45,
-                                                                                    fontWeight: FontWeight.w700),),
+                                                                              Card(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children:[
+                                                                                      Container(
+                                                                                          padding: EdgeInsets.all(5),
+                                                                                          width: size.width,
+                                                                                          color: Colors.grey.shade200,
+                                                                                          child:
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children:[
+                                                                                            Text('OrderStatus: $OrderStatus' ,style: TextStyle(
+                                                                                              fontFamily: "Lato",
+                                                                                              fontSize: 18,
+                                                                                              color: Colors.black,
+                                                                                              fontWeight: FontWeight.w700),),
+                                                                                              ]
+                                                                                          )
+                                                                                      )
+                                                                                    ],
+                                                                                  )
                                                                               ),
                                                                               SizedBox(height: 20,),
-                                                                              ///customer name and phone number
-                                                                        FutureBuilder<Placemark>(
-                                                                            future: getUserLocation(location),
-                                                                            builder: (context, snapshot) {
-                                                                              switch (snapshot.connectionState) {
-                                                                                case ConnectionState.none:
-                                                                                case ConnectionState.waiting:
-                                                                                  return Center(
-                                                                                    child: Container(
-                                                                                        width: 200,
-                                                                                        height: 5,
-                                                                                        child:
-                                                                                        LinearProgressIndicator()),
-                                                                                  );
-                                                                                default:
-                                                                                  if (snapshot.hasError) {
-                                                                                    return Center(
-                                                                                      child: Text(
-                                                                                          "Error..."),
-                                                                                    );
-                                                                                  }
-                                                                                  if (!snapshot.hasData) {
-                                                                                    return Center(
-                                                                                      child: Text(
-                                                                                          "No Data..."),
-                                                                                    );
-                                                                                  } else {
-                                                                                    return  ListView.builder(
-                                                                                        shrinkWrap: true,
-                                                                                        scrollDirection: Axis.vertical,
-                                                                                        itemCount: 1,
-                                                                                        itemBuilder: (context, index) {
-                                                                                          final address = snapshot.data!;
-                                                                                          final country = address.country;
-                                                                                          final locality = address.locality;
-                                                                                          final subLocality = address.subLocality;
-                                                                                          final street = address.street;
-                                                                                          return Card(
-                                                                                              child: Column(
-                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                children:[
-                                                                                                  Container(
-                                                                                                      padding: EdgeInsets.all(5),
-                                                                                                      width: size.width,
-                                                                                                      color: Colors.grey.shade200,
-                                                                                                      child:
-                                                                                                      Column(
-                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                          children:[
-                                                                                                            Text('$street, $subLocality, $locality, $country',style: TextStyle(
-                                                                                                                fontFamily: "Lato",
-                                                                                                                fontSize: 17,
-                                                                                                                color: Colors.black,
-                                                                                                                fontWeight: FontWeight.w600),),
-                                                                                                          ]
-                                                                                                      )
-                                                                                                  )
-                                                                                                ],
-                                                                                              )
+                                                                              ///customer name and phone number and location
+                                                                              FutureBuilder<Placemark>(
+                                                                                  future: getUserLocation(location),
+                                                                                  builder: (context, snapshot) {
+                                                                                    switch (snapshot.connectionState) {
+                                                                                      case ConnectionState.none:
+                                                                                        case ConnectionState.waiting:
+                                                                                          return Center(
+                                                                                            child: Container(
+                                                                                                width: 200,
+                                                                                                height: 5,
+                                                                                                child:
+                                                                                                LinearProgressIndicator()),
                                                                                           );
-                                                                                        });
-                                                                                  }
-                                                                              }}
-                                                                        ),
+                                                                                          default:
+                                                                                            if (snapshot.hasError) {
+                                                                                              return Center(
+                                                                                                child: Text(
+                                                                                                    "Error..."),
+                                                                                              );
+                                                                                            }
+                                                                                            if (!snapshot.hasData) {
+                                                                                              return Center(
+                                                                                                child: Text(
+                                                                                                    "No Data..."),
+                                                                                              );
+                                                                                            } else {
+                                                                                              return  ListView.builder(
+                                                                                                  shrinkWrap: true,
+                                                                                                  scrollDirection: Axis.vertical,
+                                                                                                  itemCount: 1,
+                                                                                                  itemBuilder: (context, index) {
+                                                                                                    final address = snapshot.data!;
+                                                                                                    final country = address.country;
+                                                                                                    final locality = address.locality;
+                                                                                                    final subLocality = address.subLocality;
+                                                                                                    final street = address.street;
+                                                                                                    return  FutureBuilder<ParseObject>(
+                                                                                                        future: getCustomerDetails(),
+                                                                                                        builder: (context, snapshot) {
+                                                                                                          switch (snapshot.connectionState) {
+                                                                                                            case ConnectionState.none:
+                                                                                                              case ConnectionState.waiting:
+                                                                                                                return Center(
+                                                                                                                  child: Container(
+                                                                                                                      width: 200,
+                                                                                                                      height: 5,
+                                                                                                                      child:
+                                                                                                                      LinearProgressIndicator()),);
+                                                                                                                default:
+                                                                                                                  if (snapshot.hasError) {
+                                                                                                                    return Center(
+                                                                                                                      child: Text(
+                                                                                                                          "Error..."),
+                                                                                                                    );
+                                                                                                                  }
+                                                                                                                  if (!snapshot.hasData) {
+                                                                                                                    return Center(
+                                                                                                                      child: Text(
+                                                                                                                          "No Data..."),
+                                                                                                                    );
+                                                                                                                  } else {
+                                                                                                                    return  ListView.builder(
+                                                                                                                        shrinkWrap: true,
+                                                                                                                        scrollDirection: Axis.vertical,
+                                                                                                                        itemCount: 1,
+                                                                                                                        itemBuilder: (context, index) {
+                                                                                                                          final customerDetials = snapshot.data!;
+                                                                                                                          final firstname = customerDetials.get<String>('Firstname');
+                                                                                                                          final lastname = customerDetials.get<String>('Lastname');
+                                                                                                                          final phonenumber = customerDetials.get('Phonenumber');
+                                                                                                                          return Card(
+                                                                                                                              child: Column(
+                                                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                children:[
+                                                                                                                                  Container(
+                                                                                                                                      padding: EdgeInsets.all(5),
+                                                                                                                                      width: size.width,
+                                                                                                                                      color: Colors.grey.shade200,
+                                                                                                                                      child:
+                                                                                                                                      Column(
+                                                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                          children:[
+                                                                                                                                            RichText(
+                                                                                                                                              text: TextSpan(
+                                                                                                                                                children: [
+                                                                                                                                                  WidgetSpan(
+                                                                                                                                                  child: Icon(Icons.person),
+                                                                                                                                                  ),
+                                                                                                                                                  TextSpan(
+                                                                                                                                                    text: " $firstname $lastname, $phonenumber",style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 17,
+                                                                                                                                                      color: Colors.black,
+                                                                                                                                                      fontWeight: FontWeight.w600),
+                                                                                                                                                  ),
+                                                                                                                                                ],
+                                                                                                                                              ),
+                                                                                                                                            ),
+                                                                                                                                            RichText(
+                                                                                                                                              text: TextSpan(
+                                                                                                                                                children: [
+                                                                                                                                                  WidgetSpan(
+                                                                                                                                                    child: Icon(Icons.location_on),
+                                                                                                                                                  ),
+                                                                                                                                                  TextSpan(
+                                                                                                                                                    text: " $street, $subLocality, $locality, $country",style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 17,
+                                                                                                                                                      color: Colors.black,
+                                                                                                                                                      fontWeight: FontWeight.w600),
+                                                                                                                                                  ),
+                                                                                                                                                ],
+                                                                                                                                              ),
+                                                                                                                                            ),
+                                                                                                                                          ]
+                                                                                                                                      )
+                                                                                                                                  )
+                                                                                                                                ],
+                                                                                                                              )
+                                                                                                                          );
+                                                                                                                        });
+                                                                                                                  }
+                                                                                                          }
+                                                                                                        });
+                                                                                                  });
+                                                                                            }
+                                                                                    }
+                                                                                  }),
                                                                               SizedBox(height: 20,),
-                                                                              Container(
-                                                                                padding: EdgeInsets.all(5),
-                                                                                alignment: Alignment.center,
-                                                                                width: size.width,
-                                                                                color: Colors.grey.shade300,
-                                                                                child:
-                                                                                Text('Total price: $TotalPrice SAR' ,style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 18,
-                                                                                    color: Colors.black,
-                                                                                    fontWeight: FontWeight.w700),),
+                                                                              ///Order total price
+                                                                              Card(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children:[
+                                                                                      Container(
+                                                                                          padding: EdgeInsets.all(5),
+                                                                                          width: size.width,
+                                                                                          color: Colors.grey.shade200,
+                                                                                          child:
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children:[
+                                                                                                Text('Total price: $TotalPrice SAR',style: TextStyle(
+                                                                                                    fontFamily: "Lato",
+                                                                                                    fontSize: 17,
+                                                                                                    color: Colors.black,
+                                                                                                    fontWeight: FontWeight.w600),),
+                                                                                              ]
+                                                                                          )
+                                                                                      )
+                                                                                    ],
+                                                                                  )
                                                                               ),
                                                                               SizedBox(height: 20,),
+                                                                              ///Order items
                                                                               Text('Items:' ,style: TextStyle(
                                                                                   fontFamily: "Lato",
                                                                                   fontSize: 19,
                                                                                   color: Colors.black,
                                                                                   fontWeight: FontWeight.w700),),
                                                                               SizedBox(height: 10,),
-                                                              for (int i = 0; i < medicationsList[0].length; i++) ...[
+                                                                        for (int i = 0; i < medicationsList[0].length; i++) ...[
                                                                               FutureBuilder<List<ParseObject>>(
                                                                                             future: getMedDetails(medicationsList[0][i]['medId'].toString()),
                                                                                             builder: (context, snapshot) {
@@ -296,6 +387,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                             }}
                                                                               ),],
                                                                               SizedBox(height: 20,),
+                                                                        ///Order prescription if exist
                                                                         presRequired ?
                                                                               Column(
                                                                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -429,7 +521,7 @@ class OrderDetails extends State<OrderDetailsPage> {
   }
 
   //Function to get customer details
-  Future<String?> getCustomerDetails() async {
+  Future<ParseObject> getCustomerDetails() async {
     var object;
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
         ParseObject('Customer'));
@@ -441,8 +533,8 @@ class OrderDetails extends State<OrderDetailsPage> {
       for (var o in apiResponse.results!) {
         object = o as ParseObject;
       }
-      return ('${object.get<String>('Firstname')}${object.get<String>('Lastname')}');
     }
+    return object;
   }
   Future<Placemark> getUserLocation(currentPostion) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
