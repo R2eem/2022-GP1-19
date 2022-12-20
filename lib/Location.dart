@@ -148,9 +148,6 @@ class _LocationPage extends State<Location> {
     }
 
     Position position = await Geolocator.getCurrentPosition();
-    print("---------------------------");
-    print(position.latitude);
-    print(position.longitude);
 
     return position;
   }

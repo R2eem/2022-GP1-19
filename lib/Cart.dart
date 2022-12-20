@@ -115,17 +115,12 @@ class Cart extends State<CartPage> {
                                                         //If cartNotEmpty true then display medications
                                                         return cartNotEmpty
                                                             ? ListView.builder(
-                                                            scrollDirection:
-                                                            Axis.vertical,
-                                                            itemCount:
-                                                            snapshot.data!.length,
-                                                            itemBuilder:
-                                                                (context, index) {
+                                                            scrollDirection: Axis.vertical,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
                                                               //Get Parse Object Values
                                                               //Get customer medications from cart table
-                                                              cartItemNum = snapshot
-                                                                  .data!
-                                                                  .length; //Save number of medications in customer cart
+                                                              cartItemNum = snapshot.data!.length; //Save number of medications in customer cart
                                                               final customerCart =
                                                               snapshot.data![index];
                                                               final medId = customerCart
@@ -184,8 +179,7 @@ class Cart extends State<CartPage> {
                                                                                   (context, index) {
                                                                                 //Get Parse Object Values
                                                                                 //Get medication information from Medications table
-                                                                                final medGet =
-                                                                                snapshot.data![index];
+                                                                                final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')!;
@@ -367,9 +361,7 @@ class Cart extends State<CartPage> {
                                                         //If cartnotEmpty is false; cart is empty show this message
                                                             : Container(
                                                             child: Column(
-                                                                crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                                 //mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   SizedBox(
@@ -387,11 +379,9 @@ class Cart extends State<CartPage> {
                                                                   ),
                                                                   Row(
                                                                     crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
+                                                                    CrossAxisAlignment.center,
                                                                     mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                    MainAxisAlignment.center,
                                                                     children: [
                                                                       Text(
                                                                         'Click',
@@ -492,7 +482,7 @@ class Cart extends State<CartPage> {
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(

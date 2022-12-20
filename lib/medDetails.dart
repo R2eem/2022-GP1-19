@@ -44,7 +44,7 @@ class MedDetails extends State<medDetailsPage> {
                                 Row(
                                     children:[
                                       Container(
-                                        child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 370, 0),
+                                        child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                           iconSize: 40,
                                           color: Colors.white,
                                           onPressed: () {
@@ -55,7 +55,7 @@ class MedDetails extends State<medDetailsPage> {
                                         margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
                                         child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                                       ),
-                                    ]),SizedBox(height: 55,),
+                                    ]),
                                 //Controls medication details page display
                                 Align(
                                     alignment: Alignment.bottomCenter,
@@ -172,7 +172,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                             children: [
                                                                                                               Container(
                                                                                                                   margin: EdgeInsets.only(),
-                                                                                                                  width: 345.0,
+                                                                                                                  width: 300.0,
                                                                                                                   decoration: BoxDecoration(
                                                                                                                     borderRadius:
                                                                                                                     BorderRadius.circular(8.0),
@@ -323,8 +323,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                             ]),
                                                                                                         SizedBox(height: 50,),
                                                                                                         //Add to cart button
-                                                                                                        Padding(
-                                                                                                          padding: const EdgeInsets.only(left: 60.0, ), //The distance you want
+                                                                                                        Center(
                                                                                                           child:Container(
                                                                                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                                                             child: ElevatedButton(
@@ -384,7 +383,7 @@ class MedDetails extends State<medDetailsPage> {
                         icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                         icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30

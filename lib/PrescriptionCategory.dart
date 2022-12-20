@@ -23,6 +23,7 @@ class Prescription extends State<PrescriptionCategory>
   String searchString = '';
   String packageType = '';
   int _selectedTab = 0;
+  num counter = 129;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -255,6 +256,7 @@ class Prescription extends State<PrescriptionCategory>
                                             child: Text("No Data..."),
                                           );
                                         } else {
+                                          counter = 129;
                                           return ListView.builder(
                                               padding: EdgeInsets.only(
                                                   top: 10.0, bottom: 70.0),
@@ -372,6 +374,39 @@ class Prescription extends State<PrescriptionCategory>
                                                               ),
                                                             ])))
                                                     //If the medication doesn't matches the search string then don't display
+                                                    : (--counter <= 0)?
+                                                Container(
+                                                    child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                        //mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 20,
+                                                          ),
+                                                          Text(
+                                                            "Sorry we could't find any match,",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                "Lato",
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                            textAlign: TextAlign.center,
+                                                          ),Text(
+                                                            "try another search or continue shopping through the categories.",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                "Lato",
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ]))
                                                     : Container();
                                               });
                                         }
@@ -401,7 +436,7 @@ class Prescription extends State<PrescriptionCategory>
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
@@ -445,6 +480,7 @@ class Prescription extends State<PrescriptionCategory>
     QueryBuilder<ParseObject> queryPresMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
+    queryPresMedication.setLimit(129); //We have 129 pres medication
     queryPresMedication.orderByAscending('TradeName');
     final ParseResponse apiResponse = await queryPresMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
