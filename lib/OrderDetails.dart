@@ -141,11 +141,69 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               ),
                                                                               SizedBox(height: 20,),
                                                                               ///customer name and phone number
-                                                                              Text(address.toString() ,style: TextStyle(
-                                                                                  fontFamily: "Lato",
-                                                                                  fontSize: 18,
-                                                                                  color: Colors.black45,
-                                                                                  fontWeight: FontWeight.w700),),
+                                                                        FutureBuilder<Placemark>(
+                                                                            future: getUserLocation(location),
+                                                                            builder: (context, snapshot) {
+                                                                              switch (snapshot.connectionState) {
+                                                                                case ConnectionState.none:
+                                                                                case ConnectionState.waiting:
+                                                                                  return Center(
+                                                                                    child: Container(
+                                                                                        width: 200,
+                                                                                        height: 5,
+                                                                                        child:
+                                                                                        LinearProgressIndicator()),
+                                                                                  );
+                                                                                default:
+                                                                                  if (snapshot.hasError) {
+                                                                                    return Center(
+                                                                                      child: Text(
+                                                                                          "Error..."),
+                                                                                    );
+                                                                                  }
+                                                                                  if (!snapshot.hasData) {
+                                                                                    return Center(
+                                                                                      child: Text(
+                                                                                          "No Data..."),
+                                                                                    );
+                                                                                  } else {
+                                                                                    return  ListView.builder(
+                                                                                        shrinkWrap: true,
+                                                                                        scrollDirection: Axis.vertical,
+                                                                                        itemCount: 1,
+                                                                                        itemBuilder: (context, index) {
+                                                                                          final address = snapshot.data!;
+                                                                                          final country = address.country;
+                                                                                          final locality = address.locality;
+                                                                                          final subLocality = address.subLocality;
+                                                                                          final street = address.street;
+                                                                                          return Card(
+                                                                                              child: Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                children:[
+                                                                                                  Container(
+                                                                                                      padding: EdgeInsets.all(5),
+                                                                                                      width: size.width,
+                                                                                                      color: Colors.grey.shade200,
+                                                                                                      child:
+                                                                                                      Column(
+                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                          children:[
+                                                                                                            Text('$street, $subLocality, $locality, $country',style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 17,
+                                                                                                                color: Colors.black,
+                                                                                                                fontWeight: FontWeight.w600),),
+                                                                                                          ]
+                                                                                                      )
+                                                                                                  )
+                                                                                                ],
+                                                                                              )
+                                                                                          );
+                                                                                        });
+                                                                                  }
+                                                                              }}
+                                                                        ),
                                                                               SizedBox(height: 20,),
                                                                               Container(
                                                                                 padding: EdgeInsets.all(5),
@@ -386,11 +444,10 @@ class OrderDetails extends State<OrderDetailsPage> {
       return ('${object.get<String>('Firstname')}${object.get<String>('Lastname')}');
     }
   }
-  Future<String?> getUserLocation(currentPostion) async {
+  Future<Placemark> getUserLocation(currentPostion) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         currentPostion['latitude'], currentPostion['longitude']);
     Placemark place = placemarks[0];
-    print(place);
-    return place.name;
+    return place;
   }
 }
