@@ -9,7 +9,7 @@ import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Settings.dart';
-import 'package:geocoder2/geocoder2.dart';
+
 
 
 
@@ -454,17 +454,7 @@ class Locations extends State<SavedLocationPage> {
     }
     return false;
   }
-Future<String> getUserLocation(ParseGeoPoint location) async {//call this async method from whereever you need
-    GeoData address = await Geocoder2.getDataFromCoordinates(
-        latitude: location.latitude,
-        longitude: location.longitude,
-        googleMapApiKey: "AIzaSyCXhcqxPyXKgR88wE3V2Ol0eug30pJoV84");
 
-    String city = address.address;
-
-
-    return address.toString();
-  }
 
 
 }

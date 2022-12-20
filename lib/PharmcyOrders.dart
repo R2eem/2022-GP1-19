@@ -1,20 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/PrescriptionCategory.dart';
-import 'Cart.dart';
-import 'CategoryPage.dart';
-import 'OrderedMedList.dart';
-import 'Orders.dart';
+import 'PharmacyOrdereDetails.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'Settings.dart';
-import 'package:geocoder2/geocoder2.dart';
 
-import 'medDetails.dart';
 
 
 
@@ -258,7 +249,7 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                           onTap: () => Navigator.of(context)
                                                               .push(MaterialPageRoute(
                                                           builder: (context) =>
-                                                              OrderedMedListPage(customerId,OrderId))),
+                                                              PharmacyOrdereDetailsPage(customerId,OrderId))),
                                                               child:StatefulBuilder(
                                                                   builder: (BuildContext context, StateSetter setState) =>
                                                                       Stack( //display Locations cards

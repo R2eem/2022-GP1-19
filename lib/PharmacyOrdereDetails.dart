@@ -2,27 +2,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/Location.dart';
+import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresAttach.dart';
 import 'Settings.dart';
-import 'Location.dart';
+import 'package:full_screen_image/full_screen_image.dart';
+import 'package:geocoding/geocoding.dart';
 
-class OrderedMedListPage extends StatefulWidget {
+class PharmacyOrdereDetailsPage extends StatefulWidget {
   //Get customer id as a parameter
   final String customerId;
   final String orderId;
-  const OrderedMedListPage(this.customerId,this.orderId);
+  const PharmacyOrdereDetailsPage(this.customerId,this.orderId);
   @override
-  OrderedMedList createState() => OrderedMedList();
+  PharmacyOrdereDetails createState() => PharmacyOrdereDetails();
 }
 
-class OrderedMedList extends State<OrderedMedListPage> {
+class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
   int _selectedIndex = 2;
   bool presRequired = false;
+  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,8 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                           fontFamily: 'Lato',
                                           fontSize: 27,
                                           color: Colors.white70,
-                                          fontWeight: FontWeight.bold),),
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ]),
                             SizedBox(height: 55,),
@@ -105,8 +107,7 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                   final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
-                                                  final location = customerCurrentOrders.get<ParseGeoPoint>('Location')!.toJson();
-                                                  final address = getUserLocation(location);
+
                                                   var prescription = null;
                                                   if(customerCurrentOrders.get('Prescription') != null){
                                                     presRequired = true;
@@ -127,23 +128,11 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                                             fontSize: 19,
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w600),),
-                                                                        SizedBox(height: 20,),
-                                                                        ///Track order timeline
-                                                                        Container(
-                                                                          alignment: Alignment.center,
-                                                                          width: size.width,
-                                                                          color: Colors.green,
-                                                                          child:
-                                                                          Text(OrderStatus ,style: TextStyle(
-                                                                              fontFamily: "Lato",
-                                                                              fontSize: 18,
-                                                                              color: Colors.black45,
-                                                                              fontWeight: FontWeight.w700),),
-                                                                        ),
-                                                                        SizedBox(height: 20,),
+
+                                                                        SizedBox(height: 5,),
                                                                         ///customer name and phone number
-                                                                        FutureBuilder<Placemark>(
-                                                                            future: getUserLocation(location),
+                                                                        FutureBuilder<List>(
+                                                                            future: getCustomerDetails(),
                                                                             builder: (context, snapshot) {
                                                                               switch (snapshot.connectionState) {
                                                                                 case ConnectionState.none:
@@ -173,11 +162,10 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                                                         scrollDirection: Axis.vertical,
                                                                                         itemCount: 1,
                                                                                         itemBuilder: (context, index) {
-                                                                                          final address = snapshot.data!;
-                                                                                          final country = address.country;
-                                                                                          final locality = address.locality;
-                                                                                          final subLocality = address.subLocality;
-                                                                                          final street = address.street;
+                                                                                          final CustomerInfo = snapshot.data![index];
+                                                                                          final FisrtName = CustomerInfo.get<String>('Firstname')!;
+                                                                                          final LastName = CustomerInfo.get<String>('Lastname')!;
+                                                                                          final PhoneNumner = CustomerInfo.get<String>('Phonenumber')!;
                                                                                           return Card(
                                                                                               child: Column(
                                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,12 +173,22 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                                                                   Container(
                                                                                                       padding: EdgeInsets.all(5),
                                                                                                       width: size.width,
-                                                                                                      color: Colors.grey.shade200,
+                                                                                                      color: Colors.grey[100],
                                                                                                       child:
                                                                                                       Column(
                                                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                           children:[
-                                                                                                            Text('$street, $subLocality, $locality, $country',style: TextStyle(
+                                                                                                            Text('Customer\'s Information:' ,style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 17,
+                                                                                                                color: Colors.black,
+                                                                                                                fontWeight: FontWeight.w600),),
+                                                                                                            Text('Full name :  $FisrtName  $LastName',style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 17,
+                                                                                                                color: Colors.black,
+                                                                                                                fontWeight: FontWeight.w600),),
+                                                                                                            Text('Phone number : $PhoneNumner',style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
                                                                                                                 color: Colors.black,
@@ -210,16 +208,21 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                                           padding: EdgeInsets.all(5),
                                                                           alignment: Alignment.center,
                                                                           width: size.width,
-                                                                          color: Colors.grey.shade300,
                                                                           child:
                                                                           Text('Total price: $TotalPrice SAR' ,style: TextStyle(
                                                                               fontFamily: "Lato",
                                                                               fontSize: 18,
                                                                               color: Colors.black,
-                                                                              fontWeight: FontWeight.w700),),
+                                                                              fontWeight: FontWeight.w700,
+                                                                              background: Paint()
+                                                                            ..strokeWidth = 25.0
+                                                                            ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                                            ..style = PaintingStyle.stroke
+                                                                            ..strokeJoin = StrokeJoin.round),
+                                                                          ),
                                                                         ),
                                                                         SizedBox(height: 20,),
-                                                                        Text('Items:' ,style: TextStyle(
+                                                                        Text('List of medication:' ,style: TextStyle(
                                                                             fontFamily: "Lato",
                                                                             fontSize: 19,
                                                                             color: Colors.black,
@@ -264,34 +267,49 @@ class OrderedMedList extends State<OrderedMedListPage> {
                                                                                             final Strength = medDetails.get<num>('Strength')!;
                                                                                             final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
 
-                                                                                            return Card(
-                                                                                                child: Column(
+
+                                                                                           return StatefulBuilder(
+                                                                                            builder: (BuildContext context, StateSetter setState) =>
+                                                                                            Stack(
+                                                                                            children: <Widget>[
+                                                                                            Container(
+                                                                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                            child: Row(
+                                                                                            children: <Widget>[
+                                                                                            Center(
+                                                                                            child:Checkbox(
+                                                                                            value: _isChecked,
+                                                                                            onChanged: (bool? checkvalue){
+                                                                                            setState((){
+                                                                                            _isChecked=checkvalue!;
+                                                                                            });
+                                                                                            },
+
+                                                                                            ),
+
+                                                                                            ),
+                                                                                              Column(
                                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                   children:[
-                                                                                                    Container(
-                                                                                                        padding: EdgeInsets.all(5),
-                                                                                                        width: size.width,
-                                                                                                        color: Colors.grey.shade200,
-                                                                                                        child:
-                                                                                                        Column(
-                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                            children:[
-                                                                                                              Text('$quantity X  $medications ' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 17,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w600),),
-                                                                                                              Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),)
-                                                                                                            ]
-                                                                                                        )
-                                                                                                    )
-                                                                                                  ],
-                                                                                                )
-                                                                                            );
+                                                                                                    Text('$quantity X  $medications ' ,style: TextStyle(
+                                                                                                        fontFamily: "Lato",
+                                                                                                        fontSize: 17,
+                                                                                                        color: Colors.black,
+                                                                                                        fontWeight: FontWeight.w600),),
+                                                                                                    Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                        fontFamily: "Lato",
+                                                                                                        fontSize: 15,
+                                                                                                        color: Colors.black,
+                                                                                                        fontWeight: FontWeight.w500),)
+                                                                                                  ]
+                                                                                              ),
+
+                                                                                            ],
+                                                                                            ),
+                                                                                            ),
+                                                                                            ],
+                                                                                            ));
                                                                                           });
                                                                                     }
                                                                                 }}
@@ -347,58 +365,59 @@ class OrderedMedList extends State<OrderedMedListPage> {
             ])),
 
         //Bottom navigation bar
-        bottomNavigationBar: Container(
-            color: Colors.white,
-            child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                child: GNav(
-                  gap: 8,
-                  padding: const EdgeInsets.all(10),
-                  tabs: [
-                    GButton(
-                        icon: Icons.home,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.shopping_cart,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.receipt_long,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.settings,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30
-                    ),
-                  ],
-                  selectedIndex: _selectedIndex,
-                  onTabChange: (index) =>
-                      setState(() {
-                        _selectedIndex = index;
-                        if (_selectedIndex == 0) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CategoryPage()));
-                        } else if (_selectedIndex == 1) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  CartPage(widget.customerId)));
-                        } else if (_selectedIndex == 2) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  OrdersPage(widget.customerId)));
-                        } else if (_selectedIndex == 3) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  SettingsPage(widget.customerId)));
-                        }
-                      }),
-                ))));
+        // bottomNavigationBar: Container(
+        //     color: Colors.white,
+        //     child: Padding(
+        //         padding:
+        //         const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+        //         child: GNav(
+        //           gap: 8,
+        //           padding: const EdgeInsets.all(10),
+        //           tabs: [
+        //             GButton(
+        //                 icon: Icons.home,
+        //                 iconActiveColor: Colors.purple.shade200,
+        //                 iconSize: 30
+        //             ),
+        //             GButton(
+        //                 icon: Icons.shopping_cart,
+        //                 iconActiveColor: Colors.purple.shade200,
+        //                 iconSize: 30
+        //             ),
+        //             GButton(
+        //                 icon: Icons.receipt_long,
+        //                 iconActiveColor: Colors.purple.shade200,
+        //                 iconSize: 30
+        //             ),
+        //             GButton(
+        //                 icon: Icons.settings,
+        //                 iconActiveColor: Colors.purple.shade200,
+        //                 iconSize: 30
+        //             ),
+        //           ],
+        //           selectedIndex: _selectedIndex,
+        //           onTabChange: (index) =>
+        //               setState(() {
+        //                 _selectedIndex = index;
+        //                 if (_selectedIndex == 0) {
+        //                   Navigator.push(context, MaterialPageRoute(
+        //                       builder: (context) => CategoryPage()));
+        //                 } else if (_selectedIndex == 1) {
+        //                   Navigator.push(context, MaterialPageRoute(
+        //                       builder: (context) =>
+        //                           CartPage(widget.customerId)));
+        //                 } else if (_selectedIndex == 2) {
+        //                   Navigator.push(context, MaterialPageRoute(
+        //                       builder: (context) =>
+        //                           OrdersPage(widget.customerId)));
+        //                 } else if (_selectedIndex == 3) {
+        //                   Navigator.push(context, MaterialPageRoute(
+        //                       builder: (context) =>
+        //                           SettingsPage(widget.customerId)));
+        //                 }
+        //               }),
+        //         )))
+    );
   }
 
   //Get customer current orders from orders table
@@ -430,7 +449,7 @@ class OrderedMedList extends State<OrderedMedListPage> {
   }
 
   //Function to get customer details
-  Future<String?> getCustomerDetails() async {
+  Future<List> getCustomerDetails() async {
     var object;
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
         ParseObject('Customer'));
@@ -439,85 +458,11 @@ class OrderedMedList extends State<OrderedMedListPage> {
     final apiResponse = await parseQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
-      for (var o in apiResponse.results!) {
-        object = o as ParseObject;
-      }
-      return ('${object.get<String>('Firstname')}${object.get<String>('Lastname')}');
+      return apiResponse.results as List<ParseObject>;
     }
-  }
-  Future<Placemark> getUserLocation(currentPostion) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        currentPostion['latitude'], currentPostion['longitude']);
-    Placemark place = placemarks[0];
-    return place;
+    return [];
   }
 
-//conrol the display as cards
-  // Expanded(
-  // child: Container(
-  // padding: const EdgeInsets.all(8.0),
-  // child: Column(
-  // mainAxisSize: MainAxisSize.max,
-  // crossAxisAlignment: CrossAxisAlignment.start,
-  // children: <Widget>[
-  // Container(
-  // padding: EdgeInsets.only(right: 8, top: 4),
-  // child: Text(
-  // "medname1",
-  // maxLines: 2,
-  // softWrap: true,
-  // style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
-  // ),
-  // ),
-  // SizedBox(height: 6),
-  // Text(
-  // "medname2",
-  // style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black),
-  // ),
-  // Container(
-  // child: Row(
-  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  // children: <Widget>[
-  // Text(
-  // 'price SAR  x 1',
-  // style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-  // ),
-  // ],
-  // ),
-  // ),
-  // ],
-  // ),
-  // ),
-  // flex: 100,
-  // )
-
-  // StatefulBuilder(
-  // builder: (BuildContext context, StateSetter setState) =>
-  // Stack(
-  // children: <Widget>[
-  // Container(
-  // margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-  // decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
-  // child: Row(
-  // children: <Widget>[
-  // Center(
-  // child:Checkbox(
-  // value: _isChecked,
-  // onChanged: (bool? checkvalue){
-  // setState((){
-  // _isChecked=checkvalue!;
-  // });
-  // },
-  //
-  // ),
-  // ),
-  // Text("$medicationList")
-  //
-  // ],
-  // ),
-  // ),
-  // ],
-  // ));
 
 
 }
