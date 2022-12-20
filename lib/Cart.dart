@@ -23,6 +23,7 @@ class Cart extends State<CartPage> {
   String searchString = "";
   //We will consider the cart empty
   bool cartNotEmpty = false;
+  bool cart = false;
   int cartItemNum = 0;
   num TotalPrice  = 0;
   bool presRequired = false;
@@ -354,13 +355,15 @@ class Cart extends State<CartPage> {
                                                                                                 ],
                                                                                               ),
                                                                                             ),
-                                                                                          ],
-                                                                                        )));
+                                                                                     ],
+                                                                                        ))
+                                                                                );
                                                                               });
                                                                         }
                                                                     }
                                                                   });
                                                             })
+
                                                         //If cartnotEmpty is false; cart is empty show this message
                                                             : Container(
                                                             child: Column(
@@ -448,14 +451,22 @@ class Cart extends State<CartPage> {
                           ]))),
             ])),
         //Button continue
+
         persistentFooterButtons: [
+
+        Row(
+        crossAxisAlignment:
+        CrossAxisAlignment.center,
+        mainAxisAlignment:
+        MainAxisAlignment.center,
+        children: [
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
-              )),
-          CircleAvatar(
+              ))
+          , CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
@@ -466,8 +477,11 @@ class Cart extends State<CartPage> {
                     Icons.arrow_forward_ios_outlined,
                     color: Colors.white,
                     size: 24.0,
-                  ))),
-        ],
+                  )))
+
+        ])
+
+  ],
         //Bottom navigation bar
         bottomNavigationBar: Container(
             color: Colors.white,
@@ -544,6 +558,8 @@ class Cart extends State<CartPage> {
       cartNotEmpty = false;
       return [];
     }
+
+
   }
 
   //Get customer's medication information from Medications table
@@ -559,6 +575,8 @@ class Cart extends State<CartPage> {
       return [];
     }
   }
+
+
 
   //Delete medication from cart function
   //Quantity will be used in next sprint
@@ -675,5 +693,22 @@ class Cart extends State<CartPage> {
         );
       }
     }
+  }
+
+
+  Future <void> getCart() async{
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+    (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      //If query have objects then set true
+      cart = true;
+  }
+    else
+      cart = false;
   }
 }
