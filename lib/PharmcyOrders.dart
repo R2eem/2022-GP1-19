@@ -21,6 +21,7 @@ import 'medDetails.dart';
 
 
 class PharmcyOrdersPage extends StatefulWidget {
+  
   const PharmcyOrdersPage();
   @override
   PharmcyOrders createState() => PharmcyOrders();
@@ -31,12 +32,12 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
   bool LocationPageNotEmpty = false;
   int NoOfLocation = 0;
   String loc ="";
-  var OrderStatus="complete";
-  String medID="RaR20HREPJ";
+  var OrderStatus="";
+  var pharmcyID="";
+  ParseGeoPoint PharmcyLocation = ParseGeoPoint(latitude: 0, longitude: 0);
 
 
-
-
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -44,6 +45,114 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Stack(children: [
+
+            FutureBuilder<ParseUser?>(
+                future: getUser(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: Container(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator()),
+                      );
+                    default:
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text("Error..."),
+                        );
+                      }
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: Text("No Data..."),
+                        );
+                      } else {
+                        var userId = snapshot.data!.objectId;
+                        //Get user from pharmcy table
+                        return FutureBuilder<List>(
+                            future: currentuser(userId),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                  return Center(
+                                    child: Container(
+                                        margin: EdgeInsets.only(top: 100),
+                                        width: 0,
+                                        height: 0,
+                                        child: CircularProgressIndicator()),
+                                  );
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text("Error..."),
+                                    );
+                                  }
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: Text("No Data..."),
+                                    );
+                                  } else {
+                                    return ListView.builder(
+                                        padding: EdgeInsets.only(top: 10.0),
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, index) {
+                                          //Get Parse Object Values
+                                          final user = snapshot.data![index];
+                                          pharmcyID =
+                                          user.get<String>('objectId')!;
+                                          return Container();
+                                        });
+                                  }
+                              }
+                            });
+                      }
+                  }
+                }),
+
+      FutureBuilder<List>(
+          future: GetPharmcyLocation(pharmcyID),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Center(
+                  child: Container(
+                      margin: EdgeInsets.only(top: 100),
+                      width: 0,
+                      height: 0,
+                      child: CircularProgressIndicator()),
+                );
+              default:
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error..."),
+                  );
+                }
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: Text("No Data..."),
+                  );
+                } else {
+                  return ListView.builder(
+                      padding: EdgeInsets.only(top: 10.0),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        //Get Parse Object Values
+                        final pharmcyTable = snapshot.data![index];
+                        PharmcyLocation =
+                        pharmcyTable.get<ParseGeoPoint>('Location')!;
+                        return Container();
+                      });
+                }
+            }
+          }),
             //Header
             Container(
               height: 150,
@@ -95,7 +204,7 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                 Expanded(
                                     child: FutureBuilder<List<ParseObject>>(
                                         future:
-                                        GetOrders(), //Will change LocationNotEmpty value
+                                        GetOrders(PharmcyLocation), //Will change LocationNotEmpty value
                                         builder: (context, snapshot) {
                                           switch (snapshot.connectionState) {
                                             case ConnectionState.none:
@@ -138,9 +247,8 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                       //ParseFile press = OrdersTable.get<ParseFile>("Prescription")!;
 
                                                       OrderStatus = OrdersTable.get("OrderStatus");
-                                                      var customerID = "ZHHasUGbW4";
-                                                      // OrdersTable.get("Customer_id").toString();
-                                                      // customerID=customerID.substring(36,46);
+                                                      var customerId = OrdersTable.get("Customer_id").toString();
+                                                       customerId=customerId.substring(36,46);
                                                        final orderCreatedDate = OrdersTable.get("createdAt").toString();
 
                                                       final orderdate = orderCreatedDate.substring(0,11);
@@ -150,7 +258,7 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                           onTap: () => Navigator.of(context)
                                                               .push(MaterialPageRoute(
                                                           builder: (context) =>
-                                                              OrderedMedListPage(customerID))),
+                                                              OrderedMedListPage(customerId,OrderId))),
                                                               child:StatefulBuilder(
                                                                   builder: (BuildContext context, StateSetter setState) =>
                                                                       Stack( //display Locations cards
@@ -200,16 +308,16 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                               children: <Widget>[
                                                                                                 Text(
-                                                                                                  '$OrderStatus ',
+                                                                                                  '$OrderStatus',
                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.green, fontWeight: FontWeight.w600),
                                                                                                 ),
                                                                                                 //Increment and decrement of medication
                                                                                               ],
                                                                                             ),
                                                                                           ),
-                                                                                        if(OrderStatus.contains("Completed") || OrderStatus.contains("Cancelled"))
+                                                                                        if(OrderStatus.contains("Completed"))
                                                                                           Text(
-                                                                                            "Old order",
+                                                                                            "$OrderStatus",
                                                                                             maxLines: 2,
                                                                                             softWrap: true,
                                                                                             style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700 ,
@@ -219,11 +327,11 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                                                                   ..style = PaintingStyle.stroke
                                                                                                   ..strokeJoin = StrokeJoin.round
                                                                                             ),),
-                                                                                        if(OrderStatus.contains("Completed") || OrderStatus.contains("Cancelled"))
+                                                                                        if(OrderStatus.contains("Completed"))
                                                                                           SizedBox(
                                                                                             height: 15,
                                                                                           ),
-                                                                                        if(OrderStatus.contains("Completed") || OrderStatus.contains("Cancelled"))
+                                                                                        if(OrderStatus.contains("Completed"))
                                                                                           Container(
                                                                                             padding: EdgeInsets.only(right: 8, top: 4),
                                                                                             child: Text(
@@ -234,7 +342,46 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                                                               style: TextStyle(fontFamily: "Lato", fontSize: 19, fontWeight: FontWeight.w700),
                                                                                             ),
                                                                                           ),
-                                                                                        if(OrderStatus.contains("Completed") || OrderStatus.contains("Cancelled"))
+                                                                                        if(OrderStatus.contains("Completed") )
+                                                                                          Container(
+                                                                                            child: Row(
+                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                              children: <Widget>[
+                                                                                                Text(
+                                                                                                  '$OrderStatus ',
+                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.blue[800], fontWeight: FontWeight.w600),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        if(OrderStatus.contains("Cancelled"))
+                                                                                          Text(
+                                                                                            "$OrderStatus",
+                                                                                            maxLines: 2,
+                                                                                            softWrap: true,
+                                                                                            style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700 ,
+                                                                                                background: Paint()
+                                                                                                  ..strokeWidth = 25.0
+                                                                                                  ..color =  Colors.grey.withOpacity(0.5)
+                                                                                                  ..style = PaintingStyle.stroke
+                                                                                                  ..strokeJoin = StrokeJoin.round
+                                                                                            ),),
+                                                                                        if(OrderStatus.contains("Cancelled"))
+                                                                                          SizedBox(
+                                                                                            height: 15,
+                                                                                          ),
+                                                                                        if(OrderStatus.contains("Cancelled"))
+                                                                                          Container(
+                                                                                            padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                            child: Text(
+                                                                                              "Date: $orderdate \nTime:$orderTime",
+
+                                                                                              maxLines: 2,
+                                                                                              softWrap: true,
+                                                                                              style: TextStyle(fontFamily: "Lato", fontSize: 19, fontWeight: FontWeight.w700),
+                                                                                            ),
+                                                                                          ),
+                                                                                        if(OrderStatus.contains("Cancelled"))
                                                                                           Container(
                                                                                             child: Row(
                                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -243,7 +390,8 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
                                                                                                   '$OrderStatus ',
                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.red, fontWeight: FontWeight.w600),
                                                                                                 ),
-                                                                                                //Increment and decrement of medication
+
+
                                                                                               ],
                                                                                             ),
                                                                                           ),
@@ -333,11 +481,53 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
 
   }
 
+  //Function to get current logged in user
+  Future<ParseUser?> getUser() async {
+    var currentUser = await ParseUser.currentUser() as ParseUser?;
+    return currentUser;
+  }
+
+  //Function to get current user from pharmcy table
+  Future<List> currentuser(userId) async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    queryCustomers.whereContains('user', userId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<ParseObject>> GetPharmcyLocation(String pharmcyID) async {
+
+
+    final QueryBuilder<ParseObject> PharmcyLocation =
+    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    PharmcyLocation.whereEqualTo("objectId",pharmcyID);
+
+    final apiResponse = await PharmcyLocation.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      //If query have objects then set true
+
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      //If query have no object then set false
+      return [];
+    }
+  }
+
+
 
   //recive orders
-  Future<List<ParseObject>> GetOrders() async {
+  Future<List<ParseObject>> GetOrders(ParseGeoPoint pharmcyLocation) async {
+    
     final QueryBuilder<ParseObject> Orders =
     QueryBuilder<ParseObject>(ParseObject('Orders'));
+    Orders.whereNear("Location", PharmcyLocation);
+    Orders.orderByDescending("createdAt");
 
     final apiResponse = await Orders.query();
 
@@ -352,6 +542,7 @@ class PharmcyOrders extends State<PharmcyOrdersPage> {
       return [];
     }
   }
+
 
 
 
