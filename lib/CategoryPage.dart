@@ -360,8 +360,7 @@ class Category extends State<CategoryPage> {
                                                                               ),
                                                                               duration: Duration(milliseconds: 3000),
                                                                             ));
-                                                                          }
-                                                                          ;
+                                                                          };
                                                                         },
                                                                         icon: const Icon(
                                                                           Icons

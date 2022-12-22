@@ -8,13 +8,15 @@ import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
 import 'Settings.dart';
+import 'common/theme_helper.dart';
 
 
 class OrderDetailsPage extends StatefulWidget {
   //Get customer id as a parameter
   final String customerId;
   final String orderId;
-  const OrderDetailsPage(this.customerId, this.orderId);
+  final bool currentOrder;
+  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder);
   @override
   OrderDetails createState() => OrderDetails();
 }
@@ -427,8 +429,77 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   fontSize: 18,
                                                                                   color: Colors.black54,
                                                                                   fontWeight: FontWeight.w700),),
-                                                                            ])
-                                                                        ]) ))));
+                                                                            ]),
+                                                                        SizedBox(height: 20,),
+                                                                         widget.currentOrder ?
+                                                                             Column(
+                                                                             children:[
+                                                                            Center(
+                                                                              child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                       backgroundColor: Colors.red,
+                                                                                ),
+                                                                                    child:Text("CANCEL ORDER",style:
+                                                                                    TextStyle(
+                                                                                        fontFamily: 'Lato',
+                                                                                        fontSize: 15,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Colors.white)),
+                                                                                onPressed: (){
+                                                                                  Widget cancelButton = TextButton(
+                                                                                    child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () async {
+                                                                                      if (await deleteOrder(OrderId)) {
+                                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                      content: Text("Order $OrderId has been deleted",
+                                                                                      style: TextStyle(fontSize: 20),),
+                                                                                      duration: Duration(milliseconds: 3000),
+                                                                                      ));
+                                                                                      };
+                                                                                    },
+                                                                                  );
+                                                                                  Widget continueButton = TextButton(
+                                                                                    child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  );
+                                                                                  // set up the AlertDialog
+                                                                                  AlertDialog alert = AlertDialog(
+                                                                                    title: RichText(
+                                                                                      text: TextSpan(
+                                                                                        text: '''Are you sure you want to delete this order? 
+                                                                                               ''',
+                                                                                        style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                        children: <TextSpan>[
+                                                                                          TextSpan(text: 'Please note that you cannot undo this process!!!',
+                                                                                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    content: Text(""),
+                                                                                    actions: [
+                                                                                      cancelButton,
+                                                                                      continueButton,
+                                                                                    ],
+                                                                                  );
+                                                                                  // show the dialog
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext context) {
+                                                                                      return alert;
+                                                                                    },
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          ]):Container()
+                                                                        ])
+                                                              )
+                                                          )
+                                                      )
+                                                  );
                                                 });
                                           }
                                       }
@@ -541,5 +612,22 @@ class OrderDetails extends State<OrderDetailsPage> {
         currentPostion['latitude'], currentPostion['longitude']);
     Placemark place = placemarks[0];
     return place;
+  }
+
+  Future<bool> deleteOrder(orderId) async {
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
+        ParseObject('Orders'));
+    parseQuery.whereEqualTo('objectId', orderId);
+
+    final apiResponse = await parseQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        var object = o as ParseObject;
+        object.delete();
+        return true;
+      }
+    }
+    return false;
   }
 }

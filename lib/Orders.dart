@@ -129,7 +129,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -249,7 +249,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
