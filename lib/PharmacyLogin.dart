@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/PharmacyOrders.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
@@ -330,7 +331,7 @@ class Login extends State<PharmacyLogin> {
       setState(() {
         isLoggedIn = true;
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyOrdersPage()));
     } else {
       showError(response.error!.message);
     }
@@ -379,7 +380,7 @@ class Login extends State<PharmacyLogin> {
               if ("UnderProcessing" == gett.get('JoinRequest') &&
                   checkV == false) {
                 showError(
-                    "Your join request is under processing and please verify your email before login");
+                    "Please verify your email before login");
               }
               if ("declined" == gett.get('JoinRequest')) {
                 showError("Sorry, Your join request is declined");
