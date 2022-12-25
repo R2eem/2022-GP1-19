@@ -5,7 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'PresLocation.dart';
+import 'package:untitled/Cart.dart';
+import 'package:untitled/ChooseLocation.dart';
+import 'PresAttach.dart';
+import 'common/theme_helper.dart';
 //import 'package:geocoding/geocoding.dart';
 
 
@@ -48,6 +51,7 @@ class _LocationPage extends State<Location> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.purple.shade300 ,
         onPressed: () async {
           Position position = await _determinePosition();
 
@@ -65,23 +69,43 @@ class _LocationPage extends State<Location> {
           Long = true;
          // getAddress(lat,long);
         },
-        label: const Text("My Location",style: TextStyle(fontFamily: 'Lato',
+        label: const Text("Current Location",style: TextStyle(fontFamily: 'Lato',
           fontSize: 17,),),
-        icon: const Icon(Icons.location_history),
+        icon: const Icon(Icons.location_history ,),
       ),
+
       persistentFooterButtons: [
-        Text('Next',
-            style: TextStyle(
-              fontFamily: 'Lato',
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
+        CircleAvatar(
+            backgroundColor: Colors.purple.shade300,
+            child: IconButton(
+                onPressed: (){
+                  Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
             )),
+        SizedBox(width: 50,),
+        Container(
+            child:
+        ElevatedButton.icon(
+          style: ThemeHelper().buttonStyle(),
+           onPressed: (){
+             Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
+           },
+
+       icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+        )),
+
+        SizedBox(width:32,),
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
                 onPressed:
                 Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    PresLocation(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
+                    PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
                 );}
                     :() {showDialog(
                   context: context,
@@ -102,7 +126,7 @@ class _LocationPage extends State<Location> {
                 icon: const Icon(
                   Icons.arrow_forward_ios_outlined,
                   color: Colors.white,
-                  size: 24.0,
+                  size: 20,
                 ))),
       ],
 
