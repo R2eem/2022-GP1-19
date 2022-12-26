@@ -6,7 +6,7 @@ import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platf
 import 'package:geolocator/geolocator.dart';
 import 'package:untitled/PharmacyLogin.dart';
 import 'package:untitled/PharmacySignUp.dart';
-import 'PresLocation.dart';
+import 'PresAttach.dart';
 //import 'package:geocoding/geocoding.dart';
 
 
@@ -45,6 +45,7 @@ class _LocationPage extends State<PharmacyLocation> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.purple.shade300 ,
         onPressed: () async {
           Position position = await _determinePosition();
 
@@ -78,19 +79,7 @@ class _LocationPage extends State<PharmacyLocation> {
                   color: Colors.white,
                   size: 24.0,
                 ))),
-        Text('Back',
-            style: TextStyle(
-              fontFamily: 'Lato',
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
-        SizedBox(width: 153,),
-        Text('Next',
-            style: TextStyle(
-              fontFamily: 'Lato',
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
+        SizedBox(width: 280,),
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(

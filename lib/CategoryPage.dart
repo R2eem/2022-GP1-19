@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
+import 'package:untitled/LoginPage.dart';
 import 'package:untitled/medDetails.dart';
 import 'NonPrescriptionCategory.dart';
 import 'Orders.dart';
@@ -107,6 +108,10 @@ class Category extends State<CategoryPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: Image.asset(
@@ -116,6 +121,44 @@ class Category extends State<CategoryPage> {
                     height: 80,
                   ),
                 ),
+                        Container(
+                            child:  IconButton(
+                              onPressed: (){
+                                Widget cancelButton = TextButton(
+                                  child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                  onPressed:  () {
+                                    doUserLogout();
+                                  },
+                                );
+                                Widget continueButton = TextButton(
+                                  child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                  onPressed:  () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                                // set up the AlertDialog
+                                AlertDialog alert = AlertDialog(
+                                  title: Text("Are you sure you want to log out?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                  content: Text(""),
+                                  actions: [
+                                    cancelButton,
+                                    continueButton,
+                                  ],
+                                );
+                                // show the dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
+                                  },
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.logout_outlined ,color: Colors.white, size: 30,
+                              ),
+                            )
+
+                        )]),
                 SizedBox(
                   height: 55,
                 ),
@@ -509,4 +552,43 @@ class Category extends State<CategoryPage> {
       return true;
     }
   }
+
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+
+    );
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showError(response.error!.message);
+    }
+  }
+
+
+
+
+
+
 }
