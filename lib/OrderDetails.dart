@@ -107,7 +107,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
                                                   final location = customerCurrentOrders.get<ParseGeoPoint>('Location')!.toJson();
-                                                  final address = getUserLocation(location);
+                                                  final pharmaciesList = customerCurrentOrders.get('Pharmacies')!;
                                                   var prescription = null;
                                                   if(customerCurrentOrders.get('Prescription') != null){
                                                     presRequired = true;
@@ -154,6 +154,80 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                     ],
                                                                                   )
                                                                               ),
+                                                                              SizedBox(height: 20,),
+                                                                        for (int i = 0; i < pharmaciesList.length; i++) ...[
+                                                                          FutureBuilder<List<ParseObject>>(
+                                                                              future: getPharmDetails(pharmaciesList[i]['pharmacyId'].toString()),
+                                                                              builder: (context, snapshot) {
+                                                                                switch (snapshot.connectionState) {
+                                                                                  case ConnectionState.none:
+                                                                                  case ConnectionState.waiting:
+                                                                                    return Center(
+                                                                                      child: Container(
+                                                                                          width: 200,
+                                                                                          height: 5,
+                                                                                          child:
+                                                                                          LinearProgressIndicator()),
+                                                                                    );
+                                                                                  default:
+                                                                                    if (snapshot.hasError) {
+                                                                                      return Center(
+                                                                                        child: Text(
+                                                                                            "Error..."),
+                                                                                      );
+                                                                                    }
+                                                                                    if (!snapshot.hasData) {
+                                                                                      return Center(
+                                                                                        child: Text(
+                                                                                            "No Data..."),
+                                                                                      );
+                                                                                    } else {
+                                                                                      return  ListView.builder(
+                                                                                          shrinkWrap: true,
+                                                                                          scrollDirection: Axis.vertical,
+                                                                                          itemCount: snapshot.data!.length,
+                                                                                          itemBuilder: (context, index) {
+                                                                                            final pharmDetails = snapshot.data![index];
+                                                                                            final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
+                                                                                            final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
+                                                                                            final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
+                                                                                            return Card(
+                                                                                                child: Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                  children:[
+                                                                                                    Container(
+                                                                                                        padding: EdgeInsets.all(5),
+                                                                                                        width: size.width,
+                                                                                                        color: Colors.grey.shade200,
+                                                                                                        child:
+                                                                                                        Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            children:[
+                                                                                                              Text('$pharmacyName ' ,style: TextStyle(
+                                                                                                                  fontFamily: "Lato",
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: Colors.black,
+                                                                                                                  fontWeight: FontWeight.w600),),
+                                                                                                              Text('$pharmPhonenumber' ,style: TextStyle(
+                                                                                                                  fontFamily: "Lato",
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Colors.black,
+                                                                                                                  fontWeight: FontWeight.w500),),
+                                                                                                              Text('$pharmLocation' ,style: TextStyle(
+                                                                                                                  fontFamily: "Lato",
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Colors.black,
+                                                                                                                  fontWeight: FontWeight.w500),)
+                                                                                                            ]
+                                                                                                        )
+                                                                                                    )
+                                                                                                  ],
+                                                                                                )
+                                                                                            );
+                                                                                          });
+                                                                                    }
+                                                                                }}
+                                                                          ),],
                                                                               SizedBox(height: 20,),
                                                                               ///customer name and phone number and location
                                                                               FutureBuilder<Placemark>(
@@ -590,7 +664,18 @@ class OrderDetails extends State<OrderDetailsPage> {
     }
     return [];
   }
+  //Function to get pharmacy details
+  Future<List<ParseObject>> getPharmDetails(pharmaciesList) async {
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    parseQuery.whereEqualTo('objectId', pharmaciesList);
 
+    final apiResponse = await parseQuery.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    }
+    return [];
+  }
   //Function to get customer details
   Future<ParseObject> getCustomerDetails() async {
     var object;

@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Location.dart';
 import 'CategoryPage.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -47,30 +48,70 @@ class Cart extends State<CartPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                child: Image.asset(
-                                  'assets/logoheader.png',
-                                  fit: BoxFit.contain,
-                                  width: 110,
-                                  height: 80,
-                                ),
-                              ),
-                              //Controls Cart page title
-                              Container(
-                                margin: EdgeInsets.fromLTRB(70, 13, 0, 0),
-                                child: Text(
-                                  'Cart',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 27,
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ]),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10,80, 0),
+                                    child: Image.asset(
+                                      'assets/logoheader.png',
+                                      fit: BoxFit.contain,
+                                      width: 110,
+                                      height: 80,
+                                    ),
+                                  ),
+                                  //Controls Cart page title
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10,100, 0),
+                                    child: Text(
+                                      'Cart',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontSize: 27,
+                                          color: Colors.white70,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Container(
+                                      child:  IconButton(
+                                        onPressed: (){
+                                          Widget cancelButton = TextButton(
+                                            child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                            onPressed:  () {
+                                              doUserLogout();
+                                            },
+                                          );
+                                          Widget continueButton = TextButton(
+                                            child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                            onPressed:  () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                          // set up the AlertDialog
+                                          AlertDialog alert = AlertDialog(
+                                            title: Text("Are you sure you want to log out?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                            content: Text(""),
+                                            actions: [
+                                              cancelButton,
+                                              continueButton,
+                                            ],
+                                          );
+                                          // show the dialog
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return alert;
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.logout_outlined ,color: Colors.white, size: 30,
+                                        ),
+                                      )
+
+                                  )
+                                ]),
                             SizedBox(
                               height: 20,
                             ),
@@ -665,6 +706,37 @@ class Cart extends State<CartPage> {
           },
         );
       }
+    }
+  }
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+
+    );
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showError(response.error!.message);
     }
   }
 }

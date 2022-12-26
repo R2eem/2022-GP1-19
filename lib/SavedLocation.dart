@@ -238,7 +238,16 @@ class Locations extends State<SavedLocationPage> {
                                                                                               Container(
                                                                                                 padding: EdgeInsets.only(right: 8, top: 4),
                                                                                                 child: Text(
-                                                                                                  "Country: $country\nStreet: $street",
+                                                                                                  "Street: $street\nSublocality: $subLocality",
+                                                                                                  maxLines: 2,
+                                                                                                  softWrap: true,
+                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                child: Text(
+                                                                                                  "Locality: $locality\nCountry: $country",
                                                                                                   maxLines: 2,
                                                                                                   softWrap: true,
                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
@@ -260,10 +269,6 @@ class Locations extends State<SavedLocationPage> {
                                                             }}
                                                       );
                                                     } )
-
-
-
-
                                                 //If LocationNotEmpty is false; Location is empty show this message
                                                     : Container(
                                                     child: Column(

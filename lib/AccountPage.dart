@@ -39,7 +39,7 @@ class _AccountPage extends State<AccountPage>{
                 ),
                 //Back button
                 Container(
-                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 370, 0),
+                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 60, 370, 0),
                     iconSize: 40,
                     color: Colors.white,
                     onPressed: () {

@@ -10,7 +10,6 @@ import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
-import 'common/theme_helper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -37,6 +36,8 @@ class _PresAttachPage extends State<PresAttach> {
   bool isLoading = false;
   List medicationsList = [];
   bool locationExist = false;
+  List pharmacies = [];
+  var counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +288,7 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                 //Get medication information from Medications table
                                                                                 final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
-                                                                                final Publicprice = medGet.get<num>('Publicprice')! * quantity;
+                                                                                final Publicprice = (medGet.get<num>('Publicprice')! * quantity).toStringAsFixed(2);
 
                                                                                 return Column(
                                                                                     children: [
@@ -357,13 +358,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-          Text('Back',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              )),
-          SizedBox(width: 79,),
+          SizedBox(width: 135,),
           Text('Send Order',
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -409,7 +404,8 @@ class _PresAttachPage extends State<PresAttach> {
                         ..objectId = widget.customerId).toPointer())
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
-                      ..setAddUnique('MedicationsList', medicationsList);
+                      ..setAddUnique('MedicationsList', medicationsList)
+                      ..set('Pharmacies', pharmacies);
 
                     await orderInfo.save();
 
@@ -479,7 +475,8 @@ class _PresAttachPage extends State<PresAttach> {
                       ..set('Prescription', parseFile)
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
-                      ..setAddUnique('MedicationsList', medicationsList);
+                      ..setAddUnique('MedicationsList', medicationsList)
+                      ..set('Pharmacies', pharmacies);
                     await orderInfo.save();
 
                     if(!locationExist)
@@ -616,6 +613,27 @@ class _PresAttachPage extends State<PresAttach> {
     savedLocations.whereEqualTo('customer', (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     final apiResponse2 = await savedLocations.query();
 
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    parseQuery.whereNear(
+        'Location',
+        ParseGeoPoint(latitude: widget.lat, longitude: widget.lng)
+    );
+    final apiResponse3 = await parseQuery.query();
+
+    if (apiResponse3.success && apiResponse3.results != null) {
+      for (var object in apiResponse3.results as List<ParseObject>) {
+        for (int i = 0; i < apiResponse3.count; i++) {
+          var pharmacy = {
+            'pharmacyId': object.objectId
+          };
+          var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
+          if (contain.isEmpty && counter<5) {
+            counter++;
+            pharmacies.add(pharmacy);
+          }
+        }
+      }
+    }
     if (apiResponse1.success && apiResponse1.results != null) {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {

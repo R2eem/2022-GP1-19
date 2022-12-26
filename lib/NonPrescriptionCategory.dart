@@ -68,7 +68,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
-                    height: 667,
+                    height: size.height - 180,
                     width: size.width,
                     child: Column(children: [
                       //Search bar
