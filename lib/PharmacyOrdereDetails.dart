@@ -11,6 +11,8 @@ import 'Settings.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 
+import 'common/theme_helper.dart';
+
 class PharmacyOrdereDetailsPage extends StatefulWidget {
   //Get customer id as a parameter
   final String customerId;
@@ -24,6 +26,11 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
   int _selectedIndex = 2;
   bool presRequired = false;
   bool _isChecked = false;
+  var pharmacyOrderStatus="";
+  var orderStatus="";
+  var orderNote="";
+  var orderNoteController=TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +72,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                     ),
                                   ),
                                 ]),
-                            SizedBox(height: 55,),
+                            SizedBox(height: 50,),
                             SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
                                 padding: const EdgeInsets.symmetric(
@@ -104,7 +111,10 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                   final customerCurrentOrders = snapshot.data![index];
                                                   final OrderId = customerCurrentOrders.get('objectId');
                                                   final CreatedDate = customerCurrentOrders.get('createdAt')!;
-                                                  final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                  orderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                  pharmacyOrderStatus = customerCurrentOrders.get('PharmcyOrderStatus')!;
+                                                  orderNote= customerCurrentOrders.get('OrderNote')!;
+                                                   orderNoteController = TextEditingController(text: orderNote);
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
 
@@ -128,8 +138,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                             fontSize: 19,
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w600),),
-
-                                                                        SizedBox(height: 5,),
+                                                                        //SizedBox(height: 5,),
                                                                         ///customer name and phone number
                                                                         FutureBuilder<List>(
                                                                             future: getCustomerDetails(),
@@ -137,13 +146,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                               switch (snapshot.connectionState) {
                                                                                 case ConnectionState.none:
                                                                                 case ConnectionState.waiting:
-                                                                                  return Center(
-                                                                                    child: Container(
-                                                                                        width: 200,
-                                                                                        height: 5,
-                                                                                        child:
-                                                                                        LinearProgressIndicator()),
-                                                                                  );
                                                                                 default:
                                                                                   if (snapshot.hasError) {
                                                                                     return Center(
@@ -203,7 +205,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                   }
                                                                               }}
                                                                         ),
-                                                                        SizedBox(height: 20,),
+                                                                        SizedBox(height: 15,),
                                                                         Container(
                                                                           padding: EdgeInsets.all(5),
                                                                           alignment: Alignment.center,
@@ -221,13 +223,13 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                             ..strokeJoin = StrokeJoin.round),
                                                                           ),
                                                                         ),
-                                                                        SizedBox(height: 20,),
+                                                                        SizedBox(height: 15,),
                                                                         Text('List of medication:' ,style: TextStyle(
                                                                             fontFamily: "Lato",
                                                                             fontSize: 19,
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w700),),
-                                                                        SizedBox(height: 10,),
+                                                                        SizedBox(height: 5,),
                                                                         for (int i = 0; i < medicationsList[0].length; i++) ...[
                                                                           FutureBuilder<List<ParseObject>>(
                                                                               future: getMedDetails(medicationsList[0][i]['medId'].toString()),
@@ -314,7 +316,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                     }
                                                                                 }}
                                                                           ),],
-                                                                        SizedBox(height: 20,),
+                                                                        SizedBox(height: 10,),
                                                                         presRequired ?
                                                                         Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -339,7 +341,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                   ),
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(height: 20,),
+                                                                              SizedBox(height: 10,),
                                                                             ])
                                                                             :Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -354,13 +356,161 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                   fontSize: 18,
                                                                                   color: Colors.black54,
                                                                                   fontWeight: FontWeight.w700),),
-                                                                            ])
+                                                                            ]),
+                                                                        //SizedBox(height: 20,),
+
+
+                                                                        if(pharmacyOrderStatus.contains("New Order"))
+                                                                          Container
+                                                                            (
+                                                                            child:Card(
+                                                                                color:  Colors.grey[100],
+                                                                                child: Padding(
+                                                                                  padding: EdgeInsets.all(8.0),
+                                                                                  child: TextFormField(
+                                                                              autovalidateMode:
+                                                                              AutovalidateMode.onUserInteraction,
+                                                                              keyboardType: TextInputType.text,
+                                                                              controller:  orderNoteController,
+                                                                              decoration: InputDecoration(
+                                                                                  hintText: "Enter reason of declining the order",
+                                                                                  hintStyle: TextStyle(fontFamily: 'Lato', fontSize: 16.0, color: Colors.grey[800]),
+                                                                              ) ,
+                                                                            ),),
+                                                                          ),
+                                                                            decoration: BoxDecoration(boxShadow: [
+                                                                              BoxShadow(
+                                                                                color: Colors.grey.withOpacity(0.2),
+                                                                                blurRadius: 3,
+                                                                                offset: const Offset(0, 1),
+                                                                              )
+                                                                            ]),
+                                                                          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                          Padding(
+                                                                            padding: EdgeInsets.only(top:1),
+                                                                           child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children:<Widget>[
+
+                                                                                Padding(
+                                                                                padding: EdgeInsets.only(right:5 ,top:10,),
+                                                                                  child:Container(
+                                                                                    decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                    child:ElevatedButton(
+                                                                                      style: ThemeHelper().buttonStyle(),
+                                                                                      onPressed: (){
+                                                                                        Widget cancelButton = TextButton(
+                                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                          onPressed:  () {
+                                                                                            // doUserLogout(); send notification  and chnage customer and pharmcay status
+                                                                                          },
+                                                                                        );
+                                                                                        Widget continueButton = TextButton(
+                                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                          onPressed:  () {
+                                                                                            Navigator.of(context).pop();
+
+                                                                                          },
+                                                                                        );
+                                                                                        // set up the AlertDialog
+                                                                                        AlertDialog alert = AlertDialog(
+                                                                                          title: Text("Are you sure you want to Accept this order?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                                                                          content: Text(""),
+                                                                                          actions: [
+                                                                                            cancelButton,
+                                                                                            continueButton,
+                                                                                          ],
+                                                                                        );
+                                                                                        // show the dialog
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          builder: (BuildContext context) {
+                                                                                            return alert;
+                                                                                          },
+                                                                                        );
+                                                                                      }, child: Text('Accept'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                                    ),
+                                                                                  ),),
+                                                                                 Padding(
+                                                                                 padding: EdgeInsets.only(left:5 , top:10),
+                                                                                  child:Container(
+                                                                                    decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                    child: ElevatedButton(
+                                                                                      style: ThemeHelper().buttonStyle(),
+                                                                                      onPressed: (){
+                                                                                        Widget cancelButton = TextButton(
+                                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                          onPressed:  () {
+                                                                                            // doUserLogout(); send notification  and chnage customer and pharmcay status
+                                                                                          },
+                                                                                        );
+                                                                                        Widget continueButton = TextButton(
+                                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                          onPressed:  () {
+                                                                                            Navigator.of(context).pop();
+                                                                                          },
+                                                                                        );
+                                                                                        // set up the AlertDialog
+                                                                                        AlertDialog alert = AlertDialog(
+                                                                                          title: Text("Are you sure you want to Decline this order?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                                                                          content: Text(""),
+                                                                                          actions: [
+                                                                                            cancelButton,
+                                                                                            continueButton,
+                                                                                          ],
+                                                                                        );
+                                                                                        // show the dialog
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          builder: (BuildContext context) {
+                                                                                            return alert;
+                                                                                          },
+                                                                                        );
+                                                                                      }, child: Text('Decline'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                                    ),
+                                                                                  )),
+
+                                                                                ]),
+
+
+
+
+
+
+
+
+                                                                          ),
                                                                       ]) ))));
                                                 });
+
                                           }
                                       }
                                     })
                             ),
+                          
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                           ]))),
             ])),
 

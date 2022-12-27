@@ -29,7 +29,7 @@ class PharmcyNewOrders extends State<PharmcyNewOrdersPage>with TickerProviderSta
   var PharmacyOrderStatusFromDB="";
   var pharmcyID="";
   int _selectedTab = 0 ;
-  String orderStatus ='';
+  String PharmacyorderStatus ='';
 
 
 
@@ -165,19 +165,22 @@ class PharmcyNewOrders extends State<PharmcyNewOrdersPage>with TickerProviderSta
                                 setState(() {
                                   _selectedTab = index;
                                   if(_selectedTab == 0)
-                                    orderStatus = 'New Order';
+                                    PharmacyorderStatus = 'All';
                                   if(_selectedTab == 1)
-                                    orderStatus ='Wait for customer confirmation';
+                                    PharmacyorderStatus = 'New Order';
                                   if(_selectedTab == 2)
-                                    orderStatus = 'Under preparation';
+                                    PharmacyorderStatus ='Wait for customer confirmation';
                                   if(_selectedTab == 3)
-                                    orderStatus ='Ready to pick up';
+                                    PharmacyorderStatus = 'Under preparation';
+                                  if(_selectedTab == 4)
+                                    PharmacyorderStatus ='Ready to pick up';
                                 },);},
                                   isScrollable: true,//if thr tabs are alot we can scroll them
                                   controller: _tabController,
                                   labelColor: Colors.grey[900],// the tab is clicked on now color
                                   unselectedLabelColor: Colors.grey,
                                   tabs: [
+                                    Tab(icon: Text('All' ,style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                                     Tab(icon: Text('New Order' ,style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                                     Tab(icon: Text('Wait for customer confirmation', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                                     Tab(icon: Text('Under preparation', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
@@ -237,7 +240,7 @@ class PharmcyNewOrders extends State<PharmcyNewOrdersPage>with TickerProviderSta
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
 
-                                                    return ((PharmacyOrderStatusFromDB.toLowerCase().contains(orderStatus.toLowerCase())))
+                                                    return ((PharmacyOrderStatusFromDB.toLowerCase().contains(PharmacyorderStatus.toLowerCase())))
                                                         ?  GestureDetector(
                                                         onTap: () => Navigator.of(context)
                                                             .push(MaterialPageRoute(
