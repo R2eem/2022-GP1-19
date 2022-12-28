@@ -4,9 +4,10 @@ import 'package:untitled/LoginPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'AccountPage.dart';
 import 'PharmacyLogin.dart';
 import 'common/theme_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:native_notify/native_notify.dart';
 
 
 
@@ -18,6 +19,9 @@ Future<void> main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
+  ///Push notification
+  WidgetsFlutterBinding.ensureInitialized();
+  NativeNotify.initialize(2338, 'dX0tKYd2XD2DOtsUirIumj', null, null);
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {

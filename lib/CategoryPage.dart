@@ -10,6 +10,7 @@ import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
+import 'package:native_notify/native_notify.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -94,6 +95,7 @@ class Category extends State<CategoryPage> {
                                             final user = snapshot.data![index];
                                             customerId =
                                             user.get<String>('objectId')!;
+                                            NativeNotify.registerIndieID(customerId);
                                             return Container();
                                           });
                                     }

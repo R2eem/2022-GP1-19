@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
@@ -265,7 +267,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                     Center(
                                                                                                                       child: ElevatedButton(
                                                                                                                         style: ElevatedButton.styleFrom(
-                                                                                                                          backgroundColor: Colors.red,
+                                                                                                                          backgroundColor: HexColor('#c7a1d1'),
                                                                                                                         ),
                                                                                                                         child:Text("CONFIRM ORDER",style:
                                                                                                                         TextStyle(
@@ -297,7 +299,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                           AlertDialog alert = AlertDialog(
                                                                                                                             title: RichText(
                                                                                                                               text: TextSpan(
-                                                                                                                                text: '''Are you sure you want to confirm order for $pharmacyName pharmacy
+                                                                                                                                text: '''Are you sure you want to confirm order for $pharmacyName pharmacy?
                                                                                                                                 ''',
                                                                                                                                 style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
                                                                                                                                 children: <TextSpan>[
@@ -856,6 +858,7 @@ class OrderDetails extends State<OrderDetailsPage> {
   }
 
   Future<bool> confirmOrder(orderId, pharmacyId) async {
+    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', widget.customerId, 'Tiryaq', 'Your order is confirmed', '', '');
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());

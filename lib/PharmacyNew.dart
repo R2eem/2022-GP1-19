@@ -8,6 +8,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyLogin.dart';
 
 
+
 class PharmacyNewO extends StatefulWidget {
   final pharmacyId;
   const PharmacyNewO(this.pharmacyId);
@@ -197,7 +198,8 @@ class PharmacyNew extends State<PharmacyNewO>
                                               return Center(
                                                 child: Text("No Data..."),
                                               );
-                                            } else {
+                                            }
+                                            else {
                                               return ListView.builder(
                                                   scrollDirection: Axis.vertical,
                                                   itemCount: snapshot.data!.length,
@@ -210,7 +212,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
                                                     if(OrderStatus == 'Accepted'){
-                                                      OrderStatus = 'Waiting';
+                                                      OrderStatus = 'Waiting';//Pending
                                                     }
                                                     return  (OrderStatus.contains(filter))?
                                                     GestureDetector(
@@ -281,6 +283,126 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                                           fontWeight: FontWeight.w700),
                                                                                     ),
                                                                                   ),
+                                                                                  (filter == 'Under preparation')?
+                                                                                  Column(
+                                                                                      children:[
+                                                                                        Center(
+                                                                                          child: ElevatedButton(
+                                                                                            style: ElevatedButton.styleFrom(
+                                                                                              backgroundColor: HexColor('#c7a1d1'),
+                                                                                            ),
+                                                                                            child:Text("Ready for pick up",style:
+                                                                                            TextStyle(
+                                                                                                fontFamily: 'Lato',
+                                                                                                fontSize: 15,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                                color: Colors.white)),
+                                                                                            onPressed: (){
+                                                                                              Widget cancelButton = TextButton(
+                                                                                                child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                onPressed:  () async {
+                                                                                                  if (await RPUOrder(orderId)) {
+                                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
+                                                                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                                      content: Text("Order status for order $orderId has been updated",
+                                                                                                        style: TextStyle(fontSize: 20),),
+                                                                                                      duration: Duration(milliseconds: 3000),
+                                                                                                    ));
+                                                                                                  };
+                                                                                                },
+                                                                                              );
+                                                                                              Widget continueButton = TextButton(
+                                                                                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                onPressed:  () {
+                                                                                                  Navigator.of(context).pop();
+                                                                                                },
+                                                                                              );
+                                                                                              // set up the AlertDialog
+                                                                                              AlertDialog alert = AlertDialog(
+                                                                                                title: RichText(
+                                                                                                  text: TextSpan(
+                                                                                                    text: '''Are you sure you want to update status for order $orderId?
+                                                                                                           ''',
+                                                                                                    style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                content: Text(""),
+                                                                                                actions: [
+                                                                                                  cancelButton,
+                                                                                                  continueButton,
+                                                                                                ],
+                                                                                              );
+                                                                                              // show the dialog
+                                                                                              showDialog(
+                                                                                                context: context,
+                                                                                                builder: (BuildContext context) {
+                                                                                                  return alert;
+                                                                                                },
+                                                                                              );
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ]):Container(),
+                                                                                  (filter == 'Ready for pick up')?
+                                                                                  Column(
+                                                                                      children:[
+                                                                                        Center(
+                                                                                          child: ElevatedButton(
+                                                                                            style: ElevatedButton.styleFrom(
+                                                                                              backgroundColor: HexColor('#c7a1d1'),
+                                                                                            ),
+                                                                                            child:Text("Order collected",style:
+                                                                                            TextStyle(
+                                                                                                fontFamily: 'Lato',
+                                                                                                fontSize: 15,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                                color: Colors.white)),
+                                                                                            onPressed: (){
+                                                                                              Widget cancelButton = TextButton(
+                                                                                                child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                onPressed:  () async {
+                                                                                                  if (await collectedOrder(orderId)) {
+                                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
+                                                                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                                      content: Text("Order status for order $orderId has been updated",
+                                                                                                        style: TextStyle(fontSize: 20),),
+                                                                                                      duration: Duration(milliseconds: 3000),
+                                                                                                    ));
+                                                                                                  };
+                                                                                                },
+                                                                                              );
+                                                                                              Widget continueButton = TextButton(
+                                                                                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                onPressed:  () {
+                                                                                                  Navigator.of(context).pop();
+                                                                                                },
+                                                                                              );
+                                                                                              // set up the AlertDialog
+                                                                                              AlertDialog alert = AlertDialog(
+                                                                                                title: RichText(
+                                                                                                  text: TextSpan(
+                                                                                                    text: '''Are you sure you want to update status for order $orderId?
+                                                                                                           ''',
+                                                                                                    style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                content: Text(""),
+                                                                                                actions: [
+                                                                                                  cancelButton,
+                                                                                                  continueButton,
+                                                                                                ],
+                                                                                              );
+                                                                                              // show the dialog
+                                                                                              showDialog(
+                                                                                                context: context,
+                                                                                                builder: (BuildContext context) {
+                                                                                                  return alert;
+                                                                                                },
+                                                                                              );
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ]):Container()
                                                                                 ])))
                                                                         ],
                                                                       ),
@@ -339,6 +461,78 @@ class PharmacyNew extends State<PharmacyNewO>
     } else {
       return [];
     }
+  }
+
+  Future<bool> RPUOrder(orderId) async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
+    final apiResponse1 = await parseQuery1.query();
+
+    //change order status for pharmacies
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        var pharmacy = o as ParseObject;
+        if (pharmacy
+            .get('PharmacyId')
+            .objectId == widget.pharmacyId) {
+          var update = pharmacy..set('OrderStatus', 'Ready for pick up');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+        final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+            ParseObject('Orders'));
+        parseQuery2.whereEqualTo('objectId', orderId);
+
+        final apiResponse2 = await parseQuery2.query();
+
+        //change order status for pharmacy
+        if (apiResponse2.success && apiResponse2.results != null) {
+          for (var o in apiResponse2.results!) {
+            var object = o as ParseObject;
+            var update = object..set('OrderStatus', 'Ready for pick up');
+            final ParseResponse parseResponse = await update.save();
+          }
+        }
+        return true;
+    }
+    return false;
+  }
+
+  Future<bool> collectedOrder(orderId) async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
+    final apiResponse1 = await parseQuery1.query();
+
+    //change order status for pharmacies
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        var pharmacy = o as ParseObject;
+        if (pharmacy
+            .get('PharmacyId')
+            .objectId == widget.pharmacyId) {
+          var update = pharmacy..set('OrderStatus', 'Collected');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+          ParseObject('Orders'));
+      parseQuery2.whereEqualTo('objectId', orderId);
+
+      final apiResponse2 = await parseQuery2.query();
+
+      //change order status for pharmacy
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          var object = o as ParseObject;
+          var update = object..set('OrderStatus', 'Collected');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      return true;
+    }
+    return false;
   }
 
   void showError(String errorMessage) {

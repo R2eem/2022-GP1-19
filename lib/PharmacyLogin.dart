@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:untitled/PharmacyNew.dart';
-import 'package:untitled/PharmacyOrders.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';

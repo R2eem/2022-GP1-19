@@ -272,7 +272,7 @@ class Orders extends State<OrdersPage> {
                                                             child:Column(
                                                                 children:[
                                                                   Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
-                                                                  Text("You don't have orders now.",style: TextStyle(
+                                                                  Text("You don't have previous orders.",style: TextStyle(
                                                                       fontFamily: "Lato",
                                                                       fontSize: 18,
                                                                       color: Colors.black45,
@@ -291,7 +291,6 @@ class Orders extends State<OrdersPage> {
                                                               final OrderId = customerCurrentOrders.get('objectId');
                                                               final CreatedDate = customerCurrentOrders.get('createdAt')!;
                                                               final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              final Prescription = customerCurrentOrders.get('Prescription')!;
                                                               final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
                                                               return  GestureDetector(
