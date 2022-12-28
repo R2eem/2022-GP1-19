@@ -493,8 +493,7 @@ class PharmacyNew extends State<PharmacyNewO>
             var object = o as ParseObject;
             var update = object..set('OrderStatus', 'Ready for pick up');
             var customerId = object.get('Customer_id').objectId;
-            print(customerId);
-            NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order $orderId is ready for pisk up', '', '');
+            NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order $orderId is ready for pick up', '', '');
             final ParseResponse parseResponse = await update.save();
           }
         }

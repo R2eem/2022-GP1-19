@@ -10,7 +10,6 @@ import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
 import 'Settings.dart';
-import 'common/theme_helper.dart';
 
 
 class OrderDetailsPage extends StatefulWidget {
