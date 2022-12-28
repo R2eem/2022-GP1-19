@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/PharmacyNew.dart';
 import 'package:untitled/PharmacyOrders.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -331,7 +332,7 @@ class Login extends State<PharmacyLogin> {
       setState(() {
         isLoggedIn = true;
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyOrdersPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
     } else {
       showError(response.error!.message);
     }
@@ -363,8 +364,6 @@ class Login extends State<PharmacyLogin> {
         if (apiResponse.success && apiResponse.results != null) {
           for (var o in apiResponse.results!) {
             gett = o as ParseObject;
-            print(id);
-            print(gett.get('user').objectId);
             if (id == gett.get('user').objectId) {
 
               if ("accepted" == gett.get('JoinRequest') && checkV == true) {

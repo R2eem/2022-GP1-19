@@ -13,10 +13,8 @@ import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 
 class PharmacyOrdersDetailsPage extends StatefulWidget {
-  //Get customer id as a parameter
-  final String customerId;
   final String orderId;
-  const PharmacyOrdersDetailsPage(this.customerId,this.orderId);
+  const PharmacyOrdersDetailsPage(this.orderId);
   @override
   PharmacyOrdereDetails createState() => PharmacyOrdereDetails();
 }
@@ -174,7 +172,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
 
                                                                       SizedBox(height: 5,),
                                                                       ///customer name and phone number
-                                                                      FutureBuilder<List>(
+                                                                      FutureBuilder<ParseObject>(
                                                                           future: getCustomerDetails(),
                                                                           builder: (context, snapshot) {
                                                                             switch (snapshot.connectionState) {
@@ -205,10 +203,11 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                       scrollDirection: Axis.vertical,
                                                                                       itemCount: 1,
                                                                                       itemBuilder: (context, index) {
-                                                                                        final CustomerInfo = snapshot.data![index];
+                                                                                        final CustomerInfo = snapshot.data!;
                                                                                         final FisrtName = CustomerInfo.get<String>('Firstname')!;
                                                                                         final LastName = CustomerInfo.get<String>('Lastname')!;
-                                                                                        final PhoneNumner = CustomerInfo.get<String>('Phonenumber')!;
+                                                                                        final PhoneNumber = CustomerInfo.get<String>('Phonenumber')!;
+
                                                                                         return Card(
                                                                                             child: Column(
                                                                                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +230,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                               fontSize: 17,
                                                                                                               color: Colors.black,
                                                                                                               fontWeight: FontWeight.w600),),
-                                                                                                          Text('Phone number : $PhoneNumner',style: TextStyle(
+                                                                                                          Text('Phone number : $PhoneNumber',style: TextStyle(
                                                                                                               fontFamily: "Lato",
                                                                                                               fontSize: 17,
                                                                                                               color: Colors.black,
@@ -492,18 +491,34 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   }
 
   //Function to get customer details
-  Future<List> getCustomerDetails() async {
-    var object;
+  Future<ParseObject> getCustomerDetails() async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
-        ParseObject('Customer'));
-    parseQuery.whereEqualTo('objectId', widget.customerId);
+        ParseObject('Orders'));
+    parseQuery.whereEqualTo('objectId', widget.orderId);
+    var object;
+    var customerId;
+    var customer;
+    final apiResponse1 = await parseQuery.query();
 
-    final apiResponse = await parseQuery.query();
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        object = o as ParseObject;
+        customerId = object.get('Customer_id').objectId;
+      }
+      final QueryBuilder<ParseObject> customerDetails = QueryBuilder<ParseObject>(
+          ParseObject('Customer'));
+      customerDetails.whereEqualTo('objectId', customerId);
 
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
+      final apiResponse2 = await customerDetails.query();
+
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          customer = o as ParseObject;
+          return customer;
+        }
+      }
     }
-    return [];
+    return null!;
   }
 
   void showError(String errorMessage) {

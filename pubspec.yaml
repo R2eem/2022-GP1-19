@@ -80,6 +80,8 @@ flutter:
      - assets/logo.png
      - assets/logoheader.png
      - assets/
+     - assets/thumbnail_iconOld.png
+     - assets/thumbnail_iconNew.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

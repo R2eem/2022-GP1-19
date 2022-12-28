@@ -292,7 +292,7 @@ class PharmcyOrders extends State<PharmacyOrdersPage> {
                                                         onTap: () => Navigator.of(context)
                                                             .push(MaterialPageRoute(
                                                             builder: (context) =>
-                                                                PharmacyOrdersDetailsPage(customerId,OrderId))),
+                                                                PharmacyOrdersDetailsPage(OrderId))),
                                                         child:StatefulBuilder(
                                                             builder: (BuildContext context, StateSetter setState) =>
                                                                 Stack( //display Locations cards

@@ -404,8 +404,7 @@ class _PresAttachPage extends State<PresAttach> {
                         ..objectId = widget.customerId).toPointer())
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
-                      ..setAddUnique('MedicationsList', medicationsList)
-                      ..set('Pharmacies', pharmacies);
+                      ..setAddUnique('MedicationsList', medicationsList);
 
                     await orderInfo.save();
 
@@ -417,6 +416,18 @@ class _PresAttachPage extends State<PresAttach> {
                             'SavedLocations', point);
                       await saveLocation.save();
                     }
+
+                    for (int i = 0; i < pharmacies.length; i++) {
+                      final orderPharmacyInfo = ParseObject('PharmaciesList')
+                        ..set('OrderId', (ParseObject('Orders')
+                          ..objectId = orderInfo.objectId).toPointer())
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                          ..objectId = pharmacies[i]['pharmacyId']).toPointer())
+                        ..set('Distance' , '10');
+
+                      await orderPharmacyInfo.save();
+                    }
+
 
                     showDialog(
                       context: context,
@@ -475,8 +486,7 @@ class _PresAttachPage extends State<PresAttach> {
                       ..set('Prescription', parseFile)
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
-                      ..setAddUnique('MedicationsList', medicationsList)
-                      ..set('Pharmacies', pharmacies);
+                      ..setAddUnique('MedicationsList', medicationsList);
                     await orderInfo.save();
 
                     if(!locationExist)
@@ -486,6 +496,17 @@ class _PresAttachPage extends State<PresAttach> {
                           ..objectId = widget.customerId).toPointer())..set(
                             'SavedLocations', point);
                       await saveLocation.save();
+                    }
+
+                    for (int i = 0; i < pharmacies.length; i++) {
+                      final orderPharmacyInfo = ParseObject('PharmaciesList')
+                        ..set('OrderId', (ParseObject('Orders')
+                          ..objectId = orderInfo.objectId).toPointer())
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                          ..objectId = pharmacies[i]['pharmacyId']).toPointer())
+                        ..set('Distance' , '10');
+
+                      await orderPharmacyInfo.save();
                     }
 
                     showDialog(

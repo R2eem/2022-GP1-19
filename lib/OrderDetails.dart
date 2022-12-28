@@ -103,11 +103,10 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                   final customerCurrentOrders = snapshot.data![index];
                                                   final OrderId = customerCurrentOrders.get('objectId');
                                                   final CreatedDate = customerCurrentOrders.get('createdAt')!;
-                                                  final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                  final OrderStatus1 = customerCurrentOrders.get('OrderStatus')!;
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
                                                   final location = customerCurrentOrders.get<ParseGeoPoint>('Location')!.toJson();
-                                                  final pharmaciesList = customerCurrentOrders.get('Pharmacies')!;
                                                   var prescription = null;
                                                   if(customerCurrentOrders.get('Prescription') != null){
                                                     presRequired = true;
@@ -143,7 +142,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                           Column(
                                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                                               children:[
-                                                                                            Text('OrderStatus: $OrderStatus' ,style: TextStyle(
+                                                                                            Text('OrderStatus: $OrderStatus1' ,style: TextStyle(
                                                                                               fontFamily: "Lato",
                                                                                               fontSize: 18,
                                                                                               color: Colors.black,
@@ -155,9 +154,8 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   )
                                                                               ),
                                                                               SizedBox(height: 20,),
-                                                                        for (int i = 0; i < pharmaciesList.length; i++) ...[
                                                                           FutureBuilder<List<ParseObject>>(
-                                                                              future: getPharmDetails(pharmaciesList[i]['pharmacyId'].toString()),
+                                                                              future: getPharmList(),
                                                                               builder: (context, snapshot) {
                                                                                 switch (snapshot.connectionState) {
                                                                                   case ConnectionState.none:
@@ -188,10 +186,48 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                           itemCount: snapshot.data!.length,
                                                                                           itemBuilder: (context, index) {
                                                                                             final pharmDetails = snapshot.data![index];
+                                                                                            final pharmacyId = pharmDetails.get('PharmacyId').objectId;
+                                                                                            final Distance = pharmDetails.get('Distance')!;
+                                                                                            var OrderStatus2 = pharmDetails.get('OrderStatus')!;
+                                                                                            return FutureBuilder<List<ParseObject>>(
+                                                                                                future: getPharmDetails(pharmacyId),
+                                                                                                builder: (context, snapshot) {
+                                                                                                  switch (snapshot.connectionState) {
+                                                                                                    case ConnectionState.none:
+                                                                                                      case ConnectionState.waiting:
+                                                                                                        return Center(
+                                                                                                          child: Container(
+                                                                                                              width: 200,
+                                                                                                              height: 5,
+                                                                                                              child:
+                                                                                                              LinearProgressIndicator()),
+                                                                                                        );
+                                                                                                        default:
+                                                                                                          if (snapshot.hasError) {
+                                                                                                            return Center(
+                                                                                                              child: Text(
+                                                                                                                  "Error..."),
+                                                                                                            );
+                                                                                                          }
+                                                                                                          if (!snapshot.hasData) {
+                                                                                                            return Center(
+                                                                                                              child: Text(
+                                                                                                                  "No Data..."),
+                                                                                                            );
+                                                                                                          } else {
+                                                                                                            return  ListView.builder(
+                                                                                          shrinkWrap: true,
+                                                                                          scrollDirection: Axis.vertical,
+                                                                                          itemCount: snapshot.data!.length,
+                                                                                          itemBuilder: (context, index) {
+                                                                                            final pharmDetails = snapshot.data![index];
                                                                                             final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
                                                                                             final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
                                                                                             final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
-                                                                                            return Card(
+                                                                                            if(OrderStatus2 == 'Accept/Decline'){
+                                                                                              OrderStatus2 = 'Under processing';
+                                                                                            }
+                                                                                            return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')? Card(
                                                                                                 child: Column(
                                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                   children:[
@@ -217,17 +253,86 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                   fontFamily: "Lato",
                                                                                                                   fontSize: 15,
                                                                                                                   color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),)
+                                                                                                                  fontWeight: FontWeight.w500),),
+                                                                                                              Text('$OrderStatus2' ,style: TextStyle(
+                                                                                                                  fontFamily: "Lato",
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Colors.black,
+                                                                                                                  fontWeight: FontWeight.w500),),
+                                                                                                              (OrderStatus2 == 'Accepted')?
+                                                                                                              Column(
+                                                                                                                  children:[
+                                                                                                                    Center(
+                                                                                                                      child: ElevatedButton(
+                                                                                                                        style: ElevatedButton.styleFrom(
+                                                                                                                          backgroundColor: Colors.red,
+                                                                                                                        ),
+                                                                                                                        child:Text("CONFIRM ORDER",style:
+                                                                                                                        TextStyle(
+                                                                                                                            fontFamily: 'Lato',
+                                                                                                                            fontSize: 15,
+                                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                            color: Colors.white)),
+                                                                                                                        onPressed: (){
+                                                                                                                          Widget cancelButton = TextButton(
+                                                                                                                            child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                                            onPressed:  () async {
+                                                                                                                              if (await confirmOrder(OrderId, pharmacyId)) {
+                                                                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                                                                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                                                                  content: Text("Order $OrderId has been confirmed",
+                                                                                                                                    style: TextStyle(fontSize: 20),),
+                                                                                                                                  duration: Duration(milliseconds: 3000),
+                                                                                                                                ));
+                                                                                                                              };
+                                                                                                                            },
+                                                                                                                          );
+                                                                                                                          Widget continueButton = TextButton(
+                                                                                                                            child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                                            onPressed:  () {
+                                                                                                                              Navigator.of(context).pop();
+                                                                                                                            },
+                                                                                                                          );
+                                                                                                                          // set up the AlertDialog
+                                                                                                                          AlertDialog alert = AlertDialog(
+                                                                                                                            title: RichText(
+                                                                                                                              text: TextSpan(
+                                                                                                                                text: '''Are you sure you want to confirm order for $pharmacyName pharmacy
+                                                                                                                                ''',
+                                                                                                                                style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                                                                children: <TextSpan>[
+                                                                                                                                  TextSpan(text: 'Please note that you cannot undo this process!!!',
+                                                                                                                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                                                                                                ],
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            content: Text(""),
+                                                                                                                            actions: [
+                                                                                                                              cancelButton,
+                                                                                                                              continueButton,
+                                                                                                                            ],
+                                                                                                                          );
+                                                                                                                          // show the dialog
+                                                                                                                          showDialog(
+                                                                                                                            context: context,
+                                                                                                                            builder: (BuildContext context) {
+                                                                                                                              return alert;
+                                                                                                                            },
+                                                                                                                          );
+                                                                                                                        },
+                                                                                                                      ),
+                                                                                                                    ),
+                                                                                                                  ]):Container()
                                                                                                             ]
                                                                                                         )
                                                                                                     )
                                                                                                   ],
                                                                                                 )
-                                                                                            );
+                                                                                            ):Container();
                                                                                           });
                                                                                     }
                                                                                 }}
-                                                                          ),],
+                                                                          );});}}}),
                                                                               SizedBox(height: 20,),
                                                                               ///customer name and phone number and location
                                                                               FutureBuilder<Placemark>(
@@ -523,7 +628,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   Widget cancelButton = TextButton(
                                                                                     child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                     onPressed:  () async {
-                                                                                      if (await deleteOrder(OrderId)) {
+                                                                                      if (await cancelOrder(OrderId)) {
                                                                                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                                                                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                       content: Text("Order $OrderId has been deleted",
@@ -665,9 +770,24 @@ class OrderDetails extends State<OrderDetailsPage> {
     return [];
   }
   //Function to get pharmacy details
-  Future<List<ParseObject>> getPharmDetails(pharmaciesList) async {
+  Future<List<ParseObject>> getPharmList() async {
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = widget.orderId ).toPointer());
+
+    final apiResponse = await parseQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        var object = o as ParseObject;
+      return apiResponse.results as List<ParseObject>;
+      }
+    }
+    return [];
+  }
+
+  //Function to get pharmacy details
+  Future<List<ParseObject>> getPharmDetails(pharmacyId) async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
-    parseQuery.whereEqualTo('objectId', pharmaciesList);
+    parseQuery.whereEqualTo('objectId', pharmacyId);
 
     final apiResponse = await parseQuery.query();
 
@@ -676,6 +796,7 @@ class OrderDetails extends State<OrderDetailsPage> {
     }
     return [];
   }
+
   //Function to get customer details
   Future<ParseObject> getCustomerDetails() async {
     var object;
@@ -699,20 +820,77 @@ class OrderDetails extends State<OrderDetailsPage> {
     return place;
   }
 
-  Future<bool> deleteOrder(orderId) async {
-    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
-        ParseObject('Orders'));
-    parseQuery.whereEqualTo('objectId', orderId);
+  Future<bool> cancelOrder(orderId) async {
 
-    final apiResponse = await parseQuery.query();
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
 
-    if (apiResponse.success && apiResponse.results != null) {
-      for (var o in apiResponse.results!) {
+    final apiResponse1 = await parseQuery1.query();
+
+    //change order status for pharmacy
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
         var object = o as ParseObject;
-        object.delete();
-        return true;
+        print(object);
+        var update = object..set('OrderStatus', 'Cancelled');
+        final ParseResponse parseResponse = await update.save();
       }
+    }
+    final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+        ParseObject('Orders'));
+    parseQuery2.whereEqualTo('objectId', orderId);
+
+    final apiResponse2 = await parseQuery2.query();
+
+    //change order status for pharmacy
+    if (apiResponse2.success && apiResponse2.results != null) {
+      for (var o in apiResponse2.results!) {
+        var object = o as ParseObject;
+        var update = object..set('OrderStatus', 'Cancelled');
+        final ParseResponse parseResponse = await update.save();
+      }
+      return true;
     }
     return false;
   }
+
+  Future<bool> confirmOrder(orderId, pharmacyId) async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
+    final apiResponse1 = await parseQuery1.query();
+
+    //change order status for pharmacies
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        var pharmacy = o as ParseObject;
+        if(pharmacy.get('PharmacyId').objectId == pharmacyId){
+          var update = pharmacy..set('OrderStatus', 'Under preparation');
+          final ParseResponse parseResponse = await update.save();
+        }
+        else{
+          var update = pharmacy..set('OrderStatus', 'Cancelled');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+          ParseObject('Orders'));
+      parseQuery2.whereEqualTo('objectId', orderId);
+
+      final apiResponse2 = await parseQuery2.query();
+
+      //change order status for pharmacy
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          var object = o as ParseObject;
+          var update = object..set('OrderStatus', 'Under preparation');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
 }

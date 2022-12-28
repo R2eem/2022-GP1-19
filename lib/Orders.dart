@@ -419,9 +419,16 @@ class Orders extends State<OrdersPage> {
         (ParseObject('Customer')
           ..objectId = widget.customerId).toPointer());
         query2.whereEqualTo('OrderStatus','Ready for pick up');
+
+    final QueryBuilder<ParseObject> query3 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query3.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query3.whereEqualTo('OrderStatus','Under preparation');
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
-      [query1, query2],
+      [query1, query2, query3],
     )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
@@ -446,10 +453,16 @@ class Orders extends State<OrdersPage> {
     query2.whereEqualTo('Customer_id',
         (ParseObject('Customer')
           ..objectId = widget.customerId).toPointer());
-    query2.whereEqualTo('OrderStatus','Completed');
+    query2.whereEqualTo('OrderStatus','Collected');
+    final QueryBuilder<ParseObject> query3 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query3.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query3.whereEqualTo('OrderStatus','Declined');
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
-      [query1, query2],
+      [query1, query2, query3],
     )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 

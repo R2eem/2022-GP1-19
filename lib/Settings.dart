@@ -142,45 +142,6 @@ class Settings extends State<SettingsPage> {
                         ),
                       ),
                       SizedBox(height: 20,),
-                      //Logout confirmation message and button
-                      Align(
-                        alignment: Alignment.center,
-                        child:Container(
-                          decoration: ThemeHelper().buttonBoxDecoration(context),
-                          child: ElevatedButton.icon(
-                            style: ThemeHelper().buttonStyle(),
-                            onPressed: (){
-                              Widget cancelButton = TextButton(
-                                child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  doUserLogout();
-                                },
-                              );
-                              Widget continueButton = TextButton(
-                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                              // set up the AlertDialog
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Are you sure you want to log out from your account?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                                content: Text(""),
-                                actions: [
-                                  cancelButton,
-                                  continueButton,
-                                ],
-                              );
-                              // show the dialog
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return alert;
-                                },
-                              );
-                            }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('Log out'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                          ),
-                        ),),
                     ]),
               ),
             ),
