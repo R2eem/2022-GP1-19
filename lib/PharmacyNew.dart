@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'PharmacyOrdersDetails.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -491,6 +492,9 @@ class PharmacyNew extends State<PharmacyNewO>
           for (var o in apiResponse2.results!) {
             var object = o as ParseObject;
             var update = object..set('OrderStatus', 'Ready for pick up');
+            var customerId = object.get('Customer_id').objectId;
+            print(customerId);
+            NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order $orderId is ready for pisk up', '', '');
             final ParseResponse parseResponse = await update.save();
           }
         }

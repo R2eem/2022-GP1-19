@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/PharmacyNew.dart';
@@ -114,6 +115,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                         //Get Parse Object Values
                                                         final user = snapshot.data![index];
                                                         pharmacyId = user.get<String>('objectId')!;
+                                                        NativeNotify.registerIndieID(pharmacyId);
                                                         final pharmacyName = user.get('PharmacyName')!;
                                                         return Container(
                                                           padding: EdgeInsets.only(left: 40),
