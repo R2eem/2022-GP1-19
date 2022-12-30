@@ -1,16 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'Cart.dart';
-import 'CategoryPage.dart';
-import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'Settings.dart';
 import 'package:full_screen_image/full_screen_image.dart';
-import 'package:geocoding/geocoding.dart';
-
+import 'PharmacyNewOrders.dart';
 import 'common/theme_helper.dart';
 
 class PharmacyOrdereDetailsPage extends StatefulWidget {
@@ -22,15 +16,48 @@ class PharmacyOrdereDetailsPage extends StatefulWidget {
   PharmacyOrdereDetails createState() => PharmacyOrdereDetails();
 }
 
+class checkBoxState{
+  String medID;
+  String medName;
+  String medQuan;
+  String medStrength;
+  String medForm;
+  String mdStrengthUnit;
+  bool value;
+
+  checkBoxState({
+    required this.medID,
+    required this.medName,
+    required this.medQuan,
+    required this.medStrength,
+    required this.medForm,
+    required this.mdStrengthUnit,
+    this.value=false,
+  });
+}
+
 class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
-  int _selectedIndex = 2;
+
+  int _selectedIndex = 1;
   bool presRequired = false;
-  bool _isChecked = false;
-  var pharmacyOrderStatus="";
-  var orderStatus="";
+  var pharmacyOrderStatus=""; //order status in pharmacy side
+  var orderStatus=""; //order status in customer side
   var orderNote="";
   var orderNoteController=TextEditingController();
+  int notesDescriptionMaxLines = 10; // for note field
+  late int notesDescriptionMaxLenth;// for note field
+  final List<String> noteDescription = [];
+  TextEditingController noteDescriptionController = new TextEditingController(); // to get the text written in note field
+  FocusNode textSecondFocusNode = new FocusNode();// when focusing on the note field
+  var medList=[];
+  Set _saved = Set(); //to save the value of the checked medication
 
+
+  @override
+  void dispose() {
+    noteDescriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +110,13 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                       switch (snapshot.connectionState) {
                                         case ConnectionState.none:
                                         case ConnectionState.waiting:
-                                          return Center(
-                                            child: Container(
-                                                width: 50,
-                                                height: 50,
-                                                child:
-                                                CircularProgressIndicator()),
-                                          );
+                                          // return Center(
+                                          //   child: Container(
+                                          //       width: 50,
+                                          //       height: 50,
+                                          //       child:
+                                          //       CircularProgressIndicator()),
+                                          // );
                                         default:
                                           if (snapshot.hasError) {
                                             return Center(
@@ -114,7 +141,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                   orderStatus = customerCurrentOrders.get('OrderStatus')!;
                                                   pharmacyOrderStatus = customerCurrentOrders.get('PharmcyOrderStatus')!;
                                                   orderNote= customerCurrentOrders.get('OrderNote')!;
-                                                   orderNoteController = TextEditingController(text: orderNote);
+                                                  orderNoteController = TextEditingController(text: orderNote);
                                                   final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                   final medicationsList = customerCurrentOrders.get('MedicationsList')!;
 
@@ -230,6 +257,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w700),),
                                                                         SizedBox(height: 5,),
+
                                                                         for (int i = 0; i < medicationsList[0].length; i++) ...[
                                                                           FutureBuilder<List<ParseObject>>(
                                                                               future: getMedDetails(medicationsList[0][i]['medId'].toString()),
@@ -237,13 +265,13 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                 switch (snapshot.connectionState) {
                                                                                   case ConnectionState.none:
                                                                                   case ConnectionState.waiting:
-                                                                                    return Center(
-                                                                                      child: Container(
-                                                                                          width: 200,
-                                                                                          height: 5,
-                                                                                          child:
-                                                                                          LinearProgressIndicator()),
-                                                                                    );
+                                                                                    // return Center(
+                                                                                    //   child: Container(
+                                                                                    //       width: 200,
+                                                                                    //       height: 5,
+                                                                                    //       child:
+                                                                                    //       LinearProgressIndicator()),
+                                                                                    // );
                                                                                   default:
                                                                                     if (snapshot.hasError) {
                                                                                       return Center(
@@ -262,6 +290,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                           scrollDirection: Axis.vertical,
                                                                                           itemCount: snapshot.data!.length,
                                                                                           itemBuilder: (context, index) {
+
                                                                                             final medDetails = snapshot.data![index];
                                                                                             final medications = medDetails.get('TradeName')!;
                                                                                             final quantity = medicationsList[0][i]['quantity'];
@@ -269,49 +298,48 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                             final Strength = medDetails.get<num>('Strength')!;
                                                                                             final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
 
+                                                                                            medList =[
+                                                                                              checkBoxState(medID:medicationsList[0][i]['medId'].toString(),medName:medications,medQuan:quantity,medStrength:Strength.toString(),medForm: ProductForm,mdStrengthUnit:StrengthUnit)
+                                                                                            ]; // to display  medication list in checkbox
 
                                                                                            return StatefulBuilder(
-                                                                                            builder: (BuildContext context, StateSetter setState) =>
-                                                                                            Stack(
-                                                                                            children: <Widget>[
-                                                                                            Container(
-                                                                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                                            child: Row(
-                                                                                            children: <Widget>[
-                                                                                            Center(
-                                                                                            child:Checkbox(
-                                                                                            value: _isChecked,
-                                                                                            onChanged: (bool? checkvalue){
-                                                                                            setState((){
-                                                                                            _isChecked=checkvalue!;
-                                                                                            });
-                                                                                            },
+                                                                                                builder: (BuildContext context, StateSetter setState) =>
+                                                                                             CheckboxListTile(
+                                                                                               controlAffinity: ListTileControlAffinity.leading,
+                                                                                               value: medList[index].value,
+                                                                                               onChanged: (value) {
+                                                                                                   setState(()
+                                                                                                     {
+                                                                                                      if(value== true) {
+                                                                                                     _saved.add(medList[index]);
+                                                                                                   }else{
+                                                                                                     _saved.remove(medList[index]);
+                                                                                                     }
+                                                                                                      medList[index].value=value!;
+                                                                                                   });
+                                                                                               },
+                                                                                               title: Row(
+                                                                                                 children:[
+                                                                                                   Column(
+                                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                       children:[
+                                                                                                         Text('${medList[index].medQuan} X  ${medList[index].medName}' ,style: TextStyle(
+                                                                                                             fontFamily: "Lato",
+                                                                                                             fontSize: 17,
+                                                                                                             color: Colors.black,
+                                                                                                             fontWeight: FontWeight.w600),),
+                                                                                                         Text('${medList[index].medForm} ${medList[index].medStrength} ${medList[index].mdStrengthUnit}' ,style: TextStyle(
+                                                                                                             fontFamily: "Lato",
+                                                                                                             fontSize: 15,
+                                                                                                             color: Colors.black,
+                                                                                                             fontWeight: FontWeight.w500),)
+                                                                                                       ]
+                                                                                                   ),
+                                                                                                 ],
+                                                                                               ),
 
-                                                                                            ),
-
-                                                                                            ),
-                                                                                              Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children:[
-                                                                                                    Text('$quantity X  $medications ' ,style: TextStyle(
-                                                                                                        fontFamily: "Lato",
-                                                                                                        fontSize: 17,
-                                                                                                        color: Colors.black,
-                                                                                                        fontWeight: FontWeight.w600),),
-                                                                                                    Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
-                                                                                                        fontFamily: "Lato",
-                                                                                                        fontSize: 15,
-                                                                                                        color: Colors.black,
-                                                                                                        fontWeight: FontWeight.w500),)
-                                                                                                  ]
-                                                                                              ),
-
-                                                                                            ],
-                                                                                            ),
-                                                                                            ),
-                                                                                            ],
-                                                                                            ));
+                                                                                           ),
+                                                                                           );
                                                                                           });
                                                                                     }
                                                                                 }}
@@ -321,7 +349,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                         Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                             children:[
-                                                                              Text('Prescription: ' ,style: TextStyle(
+                                                                              Text('Prescrsiption: ' ,style: TextStyle(
                                                                                   fontFamily: "Lato",
                                                                                   fontSize: 19,
                                                                                   color: Colors.black,
@@ -361,51 +389,34 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
 
 
                                                                         if(pharmacyOrderStatus.contains("New Order"))
-                                                                          Container
-                                                                            (
-                                                                            child:Card(
-                                                                                color:  Colors.grey[100],
-                                                                                child: Padding(
-                                                                                  padding: EdgeInsets.all(8.0),
-                                                                                  child: TextFormField(
-                                                                              autovalidateMode:
-                                                                              AutovalidateMode.onUserInteraction,
-                                                                              keyboardType: TextInputType.text,
-                                                                              controller:  orderNoteController,
-                                                                              decoration: InputDecoration(
-                                                                                  hintText: "Enter reason of declining the order",
-                                                                                  hintStyle: TextStyle(fontFamily: 'Lato', fontSize: 16.0, color: Colors.grey[800]),
-                                                                              ) ,
-                                                                            ),),
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(top: 1),
+                                                                            child: Container(
+                                                                              margin: EdgeInsets.all(1),
+                                                                              height: 5 * 20.0,
+                                                                              child: TextFormField(
+                                                                                focusNode: textSecondFocusNode,
+                                                                                maxLines: 2,
+                                                                                maxLength: 100,
+                                                                                controller: noteDescriptionController,
+                                                                                decoration: InputDecoration(
+                                                                                  border: OutlineInputBorder(),
+                                                                                  hintText: 'Note of the reason for rejecting the order ',
+                                                                                  hintStyle: TextStyle(
+                                                                                    fontSize: 15.00,
+                                                                                    color: Colors.grey,
+                                                                                    fontWeight: FontWeight.w500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
                                                                           ),
-                                                                            decoration: BoxDecoration(boxShadow: [
-                                                                              BoxShadow(
-                                                                                color: Colors.grey.withOpacity(0.2),
-                                                                                blurRadius: 3,
-                                                                                offset: const Offset(0, 1),
-                                                                              )
-                                                                            ]),
-                                                                          ),
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                                                           Padding(
                                                                             padding: EdgeInsets.only(top:1),
                                                                            child: Row(
                                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                                 children:<Widget>[
-
                                                                                 Padding(
                                                                                 padding: EdgeInsets.only(right:5 ,top:10,),
                                                                                   child:Container(
@@ -416,12 +427,15 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                         Widget cancelButton = TextButton(
                                                                                           child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
-                                                                                            // doUserLogout(); send notification  and chnage customer and pharmcay status
+                                                                                            medList[index].value=true;
+                                                                                            SendToCustomer("Accepted","9c17HXH5WT",medList,noteDescriptionController.text);
+                                                                                            Navigator.of(context).pop();
                                                                                           },
                                                                                         );
                                                                                         Widget continueButton = TextButton(
                                                                                           child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
+                                                                                            medList[index].value=true;
                                                                                             Navigator.of(context).pop();
 
                                                                                           },
@@ -455,12 +469,16 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                         Widget cancelButton = TextButton(
                                                                                           child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
-                                                                                            // doUserLogout(); send notification  and chnage customer and pharmcay status
+                                                                                            medList[index].value=false;
+                                                                                            SendToCustomer("Declined","9c17HXH5WT",medList,noteDescriptionController.text);
+                                                                                            Navigator.of(context).pop();
+
                                                                                           },
                                                                                         );
                                                                                         Widget continueButton = TextButton(
                                                                                           child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
+                                                                                            medList[index].value=true;
                                                                                             Navigator.of(context).pop();
                                                                                           },
                                                                                         );
@@ -485,14 +503,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                   )),
 
                                                                                 ]),
-
-
-
-
-
-
-
-
                                                                           ),
                                                                       ]) ))));
                                                 });
@@ -501,16 +511,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                       }
                                     })
                             ),
-                          
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+
                           ]))),
             ])),
 
@@ -613,6 +614,75 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
     return [];
   }
 
+  // function to send if the order is accepted or declined to the customer
+  Future<void> SendToCustomer(orderstatus,pharmacyid,medicationList ,note) async {
+    var object;
+    final QueryBuilder<ParseObject> parseQuery =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery.whereEqualTo('PharmacyId',
+        (ParseObject('Pharmacist')..objectId =pharmacyid).toPointer());
 
+    //Get as a single object
+    final apiResponse = await parseQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        object = o as ParseObject;
+      }
+    }
+    //Update the information in pharmacyList table
+    var todo = object
+      ..set('OrderStatus',orderstatus )
+      ..set('Note',note);
+      //..set('CheckedMed', medicationList. )
+
+    //userId should be pointer since its a foreign key
+    final ParseResponse parseResponse = await todo.save();
+    if (parseResponse.success) {
+      //If the update succeed call showSuccess function
+      showSuccess();
+    } else {
+      //If update fails cal showError function
+      showError(parseResponse.error!.message);
+    }
+
+  }
+  //Function called when updating order status is successful
+  //Show message for 3 seconds then navigate to setting page
+  void showSuccess() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          bool manuallyClosed = false;
+          Future.delayed(Duration(seconds: 3)).then((_) {
+            if (!manuallyClosed) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PharmcyNewOrdersPage()));
+            }
+          });
+          return AlertDialog(
+              content: Text('Order status is changed !', style: TextStyle(fontFamily: 'Lato', fontSize: 20,)));
+
+        });
+  }
+
+  //Function called when updating order status  is not successful
+  //Show Alertdialog and wait for user interaction
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("order status changing failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }
