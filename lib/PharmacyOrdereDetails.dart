@@ -25,6 +25,7 @@ class checkBoxState{
   String mdStrengthUnit;
   bool value;
 
+
   checkBoxState({
     required this.medID,
     required this.medName,
@@ -51,6 +52,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
   FocusNode textSecondFocusNode = new FocusNode();// when focusing on the note field
   var medList=[];
   Set _saved = Set(); //to save the value of the checked medication
+  List medicationsList2 = [];
 
 
   @override
@@ -317,6 +319,17 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                                      }
                                                                                                       medList[index].value=value!;
                                                                                                    });
+                                                                                                   //Store customer medications in list
+                                                                                                   for (int i = 0; i < medList.length; i++) {
+                                                                                                     var medications = {
+                                                                                                       'medId2': medList[index].medID,
+                                                                                                       'isChecked': medList[index].value,
+                                                                                                     };
+                                                                                                     var contain = medicationsList2.where((element) => element['medId2'] == medList[index].medID);
+                                                                                                     if (contain.isEmpty) {
+                                                                                                       medicationsList2.add(medications);
+                                                                                                     }
+                                                                                                   }
                                                                                                },
                                                                                                title: Row(
                                                                                                  children:[
@@ -337,6 +350,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                                    ),
                                                                                                  ],
                                                                                                ),
+
 
                                                                                            ),
                                                                                            );
@@ -428,7 +442,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                           child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
                                                                                             medList[index].value=true;
-                                                                                            SendToCustomer("Accepted","9c17HXH5WT",medList,noteDescriptionController.text);
+                                                                                            SendToCustomer("Accepted","9c17HXH5WT",medicationsList2,noteDescriptionController.text);
                                                                                             Navigator.of(context).pop();
                                                                                           },
                                                                                         );
@@ -470,7 +484,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
                                                                                           child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
                                                                                             medList[index].value=false;
-                                                                                            SendToCustomer("Declined","9c17HXH5WT",medList,noteDescriptionController.text);
+                                                                                            SendToCustomer("Declined","9c17HXH5WT",medicationsList2,noteDescriptionController.text);
                                                                                             Navigator.of(context).pop();
 
                                                                                           },
@@ -615,12 +629,12 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
   }
 
   // function to send if the order is accepted or declined to the customer
-  Future<void> SendToCustomer(orderstatus,pharmacyid,medicationList ,note) async {
+  Future<void> SendToCustomer(orderStatus,pharmacyId, medicationsList ,note) async {
     var object;
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
     parseQuery.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId =pharmacyid).toPointer());
+        (ParseObject('Pharmacist')..objectId =pharmacyId).toPointer());
 
     //Get as a single object
     final apiResponse = await parseQuery.query();
@@ -631,9 +645,9 @@ class PharmacyOrdereDetails extends State<PharmacyOrdereDetailsPage> {
     }
     //Update the information in pharmacyList table
     var todo = object
-      ..set('OrderStatus',orderstatus )
-      ..set('Note',note);
-      //..set('CheckedMed', medicationList. )
+      ..set('OrderStatus',orderStatus)
+      ..set('Note',note)
+      ..setAddUnique('MedicationsList', medicationsList);
 
     //userId should be pointer since its a foreign key
     final ParseResponse parseResponse = await todo.save();
