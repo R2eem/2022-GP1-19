@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/savedLocation.dart';
 import 'AccountPage.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
@@ -83,7 +82,7 @@ class Settings extends State<SettingsPage> {
                                 title: Text("My Locations",style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
                                 trailing: Icon(Icons.keyboard_arrow_right, size: 30),
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SavedLocationPage(widget.customerId)));
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
                                 },
                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
                               ),

@@ -4,27 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:untitled/Cart.dart';
-import 'package:untitled/ChooseLocation.dart';
+import 'package:untitled/PharmacyLogin.dart';
+import 'package:untitled/PharmacySignUp.dart';
 import 'PresAttach.dart';
-import 'common/theme_helper.dart';
 //import 'package:geocoding/geocoding.dart';
 
 
-class Location extends StatefulWidget{
-//Get customer id as a parameter
-  final String customerId;
-  final totalPrice;
-  final bool presRequired;
-  const Location(this.customerId, this.totalPrice, this.presRequired);
+class PharmacyLocation extends StatefulWidget{
+
   @override
   State<StatefulWidget> createState() {
     return _LocationPage();
   }
 }
 
-class _LocationPage extends State<Location> {
+class _LocationPage extends State<PharmacyLocation> {
   late GoogleMapController googleMapController;
   //for error message
   bool Lat = false;
@@ -71,47 +65,33 @@ class _LocationPage extends State<Location> {
         },
         label: const Text("Current Location",style: TextStyle(fontFamily: 'Lato',
           fontSize: 17,),),
-        icon: const Icon(Icons.location_history ,),
+        icon: const Icon(Icons.location_history),
       ),
-
       persistentFooterButtons: [
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
-              onPressed: (){
-                Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios_new_outlined,
-                color: Colors.white,
-                size: 20,
-              ),
-            )),
-        SizedBox(width: 50,),
-        Container(
-            child:
-            ElevatedButton.icon(
-              style: ThemeHelper().buttonStyle(),
-              onPressed: (){
-                Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
-              },
-
-              icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
-            )),
-
-        SizedBox(width:32,),
+                onPressed: (){
+                  Navigator.push( context, MaterialPageRoute( builder: (context) => PharmacyLogin(), ));
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.white,
+                  size: 24.0,
+                ))),
+        SizedBox(width: 280,),
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
                 onPressed:
                 Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
+                    PharmacySignUp(lat , long))
                 );}
                     :() {showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: Text("Please detect your location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                      content: Text("Please detect pharmacy location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
                       actions: <Widget>[
                         new TextButton(
                           child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
@@ -126,7 +106,7 @@ class _LocationPage extends State<Location> {
                 icon: const Icon(
                   Icons.arrow_forward_ios_outlined,
                   color: Colors.white,
-                  size: 20,
+                  size: 24.0,
                 ))),
       ],
 
@@ -161,24 +141,5 @@ class _LocationPage extends State<Location> {
 
 
     return position;
-  }
-
-  getAddress(lat,long) async{
-    print("---------------------------");
-    print(lat);
-    print(long);
-    print("---------------------------");
-
-    //List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
-//print(palcename);
-
-    //List placemarks = await placemarkFromCoordinates(lat, long);
-    // Placemark place = placemarks[0];
-    // address = '${place.street}, ${place.country}';
-    // print(address);
-    // setState(()  {
-    // });
-
   }
 }

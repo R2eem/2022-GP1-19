@@ -5,6 +5,7 @@ import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'LoginPage.dart';
 import 'OrderDetails.dart';
 import 'Settings.dart';
 
@@ -41,24 +42,70 @@ class Orders extends State<OrdersPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    child: Image.asset('assets/logoheader.png',
+                                    child: Image.asset(
+                                      'assets/logoheader.png',
                                       fit: BoxFit.contain,
                                       width: 110,
                                       height: 80,
                                     ),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                                    child: Text('Orders', textAlign: TextAlign
-                                        .center, style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 27,
-                                        color: Colors.white70,
-                                        fontWeight: FontWeight.bold),),
-                                  ),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          Widget cancelButton = TextButton(
+                                            child: Text("Yes", style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black)),
+                                            onPressed: () {
+                                              doUserLogout();
+                                            },
+                                          );
+                                          Widget continueButton = TextButton(
+                                            child: Text("No", style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black)),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                          // set up the AlertDialog
+                                          AlertDialog alert = AlertDialog(
+                                            title: Text(
+                                                "Are you sure you want to log out?",
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  fontSize: 20,)),
+                                            content: Text(""),
+                                            actions: [
+                                              cancelButton,
+                                              continueButton,
+                                            ],
+                                          );
+                                          // show the dialog
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return alert;
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.logout_outlined,
+                                          color: Colors.white, size: 30,
+                                        ),
+                                      )
+
+                                  )
                                 ]),
                             SizedBox(height: 55,),
                             Padding(
@@ -129,7 +176,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -225,7 +272,7 @@ class Orders extends State<OrdersPage> {
                                                             child:Column(
                                                                 children:[
                                                                   Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
-                                                                  Text("You don't have orders now.",style: TextStyle(
+                                                                  Text("You don't have previous orders.",style: TextStyle(
                                                                       fontFamily: "Lato",
                                                                       fontSize: 18,
                                                                       color: Colors.black45,
@@ -244,12 +291,11 @@ class Orders extends State<OrdersPage> {
                                                               final OrderId = customerCurrentOrders.get('objectId');
                                                               final CreatedDate = customerCurrentOrders.get('createdAt')!;
                                                               final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              final Prescription = customerCurrentOrders.get('Prescription')!;
                                                               final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -372,9 +418,16 @@ class Orders extends State<OrdersPage> {
         (ParseObject('Customer')
           ..objectId = widget.customerId).toPointer());
         query2.whereEqualTo('OrderStatus','Ready for pick up');
+
+    final QueryBuilder<ParseObject> query3 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query3.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query3.whereEqualTo('OrderStatus','Under preparation');
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
-      [query1, query2],
+      [query1, query2, query3],
     )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
@@ -399,10 +452,16 @@ class Orders extends State<OrdersPage> {
     query2.whereEqualTo('Customer_id',
         (ParseObject('Customer')
           ..objectId = widget.customerId).toPointer());
-    query2.whereEqualTo('OrderStatus','Completed');
+    query2.whereEqualTo('OrderStatus','Collected');
+    final QueryBuilder<ParseObject> query3 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query3.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query3.whereEqualTo('OrderStatus','Declined');
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("Orders"),
-      [query1, query2],
+      [query1, query2, query3],
     )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
@@ -410,6 +469,38 @@ class Orders extends State<OrdersPage> {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+
+    );
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showError(response.error!.message);
     }
   }
 }
