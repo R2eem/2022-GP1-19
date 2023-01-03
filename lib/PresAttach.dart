@@ -10,6 +10,10 @@ import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
+<<<<<<< HEAD
+=======
+import 'common/theme_helper.dart';
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -36,8 +40,11 @@ class _PresAttachPage extends State<PresAttach> {
   bool isLoading = false;
   List medicationsList = [];
   bool locationExist = false;
+<<<<<<< HEAD
   List pharmacies = [];
   var counter = 0;
+=======
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +86,7 @@ class _PresAttachPage extends State<PresAttach> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   widget.presRequired ?
+<<<<<<< HEAD
                               Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -156,6 +164,85 @@ class _PresAttachPage extends State<PresAttach> {
                                       }
                                     },
                                   )]) : Container(),
+=======
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text('Attach prescription:  ', style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                        SizedBox(height: 10,),
+                                        Text('* The accepted image format are (png,jpg,jpeg)', style: TextStyle(
+                                            fontFamily: "Lato",
+                                            fontSize: 14,
+                                            color: Colors.black45,
+                                            fontWeight: FontWeight.w700),),
+                                        SizedBox(height: 10,),
+                                        GestureDetector(
+                                          child: pickedFile != null
+                                              ? Container(
+                                              width: 250,
+                                              height: 250,
+                                              decoration:
+                                              BoxDecoration(border: Border.all(color: HexColor(
+                                                  '#ad5bf5'))),
+                                              child: kIsWeb
+                                                  ? Image.network(pickedFile!.path)
+                                                  : Image.file(
+                                                  File(pickedFile!.path), fit: BoxFit.cover))
+                                              : Container(
+                                            width: 150,
+                                            height: 150,
+                                            decoration:
+                                            BoxDecoration(border: Border.all(color: Colors
+                                                .black87)),
+                                            child: Center(
+                                              child: Text('Click here to pick image from Gallery'),
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            PickedFile? image =
+                                            await ImagePicker().getImage(
+                                                source: ImageSource.gallery);
+
+                                            if (image != null && image.path.contains("PNG") | image
+                                                .path.contains("png") | image.path.contains(
+                                                "jpg") | image.path.contains("JPG") | image.path
+                                                .contains("jpeg") | image.path.contains("JPEG")) {
+                                              setState(() {
+                                                pickedFile = image;
+                                              });
+                                            }
+                                            else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    content: Text(
+                                                        "The accepted image format are (png,jpg,jpeg) ",
+                                                        style: TextStyle(
+                                                          fontFamily: 'Lato', fontSize: 20,)),
+                                                    actions: <Widget>[
+                                                      new TextButton(
+                                                        child: const Text("Ok", style: TextStyle(
+                                                            fontFamily: 'Lato',
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Colors.black)),
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          },
+                                        )]) : Container(),
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                                   SizedBox(height: 10,),
                                   Text('Order summary:  ', style: TextStyle(
                                     fontFamily: 'Lato',
@@ -198,7 +285,11 @@ class _PresAttachPage extends State<PresAttach> {
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
+<<<<<<< HEAD
                                           horizontal: 25,),
+=======
+                                        horizontal: 25,),
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                                       height: size.height/2,
                                       width: size.width,
                                       child: Column(children: [
@@ -288,11 +379,16 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                 //Get medication information from Medications table
                                                                                 final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
+<<<<<<< HEAD
                                                                                 final Publicprice = (medGet.get<num>('Publicprice')! * quantity).toStringAsFixed(2);
+=======
+                                                                                final Publicprice = medGet.get<num>('Publicprice')! * quantity;
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 
                                                                                 return Column(
                                                                                     children: [
                                                                                       Stack(
+<<<<<<< HEAD
                                                                                           children: <Widget>[
                                                                                             Container(
                                                                                               margin: EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -330,6 +426,45 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                             ),
                                                                                           ],
                                                                                         )]);
+=======
+                                                                                        children: <Widget>[
+                                                                                          Container(
+                                                                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                            child: Row(
+                                                                                              children: <Widget>[
+                                                                                                Text('$quantity X',
+                                                                                                  style: TextStyle(
+                                                                                                      fontFamily: "Lato",
+                                                                                                      fontSize: 20,
+                                                                                                      fontWeight: FontWeight.w700),),
+                                                                                                Expanded(
+                                                                                                  child: Container(
+                                                                                                    padding: const EdgeInsets.all(8.0),
+                                                                                                    child: Column(
+                                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: <Widget>[
+                                                                                                        Container(
+                                                                                                          padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                          child: Text(
+                                                                                                            '$TradeName  $Publicprice SAR',
+                                                                                                            maxLines: 2,
+                                                                                                            softWrap: true,
+                                                                                                            style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  flex: 100,
+                                                                                                )
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      )]);
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                                                                               });
                                                                         }
                                                                     }
@@ -356,8 +491,14 @@ class _PresAttachPage extends State<PresAttach> {
                   icon: const Icon(
                     Icons.arrow_back_ios_new_outlined,
                     color: Colors.white,
+<<<<<<< HEAD
                     size: 24.0,
                   ))),
+=======
+                    size: 20,
+                  ))),
+
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
           SizedBox(width: 135,),
           Text('Send Order',
               style: TextStyle(
@@ -417,6 +558,7 @@ class _PresAttachPage extends State<PresAttach> {
                       await saveLocation.save();
                     }
 
+<<<<<<< HEAD
                     for (int i = 0; i < pharmacies.length; i++) {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
@@ -429,6 +571,8 @@ class _PresAttachPage extends State<PresAttach> {
                     }
 
 
+=======
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -498,6 +642,7 @@ class _PresAttachPage extends State<PresAttach> {
                       await saveLocation.save();
                     }
 
+<<<<<<< HEAD
                     for (int i = 0; i < pharmacies.length; i++) {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
@@ -509,6 +654,8 @@ class _PresAttachPage extends State<PresAttach> {
                       await orderPharmacyInfo.save();
                     }
 
+=======
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -544,7 +691,11 @@ class _PresAttachPage extends State<PresAttach> {
                   icon: const Icon(
                     Icons.arrow_forward_ios_outlined,
                     color: Colors.white,
+<<<<<<< HEAD
                     size: 24.0,
+=======
+                    size: 20,
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
                   ))),
         ],
 
@@ -634,6 +785,7 @@ class _PresAttachPage extends State<PresAttach> {
     savedLocations.whereEqualTo('customer', (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     final apiResponse2 = await savedLocations.query();
 
+<<<<<<< HEAD
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
     parseQuery.whereNear(
         'Location',
@@ -655,6 +807,8 @@ class _PresAttachPage extends State<PresAttach> {
         }
       }
     }
+=======
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
     if (apiResponse1.success && apiResponse1.results != null) {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
@@ -688,3 +842,7 @@ class _PresAttachPage extends State<PresAttach> {
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614

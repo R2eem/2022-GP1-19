@@ -2,15 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/Location.dart';
 import 'CategoryPage.dart';
-import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresAttach.dart';
+import 'PresLocation.dart';
 import 'Settings.dart';
-import 'Location.dart';
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -29,7 +26,6 @@ class Cart extends State<CartPage> {
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -49,70 +45,30 @@ class Cart extends State<CartPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,80, 0),
-                                    child: Image.asset(
-                                      'assets/logoheader.png',
-                                      fit: BoxFit.contain,
-                                      width: 110,
-                                      height: 80,
-                                    ),
-                                  ),
-                                  //Controls Cart page title
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,100, 0),
-                                    child: Text(
-                                      'Cart',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 27,
-                                          color: Colors.white70,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                      child:  IconButton(
-                                        onPressed: (){
-                                          Widget cancelButton = TextButton(
-                                            child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                            onPressed:  () {
-                                              doUserLogout();
-                                            },
-                                          );
-                                          Widget continueButton = TextButton(
-                                            child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                            onPressed:  () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          );
-                                          // set up the AlertDialog
-                                          AlertDialog alert = AlertDialog(
-                                            title: Text("Are you sure you want to log out?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                                            content: Text(""),
-                                            actions: [
-                                              cancelButton,
-                                              continueButton,
-                                            ],
-                                          );
-                                          // show the dialog
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return alert;
-                                            },
-                                          );
-                                        },
-                                        icon: const Icon(
-                                          Icons.logout_outlined ,color: Colors.white, size: 30,
-                                        ),
-                                      )
-
-                                  )
-                                ]),
+                            Row(children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Image.asset(
+                                  'assets/logoheader.png',
+                                  fit: BoxFit.contain,
+                                  width: 110,
+                                  height: 80,
+                                ),
+                              ),
+                              //Controls Cart page title
+                              Container(
+                                margin: EdgeInsets.fromLTRB(70, 13, 0, 0),
+                                child: Text(
+                                  'Cart',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 27,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
                             SizedBox(
                               height: 20,
                             ),
@@ -156,12 +112,17 @@ class Cart extends State<CartPage> {
                                                         //If cartNotEmpty true then display medications
                                                         return cartNotEmpty
                                                             ? ListView.builder(
-                                                            scrollDirection: Axis.vertical,
-                                                            itemCount: snapshot.data!.length,
-                                                            itemBuilder: (context, index) {
+                                                            scrollDirection:
+                                                            Axis.vertical,
+                                                            itemCount:
+                                                            snapshot.data!.length,
+                                                            itemBuilder:
+                                                                (context, index) {
                                                               //Get Parse Object Values
                                                               //Get customer medications from cart table
-                                                              cartItemNum = snapshot.data!.length; //Save number of medications in customer cart
+                                                              cartItemNum = snapshot
+                                                                  .data!
+                                                                  .length; //Save number of medications in customer cart
                                                               final customerCart =
                                                               snapshot.data![index];
                                                               final medId = customerCart
@@ -220,7 +181,8 @@ class Cart extends State<CartPage> {
                                                                                   (context, index) {
                                                                                 //Get Parse Object Values
                                                                                 //Get medication information from Medications table
-                                                                                final medGet = snapshot.data![index];
+                                                                                final medGet =
+                                                                                snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')!;
@@ -229,7 +191,6 @@ class Cart extends State<CartPage> {
                                                                                   presRequired = true;
                                                                                   numOfPres++;
                                                                                 }
-
                                                                                 //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
@@ -402,7 +363,9 @@ class Cart extends State<CartPage> {
                                                         //If cartnotEmpty is false; cart is empty show this message
                                                             : Container(
                                                             child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                                 //mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   SizedBox(
@@ -420,9 +383,11 @@ class Cart extends State<CartPage> {
                                                                   ),
                                                                   Row(
                                                                     crossAxisAlignment:
-                                                                    CrossAxisAlignment.center,
+                                                                    CrossAxisAlignment
+                                                                        .center,
                                                                     mainAxisAlignment:
-                                                                    MainAxisAlignment.center,
+                                                                    MainAxisAlignment
+                                                                        .center,
                                                                     children: [
                                                                       Text(
                                                                         'Click',
@@ -483,19 +448,17 @@ class Cart extends State<CartPage> {
             ])),
         //Button continue
         persistentFooterButtons: [
-          if(cartItemNum != 0)
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               )),
-          if(cartItemNum !=0)
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Location(widget.customerId, TotalPrice, presRequired)));//PresLocation(widget.customerId, TotalPrice, presRequired)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
@@ -523,7 +486,7 @@ class Cart extends State<CartPage> {
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.receipt_long,
+                        icon: Icons.shopping_bag,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
@@ -710,37 +673,6 @@ class Cart extends State<CartPage> {
           },
         );
       }
-    }
-  }
-  void showError(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-
-    );
-  }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showError(response.error!.message);
     }
   }
 }

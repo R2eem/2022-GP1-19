@@ -51,7 +51,11 @@ class _LocationPage extends State<Location> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+<<<<<<< HEAD
         backgroundColor: Colors.purple.shade300 ,
+=======
+          backgroundColor: Colors.purple.shade300 ,
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
         onPressed: () async {
           Position position = await _determinePosition();
 
@@ -67,7 +71,11 @@ class _LocationPage extends State<Location> {
           long = position.longitude;
           Lat = true;
           Long = true;
+<<<<<<< HEAD
           // getAddress(lat,long);
+=======
+         // getAddress(lat,long);
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
         },
         label: const Text("Current Location",style: TextStyle(fontFamily: 'Lato',
           fontSize: 17,),),
@@ -78,6 +86,7 @@ class _LocationPage extends State<Location> {
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
+<<<<<<< HEAD
               onPressed: (){
                 Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
               },
@@ -86,10 +95,21 @@ class _LocationPage extends State<Location> {
                 color: Colors.white,
                 size: 20,
               ),
+=======
+                onPressed: (){
+                  Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
             )),
         SizedBox(width: 50,),
         Container(
             child:
+<<<<<<< HEAD
             ElevatedButton.icon(
               style: ThemeHelper().buttonStyle(),
               onPressed: (){
@@ -98,6 +118,16 @@ class _LocationPage extends State<Location> {
 
               icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
             )),
+=======
+        ElevatedButton.icon(
+          style: ThemeHelper().buttonStyle(),
+           onPressed: (){
+             Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
+           },
+
+       icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+        )),
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 
         SizedBox(width:32,),
         CircleAvatar(
@@ -170,6 +200,7 @@ class _LocationPage extends State<Location> {
     print("---------------------------");
 
     //List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+<<<<<<< HEAD
     // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
 //print(palcename);
 
@@ -181,4 +212,19 @@ class _LocationPage extends State<Location> {
     // });
 
   }
+=======
+   // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
+//print(palcename);
+
+    //List placemarks = await placemarkFromCoordinates(lat, long);
+   // Placemark place = placemarks[0];
+   // address = '${place.street}, ${place.country}';
+   // print(address);
+   // setState(()  {
+   // });
+
+  }
+
+
+>>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 }

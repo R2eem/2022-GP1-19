@@ -12,7 +12,7 @@ import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'Location.dart';
 
 
 class PresLocation extends StatefulWidget{
@@ -20,7 +20,9 @@ class PresLocation extends StatefulWidget{
   final String customerId;
   final totalPrice;
   final bool presRequired;
-  const PresLocation(this.customerId, this.totalPrice, this.presRequired);
+  final lat;
+  final long;
+  const PresLocation(this.customerId, this.totalPrice, this.presRequired, this.lat, this.long);
   @override
   State<StatefulWidget> createState() {
     return _PresLocationPage();
@@ -190,7 +192,8 @@ class _PresLocationPage extends State<PresLocation> {
                             });
 
                             final AttachPrescription = ParseObject('Orders')
-                              ..set('TotalPrice', widget.totalPrice);
+                              ..set('TotalPrice', widget.totalPrice)
+                              ..set('Location', ParseGeoPoint(latitude: widget.lat, longitude: widget.long));
                             await AttachPrescription.save();
 
                             setState(() {
@@ -217,8 +220,11 @@ class _PresLocationPage extends State<PresLocation> {
 
                             final AttachPrescription = ParseObject('Orders')
                               ..set('Prescription', parseFile)
-                              ..set('TotalPrice', widget.totalPrice);
+                              ..set('TotalPrice', widget.totalPrice)
+                              ..set('Location', ParseGeoPoint(latitude: widget.lat, longitude: widget.long));
                             await AttachPrescription.save();
+
+
 
                             setState(() {
                               isLoading = false;
