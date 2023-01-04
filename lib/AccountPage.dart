@@ -39,7 +39,7 @@ class _AccountPage extends State<AccountPage>{
                 ),
                 //Back button
                 Container(
-                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 370, 0),
+                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 60, 370, 0),
                     iconSize: 40,
                     color: Colors.white,
                     onPressed: () {
@@ -375,7 +375,7 @@ class _AccountPage extends State<AccountPage>{
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
       ..set('Phonenumber', '0$editPhonenumber')
-      //userId should be pointer since its a foreign key
+    //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();

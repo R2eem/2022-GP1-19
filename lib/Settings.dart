@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/savedLocation.dart';
+import 'package:untitled/SavedLocation.dart';
 import 'AccountPage.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
@@ -43,20 +43,69 @@ class Settings extends State<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                          children:[
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Image.asset('assets/logoheader.png',
+                              margin: EdgeInsets.fromLTRB(0, 10,70, 0),
+                              child: Image.asset(
+                                'assets/logoheader.png',
                                 fit: BoxFit.contain,
                                 width: 110,
                                 height: 80,
                               ),
                             ),
+                            //Controls Cart page title
                             Container(
-                              margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                              child: Text('Settings', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                            ),]),
+                              margin: EdgeInsets.fromLTRB(0, 10,60, 0),
+                              child: Text(
+                                'Settings',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 27,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                                child:  IconButton(
+                                  onPressed: (){
+                                    Widget cancelButton = TextButton(
+                                      child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                      onPressed:  () {
+                                        doUserLogout();
+                                      },
+                                    );
+                                    Widget continueButton = TextButton(
+                                      child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                      onPressed:  () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                    // set up the AlertDialog
+                                    AlertDialog alert = AlertDialog(
+                                      title: Text("Are you sure you want to log out?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                      content: Text(""),
+                                      actions: [
+                                        cancelButton,
+                                        continueButton,
+                                      ],
+                                    );
+                                    // show the dialog
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.logout_outlined ,color: Colors.white, size: 30,
+                                  ),
+                                )
 
+                            )
+                          ]),
                       SizedBox(height: 80,),
                       //Controls settings page display
                       Container(
@@ -93,45 +142,6 @@ class Settings extends State<SettingsPage> {
                         ),
                       ),
                       SizedBox(height: 20,),
-                      //Logout confirmation message and button
-                      Align(
-                        alignment: Alignment.center,
-                        child:Container(
-                          decoration: ThemeHelper().buttonBoxDecoration(context),
-                          child: ElevatedButton.icon(
-                            style: ThemeHelper().buttonStyle(),
-                            onPressed: (){
-                              Widget cancelButton = TextButton(
-                                child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  doUserLogout();
-                                },
-                              );
-                              Widget continueButton = TextButton(
-                                child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                onPressed:  () {
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                              // set up the AlertDialog
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Are you sure you want to log out from your account?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                                content: Text(""),
-                                actions: [
-                                  cancelButton,
-                                  continueButton,
-                                ],
-                              );
-                              // show the dialog
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return alert;
-                                },
-                              );
-                            }, icon: Icon(Icons.logout_outlined ,color: Colors.white,), label: Text('Log out'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
-                          ),
-                        ),),
                     ]),
               ),
             ),
