@@ -9,7 +9,9 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
+import 'PharmaciesList.dart';
 import 'Settings.dart';
+import 'common/theme_helper.dart';
 
 
 class OrderDetailsPage extends StatefulWidget {
@@ -154,187 +156,239 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                     ],
                                                                                   )
                                                                               ),
-                                                                              SizedBox(height: 20,),
-                                                                          FutureBuilder<List<ParseObject>>(
-                                                                              future: getPharmList(),
-                                                                              builder: (context, snapshot) {
-                                                                                switch (snapshot.connectionState) {
-                                                                                  case ConnectionState.none:
-                                                                                  case ConnectionState.waiting:
+                                                                        SizedBox(height: 20,),
+
+                                                                        (OrderStatus1 == 'Under processing' || OrderStatus1 == 'Accepted' || OrderStatus1 == 'Declined' || OrderStatus1 == 'Under preparation' || OrderStatus1 == 'Ready for pick up')?
+                                                                        Center(
+                                                                            child: Container(
+                                                                            decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                            child:ElevatedButton(
+                                                                              style: ThemeHelper().buttonStyle(),
+                                                                              onPressed: (){
+                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyListPage(OrderId , widget.customerId)));
+                                                                              }, child: Text('View Pharmacies List'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                            ),
+                                                                          ),):Container(),
+                                                                        SizedBox(height: 20,),
+                                                                        (OrderStatus1 == 'Collected')?
+                                                                        FutureBuilder<List<ParseObject>>(
+                                                                            future: getPharmList(),
+                                                                            builder: (context, snapshot) {
+                                                                              switch (snapshot.connectionState) {
+                                                                                case ConnectionState.none:
+                                                                                case ConnectionState.waiting:
+                                                                                  return Center(
+                                                                                    child: Container(
+                                                                                        width: 200,
+                                                                                        height: 5,
+                                                                                        child:
+                                                                                        LinearProgressIndicator()),
+                                                                                  );
+                                                                                default:
+                                                                                  if (snapshot.hasError) {
                                                                                     return Center(
-                                                                                      child: Container(
-                                                                                          width: 200,
-                                                                                          height: 5,
-                                                                                          child:
-                                                                                          LinearProgressIndicator()),
+                                                                                      child: Text(
+                                                                                          "Error..."),
                                                                                     );
-                                                                                  default:
-                                                                                    if (snapshot.hasError) {
-                                                                                      return Center(
-                                                                                        child: Text(
-                                                                                            "Error..."),
-                                                                                      );
-                                                                                    }
-                                                                                    if (!snapshot.hasData) {
-                                                                                      return Center(
-                                                                                        child: Text(
-                                                                                            "No Data..."),
-                                                                                      );
-                                                                                    } else {
-                                                                                      return  ListView.builder(
-                                                                                          shrinkWrap: true,
-                                                                                          scrollDirection: Axis.vertical,
-                                                                                          itemCount: snapshot.data!.length,
-                                                                                          itemBuilder: (context, index) {
-                                                                                            final pharmDetails = snapshot.data![index];
-                                                                                            final pharmacyId = pharmDetails.get('PharmacyId').objectId;
-                                                                                            final Distance = pharmDetails.get('Distance')!;
-                                                                                            var OrderStatus2 = pharmDetails.get('OrderStatus')!;
-                                                                                            return FutureBuilder<List<ParseObject>>(
-                                                                                                future: getPharmDetails(pharmacyId),
-                                                                                                builder: (context, snapshot) {
-                                                                                                  switch (snapshot.connectionState) {
-                                                                                                    case ConnectionState.none:
-                                                                                                      case ConnectionState.waiting:
-                                                                                                        return Center(
-                                                                                                          child: Container(
-                                                                                                              width: 200,
-                                                                                                              height: 5,
-                                                                                                              child:
-                                                                                                              LinearProgressIndicator()),
-                                                                                                        );
-                                                                                                        default:
-                                                                                                          if (snapshot.hasError) {
-                                                                                                            return Center(
-                                                                                                              child: Text(
-                                                                                                                  "Error..."),
-                                                                                                            );
-                                                                                                          }
-                                                                                                          if (!snapshot.hasData) {
-                                                                                                            return Center(
-                                                                                                              child: Text(
-                                                                                                                  "No Data..."),
-                                                                                                            );
-                                                                                                          } else {
-                                                                                                            return  ListView.builder(
-                                                                                          shrinkWrap: true,
-                                                                                          scrollDirection: Axis.vertical,
-                                                                                          itemCount: snapshot.data!.length,
-                                                                                          itemBuilder: (context, index) {
-                                                                                            final pharmDetails = snapshot.data![index];
-                                                                                            final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
-                                                                                            final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
-                                                                                            final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
-                                                                                            if(OrderStatus2 == 'Accept/Decline'){
-                                                                                              OrderStatus2 = 'Under processing';
-                                                                                            }
-                                                                                            return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')? Card(
-                                                                                                child: Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children:[
-                                                                                                    Container(
-                                                                                                        padding: EdgeInsets.all(5),
-                                                                                                        width: size.width,
-                                                                                                        color: Colors.grey.shade200,
-                                                                                                        child:
-                                                                                                        Column(
-                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                            children:[
-                                                                                                              Text('$pharmacyName ' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 17,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w600),),
-                                                                                                              Text('$pharmPhonenumber' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),),
-                                                                                                              Text('$pharmLocation' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),),
-                                                                                                              Text('$OrderStatus2' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),),
-                                                                                                              (OrderStatus2 == 'Accepted')?
-                                                                                                              Column(
-                                                                                                                  children:[
-                                                                                                                    Center(
-                                                                                                                      child: ElevatedButton(
-                                                                                                                        style: ElevatedButton.styleFrom(
-                                                                                                                          backgroundColor: HexColor('#c7a1d1'),
-                                                                                                                        ),
-                                                                                                                        child:Text("CONFIRM ORDER",style:
-                                                                                                                        TextStyle(
-                                                                                                                            fontFamily: 'Lato',
-                                                                                                                            fontSize: 15,
-                                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                                            color: Colors.white)),
-                                                                                                                        onPressed: (){
-                                                                                                                          Widget cancelButton = TextButton(
-                                                                                                                            child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                                                            onPressed:  () async {
-                                                                                                                              if (await confirmOrder(OrderId, pharmacyId)) {
-                                                                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
-                                                                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                                                                  content: Text("Order $OrderId has been confirmed",
-                                                                                                                                    style: TextStyle(fontSize: 20),),
-                                                                                                                                  duration: Duration(milliseconds: 3000),
-                                                                                                                                ));
-                                                                                                                              };
-                                                                                                                            },
-                                                                                                                          );
-                                                                                                                          Widget continueButton = TextButton(
-                                                                                                                            child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                                                            onPressed:  () {
-                                                                                                                              Navigator.of(context).pop();
-                                                                                                                            },
-                                                                                                                          );
-                                                                                                                          // set up the AlertDialog
-                                                                                                                          AlertDialog alert = AlertDialog(
-                                                                                                                            title: RichText(
-                                                                                                                              text: TextSpan(
-                                                                                                                                text: '''Are you sure you want to confirm order for $pharmacyName pharmacy?
-                                                                                                                                ''',
-                                                                                                                                style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
-                                                                                                                                children: <TextSpan>[
-                                                                                                                                  TextSpan(text: 'Please note that you cannot undo this process!!!',
-                                                                                                                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                                                                                                                                ],
-                                                                                                                              ),
-                                                                                                                            ),
-                                                                                                                            content: Text(""),
-                                                                                                                            actions: [
-                                                                                                                              cancelButton,
-                                                                                                                              continueButton,
-                                                                                                                            ],
-                                                                                                                          );
-                                                                                                                          // show the dialog
-                                                                                                                          showDialog(
-                                                                                                                            context: context,
-                                                                                                                            builder: (BuildContext context) {
-                                                                                                                              return alert;
-                                                                                                                            },
-                                                                                                                          );
-                                                                                                                        },
-                                                                                                                      ),
+                                                                                  }
+                                                                                  if (!snapshot.hasData) {
+                                                                                    return Center(
+                                                                                      child: Text(
+                                                                                          "No Data..."),
+                                                                                    );
+                                                                                  } else {
+                                                                                    return ListView.builder(
+                                                                                        shrinkWrap: true,
+                                                                                        scrollDirection: Axis.vertical,
+                                                                                        itemCount: snapshot.data!.length,
+                                                                                        itemBuilder: (context, index) {
+                                                                                          final pharmDetails = snapshot
+                                                                                              .data![index];
+                                                                                          final pharmacyId = pharmDetails
+                                                                                              .get('PharmacyId')
+                                                                                              .objectId;
+                                                                                          final Distance = pharmDetails
+                                                                                              .get('Distance')!;
+                                                                                          var OrderStatus2 = pharmDetails
+                                                                                              .get('OrderStatus')!;
+                                                                                          return FutureBuilder<
+                                                                                              List<ParseObject>>(
+                                                                                              future: getPharmDetails(
+                                                                                                  pharmacyId),
+                                                                                              builder: (context,
+                                                                                                  snapshot) {
+                                                                                                switch (snapshot
+                                                                                                    .connectionState) {
+                                                                                                  case ConnectionState
+                                                                                                      .none:
+                                                                                                  case ConnectionState
+                                                                                                      .waiting:
+                                                                                                    return Center(
+                                                                                                      child: Container(
+                                                                                                          width: 200,
+                                                                                                          height: 5,
+                                                                                                          child:
+                                                                                                          LinearProgressIndicator()),
+                                                                                                    );
+                                                                                                  default:
+                                                                                                    if (snapshot
+                                                                                                        .hasError) {
+                                                                                                      return Center(
+                                                                                                        child: Text(
+                                                                                                            "Error..."),
+                                                                                                      );
+                                                                                                    }
+                                                                                                    if (!snapshot
+                                                                                                        .hasData) {
+                                                                                                      return Center(
+                                                                                                        child: Text(
+                                                                                                            "No Data..."),
+                                                                                                      );
+                                                                                                    } else {
+                                                                                                      return ListView
+                                                                                                          .builder(
+                                                                                                          shrinkWrap: true,
+                                                                                                          scrollDirection: Axis
+                                                                                                              .vertical,
+                                                                                                          itemCount: snapshot
+                                                                                                              .data!
+                                                                                                              .length,
+                                                                                                          itemBuilder: (
+                                                                                                              context,
+                                                                                                              index) {
+                                                                                                            final pharmDetails = snapshot
+                                                                                                                .data![index];
+                                                                                                            final pharmacyName = pharmDetails
+                                                                                                                .get<
+                                                                                                                String>(
+                                                                                                                'PharmacyName')!;
+                                                                                                            final pharmPhonenumber = pharmDetails
+                                                                                                                .get(
+                                                                                                                'PhoneNumber')!;
+                                                                                                            final pharmLocation = pharmDetails
+                                                                                                                .get<
+                                                                                                                ParseGeoPoint>(
+                                                                                                                'Location')!;
+                                                                                                            return (OrderStatus2 == 'Collected')
+                                                                                                            ? Card(
+                                                                                                                child: Column(
+                                                                                                                  crossAxisAlignment: CrossAxisAlignment
+                                                                                                                      .start,
+                                                                                                                  children: [
+                                                                                                                    Container(
+                                                                                                                        padding: EdgeInsets
+                                                                                                                            .all(
+                                                                                                                            5),
+                                                                                                                        width: size
+                                                                                                                            .width,
+                                                                                                                        color: Colors
+                                                                                                                            .grey
+                                                                                                                            .shade200,
+                                                                                                                        child:
+                                                                                                                        Column(
+                                                                                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                                                                                .start,
+                                                                                                                            children: [
+                                                                                                                              Text(
+                                                                                                                                '$pharmacyName ',
+                                                                                                                                style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 17,
+                                                                                                                                    color: Colors
+                                                                                                                                        .black,
+                                                                                                                                    fontWeight: FontWeight
+                                                                                                                                        .w600),),
+                                                                                                                              Text(
+                                                                                                                                '$pharmPhonenumber',
+                                                                                                                                style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Colors
+                                                                                                                                        .black,
+                                                                                                                                    fontWeight: FontWeight
+                                                                                                                                        .w500),),
+                                                                                                                              FutureBuilder<
+                                                                                                                                  Placemark>(
+                                                                                                                                  future: getPharmacyLocation(
+                                                                                                                                      pharmLocation),
+                                                                                                                                  builder: (
+                                                                                                                                      context,
+                                                                                                                                      snapshot) {
+                                                                                                                                    switch (snapshot
+                                                                                                                                        .connectionState) {
+                                                                                                                                      case ConnectionState
+                                                                                                                                          .none:
+                                                                                                                                      case ConnectionState
+                                                                                                                                          .waiting:
+                                                                                                                                        return Center(
+                                                                                                                                          child: Container(
+                                                                                                                                              width: 200,
+                                                                                                                                              height: 5,
+                                                                                                                                              child:
+                                                                                                                                              LinearProgressIndicator()),
+                                                                                                                                        );
+                                                                                                                                      default:
+                                                                                                                                        if (true) {
+                                                                                                                                          print(
+                                                                                                                                              snapshot
+                                                                                                                                                  .error);
+                                                                                                                                        }
+                                                                                                                                        if (!snapshot
+                                                                                                                                            .hasData) {
+                                                                                                                                          return Center(
+                                                                                                                                            child: Text(
+                                                                                                                                                "No Data..."),
+                                                                                                                                          );
+                                                                                                                                        }
+                                                                                                                                        else {
+                                                                                                                                          return ListView
+                                                                                                                                              .builder(
+                                                                                                                                              shrinkWrap: true,
+                                                                                                                                              scrollDirection: Axis
+                                                                                                                                                  .vertical,
+                                                                                                                                              itemCount: 1,
+                                                                                                                                              itemBuilder: (
+                                                                                                                                                  context,
+                                                                                                                                                  index) {
+                                                                                                                                                final address = snapshot
+                                                                                                                                                    .data!;
+                                                                                                                                                final country = address
+                                                                                                                                                    .country;
+                                                                                                                                                final locality = address
+                                                                                                                                                    .locality;
+                                                                                                                                                final subLocality = address
+                                                                                                                                                    .subLocality;
+                                                                                                                                                final street = address
+                                                                                                                                                    .street;
+                                                                                                                                                return Text(
+                                                                                                                                                  "$street, $subLocality, $locality, $country",
+                                                                                                                                                  maxLines: 2,
+                                                                                                                                                  softWrap: true,
+                                                                                                                                                  style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 15,
+                                                                                                                                                      fontWeight: FontWeight
+                                                                                                                                                          .w700),
+                                                                                                                                                );
+                                                                                                                                              });
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                  }),
+                                                                                                                            ]
+                                                                                                                        )
                                                                                                                     ),
-                                                                                                                  ]):Container()
-                                                                                                            ]
-                                                                                                        )
-                                                                                                    )
-                                                                                                  ],
-                                                                                                )
-                                                                                            ):Container();
-                                                                                          });
-                                                                                    }
-                                                                                }}
-                                                                          );});}}}),
-                                                                              SizedBox(height: 20,),
+                                                                                                                  ],
+                                                                                                                )
+                                                                                                            ):Container();
+                                                                                                          });
+                                                                                                    }
+                                                                                                }
+                                                                                              }
+                                                                                          );
+                                                                                        });
+                                                                                  }
+                                                                              }
+                                                                            }):Container(),
                                                                               ///customer name and phone number and location
                                                                               FutureBuilder<Placemark>(
                                                                                   future: getUserLocation(location),
@@ -820,6 +874,12 @@ class OrderDetails extends State<OrderDetailsPage> {
     Placemark place = placemarks[0];
     return place;
   }
+  Future<Placemark> getPharmacyLocation(Postion) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        Postion.latitude, Postion.longitude);
+    Placemark place = placemarks[0];
+    return place;
+  }
 
   Future<bool> cancelOrder(orderId) async {
 
@@ -833,7 +893,6 @@ class OrderDetails extends State<OrderDetailsPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var object = o as ParseObject;
-        print(object);
         var update = object..set('OrderStatus', 'Cancelled');
         final ParseResponse parseResponse = await update.save();
       }
