@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/Location.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresLocation.dart';
+import 'PresAttach.dart';
 import 'Settings.dart';
+import 'Location.dart';
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -26,6 +28,7 @@ class Cart extends State<CartPage> {
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -112,17 +115,12 @@ class Cart extends State<CartPage> {
                                                         //If cartNotEmpty true then display medications
                                                         return cartNotEmpty
                                                             ? ListView.builder(
-                                                            scrollDirection:
-                                                            Axis.vertical,
-                                                            itemCount:
-                                                            snapshot.data!.length,
-                                                            itemBuilder:
-                                                                (context, index) {
+                                                            scrollDirection: Axis.vertical,
+                                                            itemCount: snapshot.data!.length,
+                                                            itemBuilder: (context, index) {
                                                               //Get Parse Object Values
                                                               //Get customer medications from cart table
-                                                              cartItemNum = snapshot
-                                                                  .data!
-                                                                  .length; //Save number of medications in customer cart
+                                                              cartItemNum = snapshot.data!.length; //Save number of medications in customer cart
                                                               final customerCart =
                                                               snapshot.data![index];
                                                               final medId = customerCart
@@ -181,8 +179,7 @@ class Cart extends State<CartPage> {
                                                                                   (context, index) {
                                                                                 //Get Parse Object Values
                                                                                 //Get medication information from Medications table
-                                                                                final medGet =
-                                                                                snapshot.data![index];
+                                                                                final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final ScientificName = medGet.get<String>('ScientificName')!;
                                                                                 final Publicprice = medGet.get<num>('Publicprice')!;
@@ -191,6 +188,7 @@ class Cart extends State<CartPage> {
                                                                                   presRequired = true;
                                                                                   numOfPres++;
                                                                                 }
+
                                                                                 //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
@@ -363,9 +361,7 @@ class Cart extends State<CartPage> {
                                                         //If cartnotEmpty is false; cart is empty show this message
                                                             : Container(
                                                             child: Column(
-                                                                crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                                 //mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   SizedBox(
@@ -383,11 +379,9 @@ class Cart extends State<CartPage> {
                                                                   ),
                                                                   Row(
                                                                     crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
+                                                                    CrossAxisAlignment.center,
                                                                     mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                    MainAxisAlignment.center,
                                                                     children: [
                                                                       Text(
                                                                         'Click',
@@ -448,17 +442,19 @@ class Cart extends State<CartPage> {
             ])),
         //Button continue
         persistentFooterButtons: [
+          if(cartItemNum != 0)
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               )),
+          if(cartItemNum !=0)
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PresLocation(widget.customerId, TotalPrice, presRequired)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Location(widget.customerId, TotalPrice, presRequired)));//PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(
@@ -486,7 +482,7 @@ class Cart extends State<CartPage> {
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(

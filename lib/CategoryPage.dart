@@ -19,6 +19,9 @@ class Category extends State<CategoryPage> {
   int _selectedIndex = 0;
   String searchString = "";
   var customerId;
+  bool searchNotEmpty = true;
+  bool alwaysTrue = true;
+  num counter = 200;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -252,6 +255,7 @@ class Category extends State<CategoryPage> {
                                           child: Text("No Data..."),
                                         );
                                       } else {
+                                        counter = 200;
                                         return ListView.builder(
                                             padding: EdgeInsets.only(
                                                 top: 10.0, bottom: 20.0),
@@ -373,11 +377,44 @@ class Category extends State<CategoryPage> {
                                                             ),
                                                           ])))
                                                   //If the medication doesn't matches the search string then don't display
-                                                  : Container();
+                                                  : (--counter <= 0)?
+                                               Container(
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .center,
+                                                      //mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                            Text(
+                                                              "Sorry we could't find any match,",
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                  "Lato",
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                              textAlign: TextAlign.center,
+                                                            ),Text(
+                                                              "try another search or continue shopping through the categories.",
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                  "Lato",
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                          textAlign: TextAlign.center,
+                                                            ),
+                                                      ]))
+                                              : Container();
                                             });
                                       }
                                   }
-                                }))
+                                })),SizedBox(height: 80,)
                       ]),
                     ))
               ]))),
@@ -401,7 +438,7 @@ class Category extends State<CategoryPage> {
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(

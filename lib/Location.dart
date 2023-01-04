@@ -1,16 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:untitled/Cart.dart';
-import 'package:untitled/ChooseLocation.dart';
 import 'PresAttach.dart';
-import 'common/theme_helper.dart';
-//import 'package:geocoding/geocoding.dart';
-
 
 class Location extends StatefulWidget{
 //Get customer id as a parameter
@@ -32,7 +26,6 @@ class _LocationPage extends State<Location> {
   //for passing to another page
   num lat= 0;
   num long= 0;
-  String address="";
 
   static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(24.7223, 46.6345), zoom: 14);
 
@@ -51,11 +44,6 @@ class _LocationPage extends State<Location> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-<<<<<<< HEAD
-        backgroundColor: Colors.purple.shade300 ,
-=======
-          backgroundColor: Colors.purple.shade300 ,
->>>>>>> d63164d5f1ae31ac02e72902807a772855410614
         onPressed: () async {
           Position position = await _determinePosition();
 
@@ -71,65 +59,36 @@ class _LocationPage extends State<Location> {
           long = position.longitude;
           Lat = true;
           Long = true;
-<<<<<<< HEAD
-          // getAddress(lat,long);
-=======
-         // getAddress(lat,long);
->>>>>>> d63164d5f1ae31ac02e72902807a772855410614
         },
-        label: const Text("Current Location",style: TextStyle(fontFamily: 'Lato',
+        label: const Text("My Location",style: TextStyle(fontFamily: 'Lato',
           fontSize: 17,),),
-        icon: const Icon(Icons.location_history ,),
+        icon: const Icon(Icons.location_history),
       ),
-
       persistentFooterButtons: [
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
-<<<<<<< HEAD
-              onPressed: (){
-                Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios_new_outlined,
-                color: Colors.white,
-                size: 20,
-              ),
-=======
                 onPressed: (){
-                  Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
+                  Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId)), );
                 },
                 icon: const Icon(
                   Icons.arrow_back_ios_new_outlined,
                   color: Colors.white,
-                  size: 20,
-                ),
->>>>>>> d63164d5f1ae31ac02e72902807a772855410614
+                  size: 24.0,
+                ))),
+        Text('Back',
+            style: TextStyle(
+              fontFamily: 'Lato',
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
             )),
-        SizedBox(width: 50,),
-        Container(
-            child:
-<<<<<<< HEAD
-            ElevatedButton.icon(
-              style: ThemeHelper().buttonStyle(),
-              onPressed: (){
-                Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
-              },
-
-              icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+        SizedBox(width: 153,),
+        Text('Next',
+            style: TextStyle(
+              fontFamily: 'Lato',
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
             )),
-=======
-        ElevatedButton.icon(
-          style: ThemeHelper().buttonStyle(),
-           onPressed: (){
-             Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
-           },
-
-       icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
-        )),
->>>>>>> d63164d5f1ae31ac02e72902807a772855410614
-
-        SizedBox(width:32,),
         CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
@@ -156,8 +115,9 @@ class _LocationPage extends State<Location> {
                 icon: const Icon(
                   Icons.arrow_forward_ios_outlined,
                   color: Colors.white,
-                  size: 20,
+                  size: 24.0,
                 ))),
+
       ],
 
     );
@@ -189,42 +149,6 @@ class _LocationPage extends State<Location> {
 
     Position position = await Geolocator.getCurrentPosition();
 
-
     return position;
   }
-
-  getAddress(lat,long) async{
-    print("---------------------------");
-    print(lat);
-    print(long);
-    print("---------------------------");
-
-    //List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-<<<<<<< HEAD
-    // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
-//print(palcename);
-
-    //List placemarks = await placemarkFromCoordinates(lat, long);
-    // Placemark place = placemarks[0];
-    // address = '${place.street}, ${place.country}';
-    // print(address);
-    // setState(()  {
-    // });
-
-  }
-=======
-   // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
-//print(palcename);
-
-    //List placemarks = await placemarkFromCoordinates(lat, long);
-   // Placemark place = placemarks[0];
-   // address = '${place.street}, ${place.country}';
-   // print(address);
-   // setState(()  {
-   // });
-
-  }
-
-
->>>>>>> d63164d5f1ae31ac02e72902807a772855410614
 }
