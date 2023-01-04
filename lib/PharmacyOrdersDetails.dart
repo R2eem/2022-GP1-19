@@ -331,7 +331,10 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                                                                           final Strength = medDetails.get<num>('Strength')!;
                                                                                           final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
-
+                                                                                          print('$value $Tradename');
+                                                                                          if(value != medList[i].value){
+                                                                                            value = medList[i].value;
+                                                                                          }
                                                                                           // to display  medication list in checkbox
                                                                                           return StatefulBuilder(
                                                                                             builder: (BuildContext context, StateSetter setState) =>
@@ -341,6 +344,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                   value: this.value,
                                                                                                   onChanged: (bool? value) {
                                                                                                     setState(() {
+                                                                                                      print('EEEE$value');
                                                                                                       this.value = value!;
                                                                                                     });
                                                                                                     changeValue(medList[i].medID, value);
@@ -738,12 +742,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   }
 
   void changeValue(medId, value){
-    print(medId);
-    print(value);
-    print(medList);
-    print(medList[0].medID);
-    print(medList[1].medID);
-    print(medList[2].medID);
     for(int i = 0; i < medList.length; i++){
       print(medList[i].medID == (medId));
       if(medList[i].medID == (medId)){
