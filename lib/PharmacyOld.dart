@@ -202,7 +202,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                                     final orderTime = orderCreatedDate.substring(10,19);
                                                     return  (OrderStatus.contains(filter))?
                                                     GestureDetector(
-                                                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharmacyOrdersDetailsPage(orderId))),
+                                                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharmacyOrdersDetailsPage(orderId, OrderStatus, widget.pharmacyId))),
                                                         child:StatefulBuilder(
                                                             builder: (BuildContext context, StateSetter setState) =>
                                                                 Stack( //display Locations cards
