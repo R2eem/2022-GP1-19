@@ -10,6 +10,7 @@
     <!----STYLESHEET -->
    <link rel="stylesheet" href="./loginStyle.css"> 
 
+
     <meta charset="utf-8" />
     <!-- This is the minified production version of parse js -->
     <script
@@ -18,11 +19,27 @@
     ></script> 
   <script>
     // Initialize Parse
-    Parse.initialize("oJ68xWDZQ0qhQBXPnyRKjbOJ1LbqKBfAnNJHswaR", "FZvh0GpX9cfXxiBkAdenITGOnATK7rrLUlWhwXun"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+    Parse.initialize("LqOUYoC9Cd4D0hubnJ1HsnfKBSG7ONQI17qVHQuL", "roORYYYaBmD7JI8WDDypSlZOdWjZDsfrJLeH84q9"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
     Parse.serverURL = "https://parseapi.back4app.com/";
   </script>
 <!----------------------------------------------------->
     <script langauge="javascript">
+      function logIn() {
+        var name=document.f1.username.value;
+        var pass=document.f1.pass.value;
+        alert(name);
+    // Create a new instance of the user class
+    var user = Parse.User.logIn(name, pass).then(function(user) {
+          alert("s");
+            console.log('User created successful with name: ' + user.get("username") + ' and email: ' + user.get("email"));
+          
+          }).catch(function(error){
+            alert("e");
+        console.log("Error: " + error.code + " " + error.message);
+
+    }); 
+  }
+
       function validate(){
         //access fildes
         var user=document.f1.username.value;
@@ -47,19 +64,19 @@
           alert("Plase enter username");
           return false;
         }
-       
+
         else if (user.length<9)
         {
           alert("username length must be more than 8");
           return false;
         }
-       
+
          else if(sp==1)
          {
           alert("Plase enter a username without space");
           return false;
          }
-         
+
 
       // password validation:
       else if (pass=="")
@@ -77,14 +94,15 @@
           alert("password must contain atleast one alphabet and atleast one number");
           return false;
         } 
-        
-        
+        else
+        {
+          alert("succefull log in");
+          return true;
+        } 
         return true; 
-      };
-
+      }
     </script>
   </head>
-
   <body>
     <section>
       <div class="color"></div>
@@ -99,7 +117,7 @@
         <div class="container">
           <div class="form">
             <h2>Admin login </h2>
-            <form action="/index.html" name="f1" onsubmit=" return validate();" >
+            <form action="" name="f1" onsubmit=" return logIn();">
               <div class="inputbox">
                 <input name="username" value="" id="username" type="text" placeholder="Username" /> 
               </div>
