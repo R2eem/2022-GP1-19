@@ -3,13 +3,13 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/PharmacyList.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
+import 'PharmaciesList.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 
@@ -61,10 +61,10 @@ class OrderDetails extends State<OrderDetailsPage> {
                                     margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
                                     child: Text('Order details',
                                       textAlign: TextAlign.center, style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 27,
-                                          color: Colors.white70,
-                                          fontWeight: FontWeight.bold),),
+                                        fontFamily: 'Lato',
+                                        fontSize: 27,
+                                        color: Colors.white70,
+                                        fontWeight: FontWeight.bold),),
                                   ),
                                 ]),
                             SizedBox(height: 55,),
@@ -125,42 +125,42 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                   child:  Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children:[
-                                                                        Text('Order placed at  ' + (CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')),style: TextStyle(
-                                                                            fontFamily: "Lato",
-                                                                            fontSize: 19,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w600),),
-                                                                        SizedBox(height: 10,),
-                                                                        SizedBox(height: 10,),
-                                                                        ///Track order timeline
-                                                                        Card(
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children:[
-                                                                                Container(
-                                                                                    padding: EdgeInsets.all(5),
-                                                                                    width: size.width,
-                                                                                    color: Colors.grey.shade200,
-                                                                                    child:
-                                                                                    Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children:[
-                                                                                          Text('OrderStatus: $OrderStatus1' ,style: TextStyle(
+                                                                              Text('Order placed at  ' + (CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')),style: TextStyle(
+                                                                                  fontFamily: "Lato",
+                                                                                  fontSize: 19,
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.w600),),
+                                                                              SizedBox(height: 10,),
+                                                                              SizedBox(height: 10,),
+                                                                              ///Track order timeline
+                                                                              Card(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children:[
+                                                                                      Container(
+                                                                                          padding: EdgeInsets.all(5),
+                                                                                          width: size.width,
+                                                                                          color: Colors.grey.shade200,
+                                                                                          child:
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children:[
+                                                                                            Text('OrderStatus: $OrderStatus1' ,style: TextStyle(
                                                                                               fontFamily: "Lato",
                                                                                               fontSize: 18,
                                                                                               color: Colors.black,
                                                                                               fontWeight: FontWeight.w700),),
-                                                                                        ]
-                                                                                    )
-                                                                                )
-                                                                              ],
-                                                                            )
-                                                                        ),
+                                                                                              ]
+                                                                                          )
+                                                                                      )
+                                                                                    ],
+                                                                                  )
+                                                                              ),
                                                                         SizedBox(height: 20,),
 
-                                                                        Padding(
-                                                                          padding: EdgeInsets.only(left:30 ,top:10,),
-                                                                          child:Container(
+                                                                        (OrderStatus1 == 'Under processing' || OrderStatus1 == 'Accepted' || OrderStatus1 == 'Declined' || OrderStatus1 == 'Under preparation' || OrderStatus1 == 'Ready for pick up')?
+                                                                        Center(
+                                                                            child: Container(
                                                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                             child:ElevatedButton(
                                                                               style: ThemeHelper().buttonStyle(),
@@ -168,12 +168,11 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyListPage(OrderId , widget.customerId)));
                                                                               }, child: Text('View Pharmacies List'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                             ),
-                                                                          ),),
-
+                                                                          ),):Container(),
                                                                         SizedBox(height: 20,),
-                                                                        ///customer name and phone number and location
-                                                                        FutureBuilder<Placemark>(
-                                                                            future: getUserLocation(location),
+                                                                        (OrderStatus1 == 'Collected')?
+                                                                        FutureBuilder<List<ParseObject>>(
+                                                                            future: getPharmList(),
                                                                             builder: (context, snapshot) {
                                                                               switch (snapshot.connectionState) {
                                                                                 case ConnectionState.none:
@@ -198,234 +197,459 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                           "No Data..."),
                                                                                     );
                                                                                   } else {
-                                                                                    return  ListView.builder(
+                                                                                    return ListView.builder(
                                                                                         shrinkWrap: true,
                                                                                         scrollDirection: Axis.vertical,
-                                                                                        itemCount: 1,
+                                                                                        itemCount: snapshot.data!.length,
                                                                                         itemBuilder: (context, index) {
-                                                                                          final address = snapshot.data!;
-                                                                                          final country = address.country;
-                                                                                          final locality = address.locality;
-                                                                                          final subLocality = address.subLocality;
-                                                                                          final street = address.street;
-                                                                                          return  FutureBuilder<ParseObject>(
-                                                                                              future: getCustomerDetails(),
-                                                                                              builder: (context, snapshot) {
-                                                                                                switch (snapshot.connectionState) {
-                                                                                                  case ConnectionState.none:
-                                                                                                  case ConnectionState.waiting:
+                                                                                          final pharmDetails = snapshot
+                                                                                              .data![index];
+                                                                                          final pharmacyId = pharmDetails
+                                                                                              .get('PharmacyId')
+                                                                                              .objectId;
+                                                                                          final Distance = pharmDetails
+                                                                                              .get('Distance')!;
+                                                                                          var OrderStatus2 = pharmDetails
+                                                                                              .get('OrderStatus')!;
+                                                                                          return FutureBuilder<
+                                                                                              List<ParseObject>>(
+                                                                                              future: getPharmDetails(
+                                                                                                  pharmacyId),
+                                                                                              builder: (context,
+                                                                                                  snapshot) {
+                                                                                                switch (snapshot
+                                                                                                    .connectionState) {
+                                                                                                  case ConnectionState
+                                                                                                      .none:
+                                                                                                  case ConnectionState
+                                                                                                      .waiting:
                                                                                                     return Center(
                                                                                                       child: Container(
                                                                                                           width: 200,
                                                                                                           height: 5,
                                                                                                           child:
-                                                                                                          LinearProgressIndicator()),);
+                                                                                                          LinearProgressIndicator()),
+                                                                                                    );
                                                                                                   default:
-                                                                                                    if (snapshot.hasError) {
+                                                                                                    if (snapshot
+                                                                                                        .hasError) {
                                                                                                       return Center(
                                                                                                         child: Text(
                                                                                                             "Error..."),
                                                                                                       );
                                                                                                     }
-                                                                                                    if (!snapshot.hasData) {
+                                                                                                    if (!snapshot
+                                                                                                        .hasData) {
                                                                                                       return Center(
                                                                                                         child: Text(
                                                                                                             "No Data..."),
                                                                                                       );
                                                                                                     } else {
-                                                                                                      return  ListView.builder(
+                                                                                                      return ListView
+                                                                                                          .builder(
                                                                                                           shrinkWrap: true,
-                                                                                                          scrollDirection: Axis.vertical,
-                                                                                                          itemCount: 1,
-                                                                                                          itemBuilder: (context, index) {
-                                                                                                            final customerDetials = snapshot.data!;
-                                                                                                            final firstname = customerDetials.get<String>('Firstname');
-                                                                                                            final lastname = customerDetials.get<String>('Lastname');
-                                                                                                            final phonenumber = customerDetials.get('Phonenumber');
-                                                                                                            return Card(
+                                                                                                          scrollDirection: Axis
+                                                                                                              .vertical,
+                                                                                                          itemCount: snapshot
+                                                                                                              .data!
+                                                                                                              .length,
+                                                                                                          itemBuilder: (
+                                                                                                              context,
+                                                                                                              index) {
+                                                                                                            final pharmDetails = snapshot
+                                                                                                                .data![index];
+                                                                                                            final pharmacyName = pharmDetails
+                                                                                                                .get<
+                                                                                                                String>(
+                                                                                                                'PharmacyName')!;
+                                                                                                            final pharmPhonenumber = pharmDetails
+                                                                                                                .get(
+                                                                                                                'PhoneNumber')!;
+                                                                                                            final pharmLocation = pharmDetails
+                                                                                                                .get<
+                                                                                                                ParseGeoPoint>(
+                                                                                                                'Location')!;
+                                                                                                            return (OrderStatus2 == 'Collected')
+                                                                                                            ? Card(
                                                                                                                 child: Column(
-                                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                  children:[
+                                                                                                                  crossAxisAlignment: CrossAxisAlignment
+                                                                                                                      .start,
+                                                                                                                  children: [
                                                                                                                     Container(
-                                                                                                                        padding: EdgeInsets.all(5),
-                                                                                                                        width: size.width,
-                                                                                                                        color: Colors.grey.shade200,
+                                                                                                                        padding: EdgeInsets
+                                                                                                                            .all(
+                                                                                                                            5),
+                                                                                                                        width: size
+                                                                                                                            .width,
+                                                                                                                        color: Colors
+                                                                                                                            .grey
+                                                                                                                            .shade200,
                                                                                                                         child:
                                                                                                                         Column(
-                                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                            children:[
-                                                                                                                              RichText(
-                                                                                                                                text: TextSpan(
-                                                                                                                                  children: [
-                                                                                                                                    WidgetSpan(
-                                                                                                                                      child: Icon(Icons.person),
-                                                                                                                                    ),
-                                                                                                                                    TextSpan(
-                                                                                                                                      text: " $firstname $lastname, $phonenumber",style: TextStyle(
-                                                                                                                                        fontFamily: "Lato",
-                                                                                                                                        fontSize: 17,
-                                                                                                                                        color: Colors.black,
-                                                                                                                                        fontWeight: FontWeight.w600),
-                                                                                                                                    ),
-                                                                                                                                  ],
-                                                                                                                                ),
-                                                                                                                              ),
-                                                                                                                              RichText(
-                                                                                                                                text: TextSpan(
-                                                                                                                                  children: [
-                                                                                                                                    WidgetSpan(
-                                                                                                                                      child: Icon(Icons.location_on),
-                                                                                                                                    ),
-                                                                                                                                    TextSpan(
-                                                                                                                                      text: " $street, $subLocality, $locality, $country",style: TextStyle(
-                                                                                                                                        fontFamily: "Lato",
-                                                                                                                                        fontSize: 17,
-                                                                                                                                        color: Colors.black,
-                                                                                                                                        fontWeight: FontWeight.w600),
-                                                                                                                                    ),
-                                                                                                                                  ],
-                                                                                                                                ),
-                                                                                                                              ),
+                                                                                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                                                                                .start,
+                                                                                                                            children: [
+                                                                                                                              Text(
+                                                                                                                                '$pharmacyName ',
+                                                                                                                                style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 17,
+                                                                                                                                    color: Colors
+                                                                                                                                        .black,
+                                                                                                                                    fontWeight: FontWeight
+                                                                                                                                        .w600),),
+                                                                                                                              Text(
+                                                                                                                                '$pharmPhonenumber',
+                                                                                                                                style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Colors
+                                                                                                                                        .black,
+                                                                                                                                    fontWeight: FontWeight
+                                                                                                                                        .w500),),
+                                                                                                                              FutureBuilder<
+                                                                                                                                  Placemark>(
+                                                                                                                                  future: getPharmacyLocation(
+                                                                                                                                      pharmLocation),
+                                                                                                                                  builder: (
+                                                                                                                                      context,
+                                                                                                                                      snapshot) {
+                                                                                                                                    switch (snapshot
+                                                                                                                                        .connectionState) {
+                                                                                                                                      case ConnectionState
+                                                                                                                                          .none:
+                                                                                                                                      case ConnectionState
+                                                                                                                                          .waiting:
+                                                                                                                                        return Center(
+                                                                                                                                          child: Container(
+                                                                                                                                              width: 200,
+                                                                                                                                              height: 5,
+                                                                                                                                              child:
+                                                                                                                                              LinearProgressIndicator()),
+                                                                                                                                        );
+                                                                                                                                      default:
+                                                                                                                                        if (true) {
+                                                                                                                                          print(
+                                                                                                                                              snapshot
+                                                                                                                                                  .error);
+                                                                                                                                        }
+                                                                                                                                        if (!snapshot
+                                                                                                                                            .hasData) {
+                                                                                                                                          return Center(
+                                                                                                                                            child: Text(
+                                                                                                                                                "No Data..."),
+                                                                                                                                          );
+                                                                                                                                        }
+                                                                                                                                        else {
+                                                                                                                                          return ListView
+                                                                                                                                              .builder(
+                                                                                                                                              shrinkWrap: true,
+                                                                                                                                              scrollDirection: Axis
+                                                                                                                                                  .vertical,
+                                                                                                                                              itemCount: 1,
+                                                                                                                                              itemBuilder: (
+                                                                                                                                                  context,
+                                                                                                                                                  index) {
+                                                                                                                                                final address = snapshot
+                                                                                                                                                    .data!;
+                                                                                                                                                final country = address
+                                                                                                                                                    .country;
+                                                                                                                                                final locality = address
+                                                                                                                                                    .locality;
+                                                                                                                                                final subLocality = address
+                                                                                                                                                    .subLocality;
+                                                                                                                                                final street = address
+                                                                                                                                                    .street;
+                                                                                                                                                return Text(
+                                                                                                                                                  "$street, $subLocality, $locality, $country",
+                                                                                                                                                  maxLines: 2,
+                                                                                                                                                  softWrap: true,
+                                                                                                                                                  style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 15,
+                                                                                                                                                      fontWeight: FontWeight
+                                                                                                                                                          .w700),
+                                                                                                                                                );
+                                                                                                                                              });
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                  }),
                                                                                                                             ]
                                                                                                                         )
-                                                                                                                    )
+                                                                                                                    ),
                                                                                                                   ],
                                                                                                                 )
-                                                                                                            );
+                                                                                                            ):Container();
                                                                                                           });
                                                                                                     }
                                                                                                 }
-                                                                                              });
+                                                                                              }
+                                                                                          );
                                                                                         });
                                                                                   }
                                                                               }
-                                                                            }),
-                                                                        SizedBox(height: 20,),
-                                                                        ///Order total price
-                                                                        Container(
-                                                                          padding: EdgeInsets.all(5),
-                                                                          alignment: Alignment.center,
-                                                                          width: size.width,
-                                                                          child:
-                                                                          Text('Total price: $TotalPrice SAR' ,style: TextStyle(
-                                                                              fontFamily: "Lato",
-                                                                              fontSize: 18,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w700,
-                                                                              background: Paint()
-                                                                                ..strokeWidth = 25.0
-                                                                                ..color =  HexColor('#c7a1d1').withOpacity(0.5)
-                                                                                ..style = PaintingStyle.stroke
-                                                                                ..strokeJoin = StrokeJoin.round),
-                                                                          ),
-                                                                        ),
-                                                                        SizedBox(height: 20,),
-                                                                        ///Order items
-                                                                        Text('Items:' ,style: TextStyle(
-                                                                            fontFamily: "Lato",
-                                                                            fontSize: 19,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w700),),
-                                                                        SizedBox(height: 10,),
-                                                                        for (int i = 0; i < medicationsList[0].length; i++) ...[
-                                                                          FutureBuilder<List<ParseObject>>(
-                                                                              future: getMedDetails(medicationsList[0][i]['medId'].toString()),
-                                                                              builder: (context, snapshot) {
-                                                                                switch (snapshot.connectionState) {
-                                                                                  case ConnectionState.none:
-                                                                                  case ConnectionState.waiting:
-                                                                                    return Center(
-                                                                                      child: Container(
-                                                                                          width: 200,
-                                                                                          height: 5,
+                                                                            }):Container(),
+                                                                              ///customer name and phone number and location
+                                                                              FutureBuilder<Placemark>(
+                                                                                  future: getUserLocation(location),
+                                                                                  builder: (context, snapshot) {
+                                                                                    switch (snapshot.connectionState) {
+                                                                                      case ConnectionState.none:
+                                                                                        case ConnectionState.waiting:
+                                                                                          return Center(
+                                                                                            child: Container(
+                                                                                                width: 200,
+                                                                                                height: 5,
+                                                                                                child:
+                                                                                                LinearProgressIndicator()),
+                                                                                          );
+                                                                                          default:
+                                                                                            if (snapshot.hasError) {
+                                                                                              return Center(
+                                                                                                child: Text(
+                                                                                                    "Error..."),
+                                                                                              );
+                                                                                            }
+                                                                                            if (!snapshot.hasData) {
+                                                                                              return Center(
+                                                                                                child: Text(
+                                                                                                    "No Data..."),
+                                                                                              );
+                                                                                            } else {
+                                                                                              return  ListView.builder(
+                                                                                                  shrinkWrap: true,
+                                                                                                  scrollDirection: Axis.vertical,
+                                                                                                  itemCount: 1,
+                                                                                                  itemBuilder: (context, index) {
+                                                                                                    final address = snapshot.data!;
+                                                                                                    final country = address.country;
+                                                                                                    final locality = address.locality;
+                                                                                                    final subLocality = address.subLocality;
+                                                                                                    final street = address.street;
+                                                                                                    return  FutureBuilder<ParseObject>(
+                                                                                                        future: getCustomerDetails(),
+                                                                                                        builder: (context, snapshot) {
+                                                                                                          switch (snapshot.connectionState) {
+                                                                                                            case ConnectionState.none:
+                                                                                                              case ConnectionState.waiting:
+                                                                                                                return Center(
+                                                                                                                  child: Container(
+                                                                                                                      width: 200,
+                                                                                                                      height: 5,
+                                                                                                                      child:
+                                                                                                                      LinearProgressIndicator()),);
+                                                                                                                default:
+                                                                                                                  if (snapshot.hasError) {
+                                                                                                                    return Center(
+                                                                                                                      child: Text(
+                                                                                                                          "Error..."),
+                                                                                                                    );
+                                                                                                                  }
+                                                                                                                  if (!snapshot.hasData) {
+                                                                                                                    return Center(
+                                                                                                                      child: Text(
+                                                                                                                          "No Data..."),
+                                                                                                                    );
+                                                                                                                  } else {
+                                                                                                                    return  ListView.builder(
+                                                                                                                        shrinkWrap: true,
+                                                                                                                        scrollDirection: Axis.vertical,
+                                                                                                                        itemCount: 1,
+                                                                                                                        itemBuilder: (context, index) {
+                                                                                                                          final customerDetials = snapshot.data!;
+                                                                                                                          final firstname = customerDetials.get<String>('Firstname');
+                                                                                                                          final lastname = customerDetials.get<String>('Lastname');
+                                                                                                                          final phonenumber = customerDetials.get('Phonenumber');
+                                                                                                                          return Card(
+                                                                                                                              child: Column(
+                                                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                children:[
+                                                                                                                                  Container(
+                                                                                                                                      padding: EdgeInsets.all(5),
+                                                                                                                                      width: size.width,
+                                                                                                                                      color: Colors.grey.shade200,
+                                                                                                                                      child:
+                                                                                                                                      Column(
+                                                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                          children:[
+                                                                                                                                            RichText(
+                                                                                                                                              text: TextSpan(
+                                                                                                                                                children: [
+                                                                                                                                                  WidgetSpan(
+                                                                                                                                                  child: Icon(Icons.person),
+                                                                                                                                                  ),
+                                                                                                                                                  TextSpan(
+                                                                                                                                                    text: " $firstname $lastname, $phonenumber",style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 17,
+                                                                                                                                                      color: Colors.black,
+                                                                                                                                                      fontWeight: FontWeight.w600),
+                                                                                                                                                  ),
+                                                                                                                                                ],
+                                                                                                                                              ),
+                                                                                                                                            ),
+                                                                                                                                            RichText(
+                                                                                                                                              text: TextSpan(
+                                                                                                                                                children: [
+                                                                                                                                                  WidgetSpan(
+                                                                                                                                                    child: Icon(Icons.location_on),
+                                                                                                                                                  ),
+                                                                                                                                                  TextSpan(
+                                                                                                                                                    text: " $street, $subLocality, $locality, $country",style: TextStyle(
+                                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                                      fontSize: 17,
+                                                                                                                                                      color: Colors.black,
+                                                                                                                                                      fontWeight: FontWeight.w600),
+                                                                                                                                                  ),
+                                                                                                                                                ],
+                                                                                                                                              ),
+                                                                                                                                            ),
+                                                                                                                                          ]
+                                                                                                                                      )
+                                                                                                                                  )
+                                                                                                                                ],
+                                                                                                                              )
+                                                                                                                          );
+                                                                                                                        });
+                                                                                                                  }
+                                                                                                          }
+                                                                                                        });
+                                                                                                  });
+                                                                                            }
+                                                                                    }
+                                                                                  }),
+                                                                              SizedBox(height: 20,),
+                                                                              ///Order total price
+                                                                              Card(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children:[
+                                                                                      Container(
+                                                                                          padding: EdgeInsets.all(5),
+                                                                                          width: size.width,
+                                                                                          color: Colors.grey.shade200,
                                                                                           child:
-                                                                                          LinearProgressIndicator()),
-                                                                                    );
-                                                                                  default:
-                                                                                    if (snapshot.hasError) {
-                                                                                      return Center(
-                                                                                        child: Text(
-                                                                                            "Error..."),
-                                                                                      );
-                                                                                    }
-                                                                                    if (!snapshot.hasData) {
-                                                                                      return Center(
-                                                                                        child: Text(
-                                                                                            "No Data..."),
-                                                                                      );
-                                                                                    } else {
-                                                                                      return  ListView.builder(
-                                                                                          shrinkWrap: true,
-                                                                                          scrollDirection: Axis.vertical,
-                                                                                          itemCount: snapshot.data!.length,
-                                                                                          itemBuilder: (context, index) {
-                                                                                            final medDetails = snapshot.data![index];
-                                                                                            final medications = medDetails.get('TradeName')!;
-                                                                                            final quantity = medicationsList[0][i]['quantity'];
-                                                                                            final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
-                                                                                            final Strength = medDetails.get<num>('Strength')!;
-                                                                                            final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
-
-                                                                                            return Card(
-                                                                                                child: Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children:[
-                                                                                                    Container(
-                                                                                                        padding: EdgeInsets.all(5),
-                                                                                                        width: size.width,
-                                                                                                        color: Colors.grey.shade200,
-                                                                                                        child:
-                                                                                                        Column(
-                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                            children:[
-                                                                                                              Text('$quantity X  $medications ' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 17,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w600),),
-                                                                                                              Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
-                                                                                                                  fontFamily: "Lato",
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Colors.black,
-                                                                                                                  fontWeight: FontWeight.w500),)
-                                                                                                            ]
-                                                                                                        )
-                                                                                                    )
-                                                                                                  ],
-                                                                                                )
-                                                                                            );
-                                                                                          });
-                                                                                    }
-                                                                                }}
-                                                                          ),],
-                                                                        SizedBox(height: 20,),
-                                                                        ///Order prescription if exist
-                                                                        presRequired ?
-                                                                        Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                                            children:[
-                                                                              Text('Prescription: ' ,style: TextStyle(
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children:[
+                                                                                                Text('Total price: $TotalPrice SAR',style: TextStyle(
+                                                                                                    fontFamily: "Lato",
+                                                                                                    fontSize: 17,
+                                                                                                    color: Colors.black,
+                                                                                                    fontWeight: FontWeight.w600),),
+                                                                                              ]
+                                                                                          )
+                                                                                      )
+                                                                                    ],
+                                                                                  )
+                                                                              ),
+                                                                              SizedBox(height: 20,),
+                                                                              ///Order items
+                                                                              Text('Items:' ,style: TextStyle(
                                                                                   fontFamily: "Lato",
                                                                                   fontSize: 19,
                                                                                   color: Colors.black,
                                                                                   fontWeight: FontWeight.w700),),
-                                                                              Text(' click to view the image' ,style: TextStyle(
-                                                                                  fontFamily: "Lato",
-                                                                                  fontSize: 14,
-                                                                                  color: Colors.black54,
-                                                                                  fontWeight: FontWeight.w700),),
-                                                                              FullScreenWidget(
-                                                                                child:Container(
-                                                                                  height: 100,
-                                                                                  width: 100,
-                                                                                  child:Image.network(
-                                                                                    prescription!.url!,
-                                                                                    fit: BoxFit.cover,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
+                                                                              SizedBox(height: 10,),
+                                                                        for (int i = 0; i < medicationsList[0].length; i++) ...[
+                                                                              FutureBuilder<List<ParseObject>>(
+                                                                                            future: getMedDetails(medicationsList[0][i]['medId'].toString()),
+                                                                                            builder: (context, snapshot) {
+                                                                                            switch (snapshot.connectionState) {
+                                                                                            case ConnectionState.none:
+                                                                                            case ConnectionState.waiting:
+                                                                                            return Center(
+                                                                                            child: Container(
+                                                                                                width: 200,
+                                                                                                height: 5,
+                                                                                                child:
+                                                                                                LinearProgressIndicator()),
+                                                                                            );
+                                                                                            default:
+                                                                                              if (snapshot.hasError) {
+                                                                                                return Center(
+                                                                                                  child: Text(
+                                                                                                      "Error..."),
+                                                                                                );
+                                                                                              }
+                                                                                              if (!snapshot.hasData) {
+                                                                                                return Center(
+                                                                                                  child: Text(
+                                                                                                      "No Data..."),
+                                                                                                );
+                                                                                              } else {
+                                                                                                return  ListView.builder(
+                                                                                                    shrinkWrap: true,
+                                                                                                    scrollDirection: Axis.vertical,
+                                                                                                    itemCount: snapshot.data!.length,
+                                                                                                    itemBuilder: (context, index) {
+                                                                                                      final medDetails = snapshot.data![index];
+                                                                                                      final medications = medDetails.get('TradeName')!;
+                                                                                                      final quantity = medicationsList[0][i]['quantity'];
+                                                                                                      final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                                                      final Strength = medDetails.get<num>('Strength')!;
+                                                                                                      final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+
+                                                                                                      return Card(
+                                                                                                          child: Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            children:[
+                                                                                                              Container(
+                                                                                                                padding: EdgeInsets.all(5),
+                                                                                                                width: size.width,
+                                                                                                                color: Colors.grey.shade200,
+                                                                                                                child:
+                                                                                                                    Column(
+                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                        children:[
+                                                                                                                          Text('$quantity X  $medications ' ,style: TextStyle(
+                                                                                                                              fontFamily: "Lato",
+                                                                                                                              fontSize: 17,
+                                                                                                                              color: Colors.black,
+                                                                                                                              fontWeight: FontWeight.w600),),
+                                                                                                                          Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                              fontFamily: "Lato",
+                                                                                                                              fontSize: 15,
+                                                                                                                              color: Colors.black,
+                                                                                                                              fontWeight: FontWeight.w500),)
+                                                                                                                        ]
+                                                                                                                    )
+                                                                                                              )
+                                                                                                            ],
+                                                                                                          )
+                                                                                                      );
+                                                                                                    });
+                                                                                              }
+                                                                                            }}
+                                                                              ),],
                                                                               SizedBox(height: 20,),
-                                                                            ])
+                                                                        ///Order prescription if exist
+                                                                        presRequired ?
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                                  children:[
+                                                                                    Text('Prescription: ' ,style: TextStyle(
+                                                                                        fontFamily: "Lato",
+                                                                                        fontSize: 19,
+                                                                                        color: Colors.black,
+                                                                                        fontWeight: FontWeight.w700),),
+                                                                                    Text(' click to view the image' ,style: TextStyle(
+                                                                                        fontFamily: "Lato",
+                                                                                        fontSize: 14,
+                                                                                        color: Colors.black54,
+                                                                                        fontWeight: FontWeight.w700),),
+                                                                                    FullScreenWidget(
+                                                                                      child:Container(
+                                                                                        height: 100,
+                                                                                        width: 100,
+                                                                                        child:Image.network(
+                                                                                          prescription!.url!,
+                                                                                          fit: BoxFit.cover,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(height: 20,),
+                                                                                  ])
                                                                             :Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                             children:[
@@ -441,71 +665,71 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   fontWeight: FontWeight.w700),),
                                                                             ]),
                                                                         SizedBox(height: 20,),
-                                                                        widget.currentOrder ?
-                                                                        Column(
-                                                                            children:[
-                                                                              Center(
-                                                                                child: ElevatedButton(
-                                                                                  style: ElevatedButton.styleFrom(
-                                                                                    backgroundColor: Colors.red,
-                                                                                  ),
-                                                                                  child:Text("CANCEL ORDER",style:
-                                                                                  TextStyle(
-                                                                                      fontFamily: 'Lato',
-                                                                                      fontSize: 15,
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      color: Colors.white)),
-                                                                                  onPressed: (){
-                                                                                    Widget cancelButton = TextButton(
-                                                                                      child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                      onPressed:  () async {
-                                                                                        if (await cancelOrder(OrderId)) {
-                                                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
-                                                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                            content: Text("Order $OrderId has been deleted",
-                                                                                              style: TextStyle(fontSize: 20),),
-                                                                                            duration: Duration(milliseconds: 3000),
-                                                                                          ));
-                                                                                        };
-                                                                                      },
-                                                                                    );
-                                                                                    Widget continueButton = TextButton(
-                                                                                      child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                                      onPressed:  () {
-                                                                                        Navigator.of(context).pop();
-                                                                                      },
-                                                                                    );
-                                                                                    // set up the AlertDialog
-                                                                                    AlertDialog alert = AlertDialog(
-                                                                                      title: RichText(
-                                                                                        text: TextSpan(
-                                                                                          text: '''Are you sure you want to delete this order? 
-                                                                                               ''',
-                                                                                          style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
-                                                                                          children: <TextSpan>[
-                                                                                            TextSpan(text: 'Please note that you cannot undo this process!!!',
-                                                                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      content: Text(""),
-                                                                                      actions: [
-                                                                                        cancelButton,
-                                                                                        continueButton,
-                                                                                      ],
-                                                                                    );
-                                                                                    // show the dialog
-                                                                                    showDialog(
-                                                                                      context: context,
-                                                                                      builder: (BuildContext context) {
-                                                                                        return alert;
-                                                                                      },
-                                                                                    );
-                                                                                  },
+                                                                         widget.currentOrder ?
+                                                                             Column(
+                                                                             children:[
+                                                                            Center(
+                                                                              child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                       backgroundColor: Colors.red,
                                                                                 ),
+                                                                                    child:Text("CANCEL ORDER",style:
+                                                                                    TextStyle(
+                                                                                        fontFamily: 'Lato',
+                                                                                        fontSize: 15,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Colors.white)),
+                                                                                onPressed: (){
+                                                                                  Widget cancelButton = TextButton(
+                                                                                    child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () async {
+                                                                                      if (await cancelOrder(OrderId)) {
+                                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                      content: Text("Order $OrderId has been deleted",
+                                                                                      style: TextStyle(fontSize: 20),),
+                                                                                      duration: Duration(milliseconds: 3000),
+                                                                                      ));
+                                                                                      };
+                                                                                    },
+                                                                                  );
+                                                                                  Widget continueButton = TextButton(
+                                                                                    child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  );
+                                                                                  // set up the AlertDialog
+                                                                                  AlertDialog alert = AlertDialog(
+                                                                                    title: RichText(
+                                                                                      text: TextSpan(
+                                                                                        text: '''Are you sure you want to delete this order? 
+                                                                                               ''',
+                                                                                        style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                        children: <TextSpan>[
+                                                                                          TextSpan(text: 'Please note that you cannot undo this process!!!',
+                                                                                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    content: Text(""),
+                                                                                    actions: [
+                                                                                      cancelButton,
+                                                                                      continueButton,
+                                                                                    ],
+                                                                                  );
+                                                                                  // show the dialog
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext context) {
+                                                                                      return alert;
+                                                                                    },
+                                                                                  );
+                                                                                },
                                                                               ),
-                                                                            ]):Container()
-                                                                      ])
+                                                                            ),
+                                                                          ]):Container()
+                                                                        ])
                                                               )
                                                           )
                                                       )
@@ -609,7 +833,7 @@ class OrderDetails extends State<OrderDetailsPage> {
     if (apiResponse.success && apiResponse.results != null) {
       for (var o in apiResponse.results!) {
         var object = o as ParseObject;
-        return apiResponse.results as List<ParseObject>;
+      return apiResponse.results as List<ParseObject>;
       }
     }
     return [];
@@ -650,6 +874,12 @@ class OrderDetails extends State<OrderDetailsPage> {
     Placemark place = placemarks[0];
     return place;
   }
+  Future<Placemark> getPharmacyLocation(Postion) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        Postion.latitude, Postion.longitude);
+    Placemark place = placemarks[0];
+    return place;
+  }
 
   Future<bool> cancelOrder(orderId) async {
 
@@ -663,7 +893,6 @@ class OrderDetails extends State<OrderDetailsPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var object = o as ParseObject;
-        print(object);
         var update = object..set('OrderStatus', 'Cancelled');
         final ParseResponse parseResponse = await update.save();
       }
