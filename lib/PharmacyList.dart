@@ -3,7 +3,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/PharmacyListDetails.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -136,337 +135,48 @@ class PharmacyList extends State<PharmacyListPage> {
                                       scrollDirection: Axis.vertical,
                                       itemCount: snapshot.data!.length,
                                       itemBuilder: (context, index) {
-                                        final pharmDetails = snapshot
-                                            .data![index];
-                                        final pharmacyName = pharmDetails.get<
-                                            String>('PharmacyName')!;
-                                        final pharmPhonenumber = pharmDetails
-                                            .get('PhoneNumber')!;
-                                        final pharmLocation = pharmDetails.get<
-                                            ParseGeoPoint>('Location')!;
+                                        final pharmDetails = snapshot.data![index];
+                                        final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
+                                        final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
+                                        final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
                                         if (OrderStatus2 == 'Accept/Decline') {
                                           OrderStatus2 = 'Under processing';
                                         }
-                                        return FutureBuilder<List<ParseObject>>(
-                                              future: getPharmcyAcceptOrDeclineDetails(
-                                                  pharmacyId),
-                                              builder: (context, snapshot) {
-                                                switch (snapshot
-                                                    .connectionState) {
-                                                  case ConnectionState.none:
-                                                  case ConnectionState.waiting:
-                                                    return Center(
-                                                      child: Container(
-                                                          width: 200,
-                                                          height: 5,
-                                                          child:
-                                                          LinearProgressIndicator()),
-                                                    );
-                                                  default:
-                                                    if (snapshot.hasError) {
-                                                      return Center(
-                                                        child: Text(
-                                                            "Error..."),
-                                                      );
-                                                    }
-                                                    if (!snapshot.hasData) {
-                                                      return Center(
-                                                        child: Text(
-                                                            "No Data..."),
-                                                      );
-                                                    } else {
-                                                      return ListView.builder(
-                                                          shrinkWrap: true,
-                                                          scrollDirection: Axis
-                                                              .vertical,
-                                                          itemCount: snapshot
-                                                              .data!.length,
-                                                          itemBuilder: (context,
-                                                              index) {
-                                                            final OrderDetails = snapshot
-                                                                .data![index];
 
-
-                                                            return FutureBuilder<ParseObject>(
-                                                                future: getNote(pharmacyId),
-                                                                builder: (context, snapshot) {
-                                                                  switch (snapshot.connectionState) {
-                                                                    case ConnectionState.none:
-                                                                    case ConnectionState.waiting:
-                                                                    /* return Center(
-                                                                                    child: Container(
-                                                                                        width: 200,
-                                                                                        height: 5,
-                                                                                        child:
-                                                                                        LinearProgressIndicator()),
-                                                                                  );*/
-                                                                    default:
-                                                                      if (snapshot.hasError) {
-                                                                        return Center(
-                                                                          child: Text(
-                                                                              "Error..."),
-                                                                        );
-                                                                      }
-                                                                      if (!snapshot.hasData) {
-                                                                        return Center(
-                                                                          child: Text(
-                                                                              ""),
-                                                                        );
-                                                                      } else {
-                                                                        return  ListView.builder(
-                                                                            shrinkWrap: true,
-                                                                            scrollDirection: Axis.vertical,
-                                                                            itemCount: 1,
-                                                                            itemBuilder: (context, index) {
-                                                                              final noteDetail = snapshot.data!;
-                                                                              final note = noteDetail.get("Note");
-                                                                              return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
-                                                                     ? GestureDetector(
-                                                                     onTap: () {
-                                                                     Widget continueButton = TextButton(
-                                                                     child: Text("OK",style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                      onPressed: () {
-                                                                      Navigator.of(context).pop();
-                                                                    },
-                                                                  );
-                                                                  // set up the AlertDialog
-                                                                  AlertDialog alert = AlertDialog(
-                                                                    title: Text("Are you sure you want to Accept this order?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)), content: Text(""),
-                                                                    actions: [
-                                                                      continueButton,
-                                                                    ],
-                                                                  );
-                                                                  // show the dialog
-                                                                  showDialog(
-                                                                    context: context,
-                                                                    builder: (
-                                                                        BuildContext context) {
-                                                                      return alert;
-                                                                    },
-                                                                  );
-                                                                },
-
-                                                                child: Card(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment
-                                                                          .start,
-                                                                      children: [
-                                                                        Container(
-                                                                            padding: EdgeInsets
-                                                                                .all(
-                                                                                5),
-                                                                            width: size
-                                                                                .width,
-                                                                            color: Colors
-                                                                                .grey
-                                                                                .shade200,
-                                                                            child:
-                                                                            Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment
-                                                                                    .start,
-                                                                                children: [
-                                                                                  Text(
-                                                                                    '$pharmacyName ',
-                                                                                    style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 17,
-                                                                                        color: Colors
-                                                                                            .black,
-                                                                                        fontWeight: FontWeight
-                                                                                            .w600),),
-                                                                                  Text(
-                                                                                    '$pharmPhonenumber',
-                                                                                    style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 15,
-                                                                                        color: Colors
-                                                                                            .black,
-                                                                                        fontWeight: FontWeight
-                                                                                            .w500),),
-                                                                                  Text(
-                                                                                    '$pharmLocation',
-                                                                                    style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 15,
-                                                                                        color: Colors
-                                                                                            .black,
-                                                                                        fontWeight: FontWeight
-                                                                                            .w500),),
-                                                                                  Text(
-                                                                                    '$OrderStatus2',
-                                                                                    style: TextStyle(
-                                                                                        fontFamily: "Lato",
-                                                                                        fontSize: 15,
-                                                                                        color: Colors
-                                                                                            .black,
-                                                                                        fontWeight: FontWeight
-                                                                                            .w500),),
-                                                                                  (OrderStatus2 ==
-                                                                                      'Accepted')
-                                                                                      ?
-                                                                                  Column(
-                                                                                      children: [
-                                                                                        Center(
-                                                                                          child: ElevatedButton(
-                                                                                            style: ElevatedButton
-                                                                                                .styleFrom(
-                                                                                              backgroundColor: HexColor(
-                                                                                                  '#c7a1d1'),
-                                                                                            ),
-                                                                                            child: Text(
-                                                                                                "CONFIRM ORDER",
-                                                                                                style:
-                                                                                                TextStyle(
-                                                                                                    fontFamily: 'Lato',
-                                                                                                    fontSize: 15,
-                                                                                                    fontWeight: FontWeight
-                                                                                                        .bold,
-                                                                                                    color: Colors
-                                                                                                        .white)),
-                                                                                            onPressed: () {
-                                                                                              Widget cancelButton = TextButton(
-                                                                                                child: Text(
-                                                                                                    "Yes",
-                                                                                                    style: TextStyle(
-                                                                                                        fontFamily: 'Lato',
-                                                                                                        fontSize: 20,
-                                                                                                        fontWeight: FontWeight
-                                                                                                            .w600,
-                                                                                                        color: Colors
-                                                                                                            .black)),
-                                                                                                onPressed: () async {
-                                                                                                  if (await confirmOrder(
-                                                                                                      widget
-                                                                                                          .orderId,
-                                                                                                      pharmacyId)) {
-                                                                                                    Navigator
-                                                                                                        .push(
-                                                                                                        context,
-                                                                                                        MaterialPageRoute(
-                                                                                                            builder: (
-                                                                                                                context) =>
-                                                                                                                OrdersPage(
-                                                                                                                    widget
-                                                                                                                        .customerId)));
-                                                                                                    ScaffoldMessenger
-                                                                                                        .of(
-                                                                                                        context)
-                                                                                                        .showSnackBar(
-                                                                                                        SnackBar(
-                                                                                                          content: Text(
-                                                                                                            "Order ${widget
-                                                                                                                .orderId} has been confirmed",
-                                                                                                            style: TextStyle(
-                                                                                                                fontSize: 20),),
-                                                                                                          duration: Duration(
-                                                                                                              milliseconds: 3000),
-                                                                                                        ));
-                                                                                                  };
-                                                                                                },
-                                                                                              );
-                                                                                              Widget continueButton = TextButton(
-                                                                                                child: Text(
-                                                                                                    "No",
-                                                                                                    style: TextStyle(
-                                                                                                        fontFamily: 'Lato',
-                                                                                                        fontSize: 20,
-                                                                                                        fontWeight: FontWeight
-                                                                                                            .w600,
-                                                                                                        color: Colors
-                                                                                                            .black)),
-                                                                                                onPressed: () {
-                                                                                                  Navigator
-                                                                                                      .of(
-                                                                                                      context)
-                                                                                                      .pop();
-                                                                                                },
-                                                                                              );
-                                                                                              // set up the AlertDialog
-                                                                                              AlertDialog alert = AlertDialog(
-                                                                                                title: RichText(
-                                                                                                  text: TextSpan(
-                                                                                                    text: '''Are you sure you want to confirm order for $pharmacyName pharmacy?
-                                                                                                                                ''',
-                                                                                                    style: TextStyle(
-                                                                                                        color: Colors
-                                                                                                            .black,
-                                                                                                        fontFamily: 'Lato',
-                                                                                                        fontSize: 20,
-                                                                                                        fontWeight: FontWeight
-                                                                                                            .bold),
-                                                                                                    children: <
-                                                                                                        TextSpan>[
-                                                                                                      TextSpan(
-                                                                                                          text: 'Please note that you cannot undo this process!!!',
-                                                                                                          style: TextStyle(
-                                                                                                              color: Colors
-                                                                                                                  .red,
-                                                                                                              fontWeight: FontWeight
-                                                                                                                  .bold)),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                ),
-                                                                                                content: Text(
-                                                                                                    ""),
-                                                                                                actions: [
-                                                                                                  cancelButton,
-                                                                                                  continueButton,
-                                                                                                ],
-                                                                                              );
-                                                                                              // show the dialog
-                                                                                              showDialog(
-                                                                                                context: context,
-                                                                                                builder: (
-                                                                                                    BuildContext context) {
-                                                                                                  return alert;
-                                                                                                },
-                                                                                              );
-                                                                                            },
-                                                                                          ),
-                                                                                        ),
-                                                                                      ])
-                                                                                      : Container()
-                                                                                ]
-                                                                            )
-                                                                        )
-                                                                      ],
-                                                                    )
-                                                                ))
-                                                                : Container();
-
-                                                               });
-                                                    }
-                                                }
-                                              });
-
-
-                                                          });
-                                                    }
-                                                }
-                                              }); // هنا
+                                        return (OrderStatus2 == 'Under processing')
+                                        ? Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                padding: EdgeInsets
+                                                    .all(
+                                                    5),
+                                                width: size.width,
+                                                color: Colors.grey.shade200,
+                                                child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text('$pharmacyName ', style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),),
+                                                      Text('$pharmPhonenumber', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+                                                      Text('$pharmLocation', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+                                                      Text('$OrderStatus2', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+                                                    ]
+                                                )
+                                            )
+                                          ],
+                                        )
+                                            :Container();
                                       });
                                 }
                             }
-                          });});}}}),
+                          });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    });
+              }
+          }
+        }
+    ),
 
 
 
@@ -575,3 +285,197 @@ class PharmacyList extends State<PharmacyListPage> {
     return false;
   }
 }
+
+// FutureBuilder<List<ParseObject>>(
+// future: getPharmcyAcceptOrDeclineDetails(pharmacyId),
+// builder: (context, snapshot) {
+// switch (snapshot
+//     .connectionState) {
+// case ConnectionState.none:
+// case ConnectionState.waiting:
+// return Center(
+// child: Container(
+// width: 200,
+// height: 5,
+// child:
+// LinearProgressIndicator()),
+// );
+// default:
+// if (snapshot.hasError) {
+// return Center(
+// child: Text(
+// "Error..."),
+// );
+// }
+// if (!snapshot.hasData) {
+// return Center(
+// child: Text(
+// "No Data..."),
+// );
+// } else {
+// return ListView.builder(
+// shrinkWrap: true,
+// scrollDirection: Axis.vertical,
+// itemCount: snapshot.data!.length,
+// itemBuilder: (context, index) {
+// final OrderDetails = snapshot.data![index];
+// final medicationsList = OrderDetails.get('MedicationsList')!;
+//
+// // هنا نجيب معلومات الطلب وكل دواء والفاليو حقته
+//
+//
+// return FutureBuilder<ParseObject>(
+// future: getNote(pharmacyId),
+// builder: (context, snapshot) {
+// switch (snapshot.connectionState) {
+// case ConnectionState.none:
+// case ConnectionState.waiting:
+// /* return Center(
+//                                                                      child: Container(
+//                                                                       width: 200,
+//                                                                       height: 5,
+//                                                                        child: LinearProgressIndicator()),
+//                                                                          );*/
+// default:
+// if (snapshot.hasError) {
+// return Center(
+// child: Text(
+// "Error..."),
+// );
+// }
+// if (!snapshot.hasData) {
+// return Center(
+// child: Text(""),
+// );
+// } else {
+// return  ListView.builder(
+// shrinkWrap: true,
+// scrollDirection: Axis.vertical,
+// itemCount: 1,
+// itemBuilder: (context, index) {
+// final noteDetail = snapshot.data!;
+// final note = noteDetail.get("Note");
+//
+//
+// return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
+// ? ExpansionTile(
+// title: Column(
+// crossAxisAlignment: CrossAxisAlignment.start,
+// children: [
+// Container(
+// padding: EdgeInsets
+//     .all(
+// 5),
+// width: size.width,
+// color: Colors.grey.shade200,
+// child: Column(
+// crossAxisAlignment: CrossAxisAlignment.start,
+// children: [
+// Text('$pharmacyName ', style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),),
+// Text('$pharmPhonenumber', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+// Text('$pharmLocation', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+// Text('$OrderStatus2', style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),),
+//
+// (OrderStatus2 == 'Accepted') ?
+//
+// Column(
+// children: [
+// Center(
+// child: ElevatedButton(
+// style: ElevatedButton.styleFrom(
+// backgroundColor: HexColor('#c7a1d1'),
+// ),
+// child: Text("CONFIRM ORDER", style: TextStyle(fontFamily: 'Lato', fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+// onPressed: () {
+// Widget cancelButton = TextButton(
+// child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+// onPressed: () async {
+// if (await confirmOrder(widget.orderId, pharmacyId)) {
+// Navigator.push(context,
+// MaterialPageRoute(builder: (context) =>
+// OrdersPage(widget.customerId)));
+// ScaffoldMessenger.of(context).showSnackBar(
+// SnackBar(content: Text("Order ${widget.orderId} has been confirmed", style: TextStyle(fontSize: 20),),
+// duration: Duration(
+// milliseconds: 3000),
+// ));
+// };
+// },
+// );
+// Widget continueButton = TextButton(
+// child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+// onPressed: () {Navigator.of(context).pop();
+// },
+// );
+// // set up the AlertDialog
+// AlertDialog alert = AlertDialog(
+// title: RichText(
+// text: TextSpan(
+// text: '''Are you sure you want to confirm order for $pharmacyName pharmacy?
+//                                                                                                                                 ''',
+// style: TextStyle(
+// color: Colors
+//     .black,
+// fontFamily: 'Lato',
+// fontSize: 20,
+// fontWeight: FontWeight
+//     .bold),
+// children: <
+// TextSpan>[
+// TextSpan(
+// text: 'Please note that you cannot undo this process!!!',
+// style: TextStyle(
+// color: Colors
+//     .red,
+// fontWeight: FontWeight
+//     .bold)),
+// ],
+// ),
+// ),
+// content: Text(
+// ""),
+// actions: [
+// cancelButton,
+// continueButton,
+// ],
+// );
+// // show the dialog
+// showDialog(
+// context: context,
+// builder: (
+// BuildContext context) {
+// return alert;
+// },
+// );
+// },
+// ),
+// ),
+// ])
+//     : Container()
+// ]
+// )
+// )
+// ],
+// ),
+// children: <Widget>[
+//
+// ])
+//
+//
+//
+//
+//
+//
+//
+//     : Container();
+//
+// });
+// }
+// }
+// });
+//
+//
+// });
+// }
+// }
+// });

@@ -159,17 +159,17 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                         SizedBox(height: 20,),
 
                                                                         Padding(
-                                                                          padding: EdgeInsets.only(right:5 ,top:10,),
+                                                                          padding: EdgeInsets.only(left:30 ,top:10,),
                                                                           child:Container(
                                                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                                                             child:ElevatedButton(
                                                                               style: ThemeHelper().buttonStyle(),
                                                                               onPressed: (){
                                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyListPage(OrderId , widget.customerId)));
-                                                                              }, child: Text('View Pharmacies List'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                              }, child: Text('View Pharmacies List'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                             ),
                                                                           ),),
-                                                                        
+
                                                                         SizedBox(height: 20,),
                                                                         ///customer name and phone number and location
                                                                         FutureBuilder<Placemark>(
@@ -302,28 +302,22 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                             }),
                                                                         SizedBox(height: 20,),
                                                                         ///Order total price
-                                                                        Card(
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children:[
-                                                                                Container(
-                                                                                    padding: EdgeInsets.all(5),
-                                                                                    width: size.width,
-                                                                                    color: Colors.grey.shade200,
-                                                                                    child:
-                                                                                    Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children:[
-                                                                                          Text('Total price: $TotalPrice SAR',style: TextStyle(
-                                                                                              fontFamily: "Lato",
-                                                                                              fontSize: 17,
-                                                                                              color: Colors.black,
-                                                                                              fontWeight: FontWeight.w600),),
-                                                                                        ]
-                                                                                    )
-                                                                                )
-                                                                              ],
-                                                                            )
+                                                                        Container(
+                                                                          padding: EdgeInsets.all(5),
+                                                                          alignment: Alignment.center,
+                                                                          width: size.width,
+                                                                          child:
+                                                                          Text('Total price: $TotalPrice SAR' ,style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 18,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w700,
+                                                                              background: Paint()
+                                                                                ..strokeWidth = 25.0
+                                                                                ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                                                ..style = PaintingStyle.stroke
+                                                                                ..strokeJoin = StrokeJoin.round),
+                                                                          ),
                                                                         ),
                                                                         SizedBox(height: 20,),
                                                                         ///Order items
