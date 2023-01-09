@@ -536,12 +536,24 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     child:ElevatedButton(
                                                                                       style: ThemeHelper().buttonStyle(),
                                                                                       onPressed: (){
+                                                                                        bool emptyOrNot= false;
+                                                                                        for (int i = 0; i < medList.length; i++) {
+                                                                                          if (medList[i].value == true ){
+                                                                                            emptyOrNot = true;
+                                                                                          }
+                                                                                        }
                                                                                         Widget cancelButton = TextButton(
                                                                                           child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                           onPressed:  () {
+                                                                                            if(emptyOrNot == true){
                                                                                             SendToCustomer("Accepted",widget.pharmacyId,noteDescriptionController.text);
                                                                                             Navigator.of(context).pop();
-                                                                                          },
+                                                                                            }
+                                                                                            if(emptyOrNot == false){
+                                                                                              showError2();
+                                                                                            }
+
+                                                                                          }
                                                                                         );
                                                                                         Widget continueButton = TextButton(
                                                                                           child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
@@ -776,6 +788,26 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text("order status changing failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  //alert massage to teel the pharmacy he mush check at least one medication before clicking accept
+  //Show Alertdialog and wait for user interaction
+  void showError2() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("you have to check at least one medication before accepting the order", style: TextStyle(fontFamily: 'Lato', fontSize: 20)),
           actions: <Widget>[
             new TextButton(
               child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),

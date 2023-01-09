@@ -48,13 +48,12 @@ class PharmacyOld extends State<PharmacyOldO>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Image.asset(
-                              'assets/logoheader.png',
-                              fit: BoxFit.contain,
-                              width: 110,
-                              height: 80,
-                            ),
+                            child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                              iconSize: 40,
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }, icon: Icon(Icons.keyboard_arrow_left),),
                           ),
 
                           Container(

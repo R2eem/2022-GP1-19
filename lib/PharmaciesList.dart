@@ -375,7 +375,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                   child: Column(
                                                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                     children:[
-                                                                                                                  (medicationListStatus[0][i]['isChecked'] == true)?
+                                                                                                                      (medicationListStatus[0][i]['isChecked'] == true)?
                                                                                                                       Container(
                                                                                                                           padding: EdgeInsets.all(5),
                                                                                                                           width: size.width,
@@ -385,52 +385,52 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                               children:[
                                                                                                                                 Row(
-                                                                                                                            children:[
-                                                                                                                              Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                Text('$medications ' ,style: TextStyle(
-                                                                                                                                    fontFamily: "Lato",
-                                                                                                                                    fontSize: 17,
-                                                                                                                                    color: Colors.black,
-                                                                                                                                    fontWeight: FontWeight.w600),
-                                                                                                                                    maxLines: 2,),
-                                                                                                                                ]),
+                                                                                                                                    children:[
+                                                                                                                                      Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
+                                                                                                                                      Text('$medications ' ,style: TextStyle(
+                                                                                                                                          fontFamily: "Lato",
+                                                                                                                                          fontSize: 17,
+                                                                                                                                          color: Colors.black,
+                                                                                                                                          fontWeight: FontWeight.w600),
+                                                                                                                                        maxLines: 2,),
+                                                                                                                                    ]),
                                                                                                                                 Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w500),
-                                                                                                                                    maxLines: 2,)
+                                                                                                                                  maxLines: 2,)
                                                                                                                               ]
                                                                                                                           )
                                                                                                                       ):Container(),
-                                                                                                                    (medicationListStatus[0][i]['isChecked'] == false)?
-                                                                                                                  Container(
-                                                                                                                      padding: EdgeInsets.all(5),
-                                                                                                                      width: size.width,
-                                                                                                                      color: Colors.grey.shade200,
-                                                                                                                      child:
-                                                                                                                      Column(
-                                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                          children:[
-                                                                                                                            Row(
-                                                                                                                                children:[
-                                                                                                                                  Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
-                                                                                                                                  Text('$medications ' ,style: TextStyle(
-                                                                                                                                      fontFamily: "Lato",
-                                                                                                                                      fontSize: 17,
-                                                                                                                                      color: Colors.black,
-                                                                                                                                      fontWeight: FontWeight.w600),
-                                                                                                                                      maxLines: 2,),
-                                                                                                                                ]),
-                                                                                                                            Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
-                                                                                                                                fontFamily: "Lato",
-                                                                                                                                fontSize: 15,
-                                                                                                                                color: Colors.black,
-                                                                                                                                fontWeight: FontWeight.w500),
-                                                                                                                                maxLines: 2,)
-                                                                                                                          ]
-                                                                                                                      )
-                                                                                                                  ):Container()
+                                                                                                                      (medicationListStatus[0][i]['isChecked'] == false)?
+                                                                                                                      Container(
+                                                                                                                          padding: EdgeInsets.all(5),
+                                                                                                                          width: size.width,
+                                                                                                                          color: Colors.grey.shade200,
+                                                                                                                          child:
+                                                                                                                          Column(
+                                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                              children:[
+                                                                                                                                Row(
+                                                                                                                                    children:[
+                                                                                                                                      Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
+                                                                                                                                      Text('$medications ' ,style: TextStyle(
+                                                                                                                                          fontFamily: "Lato",
+                                                                                                                                          fontSize: 17,
+                                                                                                                                          color: Colors.black,
+                                                                                                                                          fontWeight: FontWeight.w600),
+                                                                                                                                        maxLines: 2,),
+                                                                                                                                    ]),
+                                                                                                                                Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Colors.black,
+                                                                                                                                    fontWeight: FontWeight.w500),
+                                                                                                                                  maxLines: 2,)
+                                                                                                                              ]
+                                                                                                                          )
+                                                                                                                      ):Container()
                                                                                                                     ],
                                                                                                                   )
                                                                                                               );
