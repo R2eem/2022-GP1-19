@@ -118,17 +118,14 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 var note = null;
                                                 var time = null;
                                                 var medicationListStatus = null;
-                                                if (OrderStatus2 ==
-                                                    'Accepted' ||
-                                                    OrderStatus2 ==
-                                                        'Declined') {
-                                                  note =
-                                                  pharmDetails.get('Note')!;
-                                                  time =
-                                                  pharmDetails.get('Time')!;
-                                                  medicationListStatus =
-                                                  pharmDetails.get(
-                                                      'MedicationsList')!;
+                                                if (OrderStatus2 == 'Accepted' ||
+                                                    OrderStatus2 == 'Declined') {
+                                                  note = pharmDetails.get('Note')!;
+                                                  time = pharmDetails.get('Time')!;
+                                                  medicationListStatus = pharmDetails.get('MedicationsList')!;
+                                                  if(note ==''){
+                                                    note = 'No note';
+                                                  }
                                                 }
                                                 return FutureBuilder<
                                                     List<ParseObject>>(
@@ -189,11 +186,11 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                       ParseGeoPoint>(
                                                                       'Location')!;
                                                                   if (OrderStatus2 ==
-                                                                      'Accept/Decline') {
+                                                                      'New') {
                                                                     OrderStatus2 =
                                                                     'Under processing';
                                                                   }
-                                                                  return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
+                                                                  return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
                                                                       ? Card(
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment
@@ -307,8 +304,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               .black,
                                                                                           fontWeight: FontWeight
                                                                                               .w500),),
-                                                                                    (OrderStatus2 ==
-                                                                                        'Accepted')
+                                                                                    (OrderStatus2 == 'Accepted')
                                                                                         ?
                                                                                     Column(
                                                                                         crossAxisAlignment: CrossAxisAlignment
@@ -324,7 +320,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                 fontWeight: FontWeight
                                                                                                     .w500),),
                                                                                           Text(
-                                                                                            'Order may take $time hours to be ready.',
+                                                                                            'Order expected to be ready at $time.',
                                                                                             style: TextStyle(
                                                                                                 fontFamily: "Lato",
                                                                                                 fontSize: 15,
@@ -690,6 +686,7 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     }
+
     return [];
   }
 }

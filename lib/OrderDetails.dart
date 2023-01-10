@@ -156,9 +156,8 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                     ],
                                                                                   )
                                                                               ),
-                                                                        SizedBox(height: 20,),
-
-                                                                        (OrderStatus1 == 'Under processing' || OrderStatus1 == 'Accepted' || OrderStatus1 == 'Declined' || OrderStatus1 == 'Under preparation' || OrderStatus1 == 'Ready for pick up')?
+                                                                        SizedBox(height: 5,),
+                                                                        (OrderStatus1 == 'Under processing' || OrderStatus1 == 'Accepted' || OrderStatus1 == 'Declined')?
                                                                         Center(
                                                                             child: Container(
                                                                             decoration: ThemeHelper().buttonBoxDecoration(context),
@@ -170,7 +169,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                             ),
                                                                           ),):Container(),
                                                                         SizedBox(height: 20,),
-                                                                        (OrderStatus1 == 'Collected')?
+                                                                        (OrderStatus1 == 'Collected' || OrderStatus1 == 'Under preparation' || OrderStatus1 == 'Ready for pick up')?
                                                                         FutureBuilder<List<ParseObject>>(
                                                                             future: getPharmList(),
                                                                             builder: (context, snapshot) {
@@ -269,7 +268,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                 .get<
                                                                                                                 ParseGeoPoint>(
                                                                                                                 'Location')!;
-                                                                                                            return (OrderStatus2 == 'Collected')
+                                                                                                            return (OrderStatus2 == 'Collected'  || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
                                                                                                             ? Card(
                                                                                                                 child: Column(
                                                                                                                   crossAxisAlignment: CrossAxisAlignment
@@ -686,7 +685,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                       if (await cancelOrder(OrderId)) {
                                                                                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                                                                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                      content: Text("Order $OrderId has been deleted",
+                                                                                      content: Text("Order number $OrderId has been deleted",
                                                                                       style: TextStyle(fontSize: 20),),
                                                                                       duration: Duration(milliseconds: 3000),
                                                                                       ));
@@ -916,7 +915,7 @@ class OrderDetails extends State<OrderDetailsPage> {
   }
 
   Future<bool> confirmOrder(orderId, pharmacyId) async {
-    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', pharmacyId, 'Tiryaq', 'Order $orderId is confirmed', '', '');
+    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', pharmacyId, 'Tiryaq', 'Order number $orderId is confirmed', '', '');
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());

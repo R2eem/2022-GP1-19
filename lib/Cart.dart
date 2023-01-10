@@ -491,7 +491,7 @@ class Cart extends State<CartPage> {
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Location(widget.customerId, TotalPrice, presRequired)));//PresLocation(widget.customerId, TotalPrice, presRequired)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Locationpage(widget.customerId, TotalPrice, presRequired)));//PresLocation(widget.customerId, TotalPrice, presRequired)));
 
                   },
                   icon: const Icon(

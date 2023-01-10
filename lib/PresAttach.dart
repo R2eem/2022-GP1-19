@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -162,6 +163,79 @@ class _PresAttachPage extends State<PresAttach> {
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
                                   )),
+                                  SizedBox(height: 10,),
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Selected location:  ', style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                      FutureBuilder<Placemark>(
+                                          future: getUserLocation(),
+                                          builder: (context, snapshot) {
+                                            switch (snapshot.connectionState) {
+                                              case ConnectionState.none:
+                                                case ConnectionState.waiting:
+                                                  return Center(
+                                                  child: Container(
+                                                  width: 200,
+                                                  height: 5,
+                                                  child:LinearProgressIndicator()),
+                                                  );
+                                                  default:
+                                                    if (snapshot.hasError) {
+                                                      return Center(
+                                                      child: Text(
+                                                      "Error..."),
+                                                  );
+                                                    }
+                                                    if (!snapshot.hasData) {
+                                                      return Center(
+                                                      child: Text(
+                                                      "No Data..."),
+                                                    );
+                                                    } else {
+                                                      return  ListView.builder(
+                                                      shrinkWrap: true,
+                                                      scrollDirection: Axis.vertical,
+                                                      itemCount: 1,
+                                                      itemBuilder: (context, index) {
+                                                        final address = snapshot.data!;
+                                                        final country = address.country;
+                                                        final locality = address.locality;
+                                                        final subLocality = address.subLocality;
+                                                        final street = address.street;
+                                                        return Stack(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                  child:RichText(
+                                                                    text: TextSpan(
+                                                                      children: [
+                                                                        WidgetSpan(
+                                                                          child: Icon(Icons.location_on),
+                                                                        ),
+                                                                        TextSpan(
+                                                                          text: " $street, $subLocality, $locality, $country",style: TextStyle(
+                                                                            fontFamily: "Lato",
+                                                                            fontSize: 17,
+                                                                            color: Colors.black,
+                                                                            fontWeight: FontWeight.w600),
+                                                                            ),
+                                                                      ],
+                                                                    ),
+                                                            )
+                                                              )
+                                                            ]
+                                                        );
+                                                      });
+                                                    }
+                                            }
+                                          }),
+                                    ]),
                                   SizedBox(height: 10,),
                                   Row(
                                     children: [
@@ -350,7 +424,7 @@ class _PresAttachPage extends State<PresAttach> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context) =>
-                            Location(widget.customerId, widget.totalPrice,
+                            Locationpage(widget.customerId, widget.totalPrice,
                                 widget.presRequired)),);
                   },
                   icon: const Icon(
@@ -684,6 +758,13 @@ class _PresAttachPage extends State<PresAttach> {
     } else {
       return [];
     }
+  }
+
+  Future<Placemark> getUserLocation() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        widget.lat, widget.lng);
+    Placemark place = placemarks[0];
+    return place;
   }
 }
 

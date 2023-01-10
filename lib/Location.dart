@@ -12,19 +12,19 @@ import 'common/theme_helper.dart';
 //import 'package:geocoding/geocoding.dart';
 
 
-class Location extends StatefulWidget{
+class Locationpage extends StatefulWidget{
 //Get customer id as a parameter
   final String customerId;
   final totalPrice;
   final bool presRequired;
-  const Location(this.customerId, this.totalPrice, this.presRequired);
+  const Locationpage(this.customerId, this.totalPrice, this.presRequired);
   @override
   State<StatefulWidget> createState() {
     return _LocationPage();
   }
 }
 
-class _LocationPage extends State<Location> {
+class _LocationPage extends State<Locationpage> {
   late GoogleMapController googleMapController;
   //for error message
   bool Lat = false;

@@ -173,7 +173,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   height: 150,
                                                   ),
                                                 Text(
-                                                  "New orders",
+                                                  "Active orders",
                                                   style: TextStyle(
                                                     fontFamily: "Lato",
                                                     color: HexColor(
@@ -215,7 +215,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                 width: 150,
                                                 height: 150,),
                                               Text(
-                                                "Old orders",
+                                                "Inactive orders",
                                                 style: TextStyle(
                                                   fontFamily: "Lato",
                                                   color: HexColor(

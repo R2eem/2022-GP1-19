@@ -344,6 +344,8 @@ class Login extends State<PharmacyLogin> {
     var getUserId;
     var gett;
     var id;
+    var counter = 0;
+    bool exist = false;
     bool checkV = false;
 
     QueryBuilder<ParseUser> queryUsers = QueryBuilder<ParseUser>(ParseUser.forQuery());
@@ -361,8 +363,11 @@ class Login extends State<PharmacyLogin> {
         final apiResponse = await ParseObject('Pharmacist').getAll();
         if (apiResponse.success && apiResponse.results != null) {
           for (var o in apiResponse.results!) {
+            counter++;
             gett = o as ParseObject;
             if (id == gett.get('user').objectId) {
+
+              exist = true;
 
               if ("accepted" == gett.get('JoinRequest') && checkV == true) {
                 doUserLogin();
@@ -382,20 +387,20 @@ class Login extends State<PharmacyLogin> {
               if ("declined" == gett.get('JoinRequest')) {
                 showError("Sorry, Your join request is declined");
               }
-
             }
 
+            if(exist == false && counter == apiResponse.count) {
+              showError('Invalid username/password.');
+            }
           }
         }
       }
-
-
     }
-
-    else {showError('Invalid username/password.');}
-
-
-  }}
+    else {
+      showError('Invalid username/password.');
+    }
+  }
+}
 
 
 

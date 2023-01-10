@@ -111,7 +111,7 @@ class PharmacyNew extends State<PharmacyNewO>
                               if (_selectedTab == 0)
                                 filter = '';
                               if (_selectedTab == 1)
-                                filter = 'Accept/Decline';
+                                filter = 'New';
                               if (_selectedTab == 2)
                                 filter = 'Waiting';
                               if (_selectedTab == 3)
@@ -138,7 +138,7 @@ class PharmacyNew extends State<PharmacyNewO>
                             ),
                           ),
                           Tab(
-                            icon: Text('Accept/Decline',
+                            icon: Text('New',
                                 style: TextStyle(
                                     fontFamily: "Lato",
                                     fontWeight: FontWeight.w700,
@@ -305,7 +305,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                                                   if (await RPUOrder(orderId)) {
                                                                                                     Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
                                                                                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                                      content: Text("Order status for order $orderId has been updated",
+                                                                                                      content: Text("Order status for order number $orderId has been updated",
                                                                                                         style: TextStyle(fontSize: 20),),
                                                                                                       duration: Duration(milliseconds: 3000),
                                                                                                     ));
@@ -365,7 +365,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                                                   if (await collectedOrder(orderId)) {
                                                                                                     Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
                                                                                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                                      content: Text("Order status for order $orderId has been updated",
+                                                                                                      content: Text("Order status for order number $orderId has been updated",
                                                                                                         style: TextStyle(fontSize: 20),),
                                                                                                       duration: Duration(milliseconds: 3000),
                                                                                                     ));
@@ -430,7 +430,7 @@ class PharmacyNew extends State<PharmacyNewO>
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
     queryNewOrders1.whereEqualTo('PharmacyId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryNewOrders1.whereEqualTo('OrderStatus', 'Accept/Decline');
+    queryNewOrders1.whereEqualTo('OrderStatus', 'New');
 
     final QueryBuilder<ParseObject> queryNewOrders2 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -493,7 +493,7 @@ class PharmacyNew extends State<PharmacyNewO>
             var object = o as ParseObject;
             var update = object..set('OrderStatus', 'Ready for pick up');
             var customerId = object.get('Customer_id').objectId;
-            NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order $orderId is ready for pick up', '', '');
+            NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order number $orderId is ready for pick up', '', '');
             final ParseResponse parseResponse = await update.save();
           }
         }
