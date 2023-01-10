@@ -555,7 +555,6 @@ class PharmacyNew extends State<PharmacyNewO>
           ],
         );
       },
-
     );
   }
 
@@ -572,7 +571,4 @@ class PharmacyNew extends State<PharmacyNewO>
       showError(response.error!.message);
     }
   }
-
-
-
 }
