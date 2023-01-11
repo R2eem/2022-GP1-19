@@ -1262,44 +1262,4 @@ class OrderDetails extends State<OrderDetailsPage> {
     }
     return false;
   }
-
-  Future<bool> confirmOrder(orderId, pharmacyId) async {
-    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj',
-        pharmacyId, 'Tiryaq', 'Order number $orderId is confirmed', '', '');
-    final QueryBuilder<ParseObject> parseQuery1 =
-        QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    parseQuery1.whereEqualTo(
-        'OrderId', (ParseObject('Orders')..objectId = orderId).toPointer());
-    final apiResponse1 = await parseQuery1.query();
-
-    //change order status for pharmacies
-    if (apiResponse1.success && apiResponse1.results != null) {
-      for (var o in apiResponse1.results!) {
-        var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
-          var update = pharmacy..set('OrderStatus', 'Under preparation');
-          final ParseResponse parseResponse = await update.save();
-        } else {
-          var update = pharmacy..set('OrderStatus', 'Cancelled');
-          final ParseResponse parseResponse = await update.save();
-        }
-      }
-      final QueryBuilder<ParseObject> parseQuery2 =
-          QueryBuilder<ParseObject>(ParseObject('Orders'));
-      parseQuery2.whereEqualTo('objectId', orderId);
-
-      final apiResponse2 = await parseQuery2.query();
-
-      //change order status for pharmacy
-      if (apiResponse2.success && apiResponse2.results != null) {
-        for (var o in apiResponse2.results!) {
-          var object = o as ParseObject;
-          var update = object..set('OrderStatus', 'Under preparation');
-          final ParseResponse parseResponse = await update.save();
-        }
-      }
-      return true;
-    }
-    return false;
-  }
 }

@@ -273,10 +273,12 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                       ),
                                                                       SizedBox(height: 20,),
 
-                                                                      ///Show checkbox list for new order
-                                                                      if((widget.orderStatus == 'New'))
+                                                                      ///Show initial total price for new, cancelled or declined orders
+                                                                      if((widget.orderStatus == 'New') || (widget.orderStatus == 'Cancelled') || (widget.orderStatus == 'Declined'))
                                                                       Column(
-                                                                        children:[
+
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children:[
                                                                           Container(
                                                                             padding: EdgeInsets.all(5),
                                                                             alignment: Alignment.center,
@@ -376,13 +378,34 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                     ),)
                                                                                                 ],
                                                                                               ),
-                                                                                            ):Container(),
+                                                                                            ): Card(
+                                                                                                child: Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                  children: [
+                                                                                                    Container(
+                                                                                                        padding: EdgeInsets.all(5),
+                                                                                                        width: size.width,
+                                                                                                        color: Colors.grey.shade200,
+                                                                                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                                          Text(
+                                                                                                            '$quantity X  $Tradename ',
+                                                                                                            style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                          ),
+                                                                                                          Text(
+                                                                                                            '$ProductForm $Strength $StrengthUnit',
+                                                                                                            style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                          )
+                                                                                                        ]))
+                                                                                                  ],
+                                                                                                ))
                                                                                           );
                                                                                         });
                                                                                   }
                                                                               }}
                                                                         ),],]),
-                                                                                              if(widget.orderStatus == 'Waiting' || widget.orderStatus == 'Under preparation' || widget.orderStatus == 'Ready for pick up' || widget.orderStatus == 'Collected' )
+
+                                                                      ///If order status is after accepting from the pharmacy
+                                                                      if(widget.orderStatus == 'Waiting' || widget.orderStatus == 'Under preparation' || widget.orderStatus == 'Ready for pick up' || widget.orderStatus == 'Collected' )
                                                                                               Column(
                                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                 children:[

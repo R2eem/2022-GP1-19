@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/PharHomePage.dart';
 import 'PharmacyOrdersDetails.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyLogin.dart';
@@ -48,13 +49,12 @@ class PharmacyOld extends State<PharmacyOldO>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Image.asset(
-                              'assets/logoheader.png',
-                              fit: BoxFit.contain,
-                              width: 110,
-                              height: 80,
-                            ),
+                            child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                              iconSize: 40,
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharHomePage()));
+                              }, icon: Icon(Icons.keyboard_arrow_left),),
                           ),
 
                           Container(
@@ -219,7 +219,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                                       mainAxisSize: MainAxisSize.max,
                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                                       children: <Widget>[
-                                                                                        Text('New order',
+                                                                                        Text('Old order',
                                                                                           maxLines: 2,
                                                                                           softWrap: true,
                                                                                           style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700 ,
@@ -311,15 +311,9 @@ class PharmacyOld extends State<PharmacyOldO>
     queryOldOrders3.whereEqualTo('OrderStatus', 'Declined');
 
 
-    final QueryBuilder<ParseObject> queryOldOrders4 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryOldOrders4.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryOldOrders4.whereEqualTo('OrderStatus', '');
-
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("PharmaciesList"),
-      [queryOldOrders1, queryOldOrders2, queryOldOrders3, queryOldOrders4],
+      [queryOldOrders1, queryOldOrders2, queryOldOrders3],
     );
     final ParseResponse apiResponse = await mainQuery.query();
     if (apiResponse.success && apiResponse.results != null) {

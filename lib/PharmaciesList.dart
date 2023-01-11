@@ -647,13 +647,11 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy
-            .get('PharmacyId')
-            .objectId == pharmacyId) {
+        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Under preparation');
           final ParseResponse parseResponse = await update.save();
         }
-        else {
+        else if(pharmacy.get('OrderStatus') != 'Declined'){
           var update = pharmacy..set('OrderStatus', 'Cancelled');
           final ParseResponse parseResponse = await update.save();
         }
@@ -664,7 +662,7 @@ class PharmacyList extends State<PharmacyListPage> {
 
       final apiResponse2 = await parseQuery2.query();
 
-      //change order status for pharmacy
+      //change order status in orders table
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           var object = o as ParseObject;
