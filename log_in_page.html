@@ -30,7 +30,7 @@
             <div class="form">
               <h2>Admin login </h2>
               <div id="login-error-msg-holder">
-                <p id="login-error-msg">Invalid username and/or password</p>
+                <span id="error"></span>
               </div>
                 <div class="inputbox">
                   <input name="email" id="email" type="email" placeholder="email"  required="" aria-required="true" /> 
@@ -38,10 +38,11 @@
                 <div class="inputbox">
                   <input name="pass" id="password" type="password" placeholder="Password" required="" aria-required="true"/>
                 </div>
+              </br>
+                <input type="checkbox" onclick="visibility()"><span id="showpass">&nbsp Show Password</span>
                 <div class="inputbox">
                   <input type="submit" name="submit" id="submit" value="Login">
                 </div>  
-                <p class="forget">Forget Password ? <a href="#">Click Here</a></p>
             </div>
             </form>
           </div>
@@ -57,14 +58,51 @@
        async function logIn() {
         var email=document.getElementById('email').value;
         var pass=document.getElementById('password').value;
-      
 
-        var user = Parse.User
-        .logIn(email, pass).then(function(user) {
-          window.location.replace("index.html");
+        ///Get user account from user table
+        var User = Parse.Object.extend("User");
+        query1 = new Parse.Query(User);
+        query1.equalTo("email", email);
+        query1.first().then(function(user){
+
+        if(user){
+          var userId = user.id;
+          var userPointer = {
+            __type: 'Pointer',
+            className: '_User',
+            objectId: user.id
+          }
+          ///Check user account in admin table
+          var Admin = Parse.Object.extend("Admin");
+          query2 = new Parse.Query(Admin);
+          query2.equalTo("user", userPointer);
+          query2.first().then(function(admin){
+
+          if(admin){
+            var user = Parse.User
+            .logIn(email, pass).then(function(user) {
+            window.location.replace("index.html");
             }).catch(function(error){
-              document.getElementById('login-error-msg').style.opacity = 1;
-    });
+              ///Error if inputs incorrect
+              document.getElementById("error").textContent = "Invalid email and/or password";
+              document.getElementById("error").style.color = "red";
+              document.getElementById("error").style.fontSize = "small";
+            });
+          }
+          else {
+          //Error if account exist but not admin
+          document.getElementById("error").textContent = "Invalid email and/or password";
+          document.getElementById("error").style.color = "red";
+          document.getElementById("error").style.fontSize = "small";
+          }    
+        })
+        } else{
+          ///Error if account doesn't exist
+          document.getElementById("error").textContent = "Invalid email and/or password";
+          document.getElementById("error").style.color = "red";
+          document.getElementById("error").style.fontSize = "small";
+        }
+      })
 }
   
 
@@ -79,6 +117,15 @@
           logIn();
         } 
       }
+
+function visibility() {
+  var password= document.getElementById("password");
+  if (password.type === "password") {
+    password.type = "text";
+  } else {
+    password.type = "password";
+  }
+}
     </script>
 
 </html>
