@@ -383,7 +383,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                 Row(
                                                                                                                             children:[
                                                                                                                               Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                Text('$medications ' ,style: TextStyle(
+                                                                                                                                Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 17,
                                                                                                                                     color: Colors.black,
@@ -411,7 +411,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                             Row(
                                                                                                                                 children:[
                                                                                                                                   Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
-                                                                                                                                  Text('$medications ' ,style: TextStyle(
+                                                                                                                                  Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
                                                                                                                                       fontFamily: "Lato",
                                                                                                                                       fontSize: 17,
                                                                                                                                       color: Colors.black,

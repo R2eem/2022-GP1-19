@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class _PresAttachPage extends State<PresAttach> {
   List medicationsList = [];
   bool locationExist = false;
   List pharmacies = [];
+  List pharmaciesLocation = [];
   var counter = 0;
 
   @override
@@ -211,6 +214,7 @@ class _PresAttachPage extends State<PresAttach> {
                                                             children: <Widget>[
                                                               Container(
                                                                   margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                  padding: EdgeInsets.all(10),
                                                                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                   child:RichText(
                                                                     text: TextSpan(
@@ -236,7 +240,7 @@ class _PresAttachPage extends State<PresAttach> {
                                             }
                                           }),
                                     ]),
-                                  SizedBox(height: 10,),
+                                  SizedBox(height: 20,),
                                   Row(
                                     children: [
                                       Text('Total price:  ', style: TextStyle(
@@ -370,6 +374,7 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                           children: <Widget>[
                                                                                             Container(
                                                                                               margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                              padding: EdgeInsets.all(10),
                                                                                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                               child: Row(
                                                                                                 children: <Widget>[
@@ -497,7 +502,7 @@ class _PresAttachPage extends State<PresAttach> {
                           ..objectId = orderInfo.objectId).toPointer())
                         ..set('PharmacyId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
-                        ..set('Distance' , '10');
+                        ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 
                       await orderPharmacyInfo.save();
                     }
@@ -578,7 +583,7 @@ class _PresAttachPage extends State<PresAttach> {
                           ..objectId = orderInfo.objectId).toPointer())
                         ..set('PharmacyId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
-                        ..set('Distance' , '10');
+                        ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 
                       await orderPharmacyInfo.save();
                     }
@@ -721,10 +726,15 @@ class _PresAttachPage extends State<PresAttach> {
           var pharmacy = {
             'pharmacyId': object.objectId
           };
+          var pharmacyLocation = {
+            'pharmacyLocation': object.get('Location')
+          };
+
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
           if (contain.isEmpty && counter<5) {
             counter++;
             pharmacies.add(pharmacy);
+            pharmaciesLocation.add(pharmacyLocation);
           }
         }
       }
@@ -758,6 +768,15 @@ class _PresAttachPage extends State<PresAttach> {
     } else {
       return [];
     }
+  }
+  //Calculate distance between customer and pharmacy
+  double calculateDistance(lat1, lon1, lat2, lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
   }
 
   Future<Placemark> getUserLocation() async {

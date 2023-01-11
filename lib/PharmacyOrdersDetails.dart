@@ -19,11 +19,13 @@ class PharmacyOrdersDetailsPage extends StatefulWidget {
 
 class checkBoxState{
   String medID;
+  String quantity;
   bool value;
 
 
   checkBoxState({
     required this.medID,
+    required this.quantity,
     this.value = false,
   });
 }
@@ -171,6 +173,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                   medList.add(
                                                       checkBoxState(
                                                         medID:medicationsList[0][i]['medId'].toString(),
+                                                        quantity: medicationsList[0][i]['quantity'].toString(),
                                                       )
                                                   );}
                                                 var prescription = null;
@@ -269,30 +272,35 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                             }}
                                                                       ),
                                                                       SizedBox(height: 20,),
-                                                                      Container(
-                                                                        padding: EdgeInsets.all(5),
-                                                                        alignment: Alignment.center,
-                                                                        width: size.width,
-                                                                        child:
-                                                                        Text('Total price: $TotalPrice SAR' ,style: TextStyle(
-                                                                            fontFamily: "Lato",
-                                                                            fontSize: 18,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w700,
-                                                                            background: Paint()
-                                                                              ..strokeWidth = 25.0
-                                                                              ..color =  HexColor('#c7a1d1').withOpacity(0.5)
-                                                                              ..style = PaintingStyle.stroke
-                                                                              ..strokeJoin = StrokeJoin.round),
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(height: 20,),
-                                                                      Text('List of medication:' ,style: TextStyle(
-                                                                          fontFamily: "Lato",
-                                                                          fontSize: 19,
-                                                                          color: Colors.black,
-                                                                          fontWeight: FontWeight.w700),),
-                                                                      SizedBox(height: 10,),
+
+                                                                      ///Show checkbox list for new order
+                                                                      if((widget.orderStatus == 'New'))
+                                                                      Column(
+                                                                        children:[
+                                                                          Container(
+                                                                            padding: EdgeInsets.all(5),
+                                                                            alignment: Alignment.center,
+                                                                            width: size.width,
+                                                                            child:
+                                                                            Text('Total price: $TotalPrice SAR' ,style: TextStyle(
+                                                                                fontFamily: "Lato",
+                                                                                fontSize: 18,
+                                                                                color: Colors.black,
+                                                                                fontWeight: FontWeight.w700,
+                                                                                background: Paint()
+                                                                                  ..strokeWidth = 25.0
+                                                                                  ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                                                  ..style = PaintingStyle.stroke
+                                                                                  ..strokeJoin = StrokeJoin.round),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(height: 20,),
+                                                                          Text('List of medication:' ,style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 19,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w700),),
+                                                                          SizedBox(height: 10,),
                                                                       for (int i = 0; i < medicationsList[0].length; i++) ...[
                                                                         FutureBuilder<List<ParseObject>>(
                                                                             future: getMedDetails(medicationsList[0][i]['medId'].toString()),
@@ -368,27 +376,221 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                     ),)
                                                                                                 ],
                                                                                               ),
-                                                                                            ):Column(
-                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                children:[
-                                                                                                  Text('$quantity X  $Tradename' ,style: TextStyle(
-                                                                                                      fontFamily: "Lato",
-                                                                                                      fontSize: 17,
-                                                                                                      color: Colors.black,
-                                                                                                      fontWeight: FontWeight.w600),),
-                                                                                                  Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
-                                                                                                      fontFamily: "Lato",
-                                                                                                      fontSize: 15,
-                                                                                                      color: Colors.black,
-                                                                                                      fontWeight: FontWeight.w500),),
-                                                                                                ]
-                                                                                            ),
-
+                                                                                            ):Container(),
                                                                                           );
                                                                                         });
                                                                                   }
                                                                               }}
-                                                                        ),],
+                                                                        ),],]),
+                                                                                              if(widget.orderStatus == 'Waiting' || widget.orderStatus == 'Under preparation' || widget.orderStatus == 'Ready for pick up' || widget.orderStatus == 'Collected' )
+                                                                                              Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                children:[
+                                                                                                  FutureBuilder<String>(
+                                                                                        future: getTotalPrice(),
+                                                                                        builder: (context, snapshot) {
+                                                                                          switch (snapshot.connectionState) {
+                                                                                            case ConnectionState.none:
+                                                                                            case ConnectionState.waiting:
+                                                                                              return Center(
+                                                                                                child: Container(width: 200, height: 5, child: LinearProgressIndicator()),
+                                                                                              );
+                                                                                            default:
+                                                                                              if (snapshot.hasError) {
+                                                                                                return Center(
+                                                                                                  child: Text("Error..."),
+                                                                                                );
+                                                                                              }
+                                                                                              if (!snapshot.hasData) {
+                                                                                                return Center(
+                                                                                                  child: Text("No Data..."),
+                                                                                                );
+                                                                                              } else {
+                                                                                                return ListView.builder(
+                                                                                                    shrinkWrap: true,
+                                                                                                    scrollDirection: Axis.vertical,
+                                                                                                    itemCount: 1,
+                                                                                                    itemBuilder: (context, index) {
+                                                                                                      final totalPrice = snapshot.data!;
+                                                                                                      return  Column(
+                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                        children: [
+                                                                                                  Container(
+                                                                                                    padding: EdgeInsets.all(5),
+                                                                                                    alignment: Alignment.center,
+                                                                                                    width: size.width,
+                                                                                                    child:
+                                                                                                    Text('Total price: $totalPrice SAR' ,style: TextStyle(
+                                                                                                        fontFamily: "Lato",
+                                                                                                        fontSize: 18,
+                                                                                                        color: Colors.black,
+                                                                                                        fontWeight: FontWeight.w700,
+                                                                                                        background: Paint()
+                                                                                                          ..strokeWidth = 25.0
+                                                                                                          ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                                                                          ..style = PaintingStyle.stroke
+                                                                                                          ..strokeJoin = StrokeJoin.round),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                        ],
+                                                                                                      );
+                                                                                                    });
+                                                                                              }
+                                                                                          }
+                                                                                        }),
+                                                                                                  SizedBox(height: 20,),
+                                                                                                  Text('List of medication:' ,style: TextStyle(
+                                                                                                      fontFamily: "Lato",
+                                                                                                      fontSize: 19,
+                                                                                                      color: Colors.black,
+                                                                                                      fontWeight: FontWeight.w700),),
+                                                                                                  SizedBox(height: 10,),
+                                                                                                  FutureBuilder<List<ParseObject>>(
+                                                                                                    future: getMedList(),
+                                                                                                    builder: (context, snapshot) {
+                                                                                                      switch (snapshot.connectionState) {
+                                                                                                        case ConnectionState.none:
+                                                                                                        case ConnectionState.waiting:
+                                                                                                          return Center(
+                                                                                                            child: Container(
+                                                                                                                width: 200,
+                                                                                                                height: 5,
+                                                                                                                child:
+                                                                                                                LinearProgressIndicator()),
+                                                                                                          );
+                                                                                                        default:
+                                                                                                          if (snapshot.hasError) {
+                                                                                                            return Center(
+                                                                                                              child: Text(
+                                                                                                                  "Error..."),
+                                                                                                            );
+                                                                                                          }
+                                                                                                          if (!snapshot.hasData) {
+                                                                                                            return Center(
+                                                                                                              child: Text(
+                                                                                                                  "No Data..."),
+                                                                                                            );
+                                                                                                          } else {
+                                                                                                            return  ListView.builder(
+                                                                                                                shrinkWrap: true,
+                                                                                                                scrollDirection: Axis.vertical,
+                                                                                                                itemCount: snapshot.data!.length,
+                                                                                                                itemBuilder: (context, index) {
+                                                                                                                  final medDetails = snapshot.data![index];
+                                                                                                                  final medicationsListStatus = medDetails.get('MedicationsList')!;
+                                                                                                                  return Column( children:[
+                                                                                                                    for (int i = 0; i < medicationsListStatus[0].length; i++) ...[
+                                                                                                                      FutureBuilder<List<ParseObject>>(
+                                                                                                                          future: getMedDetails(medicationsListStatus[0][i]['medId2'].toString()),
+                                                                                                                          builder: (context, snapshot) {
+                                                                                                                            switch (snapshot.connectionState) {
+                                                                                                                              case ConnectionState.none:
+                                                                                                                              case ConnectionState.waiting:
+                                                                                                                                /*return Center(
+                                                                                                                                  child: Container(
+                                                                                                                                      width: 200,
+                                                                                                                                      height: 5,
+                                                                                                                                      child:
+                                                                                                                                      LinearProgressIndicator()),
+                                                                                                                                );*/
+                                                                                                                              default:
+                                                                                                                                if (snapshot.hasError) {
+                                                                                                                                  return Center(
+                                                                                                                                    child: Text(
+                                                                                                                                        ""),
+                                                                                                                                  );
+                                                                                                                                }
+                                                                                                                                if (!snapshot.hasData) {
+                                                                                                                                  return Center(
+                                                                                                                                    child: Text(
+                                                                                                                                        ""),
+                                                                                                                                  );
+                                                                                                                                } else {
+                                                                                                                                  return  ListView.builder(
+                                                                                                                                      shrinkWrap: true,
+                                                                                                                                      scrollDirection: Axis.vertical,
+                                                                                                                                      itemCount: snapshot.data!.length,
+                                                                                                                                      itemBuilder: (context, index) {
+                                                                                                                                        final medDetails = snapshot.data![index];
+                                                                                                                                        final medications = medDetails.get('TradeName')!;
+                                                                                                                                        final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                                                                                        final Strength = medDetails.get<num>('Strength')!;
+                                                                                                                                        final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+
+                                                                                                                                        return Card(
+                                                                                                                                            child: Column(
+                                                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                              children:[
+                                                                                                                                                (medicationsListStatus[0][i]['isChecked'] == true)?
+                                                                                                                                                Container(
+                                                                                                                                                    padding: EdgeInsets.all(5),
+                                                                                                                                                    width: size.width,
+                                                                                                                                                    color: Colors.grey.shade200,
+                                                                                                                                                    child:
+                                                                                                                                                    Column(
+                                                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                                        children:[
+                                                                                                                                                          Row(
+                                                                                                                                                              children:[
+                                                                                                                                                                Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
+                                                                                                                                                                Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                                                    fontSize: 17,
+                                                                                                                                                                    color: Colors.black,
+                                                                                                                                                                    fontWeight: FontWeight.w600),
+                                                                                                                                                                  maxLines: 2,),
+                                                                                                                                                              ]),
+                                                                                                                                                          Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                                              fontFamily: "Lato",
+                                                                                                                                                              fontSize: 15,
+                                                                                                                                                              color: Colors.black,
+                                                                                                                                                              fontWeight: FontWeight.w500),
+                                                                                                                                                            maxLines: 2,)
+                                                                                                                                                        ]
+                                                                                                                                                    )
+                                                                                                                                                ):Container(),
+                                                                                                                                                (medicationsListStatus[0][i]['isChecked'] == false)?
+                                                                                                                                                Container(
+                                                                                                                                                    padding: EdgeInsets.all(5),
+                                                                                                                                                    width: size.width,
+                                                                                                                                                    color: Colors.grey.shade200,
+                                                                                                                                                    child:
+                                                                                                                                                    Column(
+                                                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                                        children:[
+                                                                                                                                                          Row(
+                                                                                                                                                              children:[
+                                                                                                                                                                Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
+                                                                                                                                                                Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                                                    fontSize: 17,
+                                                                                                                                                                    color: Colors.black,
+                                                                                                                                                                    fontWeight: FontWeight.w600),
+                                                                                                                                                                  maxLines: 2,),
+                                                                                                                                                              ]),
+                                                                                                                                                          Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                                              fontFamily: "Lato",
+                                                                                                                                                              fontSize: 15,
+                                                                                                                                                              color: Colors.black,
+                                                                                                                                                              fontWeight: FontWeight.w500),
+                                                                                                                                                            maxLines: 2,)
+                                                                                                                                                        ]
+                                                                                                                                                    )
+                                                                                                                                                ):Container(),
+                                                                                                                                              ],
+                                                                                                                                            )
+                                                                                                                                        );
+                                                                                                                                      });
+                                                                                                                                }
+                                                                                                                            }}
+                                                                                                                      )]]);
+                                                                                                                });
+                                                                                                          }
+                                                                                                      }}
+                                                                                                ),
+                                                                                                ]
+                                                                                            ),
+
 
                                                                       SizedBox(height: 20,),
                                                                       presRequired ?
@@ -705,6 +907,38 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return [];
   }
 
+  //Get medications of the selected pharmacy
+  Future<List<ParseObject>> getMedList() async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
+    parseQuery1.whereEqualTo('OrderStatus', 'Under preparation');
+
+    final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery2.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
+    parseQuery2.whereEqualTo('OrderStatus', 'Ready for pick up');
+
+    final QueryBuilder<ParseObject> parseQuery3 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery3.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
+    parseQuery3.whereEqualTo('OrderStatus', 'Collected');
+
+    final QueryBuilder<ParseObject> parseQuery4 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery4.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
+    parseQuery4.whereEqualTo('OrderStatus', 'Accepted');
+
+
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("PharmaciesList"),
+      [parseQuery1, parseQuery2, parseQuery3, parseQuery4],
+    );
+
+    final ParseResponse apiResponse = await mainQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      return apiResponse.results as List<ParseObject>;
+    } else {
+      return [];
+    }
+  }
+
   //Function to get customer details
   Future<ParseObject> getCustomerDetails() async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
@@ -736,12 +970,76 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return null!;
   }
 
+  //Get total price
+  Future<String> getTotalPrice() async {
+    num totalPrice = 0;
+
+    final QueryBuilder<ParseObject> parseQuery1 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = widget.orderId).toPointer());
+    parseQuery1.whereEqualTo('OrderStatus', 'Under preparation');
+
+    final QueryBuilder<ParseObject> parseQuery2 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery2.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = widget.orderId).toPointer());
+    parseQuery2.whereEqualTo('OrderStatus', 'Ready for pick up');
+
+    final QueryBuilder<ParseObject> parseQuery3 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery3.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = widget.orderId).toPointer());
+    parseQuery3.whereEqualTo('OrderStatus', 'Collected');
+
+    final QueryBuilder<ParseObject> parseQuery4 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery4.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = widget.orderId).toPointer());
+    parseQuery4.whereEqualTo('OrderStatus', 'Accepted');
+
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("PharmaciesList"),
+      [parseQuery1, parseQuery2, parseQuery3, parseQuery4],
+    );
+
+    final ParseResponse apiResponse = await mainQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        var object = o as ParseObject;
+        List med = object.get('MedicationsList');
+
+        for (int i = 0; i < med[0].length; i++) {
+          if (med[0][i]['isChecked'] == true) {
+            final QueryBuilder<ParseObject> parseQuery =
+            QueryBuilder<ParseObject>(ParseObject('Medications'));
+            parseQuery.whereEqualTo('objectId', med[0][i]['medId2']);
+
+            final apiResponse2 = await parseQuery.query();
+            if (apiResponse.success && apiResponse.results != null) {
+              for (var o in apiResponse2.results!) {
+                var object = o as ParseObject;
+                num price = object.get('Publicprice');
+                num quantity = num.parse(med[0][i]['quantity']);
+                totalPrice = totalPrice + (price * quantity);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      return '';
+    }
+    return totalPrice.toStringAsFixed(2);
+  }
+
   // function to send if the order is accepted or declined to the customer
   Future<void> SendToCustomer(orderStatus,pharmacyId ,note) async {
     //Store customer medications in list
     for (int i = 0; i < medList.length; i++) {
       var medications = {
         'medId2': medList[i].medID,
+        'quantity': medList[i].quantity,
         'isChecked': medList[i].value,
       };
 

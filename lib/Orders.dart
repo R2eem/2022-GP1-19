@@ -212,14 +212,8 @@ class Orders extends State<OrdersPage> {
                                                                                     fontWeight: FontWeight.w700),),
                                                                                 SizedBox(height: 10),
                                                                               ]),
-                                                                                Spacer(),
-                                                                                Text('$TotalPrice SAR',style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 19,
-                                                                                    color: Colors.black,
-                                                                                    fontWeight: FontWeight.w600),),
-                                                                                Spacer(),
-                                                                                Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
+                                                                            Spacer(),
+                                                                            Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
                                                                               ]) )))));
                                                             });
                                                       }
@@ -331,12 +325,6 @@ class Orders extends State<OrdersPage> {
                                                                                                   fontWeight: FontWeight.w700),),
                                                                                               SizedBox(height: 10),
                                                                                             ]),
-                                                                                        Spacer(),
-                                                                                        Text('$TotalPrice SAR',style: TextStyle(
-                                                                                            fontFamily: "Lato",
-                                                                                            fontSize: 19,
-                                                                                            color: Colors.black,
-                                                                                            fontWeight: FontWeight.w600),),
                                                                                         Spacer(),
                                                                                         Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
                                                                                       ]) )))));
@@ -471,6 +459,70 @@ class Orders extends State<OrdersPage> {
       return [];
     }
   }
+
+  //Get total price
+  Future<String> getTotalPrice(orderId) async {
+    num totalPrice = 0;
+
+    final QueryBuilder<ParseObject> parseQuery1 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = orderId).toPointer());
+    parseQuery1.whereEqualTo('OrderStatus', 'Under preparation');
+
+    final QueryBuilder<ParseObject> parseQuery2 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery2.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = orderId).toPointer());
+    parseQuery2.whereEqualTo('OrderStatus', 'Ready for pick up');
+
+    final QueryBuilder<ParseObject> parseQuery3 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery3.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = orderId).toPointer());
+    parseQuery3.whereEqualTo('OrderStatus', 'Collected');
+
+    final QueryBuilder<ParseObject> parseQuery4 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    parseQuery4.whereEqualTo('OrderId',
+        (ParseObject('Orders')..objectId = orderId).toPointer());
+    parseQuery4.whereEqualTo('OrderStatus', 'Accepted');
+
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("PharmaciesList"),
+      [parseQuery1, parseQuery2, parseQuery3, parseQuery4],
+    );
+
+    final ParseResponse apiResponse = await mainQuery.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var o in apiResponse.results!) {
+        var object = o as ParseObject;
+        List med = object.get('MedicationsList');
+
+        for (int i = 0; i < med[0].length; i++) {
+          if (med[0][i]['isChecked'] == true) {
+            final QueryBuilder<ParseObject> parseQuery =
+            QueryBuilder<ParseObject>(ParseObject('Medications'));
+            parseQuery.whereEqualTo('objectId', med[0][i]['medId2']);
+
+            final apiResponse2 = await parseQuery.query();
+            if (apiResponse.success && apiResponse.results != null) {
+              for (var o in apiResponse2.results!) {
+                var object = o as ParseObject;
+                num price = object.get('Publicprice');
+                num quantity = num.parse(med[0][i]['quantity']);
+                totalPrice = totalPrice + (price * quantity);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      return '';
+    }
+    return totalPrice.toStringAsFixed(2);
+  }
+
   void showError(String errorMessage) {
     showDialog(
       context: context,
