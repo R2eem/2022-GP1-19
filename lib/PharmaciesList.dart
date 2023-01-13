@@ -118,11 +118,16 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 var note = null;
                                                 var time = null;
                                                 var medicationListStatus = null;
-                                                if (OrderStatus2 == 'Accepted' ||
-                                                    OrderStatus2 == 'Declined') {
+                                                if (OrderStatus2 == 'Accepted') {
                                                   note = pharmDetails.get('Note')!;
                                                   time = pharmDetails.get('Time')!;
                                                   medicationListStatus = pharmDetails.get('MedicationsList')!;
+                                                  if(note ==''){
+                                                    note = 'No note';
+                                                  }
+                                                }
+                                                if (OrderStatus2 == 'Declined') {
+                                                  note = pharmDetails.get('Note')!;
                                                   if(note ==''){
                                                     note = 'No note';
                                                   }
@@ -295,21 +300,20 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               }
                                                                                           }
                                                                                         }),
-                                                                                    Text(
-                                                                                      '$OrderStatus2',
-                                                                                      style: TextStyle(
-                                                                                          fontFamily: "Lato",
-                                                                                          fontSize: 15,
-                                                                                          color: Colors
-                                                                                              .black,
-                                                                                          fontWeight: FontWeight
-                                                                                              .w500),),
                                                                                     (OrderStatus2 == 'Accepted')
                                                                                         ?
                                                                                     Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment
-                                                                                            .start,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
+                                                                                          Text(
+                                                                                            '$OrderStatus2',
+                                                                                            style: TextStyle(
+                                                                                                fontFamily: "Lato",
+                                                                                                fontSize: 15,
+                                                                                                color: Colors
+                                                                                                    .green,
+                                                                                                fontWeight: FontWeight
+                                                                                                    .w700),),
                                                                                           Text(
                                                                                             'Pharmacist note: $note',
                                                                                             style: TextStyle(
@@ -366,6 +370,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                               final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                                                                                               final Strength = medDetails.get<num>('Strength')!;
                                                                                                               final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+                                                                                                              final Publicprice = medDetails.get('Publicprice')!;
 
                                                                                                               return Card(
                                                                                                                   child: Column(
@@ -390,7 +395,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                     fontWeight: FontWeight.w600),
                                                                                                                                     maxLines: 2,),
                                                                                                                                 ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
@@ -418,7 +423,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                       fontWeight: FontWeight.w600),
                                                                                                                                       maxLines: 2,),
                                                                                                                                 ]),
-                                                                                                                            Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                            Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                 fontFamily: "Lato",
                                                                                                                                 fontSize: 15,
                                                                                                                                 color: Colors.black,
@@ -556,7 +561,17 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                         'Declined')
                                                                                         ?
                                                                                     Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
+                                                                                          Text(
+                                                                                            '$OrderStatus2',
+                                                                                            style: TextStyle(
+                                                                                                fontFamily: "Lato",
+                                                                                                fontSize: 15,
+                                                                                                color: Colors
+                                                                                                    .red,
+                                                                                                fontWeight: FontWeight
+                                                                                                    .w700),),
                                                                                           Text(
                                                                                             'Pharmacist note: $note',
                                                                                             style: TextStyle(

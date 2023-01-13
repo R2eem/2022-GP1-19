@@ -607,6 +607,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                             final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                                                                             final Strength = medDetails.get<num>('Strength')!;
                                                                                             final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+                                                                                            final Publicprice = medDetails.get('Publicprice')!;
 
                                                                                             return Card(
                                                                                                 child: Column(
@@ -622,7 +623,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                         style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
                                                                                                       ),
                                                                                                       Text(
-                                                                                                        '$ProductForm $Strength $StrengthUnit',
+                                                                                                        '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                         style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                       )
                                                                                                     ]))
@@ -769,6 +770,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                             final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                                                                                             final Strength = medDetails.get<num>('Strength')!;
                                                                                                             final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+                                                                                                            final Publicprice = medDetails.get('Publicprice')!;
 
                                                                                                             return Card(
                                                                                                                 child: Column(
@@ -793,7 +795,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                             ),
                                                                                                                           ]),
                                                                                                                           Text(
-                                                                                                                            '$ProductForm $Strength $StrengthUnit',
+                                                                                                                            '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                                             style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                                             maxLines: 2,
                                                                                                                           )
@@ -818,7 +820,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                             ),
                                                                                                                           ]),
                                                                                                                           Text(
-                                                                                                                            '$ProductForm $Strength $StrengthUnit',
+                                                                                                                            '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                                             style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                                             maxLines: 2,
                                                                                                                           )
@@ -949,7 +951,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               AlertDialog alert = AlertDialog(
                                                                                 title: RichText(
                                                                                   text: TextSpan(
-                                                                                    text: '''Are you sure you want to delete this order? 
+                                                                                    text: '''Are you sure you want to cancel this order? 
                                                                                                ''',
                                                                                     style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
                                                                                     children: <TextSpan>[

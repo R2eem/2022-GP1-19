@@ -371,6 +371,11 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                 final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
                                                                                 final Publicprice = (medGet.get<num>('Publicprice')! * quantity).toStringAsFixed(2);
+                                                                                final LegalStatus = medGet.get<String>('LegalStatus')!;
+                                                                                var text ='';
+                                                                                if(LegalStatus=='Prescription'){
+                                                                                  text = 'requires prescription';
+                                                                                }
 
                                                                                 return Column(
                                                                                     children: [
@@ -402,7 +407,12 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                                               softWrap: true,
                                                                                                               style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
                                                                                                             ),
-                                                                                                          ),
+                                                                                                          ),Text('$text',
+                                                                                                            style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 10,
+                                                                                                                fontWeight: FontWeight.w700,
+                                                                                                                color: Colors.red),),
                                                                                                         ],
                                                                                                       ),
                                                                                                     ),

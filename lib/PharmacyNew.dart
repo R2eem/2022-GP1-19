@@ -23,6 +23,7 @@ class PharmacyNew extends State<PharmacyNewO>
 
   String filter = '';
   int _selectedTab = 0;
+  bool noOrder = true;
 
   @override
   Widget build(BuildContext context) {
@@ -108,16 +109,26 @@ class PharmacyNew extends State<PharmacyNewO>
                           setState(
                                 () {
                               _selectedTab = index;
-                              if (_selectedTab == 0)
+                              if (_selectedTab == 0){
+                                noOrder = true;
                                 filter = '';
-                              if (_selectedTab == 1)
+                              }
+                              if (_selectedTab == 1){
+                                noOrder = true;
                                 filter = 'New';
-                              if (_selectedTab == 2)
+                              }
+                              if (_selectedTab == 2){
+                                noOrder = true;
                                 filter = 'Waiting';
-                              if (_selectedTab == 3)
+                              }
+                              if (_selectedTab == 3){
+                                noOrder = true;
                                 filter = 'Under preparation';
-                              if (_selectedTab == 4)
+                              }
+                              if (_selectedTab == 4){
+                                noOrder = true;
                                 filter = 'Ready for pick up';
+                              }
                             },
                           );
                         },
@@ -214,6 +225,9 @@ class PharmacyNew extends State<PharmacyNewO>
                                                     final orderTime = orderCreatedDate.substring(10,19);
                                                     if(OrderStatus == 'Accepted'){
                                                       OrderStatus = 'Waiting';//Pending
+                                                    }
+                                                    if(OrderStatus.contains(filter)){
+                                                      noOrder = false;
                                                     }
                                                     return  (OrderStatus.contains(filter))?
                                                     GestureDetector(
@@ -409,7 +423,21 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                       ),
                                                                     ),
                                                                   ],
-                                                                ))):Container();
+                                                                )))
+                                                    ///When last iteration of displaying orders and no order matched filter yet display this message
+                                                        :(noOrder && index == snapshot.data!.length-1)?
+                                                    Center(
+                                                        child:Column(
+                                                            children:[
+                                                              Icon(Icons.pending_actions_outlined,color: Colors.black45,size: 30,),
+                                                              Text("No $filter orders yet.",style: TextStyle(
+                                                                  fontFamily: "Lato",
+                                                                  fontSize: 18,
+                                                                  color: Colors.black45,
+                                                                  fontWeight: FontWeight.w700),)
+                                                            ]
+                                                        )
+                                                    ):Container();
                                                   } );
                                             } }
                                       })
