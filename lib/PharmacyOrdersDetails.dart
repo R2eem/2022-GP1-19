@@ -554,6 +554,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                                                         children:[
                                                                                                                                                           Row(
+
                                                                                                                                                               children:[
                                                                                                                                                                 Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
                                                                                                                                                                 Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(

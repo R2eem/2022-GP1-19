@@ -42,6 +42,10 @@ class _PresAttachPage extends State<PresAttach> {
   List pharmacies = [];
   List pharmaciesLocation = [];
   var counter = 0;
+  var country;
+  var locality;
+  var subLocality;
+  var street;
 
   @override
   Widget build(BuildContext context) {
@@ -206,10 +210,10 @@ class _PresAttachPage extends State<PresAttach> {
                                                       itemCount: 1,
                                                       itemBuilder: (context, index) {
                                                         final address = snapshot.data!;
-                                                        final country = address.country;
-                                                        final locality = address.locality;
-                                                        final subLocality = address.subLocality;
-                                                        final street = address.street;
+                                                        country = address.country;
+                                                        locality = address.locality;
+                                                        subLocality = address.subLocality;
+                                                        street = address.street;
                                                         return Stack(
                                                             children: <Widget>[
                                                               Container(
@@ -483,6 +487,7 @@ class _PresAttachPage extends State<PresAttach> {
                         ..objectId = widget.customerId).toPointer())
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
+                      ..set('Address', '$street, $subLocality, $locality, $country')
                       ..setAddUnique('MedicationsList', medicationsList);
 
                     await orderInfo.save();
@@ -565,8 +570,10 @@ class _PresAttachPage extends State<PresAttach> {
                       ..set('Prescription', parseFile)
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
+                      ..set('Address', '$street, $subLocality, $locality, $country')
                       ..setAddUnique('MedicationsList', medicationsList);
                     await orderInfo.save();
+
 
                     if(!locationExist)
                     {
