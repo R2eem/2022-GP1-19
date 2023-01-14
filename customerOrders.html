@@ -18,60 +18,58 @@
 <body>
     <div class="container">
         <aside class="aside">
-        <div class="top">
-            <div class="logo">
-                <img src="./images/logo.png">
-                <h2>Tiryaq</h2>
+            <div class="top">
+                <div class="logo">
+                    <img src="./images/logo.png">
+                    <h2>Tiryaq</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                     </div>
             </div>
-            <div class="close" id="close-btn">
-                <i class="fa fa-times" aria-hidden="true"></i>
-                 </div>
-        </div>
-        <div class="sidebar">
-            <a href="#">
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                <h3>Dashboard</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                <h3>Customers</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requists</h3>
-                <span class="message-count">5</span>
-     
-            </a>
-            <a href="#" class="active">
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <h3>Add Medications</h3>
-            </a>
-            <a href="log_in_page.html">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                <h3>Log out</h3>
-            </a>
-        </div>
-        </aside>
+            <div class="sidebar">
+                <a href="index.html">
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="#">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>Customers</h3>
+                </a>
+                <a href="#">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+                <a href="#">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <h3>Join requists</h3>
+         
+                </a>
+                <a href="Medications.html">
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+                <a href="customerOrders.html" class="active">
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
+                </a>
+                <a href="log_in_page.html">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <h3>Log out</h3>
+                </a>
+            </div>
+            </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
-            <h1>Admin Dashboard</h1>
+            <h1>Orders</h1>
             <p id="demo"></p>
-
-            <div class="date">
-                <input type="date">
-            </div>
             <!---------------------------RECENT ORDERS----------------------------> 
             <div class="recent-orders">
-                <h2>Orders</h2>
-                <table>
+                <table id="OrdersTable">
                     <thead>
                         <tr>
                             <th>Customer name</th>
