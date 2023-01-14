@@ -196,11 +196,7 @@ aside .sidebar a i {
     transition: all 300ms ease;
 }
 
-aside .sidebar a:last-child{
-    position: absolute;
-    bottom: 2rem;
-    width: 100%;
-}
+
 
 aside .sidebar a.active{
     background: var(--color-light);
@@ -359,7 +355,7 @@ main .recent-orders h2{
 
 main .recent-orders table{
     background: var(--color-white);
-    width: 150%;
+    width: 100%;
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
     text-align: center;
@@ -536,3 +532,172 @@ td {
 /*============================== MEDIA QUERIES ==========================
 for tablet and mobile
 */
+
+
+
+
+
+
+
+
+/*=============== Display Medications ==============================*/
+
+main .med{
+    margin-top: 2rem; 
+}
+
+main .med table{
+    background: var(--color-white);
+    width: 100%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    border-spacing:15px;
+    
+}
+
+main .med table:hover{
+    box-shadow: none;
+}
+
+main .med a{
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+    color: var(--color-primary);
+}
+
+
+main .med i{
+    font-size: 20px;
+    color: gray;
+    background-color: white;
+}
+
+ 
+#divMedDetails{
+    background: var(--color-white);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 4rem;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    width: 100%;
+}
+
+#divMedDetails div:hover {
+    box-shadow: none;
+}
+
+#hDiv{
+    color: black;
+    font-size: large;
+}
+
+
+hr.new1 {
+    border-top: 3px solid gray;
+    
+  }
+
+#trash{
+    font-size: 25px;
+    color: gray;
+    background-color: white;
+    float: right;
+} 
+
+.addDiv{
+    background: rgb(237, 207, 244);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 4rem;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 20%;
+    margin-right: auto;
+    width: 80%;
+}
+
+
+main .addDiv input {
+    width: 100%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px ;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  #addInput{
+  color: white;
+    background-color: rgb(204, 0, 204);
+    width:35%;
+    margin-left: 30% ;
+    margin-right:auto;
+    
+  }
+
+  #updateInput{
+    color: white;
+      background-color: rgb(204, 0, 204);
+      padding: 5px;
+      width:15%;
+      float: right;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-right: 20px;
+     
+      
+    }
+
+ #updateInput2{
+   color: white;
+    background-color: rgb(204, 0, 204);
+    width:35%;
+    margin-left: 30% ;
+    margin-right:auto;
+    }
+  
+
+  
+  
+  #PharmaceuticalForm {
+    width: 60%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+  }
+    
+
+  #LegalStatus {
+    width: 60%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+  }
+    
