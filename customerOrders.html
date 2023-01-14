@@ -110,8 +110,38 @@
                                        document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
                                        document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
                                        document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
-                                       document.getElementById(i).innerHTML +="<td id=med"+i+"></td>"
-                                       //Query medication list information and quantity
+                                       document.getElementById(i).innerHTML +="<td class= medList id=med"+i+"></td>"
+
+                                       ///Query medication list accepted from the assigned pharmacy if there is one   
+                                       ///&& because we want only orders that are any type of these                                    
+                                       if(order.get("OrderStatus")!== 'Under processing' && order.get("OrderStatus")!== 'Cancelled' && order.get("OrderStatus")!== 'Declined'){
+                                        let pharmListquery = new Parse.Query('PharmaciesList')
+                                        pharmListquery.equalTo("OrderId",order)
+                                        let queryResult = await pharmListquery.find();
+                                        for (n=0; n<queryResult.length; n++){
+                                            var pharmListinfo = queryResult[n]
+                                            if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                ///Query medication list information that is accepted from the pharmacy
+                                                for (j = 0 ; j< pharmListinfo.get("MedicationsList")[0].length; j++){
+                                                  let medquery = new Parse.Query('Medications');
+                                                  medquery.contains('objectId',pharmListinfo.get("MedicationsList")[0][j]['medId2']);
+                                                  let queryResult = await medquery.find();
+                                                  var medinfo = queryResult[0]
+                                                  if(pharmListinfo.get("MedicationsList")[0][j]['isChecked']== true){
+                                                    document.getElementById('med'+i).innerHTML += "<p><i id=med"+i+j+" class='fa fa-check'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+                                                    document.getElementById("med"+i+j).style.color = "green";                     
+
+                                                  }
+                                                  else{
+                                                    document.getElementById('med'+i).innerHTML += "<p><i id=med"+i+j+" class='fa fa-close'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+                                                    document.getElementById("med"+i+j).style.color = "red";
+                                                  }
+                                                }                                             
+                                            }
+                                        }    
+                                    }
+                                       else{
+                                       //Query medication list information and quantity of initial order
                                        for (j = 0 ; j< order.get("MedicationsList")[0].length; j++){
                                         let medquery = new Parse.Query('Medications');
                                         medquery.contains('objectId',order.get("MedicationsList")[0][j]['medId']);
@@ -119,16 +149,18 @@
                                         var orderinfo = queryResult[0]
                                         document.getElementById('med'+i).innerHTML += "<p>"+order.get("MedicationsList")[0][j]['quantity'] +'x '+orderinfo.get("TradeName")+" "+orderinfo.get("Strength")+" "+orderinfo.get("StrengthUnit")+"</p></br>"
                                        }
+                                    }
 
                                        ///Query pharmacy name if there is assigned pharmacy for order
                                        var selectedPharmacy;
-                                       var pharmExist = false;
+                                       var pharmExist = false; 
                                        if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
                                         let pharmListquery = new Parse.Query('PharmaciesList')
                                         pharmListquery.equalTo("OrderId",order)
                                         let queryResult = await pharmListquery.find();
                                         for (n=0; n<queryResult.length; n++){
                                             var pharmListinfo = queryResult[n]
+                                            ///If there is assigned pharmacy show name else nothing
                                             if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
                                                 selectedPharmacyId = pharmListinfo.get("PharmacyId").id
                                                 pharmExist = true

@@ -370,10 +370,12 @@ main .recent-orders table{
 main .recent-orders table:hover{
     box-shadow: none;
 }
-
+main table thead th{
+    border-bottom: 2px solid var(--color-primary);
+}
 main table tbody td{
     height: 2.8rem;
-    border-bottom: 1px solid var(--color-light);
+    border-bottom: 2px solid var(--color-primary);
     color: var(--color-dark-variant);
 }
 
@@ -517,6 +519,18 @@ box-shadow: var(--box-shadow);
 
 .right .sales-analytics .item.customers h5{
     color: #E397DE;
+}
+
+.medList {
+    text-align: left;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 30px 0;
+}
+td {
+    padding: 10px 0;
 }
 
 /*============================== MEDIA QUERIES ==========================
