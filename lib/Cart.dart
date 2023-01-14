@@ -228,6 +228,10 @@ class Cart extends State<CartPage> {
                                                                                   presRequired = true;
                                                                                   numOfPres++;
                                                                                 }
+                                                                                ParseFileBase? image;
+                                                                                if (medGet.get<ParseFileBase>('Image') != null) {
+                                                                                  image = medGet.get<ParseFileBase>('Image')!;
+                                                                                }
                                                                                 //Save quantity value in counter
                                                                                 num counter = quantity;
                                                                                 TotalPrice =  num.parse((TotalPrice + (Publicprice*counter)).toStringAsFixed(2));
@@ -299,6 +303,7 @@ class Cart extends State<CartPage> {
                                                                                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                               child: Row(
                                                                                                 children: <Widget>[
+                                                                                                  Image.network(image!.url!, height: 100, width: 70,fit: BoxFit.fill,),
                                                                                                   Expanded(
                                                                                                     child: Container(
                                                                                                       padding: const EdgeInsets.all(8.0),
@@ -382,7 +387,7 @@ class Cart extends State<CartPage> {
                                                                                                               ],
                                                                                                             ),
                                                                                                           ),
-                                                                                                        ],
+                                                                                                       ],
                                                                                                       ),
                                                                                                     ),
                                                                                                     flex: 100,
