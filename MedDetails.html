@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+    <link rel="stylesheet" href="./style.css"> 
+    <script
+         type="text/javascript"
+         src="https://npmcdn.com/parse/dist/parse.min.js"
+       ></script>
+       <script>
+
+        // Initialize Parse
+        Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5",
+         "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); 
+           Parse.serverURL = "https://parseapi.back4app.com/";
+
+
+
+//delete medication  
+async function deleteMedication(MedId,MedName) {
+  
+const query = new Parse.Query("Medications");
+       
+let text = "Are you sure you want to delete "+MedName+ " medication?";
+
+if(confirm(text)==true){
+        try{
+            const medication = await query.get(MedId);
+            //destroy the object
+            let result = await medication.destroy();
+            alert(MedName+ "Medication Deleted");
+            location.reload();
+            
+        }catch(error){
+            alert('Failed to delete object, with error code: ' + error.message);
+        }
+    }
+    }  
+
+</script>
+
+    
+</head>
+<body>
+    <div class="container">
+        <aside class="aside">
+        <div class="top">
+            <div class="logo">
+                <img src="./images/logo.png">
+                <h2>Tiryaq</h2>
+            </div>
+            <div class="close" id="close-btn">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                 </div>
+        </div>
+        <div class="sidebar">
+            <a href="index.html">
+                <i class="fa fa-th-large" aria-hidden="true"></i>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="#">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                <h3>Customers</h3>
+            </a>
+            <a href="#">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Pharmacies</h3>
+            </a>
+            <a href="#">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <h3>Join requists</h3>
+     
+            </a>
+            <a href="Medications.html" class="active">
+                <i class="fa fa-medkit" aria-hidden="true"></i>
+                <h3>Medications</h3>
+            </a>
+            <a href="AddMedication.html">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                <h3>Add Medications</h3>
+            </a>
+            <a href="log_in_page.html">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <h3>Log out</h3>
+            </a>
+        </div>
+        </aside>
+        <!----------------------------------END OF ASIDE-------------->
+        <main id="mainn">
+            <h1>Medication Details</h1>
+        
+            <!---------------------------Display Medication Details----------------------------> 
+            <div id="divMedDetails">
+               <h2 id="tradeName"> </h2> 
+               <hr class="new1">
+               <h3 id="price" style="text-align:left; font-size: 1.3em;"> </h3>
+               <br>
+               <p id="scientficName" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="strength" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="packageType" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="phForm" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="usageMethod" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="legalStatus" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="company" style="text-align:left; font-size: 1.3em;"> </p>
+               <p id="country" style="text-align:left; font-size: 1.3em;"> </p>
+               <br>
+               <div id="divMedDetailss"></div>
+               <br>
+            </div>
+             <!--------------------------- END OF Display Medication Details----------------------------> 
+        </main>
+        <!------------------------- END OF MAIN ------------------>
+
+            </div>
+        </div>
+    </div>  
+</body>
+
+<script>
+
+async function displayMedDetails(){   
+    
+const query = window.location.search;
+const urlParams = new URLSearchParams(query);
+const medicationId = urlParams.get('id');
+console.log(medicationId);
+
+
+const query2 = new Parse.Query("Medications");
+query2.get(medicationId)
+.then((medId) => {
+  // The object was retrieved successfully.
+  var Medid = medId.id;
+  var MedName = medId.get("TradeName");
+  document.getElementById('tradeName').innerHTML += medId.get("TradeName")+"<br>";
+  document.getElementById('divMedDetails').innerHTML += "<hr>";
+  document.getElementById('price').innerHTML += "<br>"+medId.get("Publicprice")+"SAR";
+  document.getElementById('scientficName').innerHTML += "Scientific Name: "+medId.get("ScientificName");
+  document.getElementById('strength').innerHTML += "Strength: "+medId.get("Strength")+" "+medId.get("StrengthUnit");
+  document.getElementById('packageType').innerHTML += "Package Type: "+medId.get("PackageTypes");
+  document.getElementById('phForm').innerHTML += "Pharmaceutical Form: "+medId.get("PharmaceuticalForm");
+  document.getElementById('usageMethod').innerHTML += "Usage Method: "+medId.get("UsageMethod");
+  document.getElementById('legalStatus').innerHTML += "Legal Status: "+medId.get("LegalStatus");
+  document.getElementById('company').innerHTML += "Marketing Company: "+medId.get("MarketingCompany");
+  document.getElementById('country').innerHTML += "Marketing Country: "+ medId.get("MarketingCountry");
+  document.getElementById('divMedDetailss').innerHTML += '<button id="trash" onclick= deleteMedication("'+Medid+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button>";
+  document.getElementById('divMedDetailss').innerHTML += '<input id="updateInput" type=button onclick=NavigateToUpdatePage("'+Medid+'") value="Update"/>';
+}, (error) => {
+  // The object was not retrieved successfully.
+
+}); 
+
+       
+}
+    
+displayMedDetails(); 
+   
+
+async function NavigateToUpdatePage(medId){
+window.location.replace('UpdateMedication.html?id='+medId+'');
+
+}
+    </script>
+
+
+</html>
