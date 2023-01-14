@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/PharmacyLogin.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -36,6 +37,10 @@ class Signup extends State<PharmacySignUp> {
   bool _hasPasswordOneSpecial = false;
   bool _hasPasswordOneUpper = false;
   bool _hasPasswordOneLower = false;
+  var country;
+  var locality;
+  var subLocality;
+  var street;
 
   //Password validation caller
   onPasswordChanged(String password) {
@@ -634,7 +639,47 @@ class Signup extends State<PharmacySignUp> {
                                 ]),
                           ),
                         ]),
-                  )
+                  ),
+                  FutureBuilder<Placemark>(
+                      future: getUserLocation(),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                          case ConnectionState.waiting:
+                            return Center(
+                              child: Container(
+                                  width: 200,
+                                  height: 5,
+                                  child:LinearProgressIndicator()),
+                            );
+                          default:
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text(
+                                    "Error..."),
+                              );
+                            }
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: Text(
+                                    "No Data..."),
+                              );
+                            } else {
+                              return  ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: 1,
+                                  itemBuilder: (context, index) {
+                                    final address = snapshot.data!;
+                                    country = address.country;
+                                    locality = address.locality;
+                                    subLocality = address.subLocality;
+                                    street = address.street;
+                                    return Container();
+                                  });
+                            }
+                        }
+                      }),
                 ])));
   }
 
@@ -722,8 +767,13 @@ class Signup extends State<PharmacySignUp> {
         var response = await user.signUp();
         if (response.success) {
           final createPharmacist = ParseObject('Pharmacist')
-            ..set('PharmacyName', PharmacyName)..set('CommercialRegister', ComRegister)..set(
-                'PhoneNumber', '0$phonenumber')..set('user', user)..set('JoinRequest', "UnderProcessing")..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long));
+            ..set('PharmacyName', PharmacyName)
+            ..set('CommercialRegister', ComRegister)
+            ..set('PhoneNumber', '0$phonenumber')
+            ..set('user', user)
+            ..set('JoinRequest', "UnderProcessing")
+            ..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long))
+            ..set('Address', '$street, $subLocality, $locality, $country');
           await createPharmacist.save();
 
           showSuccess();
@@ -734,5 +784,12 @@ class Signup extends State<PharmacySignUp> {
       else
         (showError('phoneNumber'));
     }
+  }
+
+  Future<Placemark> getUserLocation() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        widget.lat, widget.long);
+    Placemark place = placemarks[0];
+    return place;
   }
 }

@@ -211,6 +211,9 @@ class Login extends State<LoginPage> {
             new TextButton(
               child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
+                if(errorMessage.compareTo('Account blocked, contact Tiryaq admin.')==0){
+                  doUserLogout();
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -225,6 +228,7 @@ class Login extends State<LoginPage> {
     var object;
     var id;
     var type;
+    bool block = false;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
@@ -241,6 +245,7 @@ class Login extends State<LoginPage> {
         id = object.get('objectId');
       }
     }
+    ///If account not signed up in Tiryaq
     else {
       showError('Invalid username/password.');
     }
@@ -256,6 +261,7 @@ class Login extends State<LoginPage> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           type = 'Customer';
+          block = o.get('Block');
         }
       }
       if (type == 'Customer') {
@@ -263,19 +269,39 @@ class Login extends State<LoginPage> {
 
         var response = await user.login();
 
-        if (response.success) {
+        ///If credentials correct and not blocked enter account
+        if (response.success && !block) {
           setState(() {
             isLoggedIn = true;
           });
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => CategoryPage()));
-        } else {
+
+          ///If credentials correct and blocked don't enter account
+        } else if(response.success && block){
+          showError('Account blocked, contact Tiryaq admin.');
+        }
+        ///If credentials not correct and blocked don't enter account
+        else{
           showError(response.error!.message);
         }
       }
+      ///Account not customer
       else {
         showError('Invalid username/password.');
       }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showError(response.error!.message);
     }
   }
 }
