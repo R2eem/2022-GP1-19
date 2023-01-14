@@ -151,7 +151,7 @@ class Signup extends State<PharmacySignUp> {
                                               AutovalidateMode
                                                   .onUserInteraction,
                                               controller: controllerCommercialRegister,
-                                              keyboardType: TextInputType.text,
+                                              keyboardType: TextInputType.number,
                                               textCapitalization: TextCapitalization
                                                   .none,
                                               autocorrect: false,
@@ -159,6 +159,10 @@ class Signup extends State<PharmacySignUp> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MinLengthValidator(10,
+                                                    errorText: 'must be 10 digits long'),
+                                                MaxLengthValidator(10,
+                                                    errorText: 'must be 10 digits long'),
                                               ]),
                                               decoration: ThemeHelper()
                                                   .textInputDecoration(

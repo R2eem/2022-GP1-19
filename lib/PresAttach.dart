@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -10,7 +13,6 @@ import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
-import 'common/theme_helper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -37,6 +39,13 @@ class _PresAttachPage extends State<PresAttach> {
   bool isLoading = false;
   List medicationsList = [];
   bool locationExist = false;
+  List pharmacies = [];
+  List pharmaciesLocation = [];
+  var counter = 0;
+  var country;
+  var locality;
+  var subLocality;
+  var street;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +171,80 @@ class _PresAttachPage extends State<PresAttach> {
                                     fontWeight: FontWeight.bold,
                                   )),
                                   SizedBox(height: 10,),
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Selected location:  ', style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                      FutureBuilder<Placemark>(
+                                          future: getUserLocation(),
+                                          builder: (context, snapshot) {
+                                            switch (snapshot.connectionState) {
+                                              case ConnectionState.none:
+                                                case ConnectionState.waiting:
+                                                  return Center(
+                                                  child: Container(
+                                                  width: 200,
+                                                  height: 5,
+                                                  child:LinearProgressIndicator()),
+                                                  );
+                                                  default:
+                                                    if (snapshot.hasError) {
+                                                      return Center(
+                                                      child: Text(
+                                                      "Error..."),
+                                                  );
+                                                    }
+                                                    if (!snapshot.hasData) {
+                                                      return Center(
+                                                      child: Text(
+                                                      "No Data..."),
+                                                    );
+                                                    } else {
+                                                      return  ListView.builder(
+                                                      shrinkWrap: true,
+                                                      scrollDirection: Axis.vertical,
+                                                      itemCount: 1,
+                                                      itemBuilder: (context, index) {
+                                                        final address = snapshot.data!;
+                                                        country = address.country;
+                                                        locality = address.locality;
+                                                        subLocality = address.subLocality;
+                                                        street = address.street;
+                                                        return Stack(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                  padding: EdgeInsets.all(10),
+                                                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                  child:RichText(
+                                                                    text: TextSpan(
+                                                                      children: [
+                                                                        WidgetSpan(
+                                                                          child: Icon(Icons.location_on),
+                                                                        ),
+                                                                        TextSpan(
+                                                                          text: " $street, $subLocality, $locality, $country",style: TextStyle(
+                                                                            fontFamily: "Lato",
+                                                                            fontSize: 17,
+                                                                            color: Colors.black,
+                                                                            fontWeight: FontWeight.w600),
+                                                                            ),
+                                                                      ],
+                                                                    ),
+                                                            )
+                                                              )
+                                                            ]
+                                                        );
+                                                      });
+                                                    }
+                                            }
+                                          }),
+                                    ]),
+                                  SizedBox(height: 20,),
                                   Row(
                                     children: [
                                       Text('Total price:  ', style: TextStyle(
@@ -287,7 +370,12 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                 //Get medication information from Medications table
                                                                                 final medGet = snapshot.data![index];
                                                                                 final TradeName = medGet.get<String>('TradeName')!;
-                                                                                final Publicprice = medGet.get<num>('Publicprice')! * quantity;
+                                                                                final Publicprice = (medGet.get<num>('Publicprice')! * quantity).toStringAsFixed(2);
+                                                                                final LegalStatus = medGet.get<String>('LegalStatus')!;
+                                                                                var text ='';
+                                                                                if(LegalStatus=='Prescription'){
+                                                                                  text = 'requires prescription';
+                                                                                }
 
                                                                                 return Column(
                                                                                     children: [
@@ -295,6 +383,7 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                           children: <Widget>[
                                                                                             Container(
                                                                                               margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                              padding: EdgeInsets.all(10),
                                                                                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                               child: Row(
                                                                                                 children: <Widget>[
@@ -318,7 +407,12 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                                               softWrap: true,
                                                                                                               style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
                                                                                                             ),
-                                                                                                          ),
+                                                                                                          ),Text('$text',
+                                                                                                            style: TextStyle(
+                                                                                                                fontFamily: "Lato",
+                                                                                                                fontSize: 10,
+                                                                                                                fontWeight: FontWeight.w700,
+                                                                                                                color: Colors.red),),
                                                                                                         ],
                                                                                                       ),
                                                                                                     ),
@@ -349,7 +443,7 @@ class _PresAttachPage extends State<PresAttach> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context) =>
-                            Location(widget.customerId, widget.totalPrice,
+                            Locationpage(widget.customerId, widget.totalPrice,
                                 widget.presRequired)),);
                   },
                   icon: const Icon(
@@ -357,13 +451,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-          Text('Back',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              )),
-          SizedBox(width: 79,),
+          SizedBox(width: 135,),
           Text('Send Order',
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -409,6 +497,7 @@ class _PresAttachPage extends State<PresAttach> {
                         ..objectId = widget.customerId).toPointer())
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
+                      ..set('Address', '$street, $subLocality, $locality, $country')
                       ..setAddUnique('MedicationsList', medicationsList);
 
                     await orderInfo.save();
@@ -421,6 +510,18 @@ class _PresAttachPage extends State<PresAttach> {
                             'SavedLocations', point);
                       await saveLocation.save();
                     }
+
+                    for (int i = 0; i < pharmacies.length; i++) {
+                      final orderPharmacyInfo = ParseObject('PharmaciesList')
+                        ..set('OrderId', (ParseObject('Orders')
+                          ..objectId = orderInfo.objectId).toPointer())
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                          ..objectId = pharmacies[i]['pharmacyId']).toPointer())
+                        ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
+
+                      await orderPharmacyInfo.save();
+                    }
+
 
                     showDialog(
                       context: context,
@@ -479,8 +580,10 @@ class _PresAttachPage extends State<PresAttach> {
                       ..set('Prescription', parseFile)
                       ..set('TotalPrice', widget.totalPrice)
                       ..set('Location', point)
+                      ..set('Address', '$street, $subLocality, $locality, $country')
                       ..setAddUnique('MedicationsList', medicationsList);
                     await orderInfo.save();
+
 
                     if(!locationExist)
                     {
@@ -489,6 +592,17 @@ class _PresAttachPage extends State<PresAttach> {
                           ..objectId = widget.customerId).toPointer())..set(
                             'SavedLocations', point);
                       await saveLocation.save();
+                    }
+
+                    for (int i = 0; i < pharmacies.length; i++) {
+                      final orderPharmacyInfo = ParseObject('PharmaciesList')
+                        ..set('OrderId', (ParseObject('Orders')
+                          ..objectId = orderInfo.objectId).toPointer())
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                          ..objectId = pharmacies[i]['pharmacyId']).toPointer())
+                        ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
+
+                      await orderPharmacyInfo.save();
                     }
 
                     showDialog(
@@ -616,6 +730,32 @@ class _PresAttachPage extends State<PresAttach> {
     savedLocations.whereEqualTo('customer', (ParseObject('Customer')..objectId = widget.customerId).toPointer());
     final apiResponse2 = await savedLocations.query();
 
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    parseQuery.whereNear(
+        'Location',
+        ParseGeoPoint(latitude: widget.lat, longitude: widget.lng)
+    );
+    final apiResponse3 = await parseQuery.query();
+
+    if (apiResponse3.success && apiResponse3.results != null) {
+      for (var object in apiResponse3.results as List<ParseObject>) {
+        for (int i = 0; i < apiResponse3.count; i++) {
+          var pharmacy = {
+            'pharmacyId': object.objectId
+          };
+          var pharmacyLocation = {
+            'pharmacyLocation': object.get('Location')
+          };
+
+          var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
+          if (contain.isEmpty && counter<5) {
+            counter++;
+            pharmacies.add(pharmacy);
+            pharmaciesLocation.add(pharmacyLocation);
+          }
+        }
+      }
+    }
     if (apiResponse1.success && apiResponse1.results != null) {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
@@ -645,6 +785,22 @@ class _PresAttachPage extends State<PresAttach> {
     } else {
       return [];
     }
+  }
+  //Calculate distance between customer and pharmacy
+  double calculateDistance(lat1, lon1, lat2, lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  Future<Placemark> getUserLocation() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        widget.lat, widget.lng);
+    Placemark place = placemarks[0];
+    return place;
   }
 }
 

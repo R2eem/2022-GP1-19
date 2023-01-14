@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:untitled/PharmacyOrders.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
@@ -331,7 +330,7 @@ class Login extends State<PharmacyLogin> {
       setState(() {
         isLoggedIn = true;
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyOrdersPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
     } else {
       showError(response.error!.message);
     }
@@ -345,6 +344,8 @@ class Login extends State<PharmacyLogin> {
     var getUserId;
     var gett;
     var id;
+    var counter = 0;
+    bool exist = false;
     bool checkV = false;
 
     QueryBuilder<ParseUser> queryUsers = QueryBuilder<ParseUser>(ParseUser.forQuery());
@@ -362,10 +363,11 @@ class Login extends State<PharmacyLogin> {
         final apiResponse = await ParseObject('Pharmacist').getAll();
         if (apiResponse.success && apiResponse.results != null) {
           for (var o in apiResponse.results!) {
+            counter++;
             gett = o as ParseObject;
-            print(id);
-            print(gett.get('user').objectId);
             if (id == gett.get('user').objectId) {
+
+              exist = true;
 
               if ("accepted" == gett.get('JoinRequest') && checkV == true) {
                 doUserLogin();
@@ -385,20 +387,20 @@ class Login extends State<PharmacyLogin> {
               if ("declined" == gett.get('JoinRequest')) {
                 showError("Sorry, Your join request is declined");
               }
-
             }
 
+            if(exist == false && counter == apiResponse.count) {
+              showError('Invalid username/password.');
+            }
           }
         }
       }
-
-
     }
-
-    else {showError('Invalid username/password.');}
-
-
-  }}
+    else {
+      showError('Invalid username/password.');
+    }
+  }
+}
 
 
 

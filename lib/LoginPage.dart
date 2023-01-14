@@ -222,20 +222,60 @@ class Login extends State<LoginPage> {
 
   //User log in function
   void doUserLogin() async {
+    var object;
+    var id;
+    var type;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    final user = ParseUser(email, password, null);
+    //Check if user is customer
+    QueryBuilder<ParseObject> queryCustomer1 =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryCustomer1.whereEqualTo('email', email);
+    final ParseResponse apiResponse1 = await queryCustomer1.query();
 
-    var response = await user.login();
+    //If user exist search for type otherwise invalid inputs
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        object = o as ParseObject;
+        id = object.get('objectId');
+      }
+    }
+    else {
+      showError('Invalid username/password.');
+    }
 
-    if (response.success) {
-      setState(() {
-        isLoggedIn = true;
-      });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-    } else {
-      showError(response.error!.message);
+    //If user exist in Customer table then log in successfully
+    if (id != null) {
+      QueryBuilder<ParseObject> queryCustomer2 =
+      QueryBuilder<ParseObject>(ParseObject('Customer'));
+      queryCustomer2.whereEqualTo('user', (ParseUser.forQuery()
+        ..objectId = id).toPointer());
+      final ParseResponse apiResponse2 = await queryCustomer2.query();
+
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          type = 'Customer';
+        }
+      }
+      if (type == 'Customer') {
+        final user = ParseUser(email, password, null);
+
+        var response = await user.login();
+
+        if (response.success) {
+          setState(() {
+            isLoggedIn = true;
+          });
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CategoryPage()));
+        } else {
+          showError(response.error!.message);
+        }
+      }
+      else {
+        showError('Invalid username/password.');
+      }
     }
   }
 }

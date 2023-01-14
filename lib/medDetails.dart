@@ -29,11 +29,6 @@ class MedDetails extends State<medDetailsPage> {
         body: SingleChildScrollView(
             child: Stack(
                 children: [
-                  //Header
-                  Container(
-                    height: 150,
-                    child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
-                  ),
                   //Controls app logo
                   Container(
                       child: SafeArea(
@@ -41,28 +36,14 @@ class MedDetails extends State<medDetailsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                    children:[
-                                      Container(
-                                        child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                          iconSize: 40,
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          }, icon: Icon(Icons.keyboard_arrow_left),),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
-                                        child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
-                                      ),
-                                    ]),
                                 //Controls medication details page display
                                 Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
+                                      color: Colors.white,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
-                                        height: 620,
+                                        height: size.height,
                                         width: size.width,
                                         child: Column(children: [
                                           Expanded(
@@ -109,9 +90,12 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                ParseFileBase? image;
+                                                                if(medDetails.get<ParseFileBase>('Image') != null){
+                                                                  image = medDetails.get<ParseFileBase>('Image')!;
+                                                                }
                                                                 //Display medication information
-                                                                return SingleChildScrollView(
-                                                                    child: Container(
+                                                                return  Container(
                                                                         child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                             mainAxisSize: MainAxisSize.min,
@@ -126,8 +110,15 @@ class MedDetails extends State<medDetailsPage> {
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                                             children: [
                                                                                               SizedBox(
-                                                                                                height: 30.0,
+                                                                                                height: size.height/10,
                                                                                               ),
+                                                                                              (image!=null)?
+                                                                                              Image.network(
+                                                                                                image!.url!,
+                                                                                                width: size.width,
+                                                                                                height: size.height/4,
+                                                                                                fit: BoxFit.contain,
+                                                                                              ):Container(),
                                                                                               Container(
                                                                                                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                                                                                                   child: Column(
@@ -324,47 +315,69 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                         SizedBox(height: 50,),
                                                                                                         //Add to cart button
                                                                                                         Center(
-                                                                                                          child:Container(
-                                                                                                            decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                                                            child: ElevatedButton(
-                                                                                                              style: ThemeHelper().buttonStyle(),
-                                                                                                              child: Padding(
-                                                                                                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                                                                                                  child: Text.rich(
-                                                                                                                    TextSpan(
-                                                                                                                      children: [
-                                                                                                                        TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                                                                                                                        WidgetSpan(
-                                                                                                                            child: Icon(
-                                                                                                                              Icons.add_shopping_cart_rounded,
-                                                                                                                              color: Colors.white,
-                                                                                                                              size: 25.0,)),
-                                                                                                                      ],
-                                                                                                                    ),
-                                                                                                                  )),
+                                                                                                          child:Align(
+                                                                                                            alignment: FractionalOffset.bottomCenter,
+                                                                                                            child: Container(
+                                                                                                              decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                                              child: ElevatedButton(
+                                                                                                                style: ThemeHelper().buttonStyle(),
+                                                                                                                child: Padding(
+                                                                                                                    padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                                                                                                    child: Text.rich(
+                                                                                                                      TextSpan(
+                                                                                                                        children: [
+                                                                                                                          TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                                          WidgetSpan(
+                                                                                                                              child: Icon(
+                                                                                                                                Icons.add_shopping_cart_rounded,
+                                                                                                                                color: Colors.white,
+                                                                                                                                size: 25.0,)),
+                                                                                                                        ],
+                                                                                                                      ),
+                                                                                                                    )),
 
-                                                                                                              onPressed: () async {
-                                                                                                                if(await addToCart(medId, widget.customerId)) {
-                                                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                                                      SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
-                                                                                                                        duration: Duration(milliseconds: 3000),
-                                                                                                                      ));
-                                                                                                                };
-                                                                                                              },
+                                                                                                                onPressed: () async {
+                                                                                                                  if(await addToCart(medId, widget.customerId)) {
+                                                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                                        SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                                                          duration: Duration(milliseconds: 3000),
+                                                                                                                        ));
+                                                                                                                  };
+                                                                                                                },
+                                                                                                              ),
                                                                                                             ),
                                                                                                           ),
                                                                                                         ),
                                                                                                         SizedBox(height: 10,)  ]))]))
                                                                                   ])
                                                                             ])
-                                                                    )
-                                                                );
+                                                                    );
                                                               }
                                                           );
                                                         }
                                                     }
-                                                  }))
-                                        ])))])))])
+                                                  })),
+                                        ])))]))),
+                  //Header
+                  Container(
+                    height: 150,
+                    child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+                  ),
+                  Row(
+                      children:[
+                        Container(
+                          child: IconButton(padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }, icon: Icon(Icons.keyboard_arrow_left),),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                          child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                        ),
+                      ]),])
         ),
         //Bottom navigation bar
         bottomNavigationBar: Container(
