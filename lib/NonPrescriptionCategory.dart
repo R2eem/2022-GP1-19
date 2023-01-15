@@ -148,6 +148,74 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                           Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                         ]),
                     SizedBox(height: 20,),
+                    FutureBuilder<List<ParseObject>>(
+                            future: getNonPresMedication(searchString),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                  return Center(
+                                  );
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text(""),
+                                    );
+                                  }
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: Text(""),
+                                    );
+                                  } else {
+                                    return Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children:[
+                                          Text(
+                                            'Resutls: ${snapshot.data!.length}',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                fontFamily: "Lato",
+                                                fontSize: 17,
+                                                fontWeight:
+                                                FontWeight.w700),
+                                          ),
+                                          //If the medication doesn't matches the search string then don't display
+                                          (snapshot.data!.length==0)?
+                                          Container(
+                                              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                  //mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 60,
+                                                    ),
+                                                    Text(
+                                                      "Sorry we could't find any match,",
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                          "Lato",
+                                                          fontSize:
+                                                          20,),
+                                                      textAlign:
+                                                      TextAlign
+                                                          .center,
+                                                    ),
+                                                    Text(
+                                                      "try another search or continue shopping through the categories.",
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                          "Lato",
+                                                          fontSize:
+                                                          20,),
+                                                      textAlign:
+                                                      TextAlign
+                                                          .center,
+                                                    ),
+                                                  ])):Container(),
+                                        ]);
+                                  }
+                              }
+                            }),
                     Expanded(
                       //Get Non-prescription medications
                       child: FutureBuilder<List<ParseObject>>(

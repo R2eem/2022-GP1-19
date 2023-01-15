@@ -230,6 +230,71 @@ class Prescription extends State<PrescriptionCategory>
                                           fontSize: 17)),
                                 ),
                               ]),
+                          SizedBox(height: 20,),
+                          FutureBuilder<List<ParseObject>>(
+                                future: getPresMedication(searchString),
+                                builder: (context, snapshot) {
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.none:
+                                    case ConnectionState.waiting:
+                                      return Center(
+                                      );
+                                    default:
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text(""),
+                                        );
+                                      }
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                          child: Text(""),
+                                        );
+                                      } else {
+                                        return Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children:[
+                                              Text(
+                                                'Resutls: ${snapshot.data!.length}',
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontFamily: "Lato",
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                    FontWeight.w700),
+                                              ),
+                                              //If the medication doesn't matches the search string then don't display
+                                              (snapshot.data!.length==0)?
+                                              Container(
+                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                      //mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 60,
+                                                        ),
+                                                        Text(
+                                                          "Sorry we could't find any match,",
+                                                          style: TextStyle(
+                                                              fontFamily: "Lato",
+                                                              fontSize: 20,),
+                                                          textAlign:
+                                                          TextAlign
+                                                              .center,
+                                                        ),
+                                                        Text(
+                                                          "try another search or continue shopping through the categories.",
+                                                          style: TextStyle(
+                                                              fontFamily: "Lato",
+                                                              fontSize: 20,),
+                                                          textAlign:
+                                                          TextAlign
+                                                              .center,
+                                                        ),
+                                                      ])):Container(),
+                                            ]);
+                                      }
+                                  }
+                                }),
                           Expanded(
                               //Get prescription medications
                               child: FutureBuilder<List<ParseObject>>(

@@ -291,7 +291,75 @@ class Category extends State<CategoryPage> {
                         SizedBox(
                           height: 15,
                         ),
-                        //Medications list diplay
+                        FutureBuilder<List<ParseObject>>(
+                              future: getMedication(searchString),
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return Center(
+                                    );
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    }
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    } else {
+                                      return Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children:[
+                                            Text(
+                                              'Resutls: ${snapshot.data!.length}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontFamily: "Lato",
+                                                  fontSize: 17,
+                                                  fontWeight:
+                                                  FontWeight.w700),
+                                            ),
+                                            //If the medication doesn't matches the search string then don't display
+                                            (snapshot.data!.length==0)?
+                                            Container(
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 60,
+                                                      ),
+                                                      Text(
+                                                        "Sorry we could't find any match,",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                      Text(
+                                                        "try another search or continue shopping through the categories.",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                    ])):Container(),
+                                          ]);
+                                    }
+                                }
+                              }),
+                        //Medications list display
                         Expanded(
                             //Get medications
                             child: FutureBuilder<List<ParseObject>>(
@@ -344,7 +412,7 @@ class Category extends State<CategoryPage> {
                                                 image = medGet.get<ParseFileBase>('Image')!;
                                               }
                                               //Display medication that matches the search string if exist
-                                              return  (image == null)
+                                              return (image == null)
                                                       ? GestureDetector(
                                                           //Navigate to medication details page
                                                           onTap: () => Navigator.of(
@@ -532,44 +600,6 @@ class Category extends State<CategoryPage> {
                                       }
                                   }
                                 })),
-                        //If the medication doesn't matches the search string then don't display
-                        /*Container(
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Sorry we could't find any match,",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                  Text(
-                                    "try another search or continue shopping through the categories.",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                ])),*/
-
                         SizedBox(
                           height: 80,
                         )
