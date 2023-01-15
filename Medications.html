@@ -9,6 +9,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
     <!----STYLESHEET -->
     <link rel="stylesheet" href="./style.css"> 
+    <style>
+
+#btn1 {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#btn2 {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#btn3 {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+
+
+#MedFilter button:hover{
+   color: rgb(168, 42, 168);
+}
+
+
+#MedFilter{
+    margin-left: 35%;
+    margin-right: auto;
+}
+
+#Medresults {
+    margin-left: 15%;
+    margin-right: auto;
+}
+
+
+  </style>
     <script
          type="text/javascript"
          src="https://npmcdn.com/parse/dist/parse.min.js"
@@ -22,10 +67,15 @@
 
 async function DisplayMedications() { 
     
+
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
+    query.limit(400);
     query.ascending("TradeName");
     const results = await query.find();
+    
+    //display number of results
+    document.getElementById('Medresults').innerHTML = "Results: "+results.length;
 
     //display the medications in table
     for(let i=0; i<results.length;i++){  
@@ -40,12 +90,55 @@ async function DisplayMedications() {
        document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
        document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
        document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-
        
+      
+      
 }       
+//change (All) filter to active color
+changeStyle('btn1');
         }
 
+
+//when page is reloaded display all medications 
  DisplayMedications();
+
+
+
+ // Filter the medication based on Legal status
+ async function DisplayFilterMedications(category) { 
+   
+    var count =0;
+    //retrieve the list of medications
+    const query = new Parse.Query("Medications");
+    query.limit(400);
+    query.ascending("TradeName");
+    const results = await query.find();
+    
+    //clear the table of medications
+    document.getElementById('MedTableBody').innerHTML = "";
+
+    //display the medications in table based on selected filter
+    for(let i=0; i<results.length;i++){  
+    
+       var medication = results[i];   
+       if (medication.get("LegalStatus") == category ){
+       var MedId = medication.id;
+       var MedName = medication.get("TradeName");
+       
+       document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
+       document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+       document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
+       document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
+       document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
+       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
+       document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
+       count = count+1;
+       }
+       
+     //display number of results
+     document.getElementById('Medresults').innerHTML = "Results: "+count;
+}       
+        }
  
 
 //delete medication
@@ -120,6 +213,15 @@ if(confirm(text)==true){
         <main>
             <h1 id="hDivv"> </h1>
             <h1>Medications</h1>
+
+            <div id="MedFilter">
+                <button id="btn1" onclick=" DisplayMedications()">All</button>
+                <button id="btn2" onclick=" DisplayFilterMedications('Prescription');changeStyle('btn2')"> Prescription Medications</button>
+                <button id="btn3" onclick=" DisplayFilterMedications('OTC');changeStyle('btn3')"> NonPrescription Medications</button>
+                  
+            </div>
+
+            <p id="Medresults"></p>
             <!---------------------------Display Medications----------------------------> 
             <div class="med">
             
@@ -134,11 +236,7 @@ if(confirm(text)==true){
                         </tr>
                     </thead>
                     <tbody id="MedTableBody">
-                       <tr>
-
-
-
-                       </tr>
+                      
                     </tbody>
                 </table>
                
@@ -151,7 +249,23 @@ if(confirm(text)==true){
         </div>
     </div>  
 </body>
+<script>
 
+
+//change style of the filter when clicked
+async function changeStyle(btn){
+
+//change the other filters to white
+document.getElementById('btn1').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn2').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn3').style.backgroundColor ='#f1f1f1';
+
+//change the selected filter to active color
+document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
+
+}
+
+</script>
 
 
 
