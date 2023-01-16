@@ -47,11 +47,25 @@
     margin-right: auto;
 }
 
+#search{
+    width: 100%;
+    padding: 10px 10px;
+    display: inline-block;
+    border-radius: 15px;
+    box-sizing: border-box;
+    margin-left: 10%;
+    margin-right: auto;
+}
+
 #Medresults {
     margin-left: 15%;
     margin-right: auto;
 }
 
+#results0{
+    margin-left: 45%;
+    margin-right: auto;
+}
 
   </style>
     <script
@@ -104,10 +118,15 @@ changeStyle('btn1');
 
 
 
+
+
  // Filter the medication based on Legal status
  async function DisplayFilterMedications(category) { 
-   
+
+    //clear search when filter is changed
+    document.getElementById('search').value = "";
     var count =0;
+
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
     query.limit(400);
@@ -139,13 +158,106 @@ changeStyle('btn1');
      document.getElementById('Medresults').innerHTML = "Results: "+count;
 }       
         }
- 
+
+
+
+
+
+
+
+
+ //search medication
+async function searchMedication(){
+
+    //remove no result message
+    document.getElementById('results0').innerHTML = " ";
+
+    var count =0;
+    var searchString = document.getElementById('search').value;
+    searchString = searchString.toUpperCase();
+    const query = new Parse.Query("Medications");
+    query.limit(400);
+    query.ascending("TradeName");
+    const results = await query.find();
+
+    //clear the table of medications
+    document.getElementById('MedTableBody').innerHTML = "";
+
+    //if the filter selected is (All)
+    if (document.getElementById('btn1').style.backgroundColor == 'rgb(204, 148, 203)'){
+    for(let i=0; i<results.length;i++){    
+    var medication = results[i];   
+
+    if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
+    var MedId = medication.id;
+    var MedName = medication.get("TradeName");
+    document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
+    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
+    document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
+    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
+    document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
+    count = count+1;
+}    
+}  }
+
+ //if the filter selected is (Prescription)
+if (document.getElementById('btn2').style.backgroundColor == 'rgb(204, 148, 203)'){
+    for(let i=0; i<results.length;i++){    
+    var medication = results[i];   
+    if (medication.get("LegalStatus") == 'Prescription' ){
+    if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
+    var MedId = medication.id;
+    var MedName = medication.get("TradeName");
+    document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
+    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
+    document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
+    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
+    document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
+    count = count+1;
+}    }
+}  }
+
+
+//if the filter selected is (NonPrescription)
+if (document.getElementById('btn3').style.backgroundColor == 'rgb(204, 148, 203)'){
+    for(let i=0; i<results.length;i++){    
+    var medication = results[i];   
+
+    if (medication.get("LegalStatus") == 'OTC' ){
+    if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
+    var MedId = medication.id;
+    var MedName = medication.get("TradeName");
+    document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
+    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
+    document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
+    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
+    document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
+    count = count+1;
+} }   
+}  }
+
+//display number of results
+document.getElementById('Medresults').innerHTML = "Results: "+count; 
+
+if(count == 0) {
+
+ document.getElementById('results0').innerHTML = "Sorry there is no medication in this name";
+
+}
+
+}
+
 
 //delete medication
 async function deleteMedication(MedId,MedName) {
 const query = new Parse.Query("Medications");
-
-       
+     
 let text = "Are you sure you want to delete "+MedName+ " medication?";
 
 if(confirm(text)==true){
@@ -211,8 +323,14 @@ if(confirm(text)==true){
         </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
+
             <h1 id="hDivv"> </h1>
             <h1>Medications</h1>
+            <br>
+           
+            <input id="search" type="text" placeholder="Search by Trade or Scientific name.." onkeyup="searchMedication()" />
+
+            <br> <br> 
 
             <div id="MedFilter">
                 <button id="btn1" onclick=" DisplayMedications()">All</button>
@@ -221,7 +339,10 @@ if(confirm(text)==true){
                   
             </div>
 
+        
+            
             <p id="Medresults"></p>
+           
             <!---------------------------Display Medications----------------------------> 
             <div class="med">
             
@@ -242,6 +363,8 @@ if(confirm(text)==true){
                
             </div>  
              <!--------------------------- END OF Display Medications----------------------------> 
+              <br><br><br>
+             <p id="results0"></p>
         </main>
         <!------------------------- END OF MAIN ------------------>
 
