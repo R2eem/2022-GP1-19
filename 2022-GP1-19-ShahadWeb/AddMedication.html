@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+    <link rel="stylesheet" href="./style.css"> 
+    <script
+         type="text/javascript"
+         src="https://npmcdn.com/parse/dist/parse.min.js"
+       ></script>
+       <script>
+
+        // Initialize Parse
+        Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5",
+         "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); 
+           Parse.serverURL = "https://parseapi.back4app.com/";
+
+</script>
+
+    
+</head>
+<body>
+    <div class="container">
+        <aside class="aside">
+        <div class="top">
+            <div class="logo">
+                <img src="./images/logo.png">
+                <h2>Tiryaq</h2>
+            </div>
+            <div class="close" id="close-btn">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                 </div>
+        </div>
+        <div class="sidebar">
+            <a href="index.html">
+                <i class="fa fa-th-large" aria-hidden="true"></i>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="#">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                <h3>Customers</h3>
+            </a>
+            <a href="Pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Pharmacies</h3>
+          </a>
+          <a href="Blocked_pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Blocked Pharmacies</h3>
+          </a>
+          <a href="Pharmacies_Join_Request_Page.html">
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <h3>Join requists</h3>
+              <span class="message-count">5</span>
+   
+          </a>
+            <a href="Medications.html">
+                <i class="fa fa-medkit" aria-hidden="true"></i>
+                <h3>Medications</h3>
+            </a>
+            <a href="AddMedication.html"  class="active">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                <h3>Add Medications</h3>
+            </a>
+            <a href="log_in_page.html">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <h3>Log out</h3>
+            </a>
+        </div>
+        </aside>
+        <!----------------------------------END OF ASIDE-------------->
+        <main>
+            <h1></h1>
+        
+            <!---------------------------Add Medication Form----------------------------> 
+            <div class="addDiv">
+            <form  onsubmit="validate();return false">
+                <div class="form">
+                  <h2>Add Medication Form </h2>
+                  <p>All fields are required</p>
+                  <br>
+                  <div id="">
+                    <span id=""></span>
+                  </div>
+
+                    <div class="inputbox">
+                        <label for="TradeName">Trade Name</label>
+                      <input name="TradeName" id="TradeName" type="text" placeholder=""  required="" aria-required="true" /> 
+                      <p id="TradeNameP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                      <label for="ScientificName">Scientific Name</label>
+                      <input name="ScientificName" id="ScientificName" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="ScientificNameP" style="color: red;"></p>
+                    </div>
+                    
+                    <div class="inputbox">
+                     <label for="Strength">Strength</label>
+                      <input name="Strength" id="Strength" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="StrengthP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                      <label for="StrengthUnit">Strength Unit</label>
+                      <input name="StrengthUnit" id="StrengthUnit" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="StrengthUnitP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                     <label for="Price">Price</label>
+                      <input name="Price" id="Price" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="PriceP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                    <label for="PackageType">Package Type</label>
+                      <input name="PackageType" id="PackageType" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="PackageTypeP" style="color: red;"></p>
+                    </div>
+
+                    <div >
+                    <label for="PharmaceuticalForm">Pharmaceutical Form:</label>
+                    <br>
+                    <select name="PharmaceuticalForm" id="PharmaceuticalForm">
+                      <option value="None">None</option>
+                      <option value="Caplet">Capsule</option>
+                      <option value="Cream">Cream</option>
+                      <option value="Drop">Drop</option>
+                      <option value="Granules">Granules</option>
+                      <option value="Ointment">Ointment</option>
+                      <option value="Powder">Powder</option>
+                      <option value="Solution">Solution</option>
+                      <option value="Spray">Spray</option>
+                      <option value="Syrup">Syrup</option>
+                      <option value="Tablet">Tablet</option>
+                      <option value="Caplet">Caplet</option>
+                      <option value="Gel">Gel</option>
+                      <option value="Liquid">Liquid</option>
+                      <option value="Lozenge">Lozenge</option>
+                    </select>
+                    <p id="PharmaceuticalFormP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                        <label for="UsageMethod">Usage Method</label>
+                      <input name="UsageMethod" id="UsageMethod" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="UsageMethodP" style="color: red;"></p>
+                    </div>
+
+                    <div class="custom-select">
+                    <label for="LegalStatus">Legal Status:</label>
+                    <br>
+                    <select name="LegalStatus" id="LegalStatus">
+                      <option value="None">None</option>
+                      <option value="OTC">OTC</option>
+                      <option value="Prescription">Prescription</option>
+                    </select>
+                    <p id="LegalStatusP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                     <label for="MarketingCompany">Marketing Company</label>
+                      <input name="MarketingCompany" id="MarketingCompany" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="MarketingCompanyP" style="color: red;"></p>
+                    </div>
+
+                    <div class="inputbox">
+                      <label for="MarketingCountry">Marketing Country</label>
+                      <input name="MarketingCountry" id="MarketingCountry" type="text" placeholder="" required="" aria-required="true"/>
+                      <p id="MarketingCountryP" style="color: red;"></p>
+                    </div>
+
+                  </br>
+                    <div class="inputbox">
+                      <input id="addInput" type="submit" name="submit" value="Add">
+                    </div>  
+                </div>
+                </form>
+            </div>
+             <!--------------------------- END OF Add Medication Form----------------------------> 
+        </main>
+        <!------------------------- END OF MAIN ------------------>
+
+            </div>
+        </div>
+    </div>  
+</body>
+
+<script>
+
+//add new medication
+async function  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry){
+      
+        const med = new Parse.Object("Medications");
+        //set the object
+        med.set("TradeName", TradeName);
+        med.set("ScientificName", ScientificName);
+        med.set("ScientificName", ScientificName);
+        med.set("Strength", Number(Strength));
+        med.set("StrengthUnit", StrengthUnit);
+        med.set("Publicprice", Number(Price));
+        med.set("PackageTypes", PackageType);
+        //med.set("PackageSize", 0);
+        med.set("PharmaceuticalForm", PharmaceuticalForm);
+        med.set("UsageMethod", UsageMethod);
+        med.set("LegalStatus", LegalStatus);
+        med.set("MarketingCompany", MarketingCompany);
+        med.set("MarketingCountry", MarketingCountry);
+        try{
+            //Save the Object
+            let result = await med.save();
+            alert('Medication added successfully');
+            window.location.replace("Medications.html");
+        }catch(error){
+            alert('Failed to add medication');
+        }   
+}
+
+
+
+//Validation of add medication form
+async function validate(){
+
+    var TradeName = document.getElementById('TradeName').value;
+    var ScientificName = document.getElementById('ScientificName').value;
+    var Strength = document.getElementById('Strength').value;
+    var StrengthUnit = document.getElementById('StrengthUnit').value;
+    var Price = document.getElementById('Price').value;
+    var PackageType = document.getElementById('PackageType').value;
+    var PharmaceuticalForm = document.getElementById('PharmaceuticalForm').value;
+    var UsageMethod = document.getElementById('UsageMethod').value;
+    var LegalStatus = document.getElementById('LegalStatus').value;
+    var MarketingCompany = document.getElementById('MarketingCompany').value;
+    var MarketingCountry = document.getElementById('MarketingCountry').value;
+    
+
+    if(TradeName != '' && ScientificName !='' && Strength != '' && StrengthUnit !='' 
+    && Price != '' && PackageType !='' && PharmaceuticalForm != '' && UsageMethod !='' 
+    && LegalStatus != '' && MarketingCompany  && MarketingCountry != '')
+    {
+
+          if (TradeName.length>50) {document.getElementById('TradeNameP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('TradeNameP').innerHTML = ""}
+
+          if (ScientificName.length>50) { document.getElementById('ScientificNameP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('ScientificNameP').innerHTML = ""}
+
+        
+          //check if the strength is number first then check the limit
+          if(isNaN(Strength)){document.getElementById('StrengthP').innerHTML = "strength should be a number"}
+          else{
+              if (Strength>10000) { document.getElementById('StrengthP').innerHTML = "should be less than 10000" ;}
+              else {document.getElementById('StrengthP').innerHTML = ""}
+          }
+
+          if (StrengthUnit.length>50) { document.getElementById('StrengthUnitP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('StrengthUnitP').innerHTML = ""}
+
+          //check if the price is number first then check the limit
+          if(isNaN(Price)){document.getElementById('PriceP').innerHTML = "price should be a number"}
+          else{
+              if (Price>100000) { document.getElementById('PriceP').innerHTML = "should be less than 100000" ;}
+              else {document.getElementById('PriceP').innerHTML = ""}
+          }
+
+          if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('PackageTypeP').innerHTML = ""}
+
+          if (document.getElementById('PharmaceuticalForm').value == "None") {document.getElementById('PharmaceuticalFormP').innerHTML = "please select one pharmaceutical form"; }
+            else {document.getElementById('PharmaceuticalFormP').innerHTML = ""}
+
+          if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('UsageMethodP').innerHTML = ""}
+            
+          if (document.getElementById('LegalStatusP').value == "None") {document.getElementById('LegalStatusP').innerHTML += "please select one legal status"  }
+            else {document.getElementById('LegalStatusP').innerHTML = ""}
+
+          if (MarketingCompany.length>50) { document.getElementById('MarketingCompanyP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('MarketingCompanyP').innerHTML = ""}
+
+          if (MarketingCountry.length>50) { document.getElementById('MarketingCountryP').innerHTML = "should be less than 50 characters" ;}
+            else {document.getElementById('MarketingCountryP').innerHTML = ""}
+
+          if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
+              && Price<=100000 && PackageType.length<=50 && UsageMethod.length<=50 && MarketingCompany.length<=50
+              && MarketingCountry.length<=50)
+              {
+
+          addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry);
+
+              }
+
+    }
+   
+}
+    
+    </script>
+</html>
