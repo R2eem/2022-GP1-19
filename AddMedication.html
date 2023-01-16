@@ -45,14 +45,17 @@
                 <i class="fa fa-users" aria-hidden="true"></i>
                 <h3>Customers</h3>
             </a>
-            <a href="#">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requists</h3>
-     
+            <a href="Pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Pharmacies</h3>
+          </a>
+          <a href="Blocked_pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Blocked Pharmacies</h3>
+          </a>
+          <a href="Pharmacies_Join_Request_Page.html">
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <h3>Join requests</h3>
             </a>
             <a href="Medications.html">
                 <i class="fa fa-medkit" aria-hidden="true"></i>
@@ -62,12 +65,12 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <h3>Add Medications</h3>
             </a>
-            <a href="customerOrders.html">
+            <a href="customerOrders.html" >
               <i class="fa fa-list-alt" aria-hidden="true"></i>
               <h3>Orders</h3>
-          </a>
-            <a href="log_in_page.html">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
+            </a>
+            <a href="" onclick="doUserLogOut()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <h3>Log out</h3>
             </a>
         </div>
@@ -192,6 +195,15 @@
 </body>
 
 <script>
+  
+  //Check if user logged in
+  async function sessionCheck(){
+     const currentUser = await Parse.User.current();
+     if (currentUser === null) {
+        window.location.replace("log_in_page.html");
+     }
+  }
+  sessionCheck();
 
 //add new medication
 async function  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry){
@@ -298,6 +310,24 @@ async function validate(){
     }
    
 }
+
+//User log out
+async function doUserLogOut () {
+    try {
+        await Parse.User.logOut();
+        // To verify that current user is now empty, currentAsync can be used
+        const currentUser = await Parse.User.current();
+        if (currentUser === null) {
+            alert('Success! No user is logged in anymore!');
+        }
+        // Update state variable holding current user
+        getCurrentUser();
+        //return window.location.replace("log_in_page.html");
+    } catch (error) {
+        alert(`Error! ${error.message}`);
+        return false;
+    }    
+};
     
     </script>
 </html>
