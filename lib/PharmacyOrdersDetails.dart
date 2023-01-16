@@ -34,7 +34,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   bool presRequired = false;
   List medList = [];
   List medicationsList2 = [];
-  Set _saved = Set();
   FocusNode textSecondFocusNode = new FocusNode();// when focusing on the note field
   TextEditingController noteDescriptionController = new TextEditingController(); // to get the text written in note field
   bool value = false;
@@ -57,7 +56,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
                 child: SafeArea(
                     child: Column(
@@ -176,6 +175,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                         quantity: medicationsList[0][i]['quantity'].toString(),
                                                       )
                                                   );}
+                                                ///If order consist of prescription then store as true
                                                 var prescription = null;
                                                 if(customerCurrentOrders.get('Prescription') != null){
                                                   presRequired = true;
@@ -344,7 +344,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           if(value != medList[i].value){
                                                                                             value = medList[i].value;
                                                                                           }
-                                                                                          // to display  medication list in checkbox
+                                                                                          ///Display  medication list in checkbox for ONLY new orders otherwise display as text
                                                                                           return StatefulBuilder(
                                                                                             builder: (BuildContext context, StateSetter setState) =>
                                                                                             (widget.orderStatus == 'New')?
@@ -462,6 +462,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           }
                                                                                         }),
                                                                                                   SizedBox(height: 20,),
+                                                                                                  ///Display medications and their status
                                                                                                   Text('List of medication:' ,style: TextStyle(
                                                                                                       fontFamily: "Lato",
                                                                                                       fontSize: 19,
@@ -617,6 +618,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
 
 
                                                                       SizedBox(height: 20,),
+                                                                      ///Display prescription if exist
                                                                       presRequired ?
                                                                       Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -658,6 +660,8 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                 fontWeight: FontWeight.w700),),
                                                                           ]),
                                                                       SizedBox(height: 15,),
+
+                                                                      ///If order is not new then display note -- check if customer submit order and then its cancelled what happens to the note??
                                                                       if(widget.orderStatus != ("New"))
                                                                         FutureBuilder<ParseObject>(
                                                                             future: getNote(),
@@ -737,6 +741,8 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                   }
                                                                               }}
                                                                         ),
+
+                                                                      ///If order is new then display text field for note
                                                                       if(widget.orderStatus.contains("New"))
                                                                         Text('Note: ' ,style: TextStyle(
                                                                             fontFamily: "Lato",
@@ -766,6 +772,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                             ),
                                                                           ),
                                                                         ),
+                                                                      ///If order is new then display time selection
                                                                       if(widget.orderStatus.contains("New"))
                                                                         Text('Expected Time for order to be ready: ' ,style: TextStyle(
                                                                             fontFamily: "Lato",
@@ -785,11 +792,14 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     color: Colors.white)),
                                                                           ),
                                                                       SizedBox(height: 8),
+                                                                      ///When time selected then display the time
                                                                       if(widget.orderStatus.contains("New") && date != '')
                                                                         Text(
                                                                           'Selected time: $date ${_time.format(context)}',
                                                                         ),
+                                                                      ///If order is new display accept and decline button
                                                                       if(widget.orderStatus.contains("New"))
+                                                                        ///Accept button
                                                                         Padding(
                                                                           padding: EdgeInsets.only(top:1),
                                                                           child: Row(
@@ -802,6 +812,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     child:ElevatedButton(
                                                                                       style: ThemeHelper().buttonStyle(),
                                                                                       onPressed: (){
+                                                                                        ///Check if there is at least one checked item before accepting
                                                                                         bool emptyOrNot= false;
                                                                                         for (int i = 0; i < medList.length; i++) {
                                                                                           if (medList[i].value == true ){
@@ -830,9 +841,11 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                             continueButton,
                                                                                           ],
                                                                                         );
+                                                                                        ///If no checked items show error message
                                                                                         if(emptyOrNot == false){
                                                                                           showError2();
                                                                                         }
+                                                                                        ///If not time selected show error message
                                                                                         else if(date == ''){
                                                                                           showError3();
                                                                                         }
@@ -849,6 +862,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                       }, child: Text('Accept'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                                     ),
                                                                                   ),),
+                                                                                ///Decline button
                                                                                 Padding(
                                                                                     padding: EdgeInsets.only(left:5 , top:10),
                                                                                     child:Container(
@@ -903,7 +917,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     );
   }
 
-  //Get customer current orders from orders table
+  ///Get customer current orders from orders table
   Future<List<ParseObject>> getOrderDetails() async {
     //Query order details
     final QueryBuilder<ParseObject> order =
@@ -918,7 +932,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       return [];
     }
   }
-  //Function to get medication details
+  ///Function to get medication details
   Future<List<ParseObject>> getMedDetails(medicationsList) async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
     parseQuery.whereEqualTo('objectId', medicationsList);
@@ -931,7 +945,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return [];
   }
 
-  //Get medications of the selected pharmacy
+  ///Get medications and their status from the pharmacy
   Future<List<ParseObject>> getMedList() async {
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
@@ -963,7 +977,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Function to get customer details
+  ///Function to get customer details
   Future<ParseObject> getCustomerDetails() async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
         ParseObject('Orders'));
@@ -994,7 +1008,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return null!;
   }
 
-  //Get total price
+  ///Get total price after accepting the order with the accepted items
   Future<String> getTotalPrice() async {
     num totalPrice = 0;
 
@@ -1033,6 +1047,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         var object = o as ParseObject;
         List med = object.get('MedicationsList');
 
+        ///Calculate the total price
         for (int i = 0; i < med[0].length; i++) {
           if (med[0][i]['isChecked'] == true) {
             final QueryBuilder<ParseObject> parseQuery =
@@ -1057,7 +1072,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return totalPrice.toStringAsFixed(2);
   }
 
-  // function to send if the order is accepted or declined to the customer
+  /// function to send if the order is accepted or declined to the customer
   Future<void> SendToCustomer(orderStatus,pharmacyId ,note) async {
     //Store customer medications in list
     for (int i = 0; i < medList.length; i++) {
@@ -1106,6 +1121,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
+  ///Get note of the pharmacy for specific order
   Future<ParseObject> getNote() async {
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -1122,6 +1138,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return null!;
   }
 
+  ///Change value of the check boxes
   void changeValue(medId, value){
     for(int i = 0; i < medList.length; i++){
       print(medList[i].medID == (medId));
@@ -1131,7 +1148,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Time picker
+  ///Time picker
   TimeOfDay _time = TimeOfDay(hour: 12, minute: 00);
 
   void _selectTime() async {
@@ -1147,7 +1164,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Date picker
+  ///Date picker
   DateTime _date = DateTime(2023, 1, 20);
   String date = '';
 
@@ -1169,7 +1186,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Function called when updating order status is successful
+  ///Function called when updating order status is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess(pharmacyId) {
     showDialog(
@@ -1187,7 +1204,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         });
   }
 
-  //Function called when updating order status  is not successful
+  ///Function called when updating order status is not successful
   //Show Alertdialog and wait for user interaction
   void showError(String errorMessage) {
     showDialog(
@@ -1208,7 +1225,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     );
   }
 
-    //alert message to tell the pharmacy he must check at least one medication before clicking accept
+    ///alert message to tell the pharmacy he must check at least one medication before clicking accept
     //Show Alertdialog and wait for user interaction
     void showError2() {
       showDialog(
@@ -1229,7 +1246,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       );
     }
 
-  //alert message to tell the pharmacy he must enter time before clicking accept
+  ///alert message to tell the pharmacy he must enter time before clicking accept
   //Show Alertdialog and wait for user interaction
   void showError3() {
     showDialog(

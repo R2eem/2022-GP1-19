@@ -6,7 +6,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/PharmacyLogin.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:untitled/PharmacyLogin.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
 
@@ -42,7 +41,7 @@ class Signup extends State<PharmacySignUp> {
   var subLocality;
   var street;
 
-  //Password validation caller
+  ///Password validation caller
   onPasswordChanged(String password) {
     final specialRegex = RegExp(r'(?=.*?[#?!@$%^&*-])');
     final upperRegex = RegExp(r'(?=.*[A-Z])');
@@ -81,7 +80,7 @@ class Signup extends State<PharmacySignUp> {
                     child: HeaderWidget(
                         150, false, Icons.person_add_alt_1_rounded),
                   ),
-                  //Controls app logo and page title
+                  ///App logo and page title
                   SafeArea(
                     child: Column(
                         children: [
@@ -124,7 +123,7 @@ class Signup extends State<PharmacySignUp> {
                                     key: _formKey,
                                     child: Column(
                                         children: [
-                                          //FirstName
+                                          ///FirstName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -149,7 +148,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //LastName
+                                          ///LastName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -178,7 +177,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //email
+                                          ///email
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -206,7 +205,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Phonenumber
+                                          ///Phonenumber
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -277,7 +276,7 @@ class Signup extends State<PharmacySignUp> {
                                                 .inputBoxDecorationShaddow(),
                                           ),
                                           SizedBox(height: 20.0),
-                                          //Password
+                                          ///Password
                                           Container(
                                             child: TextFormField(
                                               onTap: () =>
@@ -351,7 +350,7 @@ class Signup extends State<PharmacySignUp> {
                                                     offset: const Offset(0, 5),
                                                   )
                                                 ]),),
-                                          //Password validation list
+                                          ///Password validation list
                                           Visibility(
                                             visible: _showValidation,
                                             child:
@@ -500,7 +499,7 @@ class Signup extends State<PharmacySignUp> {
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          //confirm password
+                                          ///confirm password
                                           Container(
                                             child: TextFormField(
                                               obscureText: !_isVisibleConfirm,
@@ -571,7 +570,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Signup button
+                                          ///Signup button
                                           Container(
                                             decoration: ThemeHelper()
                                                 .buttonBoxDecoration(context),
@@ -683,7 +682,7 @@ class Signup extends State<PharmacySignUp> {
                 ])));
   }
 
-  //Show success message function
+  ///Show success message function
   void showSuccess() {
     showDialog(
       context: context,
@@ -710,7 +709,7 @@ class Signup extends State<PharmacySignUp> {
     );
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if (errorMessage.compareTo('Account already exists for this username.') ==
         0) {
@@ -746,7 +745,7 @@ class Signup extends State<PharmacySignUp> {
     );
   }
 
-  //User signup function
+  ///User signup function
   Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
@@ -756,7 +755,7 @@ class Signup extends State<PharmacySignUp> {
 
     final user = ParseUser.createUser(email, password, email);
 
-    //Check unique phone number in pharmacist table
+    ///Check unique phone number in pharmacist table
     QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(
         ParseObject('Pharmacist'));
     queyPhonenumber.whereEqualTo('PhoneNumber', '0$phonenumber');

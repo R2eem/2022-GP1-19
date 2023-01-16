@@ -41,7 +41,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              //Controls app logo and page title
+              ///App logo and page title
               Container(
               child: SafeArea(
                 child: Column(
@@ -62,7 +62,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                           ),]),
               SizedBox(height: 55,),
-              //Controls Non-prescription category page display
+              ///Controls Non-prescription category page display
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
@@ -71,7 +71,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     height: size.height - 180,
                     width: size.width,
                     child: Column(children: [
-                      //Search bar
+                      ///Search bar
                       Material(
                         elevation: 4,
                         shadowColor: Colors.grey,
@@ -100,7 +100,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     SizedBox(
                       height: 20,
                     ),
-                    //Filter tabs
+                    ///Filter tabs
                     TabBar(onTap: (index){ //
                           setState(() {
                             _selectedTab = index;
@@ -129,9 +129,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             if(_selectedTab == 11)
                               packageType = 'Tablet';
                           },);},
-                        isScrollable: true,//if thr tabs are alot we can scroll them
+                        isScrollable: true,//if tabs are a lot we can scroll them
                         controller: _tabController,
-                        labelColor: Colors.grey[900],// the tab is clicked on now color
+                        labelColor: Colors.grey[900],// the color of active tab
                         unselectedLabelColor: Colors.grey,
                         tabs: [
                           Tab(icon: Text('All', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
@@ -180,7 +180,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                 fontWeight:
                                                 FontWeight.w700),
                                           ),
-                                          //If the medication doesn't matches the search string then don't display
+                                          ///If the no medication matches the search string then display no medication message
                                           (snapshot.data!.length==0)?
                                           Container(
                                               child: Column(crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +217,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                               }
                             }),
                     Expanded(
-                      //Get Non-prescription medications
+                      ///Get Non-prescription medications
                       child: FutureBuilder<List<ParseObject>>(
                             future: getNonPresMedication(searchString),
                             builder: (context, snapshot) {
@@ -262,7 +262,8 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                             image = medGet.get<ParseFileBase>('Image')!;
                                           }
 
-                                          //Display medication that matches the search string if exist and matches the filter
+                                          ///Display medication that matches the search string if exist and matches the filter
+                                          ///Display image of medication if exist
                                           return (image == null)
                                               ?  GestureDetector(
                                               //Navigate to medication details page
@@ -353,7 +354,6 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                       ]))):GestureDetector(
                                             //Navigate to medication details page
                                               onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
-                                              //Medication card information
                                               child: Card(
                                                   elevation: 3,
                                                   margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
@@ -419,7 +419,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                   borderRadius:
                                                                   BorderRadius.circular(15),
                                                                 )),
-                                                                //Add to cart button
+                                                                ///Add to cart button
                                                                 child: IconButton(
                                                                     onPressed: () async {
                                                                       if (await addToCart(medId, widget.customerId)) {
@@ -489,7 +489,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     );
   }
 
-  //Function to get Non-prescription medications
+  ///Function to get Non-prescription medications
   Future<List<ParseObject>> getNonPresMedication(searchString) async {
     QueryBuilder<ParseObject> queryNonPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -508,7 +508,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;

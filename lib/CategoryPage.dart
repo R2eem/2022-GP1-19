@@ -108,7 +108,7 @@ class Category extends State<CategoryPage> {
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
               child: SafeArea(
                   child: Column(
@@ -184,7 +184,7 @@ class Category extends State<CategoryPage> {
                 SizedBox(
                   height: 55,
                 ),
-                //Controls category page display
+                ///Category page display
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -193,7 +193,7 @@ class Category extends State<CategoryPage> {
                       height: size.height - 150,
                       width: size.width,
                       child: Column(children: [
-                        //Search bar
+                        ///Search bar
                         Material(
                             elevation: 4,
                             shadowColor: Colors.grey,
@@ -323,7 +323,7 @@ class Category extends State<CategoryPage> {
                                                   fontWeight:
                                                   FontWeight.w700),
                                             ),
-                                            //If the medication doesn't matches the search string then don't display
+                                            ///If the no medication matches the search string then display no medication message
                                             (snapshot.data!.length==0)?
                                             Container(
                                                 child: Column(crossAxisAlignment: CrossAxisAlignment.center,
@@ -359,7 +359,7 @@ class Category extends State<CategoryPage> {
                                     }
                                 }
                               }),
-                        //Medications list display
+                        ///Medications list display
                         Expanded(
                             //Get medications
                             child: FutureBuilder<List<ParseObject>>(
@@ -411,7 +411,7 @@ class Category extends State<CategoryPage> {
                                               if (medGet.get<ParseFileBase>('Image') != null) {
                                                 image = medGet.get<ParseFileBase>('Image')!;
                                               }
-                                              //Display medication that matches the search string if exist
+                                              ///Display medication that matches the search string if exist
                                               return (image == null)
                                                       ? GestureDetector(
                                                           //Navigate to medication details page
@@ -483,7 +483,7 @@ class Category extends State<CategoryPage> {
                                                                           borderRadius:
                                                                               BorderRadius.circular(15),
                                                                         )),
-                                                                        //Add to cart button
+                                                                        ///Add to cart button
                                                                         child: IconButton(
                                                                             onPressed: () async {
                                                                               if (await addToCart(medId, customerId)) {
@@ -662,7 +662,7 @@ class Category extends State<CategoryPage> {
                 ))));
   }
 
-  //Function to get medications
+  ///Function to get medications
   Future<List<ParseObject>> getMedication(searchString) async {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -677,13 +677,13 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
         QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -696,7 +696,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(medId, customerId) async {
     bool exist = false;
     var medInCart;

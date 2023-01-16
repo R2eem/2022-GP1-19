@@ -5,6 +5,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'ForgotPassword.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/PharmacyLocation.dart';
 import 'package:untitled/PharHomePage.dart';
@@ -38,7 +39,7 @@ class Login extends State<PharmacyLogin> {
                     child: HeaderWidget(_headerHeight, false, Icons
                         .login_rounded), //let's create a common header widget
                   ),
-                  //Controls app logo and title
+                  ///App logo and title
                   SafeArea(
                       child: Column(
                           children: [
@@ -84,7 +85,7 @@ class Login extends State<PharmacyLogin> {
                                       //child: SingleChildScrollView(
                                       child: Column(
                                         children: <Widget>[
-                                          //email
+                                          ///email
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode: AutovalidateMode
@@ -109,7 +110,7 @@ class Login extends State<PharmacyLogin> {
                                           SizedBox(
                                             height: 30,
                                           ),
-                                          //password
+                                          ///password
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode: AutovalidateMode
@@ -180,14 +181,14 @@ class Login extends State<PharmacyLogin> {
                                           SizedBox(
                                             height: 15,
                                           ),
-                                          //Navigation to forgot password page
+                                          ///Navigation to forgot password page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(
                                                 10, 0, 10, 20),
                                             alignment: Alignment.topRight,
                                             child: GestureDetector(
                                               onTap: () {
-                                                // Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
+                                                 Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
                                               },
                                               child: Text(
                                                 "Forgot your password?",
@@ -201,7 +202,7 @@ class Login extends State<PharmacyLogin> {
                                             ),
                                           ),
 
-                                          //Login button
+                                          ///Login button
                                           Container(
                                             decoration: ThemeHelper()
                                                 .buttonBoxDecoration(context),
@@ -234,7 +235,6 @@ class Login extends State<PharmacyLogin> {
                                           Container(
                                             margin: EdgeInsets.fromLTRB(
                                                 10, 20, 10, 20),
-                                            //child: Text('Don\'t have an account? Create'),
                                             child: Text.rich(
                                                 TextSpan(
                                                     children: [
@@ -278,7 +278,7 @@ class Login extends State<PharmacyLogin> {
         ));
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if (errorMessage.compareTo('Invalid username/password.') == 0) {
       errorMessage = 'Invalid email or password. Please try again.';
@@ -311,7 +311,7 @@ class Login extends State<PharmacyLogin> {
     );
   }
 
-  //User log in function
+  ///User log in function
   void CheckJoinRequest2() async {
     var object;
     var pharmacy;
@@ -321,13 +321,12 @@ class Login extends State<PharmacyLogin> {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    //Check if user is customer
     QueryBuilder<ParseObject> queryPharmacy1 =
     QueryBuilder<ParseUser>(ParseUser.forQuery());
     queryPharmacy1.whereEqualTo('email', email);
     final ParseResponse apiResponse1 = await queryPharmacy1.query();
 
-    //If user exist search for type otherwise invalid inputs
+    ///If user exist search for type otherwise invalid inputs
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         object = o as ParseObject;

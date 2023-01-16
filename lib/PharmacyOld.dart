@@ -38,7 +38,7 @@ class PharmacyOld extends State<PharmacyOldO>
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
             child: SafeArea(
               child: Column(
@@ -100,7 +100,7 @@ class PharmacyOld extends State<PharmacyOldO>
                     SizedBox(
                       height: 20,
                     ),
-                    //Filter tabs
+                    ///Filter tabs
                     TabBar(
                         onTap: (index) {
                           //
@@ -127,10 +127,10 @@ class PharmacyOld extends State<PharmacyOldO>
                           );
                         },
                         isScrollable:
-                        true, //if the tabs are a lot we can scroll them
+                        true, //if tabs are a lot we can scroll them
                         controller: _tabController,
                         labelColor: Colors
-                            .grey[900], // the tab is clicked on now color
+                            .grey[900], //color of active tab
                         unselectedLabelColor: Colors.grey,
                         tabs: [
                           Tab(
@@ -175,7 +175,7 @@ class PharmacyOld extends State<PharmacyOldO>
                             child: Column(children: [
                               Expanded(
                                   child: FutureBuilder<List<ParseObject>>(
-                                      future: GetNewOrders(widget.pharmacyId), //Will change LocationNotEmpty value
+                                      future: GetNewOrders(widget.pharmacyId),
                                       builder: (context, snapshot) {
                                         switch (snapshot.connectionState) {
                                           case ConnectionState.none:
@@ -205,7 +205,6 @@ class PharmacyOld extends State<PharmacyOldO>
                                                     final newOrder = snapshot.data![index];
                                                     final orderId = newOrder.get('OrderId').objectId;
                                                     final OrderStatus = newOrder.get('OrderStatus')!;
-                                                    final distance = newOrder.get('Distance')!;
                                                     final orderCreatedDate = newOrder.get("createdAt").toString();
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
@@ -287,7 +286,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                     ),
                                                                   ],
                                                                 )))
-                                                    ///When last iteration of displaying orders and no order matched filter yet display this message
+                                                    ///When its last iteration of displaying orders and no order matched filter yet display this message
                                                         :(noOrder && index == snapshot.data!.length-1)?
                                                     Center(
                                                         child:Column(
@@ -315,7 +314,7 @@ class PharmacyOld extends State<PharmacyOldO>
   }
 
 
-  //Get pharmacy new orders
+  ///Get pharmacy new orders
   Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
     final QueryBuilder<ParseObject> queryOldOrders1 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -370,8 +369,6 @@ class PharmacyOld extends State<PharmacyOldO>
     );
   }
 
-
-
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();
@@ -383,7 +380,4 @@ class PharmacyOld extends State<PharmacyOldO>
       showError(response.error!.message);
     }
   }
-
-
-
 }

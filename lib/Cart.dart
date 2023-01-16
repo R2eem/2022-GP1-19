@@ -8,9 +8,7 @@ import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresAttach.dart';
 import 'Settings.dart';
-import 'Location.dart';
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -41,7 +39,7 @@ class Cart extends State<CartPage> {
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              //Controls app logo
+              ///App logo
               Container(
                   child: SafeArea(
                       child: Column(
@@ -152,7 +150,7 @@ class Cart extends State<CartPage> {
                                                           child: Text("No Data..."),
                                                         );
                                                       } else {
-                                                        //If cartNotEmpty true then display medications
+                                                        ///If cartNotEmpty true then display medications
                                                         return cartNotEmpty
                                                             ? ListView.builder(
                                                             scrollDirection: Axis.vertical,
@@ -402,7 +400,7 @@ class Cart extends State<CartPage> {
                                                                     }
                                                                   });
                                                             })
-                                                        //If cartnotEmpty is false; cart is empty show this message
+                                                        ///If 'cartnotEmpty' is false; cart is empty show this message
                                                             : Container(
                                                             child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -563,7 +561,7 @@ class Cart extends State<CartPage> {
                 ))));
   }
 
-  //Get customer medications from cart table
+  ///Get customer medications from cart table
   Future<List<ParseObject>> getCustomerCart() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
@@ -583,7 +581,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Get customer's medication information from Medications table
+  ///Get customer's medication information from Medications table
   Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -597,7 +595,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Delete medication from cart function
+  ///Delete medication from cart function
   //Quantity will be used in next sprint
   Future<bool> deleteCartMed(medId, Quantity, Publicprice, legalStatus) async {
     //Query the medication from customers' cart
@@ -631,7 +629,7 @@ class Cart extends State<CartPage> {
     return false;
   }
 
-  //Increment medication quantity
+  ///Increment medication quantity
   Future<void> increment(objectId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart
@@ -654,7 +652,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Decrement medication quantity
+  ///Decrement medication quantity
   Future<void> decrement(medId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart

@@ -40,7 +40,7 @@ class Prescription extends State<PrescriptionCategory>
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo and page title
+          ///App logo and page title
           Container(
               child: SafeArea(
                   child: Column(
@@ -73,7 +73,7 @@ class Prescription extends State<PrescriptionCategory>
                 SizedBox(
                   height: 55,
                 ),
-                //Controls prescription category page display
+                ///Controls prescription category page display
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -113,7 +113,7 @@ class Prescription extends State<PrescriptionCategory>
                           SizedBox(
                             height: 20,
                           ),
-                          //Filter tabs
+                          ///Filter tabs
                           TabBar(
                               onTap: (index) {
                                 //
@@ -143,11 +143,10 @@ class Prescription extends State<PrescriptionCategory>
                                   },
                                 );
                               },
-                              isScrollable:
-                                  true, //if the tabs are a lot we can scroll them
+                              isScrollable: true,//if tabs are a lot we can scroll them
                               controller: _tabController,
                               labelColor: Colors
-                                  .grey[900], // the tab is clicked on now color
+                                  .grey[900], // the color of active tab
                               unselectedLabelColor: Colors.grey,
                               tabs: [
                                 Tab(
@@ -263,7 +262,7 @@ class Prescription extends State<PrescriptionCategory>
                                                     fontWeight:
                                                     FontWeight.w700),
                                               ),
-                                              //If the medication doesn't matches the search string then don't display
+                                              ///If the no medication matches the search string then display no medication message
                                               (snapshot.data!.length==0)?
                                               Container(
                                                   child: Column(crossAxisAlignment: CrossAxisAlignment.center,
@@ -296,7 +295,7 @@ class Prescription extends State<PrescriptionCategory>
                                   }
                                 }),
                           Expanded(
-                              //Get prescription medications
+                              ///Get prescription medications
                               child: FutureBuilder<List<ParseObject>>(
                                   future: getPresMedication(searchString),
                                   builder: (context, snapshot) {
@@ -351,7 +350,8 @@ class Prescription extends State<PrescriptionCategory>
                                                   image = medGet.get<ParseFileBase>('Image')!;
                                                 }
 
-                                                //Display medication that matches the search string if exist and matches the filter
+                                                ///Display medication that matches the search string if exist and matches the filter
+                                                ///Display image of medication if exist
                                                 return (image == null)
                                                     ? GestureDetector(
                                                         //Navigate to medication details page
@@ -608,7 +608,7 @@ class Prescription extends State<PrescriptionCategory>
                 ))));
   }
 
-  //Function to get prescription medications
+  ///Function to get prescription medications
   Future<List<ParseObject>> getPresMedication(searchString) async {
     QueryBuilder<ParseObject> queryPresMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));

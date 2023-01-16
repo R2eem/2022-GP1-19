@@ -40,7 +40,7 @@ class PharmacyNew extends State<PharmacyNewO>
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
             child: SafeArea(
               child: Column(
@@ -102,7 +102,7 @@ class PharmacyNew extends State<PharmacyNewO>
                     SizedBox(
                       height: 20,
                     ),
-                    //Filter tabs
+                    ///Filter tabs
                     TabBar(
                         onTap: (index) {
                           //
@@ -133,10 +133,10 @@ class PharmacyNew extends State<PharmacyNewO>
                           );
                         },
                         isScrollable:
-                        true, //if the tabs are a lot we can scroll them
+                        true, //if tabs are a lot we can scroll them
                         controller: _tabController,
                         labelColor: Colors
-                            .grey[900], // the tab is clicked on now color
+                            .grey[900], //color of active tab
                         unselectedLabelColor: Colors.grey,
                         tabs: [
                           Tab(
@@ -188,7 +188,7 @@ class PharmacyNew extends State<PharmacyNewO>
                             child: Column(children: [
                               Expanded(
                                   child: FutureBuilder<List<ParseObject>>(
-                                      future: GetNewOrders(widget.pharmacyId), //Will change LocationNotEmpty value
+                                      future: GetNewOrders(widget.pharmacyId),
                                       builder: (context, snapshot) {
                                         switch (snapshot.connectionState) {
                                           case ConnectionState.none:
@@ -219,10 +219,10 @@ class PharmacyNew extends State<PharmacyNewO>
                                                     final newOrder = snapshot.data![index];
                                                     final orderId = newOrder.get('OrderId').objectId;
                                                     var OrderStatus = newOrder.get('OrderStatus')!;
-                                                    final distance = newOrder.get('Distance')!;
                                                     final orderCreatedDate = newOrder.get("createdAt").toString();
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
+                                                    ///If order is accepted from the pharmacy display as waitong for customer confirmation
                                                     if(OrderStatus == 'Accepted'){
                                                       OrderStatus = 'Waiting';//Pending
                                                     }
@@ -298,6 +298,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                                           fontWeight: FontWeight.w700),
                                                                                     ),
                                                                                   ),
+                                                                                  ///If order under preparation show update status button
                                                                                   (filter == 'Under preparation')?
                                                                                   Column(
                                                                                       children:[
@@ -358,6 +359,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                                           ),
                                                                                         ),
                                                                                       ]):Container(),
+                                                                                  ///If order ready for pick up show update status button
                                                                                   (filter == 'Ready for pick up')?
                                                                                   Column(
                                                                                       children:[
@@ -424,7 +426,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                                     ),
                                                                   ],
                                                                 )))
-                                                    ///When last iteration of displaying orders and no order matched filter yet display this message
+                                                    ///When its the last iteration of displaying orders and no order matched filter yet display this message
                                                         :(noOrder && index == snapshot.data!.length-1)?
                                                     Center(
                                                         child:Column(
@@ -452,7 +454,7 @@ class PharmacyNew extends State<PharmacyNewO>
   }
 
 
-  //Get pharmacy new orders
+  ///Get pharmacy new orders
   Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
     final QueryBuilder<ParseObject> queryNewOrders1 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -492,30 +494,30 @@ class PharmacyNew extends State<PharmacyNewO>
     }
   }
 
+  ///Update order from under preparation to ready for pick up
   Future<bool> RPUOrder(orderId) async {
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
     final apiResponse1 = await parseQuery1.query();
 
-    //change order status for pharmacies
+    //change order status for pharmacy
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy
-            .get('PharmacyId')
+        if (pharmacy.get('PharmacyId')
             .objectId == widget.pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Ready for pick up');
           final ParseResponse parseResponse = await update.save();
         }
       }
+      //change order status for customer
         final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
             ParseObject('Orders'));
         parseQuery2.whereEqualTo('objectId', orderId);
 
         final apiResponse2 = await parseQuery2.query();
 
-        //change order status for pharmacy
         if (apiResponse2.success && apiResponse2.results != null) {
           for (var o in apiResponse2.results!) {
             var object = o as ParseObject;
@@ -530,13 +532,14 @@ class PharmacyNew extends State<PharmacyNewO>
     return false;
   }
 
+  ///Update order from ready for pick up to collected
   Future<bool> collectedOrder(orderId) async {
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
     final apiResponse1 = await parseQuery1.query();
 
-    //change order status for pharmacies
+    //change order status for pharmacy
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
@@ -553,7 +556,7 @@ class PharmacyNew extends State<PharmacyNewO>
 
       final apiResponse2 = await parseQuery2.query();
 
-      //change order status for pharmacy
+      //change order status for customer
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           var object = o as ParseObject;
