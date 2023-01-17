@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
@@ -27,6 +26,9 @@ class OrderDetails extends State<OrderDetailsPage> {
   int _selectedIndex = 2;
   bool presRequired = false;
   var counter = 0;
+  bool acceptedOrDeclined = false;
+  ///Check if the order is declined before time passed
+  bool pharmacyDeclined = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +117,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                           .get('createdAt')!;
                                       final OrderStatus1 = customerCurrentOrders
                                           .get('OrderStatus')!;
+                                      final TimePassed = customerCurrentOrders.get('TimePassed')!;
                                       final TotalPrice = customerCurrentOrders
                                           .get('TotalPrice')!;
                                       final medicationsList =
@@ -203,197 +206,274 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                 color: Colors.black,
                                                                                 fontWeight: FontWeight.w700),
                                                                           ),
-                                                                        ]))
+                                                                        ])),
+                                                                FutureBuilder<
+                                                                List<
+                                                                    ParseObject>>(
+                                                                future:
+                                                                getPharmList(),
+                                                                builder:
+                                                                    (context,
+                                                                    snapshot) {
+                                                                  switch (snapshot
+                                                                      .connectionState) {
+                                                                    case ConnectionState
+                                                                        .none:
+                                                                    case ConnectionState
+                                                                        .waiting:
+                                                                      return Center(
+                                                                      );
+                                                                    default:
+                                                                      if (snapshot
+                                                                          .hasError) {
+                                                                        return Center(
+                                                                          child: Text(''),
+                                                                        );
+                                                                      }
+                                                                      if (!snapshot
+                                                                          .hasData) {
+                                                                        return Center(
+                                                                          child: Text(''),
+                                                                        );
+                                                                      } else {
+                                                                        return ListView.builder(
+                                                                            shrinkWrap: true,
+                                                                            scrollDirection: Axis.vertical,
+                                                                            itemCount: snapshot.data!.length,
+                                                                            itemBuilder: (context, index0) {
+                                                                              final pharmDetails = snapshot.data![index0];
+                                                                              var OrderStatus2 = pharmDetails.get('OrderStatus')!;
+                                                                              ///Check if the order is declined before time passed
+                                                                              if(OrderStatus2=='Declined'){
+                                                                                pharmacyDeclined = true;
+                                                                              }
+                                                                              return (index0==snapshot.data!.length-1)?
+                                                                                ///If the order is declined because of time passed then display message
+                                                                                (OrderStatus1=='Declined' && TimePassed && pharmacyDeclined==false)?
+                                                                                Text("We couldn't find available pharmacy, please try another time.",
+                                                                                  style: TextStyle(
+                                                                                    fontFamily: "Lato",
+                                                                                    fontSize: 16,
+                                                                                    color: Colors.red,),
+                                                                                ):Container():Container();
+                                                                            });
+                                                                      }
+                                                                  }
+                                                                })
                                                               ],
                                                             )),
                                                             SizedBox(
                                                               height: 5,
                                                             ),
-                                                            (OrderStatus1 ==
-                                                                        'Under processing' ||
-                                                                    OrderStatus1 ==
-                                                                        'Accepted' ||
-                                                                    OrderStatus1 ==
-                                                                        'Declined')
-                                                                ? Center(
-                                                                    child:
-                                                                        Container(
-                                                                      decoration:
-                                                                          ThemeHelper()
-                                                                              .buttonBoxDecoration(context),
-                                                                      child:
-                                                                          ElevatedButton(
-                                                                        style: ThemeHelper()
-                                                                            .buttonStyle(),
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.push(
-                                                                              context,
-                                                                              MaterialPageRoute(builder: (context) => PharmacyListPage(OrderId, widget.customerId)));
-                                                                        },
-                                                                        child:
-                                                                            Text(
-                                                                          'View Pharmacies List'
-                                                                              .toUpperCase(),
-                                                                          style: TextStyle(
-                                                                              fontFamily: 'Lato',
-                                                                              fontSize: 18,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.white),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                : Container(),
-                                                            SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            (OrderStatus1 ==
-                                                                        'Collected' ||
-                                                                    OrderStatus1 ==
-                                                                        'Under preparation' ||
-                                                                    OrderStatus1 ==
-                                                                        'Ready for pick up')
-                                                                ? FutureBuilder<
-                                                                        List<
-                                                                            ParseObject>>(
-                                                                    future:
-                                                                        getPharmList(),
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      switch (snapshot
-                                                                          .connectionState) {
-                                                                        case ConnectionState
-                                                                            .none:
-                                                                        case ConnectionState
-                                                                            .waiting:
-                                                                          return Center(
-                                                                            child: Container(
-                                                                                width: 200,
-                                                                                height: 5,
-                                                                                child: LinearProgressIndicator()),
-                                                                          );
-                                                                        default:
-                                                                          if (snapshot
-                                                                              .hasError) {
-                                                                            return Center(
-                                                                              child: Text("Error..."),
-                                                                            );
-                                                                          }
-                                                                          if (!snapshot
-                                                                              .hasData) {
-                                                                            return Center(
-                                                                              child: Text("No Data..."),
-                                                                            );
-                                                                          } else {
-                                                                            return ListView.builder(
-                                                                                shrinkWrap: true,
-                                                                                scrollDirection: Axis.vertical,
-                                                                                itemCount: snapshot.data!.length,
-                                                                                itemBuilder: (context, index) {
-                                                                                  final pharmDetails = snapshot.data![index];
-                                                                                  final pharmacyId = pharmDetails.get('PharmacyId').objectId;
-                                                                                  final Distance = pharmDetails.get('Distance')!;
-                                                                                  var OrderStatus2 = pharmDetails.get('OrderStatus')!;
-                                                                                  return FutureBuilder<List<ParseObject>>(
-                                                                                      future: getPharmDetails(pharmacyId),
-                                                                                      builder: (context, snapshot) {
-                                                                                        switch (snapshot.connectionState) {
-                                                                                          case ConnectionState.none:
-                                                                                          case ConnectionState.waiting:
-                                                                                            return Center(
-                                                                                              child: Container(width: 200, height: 5, child: LinearProgressIndicator()),
-                                                                                            );
-                                                                                          default:
-                                                                                            if (snapshot.hasError) {
-                                                                                              return Center(
-                                                                                                child: Text("Error..."),
-                                                                                              );
-                                                                                            }
-                                                                                            if (!snapshot.hasData) {
-                                                                                              return Center(
-                                                                                                child: Text("No Data..."),
-                                                                                              );
-                                                                                            } else {
-                                                                                              return ListView.builder(
-                                                                                                  shrinkWrap: true,
-                                                                                                  scrollDirection: Axis.vertical,
-                                                                                                  itemCount: snapshot.data!.length,
-                                                                                                  itemBuilder: (context, index) {
-                                                                                                    final pharmDetails = snapshot.data![index];
-                                                                                                    final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
-                                                                                                    final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
-                                                                                                    final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
-                                                                                                    return (OrderStatus2 == 'Collected' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
-                                                                                                        ? Card(
-                                                                                                            child: Column(
-                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                            children: [
-                                                                                                              Container(
-                                                                                                                  padding: EdgeInsets.all(5),
-                                                                                                                  width: size.width,
-                                                                                                                  color: Colors.grey.shade200,
-                                                                                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                                                    Text(
-                                                                                                                      '$pharmacyName ',
-                                                                                                                      style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-                                                                                                                    ),
-                                                                                                                    Text(
-                                                                                                                      '$pharmPhonenumber',
-                                                                                                                      style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
-                                                                                                                    ),
-                                                                                                                    FutureBuilder<Placemark>(
-                                                                                                                        future: getPharmacyLocation(pharmLocation),
-                                                                                                                        builder: (context, snapshot) {
-                                                                                                                          switch (snapshot.connectionState) {
-                                                                                                                            case ConnectionState.none:
-                                                                                                                            case ConnectionState.waiting:
-                                                                                                                              return Center(
-                                                                                                                                child: Container(width: 200, height: 5, child: LinearProgressIndicator()),
-                                                                                                                              );
-                                                                                                                            default:
-                                                                                                                              if (snapshot.hasError) {
-                                                                                                                                print(snapshot.error);
-                                                                                                                              }
-                                                                                                                              if (!snapshot.hasData) {
-                                                                                                                                return Center(
-                                                                                                                                  child: Text("No Data..."),
-                                                                                                                                );
-                                                                                                                              } else {
-                                                                                                                                return ListView.builder(
-                                                                                                                                    shrinkWrap: true,
-                                                                                                                                    scrollDirection: Axis.vertical,
-                                                                                                                                    itemCount: 1,
-                                                                                                                                    itemBuilder: (context, index) {
-                                                                                                                                      final address = snapshot.data!;
-                                                                                                                                      final country = address.country;
-                                                                                                                                      final locality = address.locality;
-                                                                                                                                      final subLocality = address.subLocality;
-                                                                                                                                      final street = address.street;
-                                                                                                                                      return Text(
-                                                                                                                                        "$street, $subLocality, $locality, $country",
-                                                                                                                                        maxLines: 2,
-                                                                                                                                        softWrap: true,
-                                                                                                                                        style: TextStyle(fontFamily: "Lato", fontSize: 15, fontWeight: FontWeight.w700),
-                                                                                                                                      );
-                                                                                                                                    });
-                                                                                                                              }
-                                                                                                                          }
-                                                                                                                        }),
-                                                                                                                  ])),
-                                                                                                            ],
-                                                                                                          ))
-                                                                                                        : Container();
-                                                                                                  });
-                                                                                            }
-                                                                                        }
-                                                                                      });
-                                                                                });
-                                                                          }
+                                                            FutureBuilder<
+                                                                List<
+                                                                    ParseObject>>(
+                                                                future:
+                                                                getPharmList(),
+                                                                builder:
+                                                                    (context,
+                                                                    snapshot) {
+                                                                  switch (snapshot
+                                                                      .connectionState) {
+                                                                    case ConnectionState
+                                                                        .none:
+                                                                    case ConnectionState
+                                                                        .waiting:
+                                                                      return Center(
+                                                                        child: Container(
+                                                                            width: 200,
+                                                                            height: 5,
+                                                                            child: LinearProgressIndicator()),
+                                                                      );
+                                                                    default:
+                                                                      if (snapshot
+                                                                          .hasError) {
+                                                                        return Center(
+                                                                          child: Text("Error..."),
+                                                                        );
                                                                       }
-                                                                    })
-                                                                : Container(),
+                                                                      if (!snapshot
+                                                                          .hasData) {
+                                                                        return Center(
+                                                                          child: Text("No Data..."),
+                                                                        );
+                                                                      } else {
+                                                                        return ListView.builder(
+                                                                            shrinkWrap: true,
+                                                                            scrollDirection: Axis.vertical,
+                                                                            itemCount: snapshot.data!.length,
+                                                                            itemBuilder: (context, index1) {
+                                                                              final pharmDetails = snapshot.data![index1];
+                                                                              final pharmacyId = pharmDetails.get('PharmacyId').objectId;
+                                                                              var OrderStatus2 = pharmDetails.get('OrderStatus')!;
+                                                                              var note = 'No note';
+                                                                              if(pharmDetails.get('Note')!=null) {
+                                                                                note = pharmDetails.get('Note')!;
+                                                                                if(note==''){
+                                                                                  note = 'No note';
+                                                                                }
+                                                                              }
+                                                                              ///Check if there is reply to the order
+                                                                              if(OrderStatus2 =='Accepted' || OrderStatus2 =='Declined'){
+                                                                                acceptedOrDeclined = true;
+                                                                              }
+                                                                              print(OrderStatus2);
+                                                                              var index1Length = snapshot.data!.length;
+                                                                              return FutureBuilder<List<ParseObject>>(
+                                                                                  future: getPharmDetails(pharmacyId),
+                                                                                  builder: (context, snapshot) {
+                                                                                    switch (snapshot.connectionState) {
+                                                                                      case ConnectionState.none:
+                                                                                      case ConnectionState.waiting:
+                                                                                        return Center(
+                                                                                        );
+                                                                                      default:
+                                                                                        if (snapshot.hasError) {
+                                                                                          return Center(
+                                                                                            child: Text("Error..."),
+                                                                                          );
+                                                                                        }
+                                                                                        if (!snapshot.hasData) {
+                                                                                          return Center(
+                                                                                            child: Text("No Data..."),
+                                                                                          );
+                                                                                        } else {
+                                                                                          return ListView.builder(
+                                                                                              shrinkWrap: true,
+                                                                                              scrollDirection: Axis.vertical,
+                                                                                              itemCount: snapshot.data!.length,
+                                                                                              itemBuilder: (context, index2) {
+                                                                                                final pharmDetails = snapshot.data![index2];
+                                                                                                final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
+                                                                                                final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
+                                                                                                final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
+
+                                                                                                return (OrderStatus2 == 'Collected' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up' ||(OrderStatus1=='Declined'&&OrderStatus2=='Declined'))
+                                                                                                    ? Card(
+                                                                                                    child: Column(
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: [
+                                                                                                        Container(
+                                                                                                            padding: EdgeInsets.all(5),
+                                                                                                            width: size.width,
+                                                                                                            color: Colors.grey.shade200,
+                                                                                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                                              Text(
+                                                                                                                '$pharmacyName ',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                              ),
+                                                                                                              Text(
+                                                                                                                '$pharmPhonenumber',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                              ),
+                                                                                                              Text(
+                                                                                                                'Note: $note',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                              ),
+                                                                                                              Text(
+                                                                                                                '$OrderStatus2',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                              ),
+                                                                                                              FutureBuilder<Placemark>(
+                                                                                                                  future: getPharmacyLocation(pharmLocation),
+                                                                                                                  builder: (context, snapshot) {
+                                                                                                                    switch (snapshot.connectionState) {
+                                                                                                                      case ConnectionState.none:
+                                                                                                                      case ConnectionState.waiting:
+                                                                                                                        return Center(
+                                                                                                                        );
+                                                                                                                      default:
+                                                                                                                        if (snapshot.hasError) {
+                                                                                                                          print(snapshot.error);
+                                                                                                                        }
+                                                                                                                        if (!snapshot.hasData) {
+                                                                                                                          return Center(
+                                                                                                                            child: Text("No Data..."),
+                                                                                                                          );
+                                                                                                                        } else {
+                                                                                                                          return ListView.builder(
+                                                                                                                              shrinkWrap: true,
+                                                                                                                              scrollDirection: Axis.vertical,
+                                                                                                                              itemCount: 1,
+                                                                                                                              itemBuilder: (context, index) {
+                                                                                                                                final address = snapshot.data!;
+                                                                                                                                final country = address.country;
+                                                                                                                                final locality = address.locality;
+                                                                                                                                final subLocality = address.subLocality;
+                                                                                                                                final street = address.street;
+                                                                                                                                return Text(
+                                                                                                                                  "$street, $subLocality, $locality, $country",
+                                                                                                                                  maxLines: 2,
+                                                                                                                                  softWrap: true,
+                                                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 15, fontWeight: FontWeight.w700),
+                                                                                                                                );
+                                                                                                                              });
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                  }),
+                                                                                                            ])),
+                                                                                                      ],
+                                                                                                    ))
+                                                                                                    : ///If order under processing and a pharmacy accepted or declined then show the pharmacy list button other wise tell customer to wait
+                                                                                                (OrderStatus1 == 'Under processing' && acceptedOrDeclined  && index1==index1Length-1)
+                                                                                                    ? Center(
+                                                                                                  child:
+                                                                                                  Container(
+                                                                                                    decoration:
+                                                                                                    ThemeHelper()
+                                                                                                        .buttonBoxDecoration(context),
+                                                                                                    child:
+                                                                                                    ElevatedButton(
+                                                                                                      style: ThemeHelper()
+                                                                                                          .buttonStyle(),
+                                                                                                      onPressed:
+                                                                                                          () {
+                                                                                                        Navigator.push(
+                                                                                                            context,
+                                                                                                            MaterialPageRoute(builder: (context) => PharmacyListPage(OrderId, widget.customerId)));
+                                                                                                      },
+                                                                                                      child:
+                                                                                                      Text(
+                                                                                                        'View Pharmacies List'
+                                                                                                            .toUpperCase(),
+                                                                                                        style: TextStyle(
+                                                                                                            fontFamily: 'Lato',
+                                                                                                            fontSize: 18,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Colors.white),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                )
+                                                                                                ///If order under processing and no pharmacy accepted then tell customer to wait
+                                                                                                    : (OrderStatus1 == 'Under processing'  && !acceptedOrDeclined  && index1==index1Length-1)?
+                                                                                                Container(
+                                                                                                    child: Row(
+                                                                                                        children:[Text(
+                                                                                                          'Waiting for pharmacies reply...  ',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: 'Lato',
+                                                                                                              fontSize: 18,
+                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                              color: Colors.red),
+                                                                                                        ),
+                                                                                                          Container(
+                                                                                                              width: 30,
+                                                                                                              height: 30,
+                                                                                                              child:
+                                                                                                              CircularProgressIndicator()),])
+                                                                                                ):(Container());
+                                                                                              });
+                                                                                        }
+                                                                                    }
+                                                                                  });
+                                                                            });
+                                                                      }
+                                                                  }
+                                                                }),
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
 
                                                             ///customer name and phone number and location
                                                             FutureBuilder<
@@ -410,6 +490,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                     case ConnectionState
                                                                         .waiting:
                                                                       return Center(
+
                                                                         child: Container(
                                                                             width:
                                                                                 200,
@@ -523,8 +604,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                             ),
 
                                                             ///Show total price and items of initial order
-                                                            (OrderStatus1 ==
-                                                                    'Under processing')
+                                                            (OrderStatus1 == 'Under processing' || OrderStatus1 == 'Declined' || OrderStatus1 == 'Cancelled')
                                                                 ?
 
                                                                 ///Order total price
@@ -843,7 +923,6 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                             SizedBox(
                                                               height: 20,
                                                             ),
-
                                                             ///Order prescription if exist
                                                             presRequired
                                                                 ? Column(

@@ -195,7 +195,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                     OrderStatus2 =
                                                                     'Under processing';
                                                                   }
-                                                                  return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
+                                                                  return (OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
                                                                       ? Card(
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment
@@ -611,6 +611,7 @@ class PharmacyList extends State<PharmacyListPage> {
         ParseObject('PharmaciesList'));
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
       ..objectId = widget.orderId).toPointer());
+    parseQuery.orderByAscending('Distance');
 
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
