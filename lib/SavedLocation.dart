@@ -86,7 +86,7 @@ class Locations extends State<SavedLocationPage> {
                               child: Column(children: [
                                 Expanded(
                                     child: FutureBuilder<List<ParseObject>>(
-                                        future: getSavedLocations(), //Will change LocationNotEmpty value
+                                        future: getSavedLocations(), //Will change LocationPageNotEmpty value
                                         builder: (context, snapshot) {
                                           switch (snapshot.connectionState) {
                                             case ConnectionState.none:
@@ -111,12 +111,9 @@ class Locations extends State<SavedLocationPage> {
                                               } else {
                                                 return LocationPageNotEmpty
                                                     ? ListView.builder(
-                                                    scrollDirection:
-                                                    Axis.vertical,
-                                                    itemCount:
-                                                    snapshot.data!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                    scrollDirection: Axis.vertical,
+                                                    itemCount: snapshot.data!.length,
+                                                    itemBuilder: (context, index) {
                                                       //Get Parse Object Values
                                                       //Get customer locations from Locations table
                                                       NoOfLocation = snapshot.data!.length; //Save number of Locations

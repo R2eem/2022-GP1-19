@@ -317,7 +317,6 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               if(OrderStatus2 =='Accepted' || OrderStatus2 =='Declined'){
                                                                                 acceptedOrDeclined = true;
                                                                               }
-                                                                              print(OrderStatus2);
                                                                               var index1Length = snapshot.data!.length;
                                                                               return FutureBuilder<List<ParseObject>>(
                                                                                   future: getPharmDetails(pharmacyId),
