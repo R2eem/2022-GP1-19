@@ -101,16 +101,17 @@ document.getElementById('results0').innerHTML = "Sorry there is no pharmacies wi
             alert("Customer "+CustomerName+' has been blocked');
             sendEmail(CustomerName,CustomerEmail,CustomerId);
         }catch(error){
+            alert(error)
             alert('Failed to block customer ' +CustomerName);
         }
     }
 }
 
 function sendEmail(CustomerName,CustomerEmail,CustomerId){
-    if(confirm("Yout need to send email to customer "+CustomerName)){
+    if(confirm("You need to send email to customer "+CustomerName)){
     var form = document.createElement("form");
     form.setAttribute("method", "post");
-    form.setAttribute("action", "mailto:"+ pharmacyEmail);
+    form.setAttribute("action", "mailto:"+ CustomerEmail);
     form.setAttribute("enctype", "text/plain");
   
      var sendButton = document.createElement("input");

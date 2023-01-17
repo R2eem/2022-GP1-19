@@ -102,7 +102,7 @@ async function ifNotBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
 }
 
 function sendEmail(pharmacyName,pharmacyEmail,pharmacyId){
-    if(confirm("Yout wineed to send email to pharmacy "+pharmacyName)){
+    if(confirm("You need to send email to pharmacy "+pharmacyName)){
     var form = document.createElement("form");
     form.setAttribute("method", "post");
     form.setAttribute("action", "mailto:"+ pharmacyEmail);
