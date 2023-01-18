@@ -41,18 +41,21 @@
                 <i class="fa fa-th-large" aria-hidden="true"></i>
                 <h3>Dashboard</h3>
             </a>
-            <a href="#">
+            <a href="ViewCustomers.html">
                 <i class="fa fa-users" aria-hidden="true"></i>
                 <h3>Customers</h3>
             </a>
-            <a href="#">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-            <a href="#">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requists</h3>
-     
+            <a href="Pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Pharmacies</h3>
+          </a>
+          <a href="Blocked_pharmacies_page.html">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+              <h3>Blocked Pharmacies</h3>
+          </a>
+          <a href="Pharmacies_Join_Request_Page.html">
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <h3>Join requests</h3>
             </a>
             <a href="Medications.html">
                 <i class="fa fa-medkit" aria-hidden="true"></i>
@@ -62,8 +65,12 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <h3>Add Medications</h3>
             </a>
-            <a href="log_in_page.html">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
+            <a href="customerOrders.html" >
+              <i class="fa fa-list-alt" aria-hidden="true"></i>
+              <h3>Orders</h3>
+            </a>
+            <a href="" onclick="doUserLogOut()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <h3>Log out</h3>
             </a>
         </div>
@@ -188,6 +195,15 @@
 </body>
 
 <script>
+  
+  //Check if user logged in
+  async function sessionCheck(){
+     const currentUser = await Parse.User.current();
+     if (currentUser === null) {
+        window.location.replace("log_in_page.html");
+     }
+  }
+  sessionCheck();
 
 //add new medication
 async function  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry){
@@ -234,7 +250,7 @@ async function validate(){
     var MarketingCompany = document.getElementById('MarketingCompany').value;
     var MarketingCountry = document.getElementById('MarketingCountry').value;
     
-
+    
     if(TradeName != '' && ScientificName !='' && Strength != '' && StrengthUnit !='' 
     && Price != '' && PackageType !='' && PharmaceuticalForm != '' && UsageMethod !='' 
     && LegalStatus != '' && MarketingCompany  && MarketingCountry != '')
@@ -267,14 +283,16 @@ async function validate(){
           if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
             else {document.getElementById('PackageTypeP').innerHTML = ""}
 
-          if (document.getElementById('PharmaceuticalForm').value == "None") {document.getElementById('PharmaceuticalFormP').innerHTML = "please select one pharmaceutical form"; }
+          if (document.getElementById('PharmaceuticalForm').value == "None") {
+            document.getElementById('PharmaceuticalFormP').innerHTML = "please select one pharmaceutical form"; }
             else {document.getElementById('PharmaceuticalFormP').innerHTML = ""}
 
           if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
             else {document.getElementById('UsageMethodP').innerHTML = ""}
             
-          if (document.getElementById('LegalStatusP').value == "None") {document.getElementById('LegalStatusP').innerHTML += "please select one legal status"  }
-            else {document.getElementById('LegalStatusP').innerHTML = ""}
+
+          if (document.getElementById('LegalStatus').value == "None") {document.getElementById('LegalStatusP').innerHTML = "please select one legal status"; }
+            else {document.getElementById('LegalStatusP').innerHTML = "";}
 
           if (MarketingCompany.length>50) { document.getElementById('MarketingCompanyP').innerHTML = "should be less than 50 characters" ;}
             else {document.getElementById('MarketingCompanyP').innerHTML = ""}
@@ -283,10 +301,11 @@ async function validate(){
             else {document.getElementById('MarketingCountryP').innerHTML = ""}
 
           if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-              && Price<=100000 && PackageType.length<=50 && UsageMethod.length<=50 && MarketingCompany.length<=50
+              && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
+              UsageMethod.length<=50 && MarketingCompany.length<=50
               && MarketingCountry.length<=50)
               {
-
+              
           addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry);
 
               }
@@ -294,6 +313,24 @@ async function validate(){
     }
    
 }
+
+//User log out
+async function doUserLogOut () {
+    try {
+        await Parse.User.logOut();
+        // To verify that current user is now empty, currentAsync can be used
+        const currentUser = await Parse.User.current();
+        if (currentUser === null) {
+            alert('Success! No user is logged in anymore!');
+        }
+        // Update state variable holding current user
+        getCurrentUser();
+        //return window.location.replace("log_in_page.html");
+    } catch (error) {
+        alert(`Error! ${error.message}`);
+        return false;
+    }    
+};
     
     </script>
 </html>

@@ -363,13 +363,25 @@ main .recent-orders table{
     transition: all 300ms ease;
 }
 
+#OrdersTable{
+    background: var(--color-white);
+    width: 150%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+}
+
 main .recent-orders table:hover{
     box-shadow: none;
 }
-
+main table thead th{
+    border-bottom: 2px solid var(--color-light);
+}
 main table tbody td{
     height: 2.8rem;
-    border-bottom: 1px solid var(--color-light);
+    border-bottom: 2px solid var(--color-light);
     color: var(--color-dark-variant);
 }
 
@@ -513,6 +525,18 @@ box-shadow: var(--box-shadow);
 
 .right .sales-analytics .item.customers h5{
     color: #E397DE;
+}
+
+.medList {
+    text-align: left;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 30px 0;
+}
+td {
+    padding: 10px 0;
 }
 
 /*============================== MEDIA QUERIES ==========================
@@ -685,5 +709,47 @@ main .addDiv input {
     background-repeat: no-repeat;
     background-position: right 0.7rem top 50%;
     background-size: 0.65rem auto;
-  }
+  }    
+
+  /*=============== Display Customers ==============================*/
+
+main .customer{
+    margin-top: 2rem; 
+}
+
+main .customer table{
+    background: var(--color-white);
+    width: 100%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    border-spacing:15px;
     
+}
+
+main .customer table:hover{
+    box-shadow: none;
+}
+
+main .customer a{
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+    color: var(--color-primary);
+}
+
+
+main .customer i{
+    font-size: 20px;
+    color: gray;
+    background-color: white;
+}
+
+#hDiv{
+    color: black;
+    font-size: large;
+}

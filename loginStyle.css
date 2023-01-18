@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-
-
-  
 *{
     margin: 0;
     padding: 0;
@@ -202,10 +199,7 @@ section .color:nth-child(3){
 .forget a{
     color: rgb(253, 254, 255);
     font-weight: 600;
-}
 
-#showpass {
-    color: rgb(253, 254, 255);
 }
 
 
