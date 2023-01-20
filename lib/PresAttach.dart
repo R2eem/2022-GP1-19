@@ -614,7 +614,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. You can view the order in orders page.",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes...",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[

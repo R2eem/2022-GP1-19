@@ -12,6 +12,7 @@ import 'PharmaciesList.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 
+
 class OrderDetailsPage extends StatefulWidget {
   //Get customer id as a parameter
   final String customerId;
@@ -109,30 +110,18 @@ class OrderDetails extends State<OrderDetailsPage> {
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
-                                      final customerCurrentOrders =
-                                          snapshot.data![index];
-                                      final OrderId =
-                                          customerCurrentOrders.get('objectId');
-                                      final CreatedDate = customerCurrentOrders
-                                          .get('createdAt')!;
-                                      final OrderStatus1 = customerCurrentOrders
-                                          .get('OrderStatus')!;
-                                      final TimePassed = customerCurrentOrders.get('TimePassed')!;
-                                      final TotalPrice = customerCurrentOrders
-                                          .get('TotalPrice')!;
-                                      final medicationsList =
-                                          customerCurrentOrders
-                                              .get('MedicationsList')!;
-                                      final location = customerCurrentOrders
-                                          .get<ParseGeoPoint>('Location')!
-                                          .toJson();
+                                      final customerCurrentOrders = snapshot.data![index];
+                                      final OrderId = customerCurrentOrders.get('objectId');
+                                      final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                      final updatedAt = customerCurrentOrders.get('updatedAt')!;
+                                      final OrderStatus1 = customerCurrentOrders.get('OrderStatus')!;
+                                      final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
+                                      final medicationsList = customerCurrentOrders.get('MedicationsList')!;
+                                      final location = customerCurrentOrders.get<ParseGeoPoint>('Location')!.toJson();
                                       var prescription = null;
-                                      if (customerCurrentOrders
-                                              .get('Prescription') !=
-                                          null) {
+                                      if (customerCurrentOrders.get('Prescription') != null) {
                                         presRequired = true;
-                                        prescription = customerCurrentOrders
-                                            .get<ParseFile>('Prescription')!;
+                                        prescription = customerCurrentOrders.get<ParseFile>('Prescription')!;
                                       }
                                       return Card(
                                           elevation: 3,
@@ -207,59 +196,14 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                 fontWeight: FontWeight.w700),
                                                                           ),
                                                                         ])),
-                                                                FutureBuilder<
-                                                                List<
-                                                                    ParseObject>>(
-                                                                future:
-                                                                getPharmList(),
-                                                                builder:
-                                                                    (context,
-                                                                    snapshot) {
-                                                                  switch (snapshot
-                                                                      .connectionState) {
-                                                                    case ConnectionState
-                                                                        .none:
-                                                                    case ConnectionState
-                                                                        .waiting:
-                                                                      return Center(
-                                                                      );
-                                                                    default:
-                                                                      if (snapshot
-                                                                          .hasError) {
-                                                                        return Center(
-                                                                          child: Text(''),
-                                                                        );
-                                                                      }
-                                                                      if (!snapshot
-                                                                          .hasData) {
-                                                                        return Center(
-                                                                          child: Text(''),
-                                                                        );
-                                                                      } else {
-                                                                        return ListView.builder(
-                                                                            shrinkWrap: true,
-                                                                            scrollDirection: Axis.vertical,
-                                                                            itemCount: snapshot.data!.length,
-                                                                            itemBuilder: (context, index0) {
-                                                                              final pharmDetails = snapshot.data![index0];
-                                                                              var OrderStatus2 = pharmDetails.get('OrderStatus')!;
-                                                                              ///Check if the order is declined before time passed
-                                                                              if(OrderStatus2=='Declined'){
-                                                                                pharmacyDeclined = true;
-                                                                              }
-                                                                              return (index0==snapshot.data!.length-1)?
-                                                                                ///If the order is declined because of time passed then display message
-                                                                                (OrderStatus1=='Declined' && TimePassed && pharmacyDeclined==false)?
-                                                                                Text("We couldn't find available pharmacy, please try another time.",
-                                                                                  style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 16,
-                                                                                    color: Colors.red,),
-                                                                                ):Container():Container();
-                                                                            });
-                                                                      }
-                                                                  }
-                                                                })
+                                                                ///If order declined then display message for customer
+                                                                (OrderStatus1=='Declined')?
+                                                                Text("We couldn't find available pharmacy, please try another time.",
+                                                                  style: TextStyle(
+                                                                    fontFamily: "Lato",
+                                                                    fontSize: 16,
+                                                                    color: Colors.red,),
+                                                                ):Container(),
                                                               ],
                                                             )),
                                                             SizedBox(
@@ -307,12 +251,21 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               final pharmacyId = pharmDetails.get('PharmacyId').objectId;
                                                                               var OrderStatus2 = pharmDetails.get('OrderStatus')!;
                                                                               var note = 'No note';
+                                                                              var time = '';
                                                                               if(pharmDetails.get('Note')!=null) {
                                                                                 note = pharmDetails.get('Note')!;
                                                                                 if(note==''){
                                                                                   note = 'No note';
                                                                                 }
                                                                               }
+                                                                              if(pharmDetails.get('Time')!=null) {
+                                                                                time = pharmDetails.get('Time')!;
+                                                                                time = time.substring(0,2);
+                                                                                int t = int.parse(time);
+                                                                                String t1 = (updatedAt.add(Duration(hours: t))).toString();
+                                                                                time = t1;
+                                                                              }
+
                                                                               ///Check if there is reply to the order
                                                                               if(OrderStatus2 =='Accepted' || OrderStatus2 =='Declined'){
                                                                                 acceptedOrDeclined = true;
@@ -371,6 +324,10 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                               ),
                                                                                                               Text(
                                                                                                                 '$OrderStatus2',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                              ),
+                                                                                                              Text(
+                                                                                                                'Order expected to be ready at: $time',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                               ),
                                                                                                               FutureBuilder<Placemark>(
@@ -452,16 +409,11 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                           'Waiting for pharmacies reply...  ',
                                                                                                           style: TextStyle(
                                                                                                               fontFamily: 'Lato',
-                                                                                                              fontSize: 18,
+                                                                                                              fontSize: 16,
                                                                                                               fontWeight: FontWeight.bold,
                                                                                                               color: Colors.red),
                                                                                                         ),
-                                                                                                          Container(
-                                                                                                              width: 30,
-                                                                                                              height: 30,
-                                                                                                              child:
-                                                                                                              CircularProgressIndicator()),])
-                                                                                                ):(Container());
+                                                                                                ])):Container();
                                                                                               });
                                                                                         }
                                                                                     }

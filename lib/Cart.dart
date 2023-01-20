@@ -301,7 +301,9 @@ class Cart extends State<CartPage> {
                                                                                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                               child: Row(
                                                                                                 children: <Widget>[
-                                                                                                  Image.network(image!.url!, height: 100, width: 70,fit: BoxFit.fill,),
+                                                                                                  (image !=null)?
+                                                                                                  Image.network(image!.url!, height: 100, width: 70,fit: BoxFit.fill,)
+                                                                                                      :Image.asset('assets/listIcon.png', height: 100, width: 70,),
                                                                                                   Expanded(
                                                                                                     child: Container(
                                                                                                       padding: const EdgeInsets.all(8.0),

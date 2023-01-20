@@ -29,6 +29,8 @@ class checkBoxState{
     this.value = false,
   });
 }
+const List<String> list = <String>['Select time','2 hours', '4 hours', '6 hours', '8 hours', '10 hours', '12 hours', '24 hours', '36 hours', '48 hours'];
+
 
 class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   bool presRequired = false;
@@ -37,16 +39,19 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   FocusNode textSecondFocusNode = new FocusNode();// when focusing on the note field
   TextEditingController noteDescriptionController = new TextEditingController(); // to get the text written in note field
   bool value = false;
+  String time = '';
+
 
   @override
   void dispose() {
     noteDescriptionController.dispose();
     super.dispose();
   }
+  String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -165,6 +170,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                 final customerCurrentOrders = snapshot.data![index];
                                                 final OrderId = customerCurrentOrders.get('objectId');
                                                 final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                final updatedAt = customerCurrentOrders.get('updatedAt')!;
                                                 final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
                                                 final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                 final medicationsList = customerCurrentOrders.get('MedicationsList')!;
@@ -695,11 +701,24 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                         itemCount: 1,
                                                                                         itemBuilder: (context, index) {
                                                                                           final orderDetail = snapshot.data!;
-                                                                                          var note = orderDetail.get("Note");
-                                                                                          if(note == ''){
+                                                                                          var note = null;
+                                                                                          if(orderDetail.get('Note')!=null) {
+                                                                                            note = orderDetail.get("Note");
+                                                                                          }
+                                                                                          if(note == '' || note == null){
                                                                                             note = 'No note';
                                                                                           }
-                                                                                          final time = orderDetail.get("Time");
+                                                                                          var time = null;
+                                                                                          if(orderDetail.get('Time')!=null) {
+                                                                                            time = orderDetail.get('Time')!;
+                                                                                            time = time.substring(0,2);
+                                                                                            int t = int.parse(time);
+                                                                                            String t1 = (updatedAt.add(Duration(hours: t))).toString();
+                                                                                            time = t1;
+                                                                                          }
+                                                                                          if(time == '' || time == null){
+                                                                                            time = '----';
+                                                                                          }
                                                                                           return Card(
                                                                                               child: Column(
                                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -722,15 +741,17 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                 fontSize: 17,
                                                                                                                 color: Colors.black,),),
                                                                                                             SizedBox(height: 10,),
+                                                                                                            (time!=null)?
                                                                                                             Text('Order is expected to be ready at:' ,style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
                                                                                                                 color: Colors.black,
-                                                                                                                fontWeight: FontWeight.w600),),
+                                                                                                                fontWeight: FontWeight.w600),):Container(),
+                                                                                                            (time!=null)?
                                                                                                             Text('$time' ,style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
-                                                                                                                color: Colors.black,),),
+                                                                                                                color: Colors.black,),):Container(),
                                                                                                           ]
                                                                                                       )
                                                                                                   )
@@ -780,23 +801,23 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w700),),
                                                                       if(widget.orderStatus.contains("New"))
-                                                                          ElevatedButton(
-                                                                            style: ElevatedButton.styleFrom(backgroundColor: HexColor('#c7a1d1'),
-                                                                            ),
-                                                                            onPressed: _selectDate,
-                                                                            child: Text('SELECT TIME',
-                                                                                style: TextStyle(
-                                                                                    fontFamily: 'Lato',
-                                                                                    fontSize: 15,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.white)),
-                                                                          ),
-                                                                      SizedBox(height: 8),
-                                                                      ///When time selected then display the time
-                                                                      if(widget.orderStatus.contains("New") && date != '')
-                                                                        Text(
-                                                                          'Selected time: $date ${_time.format(context)}',
+                                                                        DropdownButton<String>(
+                                                                          value: dropdownValue,
+                                                                          onChanged: (String? value) {
+                                                                            // This is called when the user selects an item.
+                                                                            setState(() {
+                                                                              dropdownValue = value!;
+                                                                              time = value!;
+                                                                            });
+                                                                            },
+                                                                          items: list.map<DropdownMenuItem<String>>((String value) {
+                                                                            return DropdownMenuItem<String>(
+                                                                              value: value,
+                                                                              child: Text(value),
+                                                                            );
+                                                                          }).toList(),
                                                                         ),
+                                                                      SizedBox(height: 8),
                                                                       ///If order is new display accept and decline button
                                                                       if(widget.orderStatus.contains("New"))
                                                                         ///Accept button
@@ -846,7 +867,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           showError2();
                                                                                         }
                                                                                         ///If not time selected show error message
-                                                                                        else if(date == ''){
+                                                                                        else if(time == '' || time == 'Select time'){
                                                                                           showError3();
                                                                                         }
                                                                                         else {
@@ -1101,9 +1122,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         object = o as ParseObject;
       }
     }
-    String date = _date.toString();
-    date = date.substring(0,11);
-    String time = '$date ${_time.format(context)}';
     //Update the information in pharmacyList table
     var todo = object
       ..set('OrderStatus',orderStatus)
@@ -1147,45 +1165,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       }
     }
   }
-
-  ///Time picker
-  TimeOfDay _time = TimeOfDay(hour: 12, minute: 00);
-
-  void _selectTime() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time,
-      initialEntryMode: TimePickerEntryMode.input,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time = newTime;
-      });
-    }
-  }
-
-  ///Date picker
-  DateTime _date = DateTime(2023, 1, 20);
-  String date = '';
-
-  void _selectDate() async {
-    final DateTime? newDate = await showDatePicker(
-      context: context,
-      initialDate: _date,
-      firstDate: DateTime(2023, 1),
-      lastDate: DateTime(2023, 12),
-      helpText: 'Select a date',
-    );
-    if (newDate != null) {
-      setState(() {
-        _date = newDate;
-        date = _date.toString();
-        date = date.substring(0,11);
-        _selectTime();
-      });
-    }
-  }
-
   ///Function called when updating order status is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess(pharmacyId) {

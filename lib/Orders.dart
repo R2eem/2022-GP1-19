@@ -4,7 +4,6 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'CategoryPage.dart';
 import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'LoginPage.dart';
 import 'OrderDetails.dart';
 import 'Settings.dart';
@@ -420,16 +419,13 @@ class Orders extends State<OrdersPage> {
       [query1, query2, query3],
     )..orderByDescending('createdAt');
 
-    ///Query orders that are under processing and check if the order got accepted from at least one pharmacy or make order declined
-    var orderAccepted;
+    ///Query orders that are under processing and check if the order passed the time then make order declined
     var allDeclined;
     var orderCreatedAt;
-    var timePassed;
 
     final query1Response = await query1.query();
     if (query1Response.success && query1Response.results != null) {
       for (var order in query1Response.results!) {
-        orderAccepted = false;
         allDeclined = true;
         orderId = order.objectId;
         orderCreatedAt = order.get('createdAt');
@@ -439,72 +435,50 @@ class Orders extends State<OrdersPage> {
           ..objectId = orderId).toPointer());
         final parseQueryResponse = await parseQuery.query();
 
-        ///Check if any pharmacy accepted the order
-        for (var o in parseQueryResponse.results!) {
-          if(o.get('OrderStatus')=='Accepted'){
-            orderAccepted = true;
-          }
-        }
+
 
         ///Check if all pharmacies declined the order
         for (var o in parseQueryResponse.results!) {
-          if(o.get('OrderStatus') !='Declined'){
+          if (o.get('OrderStatus') != 'Declined') {
             allDeclined = false;
           }
         }
 
         ///For customer If all pharmacies declined the order before time passes make order declined for customer
-        if(allDeclined){
-          var update =  order..set('OrderStatus', 'Declined');
+        if (allDeclined) {
+          var update = order..set('OrderStatus', 'Declined');
           final ParseResponse parseResponse = await update.save();
         }
 
-///*********Time code
+        ///*********Time code
 
-        DateTime dt1 = (DateTime.now()).subtract(Duration(hours:3));
-        DateTime dt2 = (orderCreatedAt.add(Duration(minutes: 2)));
-        String d1 = (DateTime.now()).subtract(Duration(hours:3)).toString();
-        String d2 = (orderCreatedAt.add(Duration(minutes: 2))).toString();
-        d1 = d1.substring(0,19);
-        d2 = d2.substring(0,19);
-        DateTime  date1 = DateTime.parse(d1);
-        DateTime  date2 = DateTime.parse(d2);
+        ///If order not declined and the customer didn't select a pharmacy check time
+        if (!allDeclined) {
+            String d1 = (DateTime.now()).subtract(Duration(hours: 3)).toString();
+            String d2 = (orderCreatedAt.add(Duration(minutes: 200))).toString();
+            d1 = d1.substring(0, 19);
+            d2 = d2.substring(0, 19);
+            DateTime date1 = DateTime.parse(d1);
+            DateTime date2 = DateTime.parse(d2);
 
-        if(date1.isAfter(date2)) {
-          ///For pharmacy list if order not accepted
-          if (!orderAccepted) {
-            for (var o in parseQueryResponse.results!) {
-              ///If pharmacy declined order leave as declined for that pharmacy
-              ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (o.get('OrderStatus') != 'Declined') {
-                var update = o..set('OrderStatus', 'Cancelled');
+            ///If time passed make order status declined for customer +
+            ///order status cancelled for pharmacies who accepted or didn't reply
+            if (date1.isAfter(date2)) {
+              ///For pharmacies
+                for (var o in parseQueryResponse.results!) {
+                  ///If pharmacy declined order leave as declined for that pharmacy
+                  ///If pharmacy didn't reply make order cancelled for that pharmacy
+                  if (o.get('OrderStatus') != 'Declined') {
+                    var update = o..set('OrderStatus', 'Cancelled');
+                    final ParseResponse parseResponse = await update.save();
+                  }
+                }
+                ///For customer
+                var update = order..set('OrderStatus', 'Declined');
                 final ParseResponse parseResponse = await update.save();
               }
-            }
-          }
-
-          ///For customer if pharmacist didn't accept the order
-          if (!orderAccepted) {
-            timePassed = true;
-            ///If no pharmacy accepted the order then make order declined for customer
-            var update = order..set('OrderStatus', 'Declined')..set('TimePassed', timePassed);
-            final ParseResponse parseResponse = await update.save();
-          }
-
-          ///For pharmacy list if time passes and pharmacy didn't reply make order cancelled for that pharmacy
-          if (orderAccepted) {
-            for (var o in parseQueryResponse.results!) {
-              ///If pharmacy declined order leave as declined for that pharmacy
-              ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (o.get('OrderStatus') != 'Accepted') {
-                if (o.get('OrderStatus') != 'Declined') {
-                  var update = o..set('OrderStatus', 'Cancelled');
-                  final ParseResponse parseResponse = await update.save();
-                }
-              }
-            }
-          }
-        }///End of time code
+            ///End of time code
+        }
       }
     }
     final apiResponse = await mainQuery.query();
