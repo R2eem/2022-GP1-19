@@ -218,7 +218,7 @@ async function displayMedInfo(){
 const query = window.location.search;
 const urlParams = new URLSearchParams(query);
 const medicationId = urlParams.get('id');
-console.log(medicationId);
+
 
 
 const query2 = new Parse.Query("Medications");
@@ -301,7 +301,7 @@ medication.set("Image", parseFile);
 
 //validation of image format
 var maxSize = 400000; 
-let AllowedExtension = ['image/jpg','image/png'];
+let AllowedExtension = ['image/jpg','image/png','image/jpeg'];
 let type;
 
 
@@ -369,7 +369,7 @@ async function validate(){
            if(MedicationImage != null){
               type = MedicationImage.type;
             if(AllowedExtension.indexOf(type)<=-1){
-            document.getElementById('imageP').innerHTML = "image should be jpg or png";}
+            document.getElementById('imageP').innerHTML = "image should be jpg or png or jpeg";}
             else{
               if (MedicationImage.size>maxSize){
                 document.getElementById('imageP').innerHTML = "image size should be under 400KB";
