@@ -67,6 +67,11 @@
     margin-right: auto;
 }
 
+.medicationImg{
+    width: 100px;
+    height: 100px;
+}
+
   </style>
     <script
          type="text/javascript"
@@ -89,7 +94,7 @@
   sessionCheck();
 
 async function DisplayMedications() { 
-    
+
 
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
@@ -107,7 +112,14 @@ async function DisplayMedications() {
        var MedId = medication.id;
        var MedName = medication.get("TradeName");
        document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-       document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+       if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+       document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
        document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -156,7 +168,13 @@ for(let i=0; i<results.length;i++){
     var MedName = medication.get("TradeName");
     
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -182,7 +200,14 @@ for(let i=0; i<results.length;i++){
        var MedName = medication.get("TradeName");
        
        document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-       document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+       if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+       document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
        document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -224,7 +249,14 @@ async function searchMedication(){
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -242,8 +274,16 @@ if (document.getElementById('btn2').style.backgroundColor == 'rgb(204, 148, 203)
     if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
+
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -264,7 +304,13 @@ if (document.getElementById('btn3').style.backgroundColor == 'rgb(204, 148, 203)
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -387,7 +433,8 @@ if(confirm(text)==true){
             
                 <table id="MedTable">
                     <thead>
-                        <tr>                          
+                        <tr>                 
+                            <th>Medication Image</th>         
                             <th>Trade Name</th>
                             <th>Scientific Name</th>
                             <th>Strength</th>
