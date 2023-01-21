@@ -32,6 +32,7 @@ class PharmacyOld extends State<PharmacyOldO>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
         child: Stack(children: [
           //Header
           Container(
@@ -199,6 +200,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                               );
                                             } else {
                                               return ListView.builder(
+                                                  physics: ClampingScrollPhysics(),
                                                   scrollDirection: Axis.vertical,
                                                   itemCount: snapshot.data!.length,
                                                   itemBuilder: (context, index) {
