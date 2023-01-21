@@ -71,7 +71,7 @@ class Prescription extends State<PrescriptionCategory>
                   ),
                 ]),
                 SizedBox(
-                  height: 55,
+                  height: 25,
                 ),
                 ///Controls prescription category page display
                 Align(

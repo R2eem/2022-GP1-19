@@ -61,7 +61,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
                             child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                           ),]),
-              SizedBox(height: 55,),
+              SizedBox(height: 25,),
               ///Controls Non-prescription category page display
               Align(
                 alignment: Alignment.bottomCenter,
