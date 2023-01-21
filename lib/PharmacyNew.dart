@@ -532,7 +532,8 @@ class PharmacyNew extends State<PharmacyNewO>
             String d1 = (DateTime.now())
                 .subtract(Duration(hours: 3))
                 .toString();
-            String d2 = (orderCreatedAt.add(Duration(minutes: 200))).toString();
+            ///30 minutes
+            String d2 = (orderCreatedAt.add(Duration(minutes: 30))).toString();
             d1 = d1.substring(0, 19);
             d2 = d2.substring(0, 19);
 
