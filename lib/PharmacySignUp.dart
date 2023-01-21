@@ -123,7 +123,7 @@ class Signup extends State<PharmacySignUp> {
                                     key: _formKey,
                                     child: Column(
                                         children: [
-                                          ///FirstName
+                                          ///PharmacyName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -138,6 +138,8 @@ class Signup extends State<PharmacySignUp> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper()
                                                   .textInputDecoration(
@@ -148,7 +150,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          ///LastName
+                                          ///CommercialRegister
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -194,7 +196,9 @@ class Signup extends State<PharmacySignUp> {
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
                                                 EmailValidator(
-                                                    errorText: 'enter a valid email address')
+                                                    errorText: 'enter a valid email address'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper()
                                                   .textInputDecoration(

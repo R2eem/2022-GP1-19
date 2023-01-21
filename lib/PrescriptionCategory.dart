@@ -352,8 +352,7 @@ class Prescription extends State<PrescriptionCategory>
 
                                                 ///Display medication that matches the search string if exist and matches the filter
                                                 ///Display image of medication if exist
-                                                return (image == null)
-                                                    ? GestureDetector(
+                                                return  GestureDetector(
                                                         //Navigate to medication details page
                                                         onTap: () => Navigator.of(context)
                                                             .push(MaterialPageRoute(
@@ -370,9 +369,16 @@ class Prescription extends State<PrescriptionCategory>
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                 children: [
-                                                                  Image
+                                                                  (image == null)
+                                                                      ?Image
                                                                       .asset(
                                                                     'assets/listIcon.png', height: 100, width: 70,
+                                                                  ):Image
+                                                                      .network(
+                                                                    image!.url!,
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    height: 120, width: 90,
                                                                   ),
                                                                   Text(
                                                                     TradeName,
@@ -413,8 +419,7 @@ class Prescription extends State<PrescriptionCategory>
                                                                         FontStyle.italic),
                                                                   ),
                                                                   Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
                                                                       children:[
                                                                         Ink(
                                                                           decoration:
@@ -445,102 +450,7 @@ class Prescription extends State<PrescriptionCategory>
                                                                               )),
                                                                         ),]),
 
-                                                                ]))):GestureDetector(
-                                                  //Navigate to medication details page
-                                                    onTap: () => Navigator.of(context)
-                                                        .push(MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            medDetailsPage(
-                                                                medId!,
-                                                                widget.customerId))),
-                                                    //Medication card information
-                                                    child: Card(
-                                                        elevation: 3,
-                                                        margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                                                        color: Colors.white,
-                                                        child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              Image
-                                                                  .network(
-                                                                image!.url!,
-                                                                fit: BoxFit
-                                                                    .fill,
-                                                                height: 120, width: 90,
-                                                              ),
-                                                              Text(
-                                                                TradeName,
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                    "Lato",
-                                                                    fontSize:
-                                                                    17,
-                                                                    fontWeight:
-                                                                    FontWeight.w700),
-                                                              ),
-
-                                                              Text(
-                                                                '$ScientificName',
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                    "Lato",
-                                                                    fontSize:
-                                                                    14,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontStyle:
-                                                                    FontStyle.italic),
-                                                              ),
-                                                              Text(
-                                                                '$Publicprice SAR',
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                    "Lato",
-                                                                    fontSize:
-                                                                    14,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontStyle:
-                                                                    FontStyle.italic),
-                                                              ),
-                                                              Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children:[
-                                                                    Ink(
-                                                                      decoration:
-                                                                      ShapeDecoration.fromBoxDecoration(BoxDecoration(
-                                                                        color:
-                                                                        HexColor('#fad2fc'),
-                                                                        borderRadius:
-                                                                        BorderRadius.circular(15),
-                                                                      )),
-                                                                      //Add to cart button
-                                                                      child: IconButton(
-                                                                          onPressed: () async {
-                                                                            if (await addToCart(medId, widget.customerId)) {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                content: Text(
-                                                                                  "$TradeName added to your cart",
-                                                                                  style: TextStyle(fontSize: 20),
-                                                                                ),
-                                                                                duration: Duration(milliseconds: 3000),
-                                                                              ));
-                                                                            }
-                                                                            ;
-                                                                          },
-                                                                          icon: const Icon(
-                                                                            Icons.add_shopping_cart_rounded,
-                                                                            color: Colors.black,
-                                                                            size: 20.0,
-                                                                          )),
-                                                                    ),]),
-
-                                                            ])));
+                                                                ])));
                                               });
                                         }
                                     }

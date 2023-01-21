@@ -150,6 +150,7 @@ class Locations extends State<SavedLocationPage> {
                                                                   return  ListView.builder(
                                                                       shrinkWrap: true,
                                                                       scrollDirection: Axis.vertical,
+                                                                      physics: ClampingScrollPhysics(),
                                                                       itemCount: 1,
                                                                       itemBuilder: (context, index) {
                                                                         final address = snapshot.data!;

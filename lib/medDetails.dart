@@ -72,6 +72,7 @@ class MedDetails extends State<medDetailsPage> {
                                                           );
                                                         } else {
                                                           return ListView.builder(
+                                                              physics: ClampingScrollPhysics(),
                                                               padding: EdgeInsets.only(top: 10.0),
                                                               scrollDirection: Axis.vertical,
                                                               itemCount: 1,
@@ -326,7 +327,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                                     child: Text.rich(
                                                                                                                       TextSpan(
                                                                                                                         children: [
-                                                                                                                          TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                                          TextSpan(text: "ADD TO CART ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                                                                                                                           WidgetSpan(
                                                                                                                               child: Icon(
                                                                                                                                 Icons.add_shopping_cart_rounded,

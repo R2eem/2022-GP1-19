@@ -34,9 +34,24 @@ class OrderDetails extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return RefreshIndicator(
+        displacement: 150,
+        backgroundColor: Colors.white,
+        color: Colors.grey,
+        strokeWidth: 3,
+        triggerMode: RefreshIndicatorTriggerMode.onEdge,
+        onRefresh: () async {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => super.widget));
+        },
+        child: Stack(
+        children: <Widget>[ListView(physics: ClampingScrollPhysics(),
+        ), Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Stack(children: [
           //Header
           Container(
@@ -79,6 +94,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                   height: 55,
                 ),
                 SingleChildScrollView(
+                    physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
@@ -106,6 +122,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                 );
                               } else {
                                 return ListView.builder(
+                                    physics: ClampingScrollPhysics(),
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data!.length,
@@ -122,6 +139,16 @@ class OrderDetails extends State<OrderDetailsPage> {
                                       if (customerCurrentOrders.get('Prescription') != null) {
                                         presRequired = true;
                                         prescription = customerCurrentOrders.get<ParseFile>('Prescription')!;
+                                      }
+                                      Color color1 = Colors.black;
+                                      if(OrderStatus1=='Under preparation' || OrderStatus1 == 'Ready for pick up'|| OrderStatus1=='Under processing'){
+                                        color1 = Colors.orange;
+                                      }
+                                      if(OrderStatus1=='Collected'){
+                                        color1 = Colors.green;
+                                      }
+                                      if(OrderStatus1=='Declined' || OrderStatus1 == 'Cancelled'){
+                                        color1 = Colors.red;
                                       }
                                       return Card(
                                           elevation: 3,
@@ -183,29 +210,37 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                     color: Colors
                                                                         .grey
                                                                         .shade200,
-                                                                    child: Column(
+                                                                    child: Row(
                                                                         crossAxisAlignment:
                                                                             CrossAxisAlignment.start,
                                                                         children: [
                                                                           Text(
-                                                                            'OrderStatus: $OrderStatus1',
+                                                                            'OrderStatus: ',
                                                                             style: TextStyle(
                                                                                 fontFamily: "Lato",
                                                                                 fontSize: 18,
                                                                                 color: Colors.black,
                                                                                 fontWeight: FontWeight.w700),
                                                                           ),
+                                                                          Text(
+                                                                            '$OrderStatus1',
+                                                                            style: TextStyle(
+                                                                                fontFamily: "Lato",
+                                                                                fontSize: 18,
+                                                                                color: color1,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          ),
                                                                         ])),
-                                                                ///If order declined then display message for customer
-                                                                (OrderStatus1=='Declined')?
-                                                                Text("We couldn't find available pharmacy, please try another time.",
-                                                                  style: TextStyle(
-                                                                    fontFamily: "Lato",
-                                                                    fontSize: 16,
-                                                                    color: Colors.red,),
-                                                                ):Container(),
                                                               ],
                                                             )),
+                                                            ///If order declined then display message for customer
+                                                            (OrderStatus1=='Declined')?
+                                                            Text("**We couldn't find available pharmacy, please try another time.",
+                                                              style: TextStyle(
+                                                                fontFamily: "Lato",
+                                                                fontSize: 16,
+                                                                color: Colors.red,),
+                                                            ):Container(),
                                                             SizedBox(
                                                               height: 5,
                                                             ),
@@ -243,6 +278,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                         );
                                                                       } else {
                                                                         return ListView.builder(
+                                                                            physics: ClampingScrollPhysics(),
                                                                             shrinkWrap: true,
                                                                             scrollDirection: Axis.vertical,
                                                                             itemCount: snapshot.data!.length,
@@ -263,7 +299,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                 time = time.substring(0,2);
                                                                                 int t = int.parse(time);
                                                                                 String t1 = (updatedAt.add(Duration(hours: t))).toString();
-                                                                                time = t1;
+                                                                                time = t1.substring(0,19);
                                                                               }
 
                                                                               ///Check if there is reply to the order
@@ -291,6 +327,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                           );
                                                                                         } else {
                                                                                           return ListView.builder(
+                                                                                              physics: ClampingScrollPhysics(),
                                                                                               shrinkWrap: true,
                                                                                               scrollDirection: Axis.vertical,
                                                                                               itemCount: snapshot.data!.length,
@@ -299,6 +336,13 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                 final pharmacyName = pharmDetails.get<String>('PharmacyName')!;
                                                                                                 final pharmPhonenumber = pharmDetails.get('PhoneNumber')!;
                                                                                                 final pharmLocation = pharmDetails.get<ParseGeoPoint>('Location')!;
+                                                                                                Color color2 = Colors.black;
+                                                                                                if(OrderStatus2=='Under preparation' || OrderStatus2 == 'Ready for pick up'){
+                                                                                                  color2 = Colors.orange;
+                                                                                                }
+                                                                                                if(OrderStatus2=='Collected'){
+                                                                                                  color2 = Colors.green;
+                                                                                                }
 
                                                                                                 return (OrderStatus2 == 'Collected' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up' ||(OrderStatus1=='Declined'&&OrderStatus2=='Declined'))
                                                                                                     ? Card(
@@ -312,23 +356,27 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                                                               Text(
                                                                                                                 '$pharmacyName ',
-                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w700),
                                                                                                               ),
                                                                                                               Text(
                                                                                                                 '$pharmPhonenumber',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                               ),
                                                                                                               Text(
+                                                                                                                '$OrderStatus2',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: color2, fontWeight: FontWeight.w600),
+                                                                                                              ),
+                                                                                                              Text(
                                                                                                                 'Note: $note',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                               ),
                                                                                                               Text(
-                                                                                                                '$OrderStatus2',
+                                                                                                                'Order expected to be ready at:',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                                                                                                               ),
                                                                                                               Text(
-                                                                                                                'Order expected to be ready at: $time',
-                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                                '$time',
+                                                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.blue, fontWeight: FontWeight.w600),
                                                                                                               ),
                                                                                                               FutureBuilder<Placemark>(
                                                                                                                   future: getPharmacyLocation(pharmLocation),
@@ -348,6 +396,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                           );
                                                                                                                         } else {
                                                                                                                           return ListView.builder(
+                                                                                                                              physics: ClampingScrollPhysics(),
                                                                                                                               shrinkWrap: true,
                                                                                                                               scrollDirection: Axis.vertical,
                                                                                                                               itemCount: 1,
@@ -404,15 +453,23 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                 ///If order under processing and no pharmacy accepted then tell customer to wait
                                                                                                     : (OrderStatus1 == 'Under processing'  && !acceptedOrDeclined  && index1==index1Length-1)?
                                                                                                 Container(
-                                                                                                    child: Row(
+                                                                                                    child: Column(
                                                                                                         children:[Text(
-                                                                                                          'Waiting for pharmacies reply...  ',
+                                                                                                          'Waiting for pharmacies reply... ',
                                                                                                           style: TextStyle(
                                                                                                               fontFamily: 'Lato',
                                                                                                               fontSize: 16,
                                                                                                               fontWeight: FontWeight.bold,
                                                                                                               color: Colors.red),
                                                                                                         ),
+                                                                                                          Text(
+                                                                                                            '*Refresh page to check new replies.',
+                                                                                                            style: TextStyle(
+                                                                                                                fontFamily: 'Lato',
+                                                                                                                fontSize: 12,
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                color: Colors.black54),
+                                                                                                          ),
                                                                                                 ])):Container();
                                                                                               });
                                                                                         }
@@ -466,6 +523,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                         );
                                                                       } else {
                                                                         return ListView.builder(
+                                                                            physics: ClampingScrollPhysics(),
                                                                             shrinkWrap: true,
                                                                             scrollDirection: Axis.vertical,
                                                                             itemCount: 1,
@@ -496,6 +554,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                           );
                                                                                         } else {
                                                                                           return ListView.builder(
+                                                                                              physics: ClampingScrollPhysics(),
                                                                                               shrinkWrap: true,
                                                                                               scrollDirection: Axis.vertical,
                                                                                               itemCount: 1,
@@ -628,6 +687,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                       );
                                                                                     } else {
                                                                                       return ListView.builder(
+                                                                                          physics: ClampingScrollPhysics(),
                                                                                           shrinkWrap: true,
                                                                                           scrollDirection: Axis.vertical,
                                                                                           itemCount: snapshot.data!.length,
@@ -703,6 +763,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                             );
                                                                           } else {
                                                                             return ListView.builder(
+                                                                                physics: ClampingScrollPhysics(),
                                                                                 shrinkWrap: true,
                                                                                 scrollDirection: Axis.vertical,
                                                                                 itemCount: snapshot.data!.length,
@@ -731,6 +792,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                 );
                                                                                               } else {
                                                                                                 return ListView.builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis.vertical,
                                                                                                     itemCount: 1,
@@ -792,6 +854,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                       );
                                                                                                     } else {
                                                                                                       return ListView.builder(
+                                                                                                          physics: ClampingScrollPhysics(),
                                                                                                           shrinkWrap: true,
                                                                                                           scrollDirection: Axis.vertical,
                                                                                                           itemCount: snapshot.data!.length,
@@ -981,7 +1044,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               AlertDialog alert = AlertDialog(
                                                                                 title: RichText(
                                                                                   text: TextSpan(
-                                                                                    text: '''Are you sure you want to cancel this order? 
+                                                                                    text: '''Are you sure you want to cancel this order?
                                                                                                ''',
                                                                                     style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
                                                                                     children: <TextSpan>[
@@ -1070,7 +1133,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                   SettingsPage(widget.customerId)));
                     }
                   }),
-                ))));
+                ))))]));
   }
 
   //Get customer current orders from orders table

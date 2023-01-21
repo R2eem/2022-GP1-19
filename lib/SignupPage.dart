@@ -114,6 +114,8 @@ class Signup extends State<SignupPage> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
@@ -133,6 +135,8 @@ class Signup extends State<SignupPage> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
@@ -153,7 +157,9 @@ class Signup extends State<SignupPage> {
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
                                                 EmailValidator(
-                                                    errorText: 'enter a valid email address')
+                                                    errorText: 'enter a valid email address'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
@@ -171,11 +177,11 @@ class Signup extends State<SignupPage> {
                                                 FilteringTextInputFormatter.digitsOnly,
                                                 FilteringTextInputFormatter.deny(
                                                   RegExp(r'^[0-4]+'),
-                                                  ),
+                                                ),
                                                 FilteringTextInputFormatter.deny(
                                                   RegExp(r'^[6-9]+'),
                                                 ),
-                                                ],
+                                              ],
                                               textCapitalization: TextCapitalization.none,
                                               autocorrect: false,
                                               obscureText: false,

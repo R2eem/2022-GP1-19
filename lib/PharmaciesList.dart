@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'CategoryPage.dart';
-import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
-import 'Settings.dart';
 
 
 class PharmacyListPage extends StatefulWidget {
@@ -33,6 +28,7 @@ class PharmacyList extends State<PharmacyListPage> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Stack(children: [
               //Header
               Container(
@@ -102,6 +98,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                           );
                                         } else {
                                           return ListView.builder(
+                                              physics: ClampingScrollPhysics(),
                                               shrinkWrap: true,
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data!.length,
@@ -168,6 +165,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                           } else {
                                                             return ListView
                                                                 .builder(
+                                                                physics: ClampingScrollPhysics(),
                                                                 shrinkWrap: true,
                                                                 scrollDirection: Axis
                                                                     .vertical,
@@ -269,6 +267,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               else {
                                                                                                 return ListView
                                                                                                     .builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis
                                                                                                         .vertical,
@@ -361,6 +360,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                         );
                                                                                                       } else {
                                                                                                         return  ListView.builder(
+                                                                                                            physics: ClampingScrollPhysics(),
                                                                                                             shrinkWrap: true,
                                                                                                             scrollDirection: Axis.vertical,
                                                                                                             itemCount: snapshot.data!.length,

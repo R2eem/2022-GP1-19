@@ -163,6 +163,7 @@ class Orders extends State<OrdersPage> {
                                                       }
                                                         else {
                                                         return  ListView.builder(
+                                                            physics: ClampingScrollPhysics(),
                                                             shrinkWrap: true,
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
@@ -230,6 +231,7 @@ class Orders extends State<OrdersPage> {
                                   fontSize: 27,
                                   fontWeight: FontWeight.bold)),),
                             SingleChildScrollView(
+                                physics: ClampingScrollPhysics(),
                                 scrollDirection: Axis.vertical,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 10),
@@ -276,6 +278,7 @@ class Orders extends State<OrdersPage> {
                                                       }
                                                       else {
                                                         return  ListView.builder(
+                                                            physics: ClampingScrollPhysics(),
                                                             shrinkWrap: true,
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,

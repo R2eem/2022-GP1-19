@@ -55,6 +55,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
           child: Stack(children: [
             //Header
             Container(
@@ -133,6 +134,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                               ]),
                           SizedBox(height: 55,),
                           SingleChildScrollView(
+                              physics: ClampingScrollPhysics(),
                               scrollDirection: Axis.vertical,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
@@ -163,6 +165,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                           );
                                         } else {
                                           return  ListView.builder(
+                                              physics: ClampingScrollPhysics(),
                                               shrinkWrap: true,
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data!.length,
@@ -231,6 +234,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                   );
                                                                                 } else {
                                                                                   return  ListView.builder(
+                                                                                      physics: ClampingScrollPhysics(),
                                                                                       shrinkWrap: true,
                                                                                       scrollDirection: Axis.vertical,
                                                                                       itemCount: 1,
@@ -337,6 +341,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     );
                                                                                   } else {
                                                                                     return  ListView.builder(
+                                                                                        physics: ClampingScrollPhysics(),
                                                                                         shrinkWrap: true,
                                                                                         scrollDirection: Axis.vertical,
                                                                                         itemCount: snapshot.data!.length,
@@ -436,6 +441,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                 );
                                                                                               } else {
                                                                                                 return ListView.builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis.vertical,
                                                                                                     itemCount: 1,
@@ -502,6 +508,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                             );
                                                                                                           } else {
                                                                                                             return  ListView.builder(
+                                                                                                                physics: ClampingScrollPhysics(),
                                                                                                                 shrinkWrap: true,
                                                                                                                 scrollDirection: Axis.vertical,
                                                                                                                 itemCount: snapshot.data!.length,
@@ -537,6 +544,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                                   );
                                                                                                                                 } else {
                                                                                                                                   return  ListView.builder(
+                                                                                                                                      physics: ClampingScrollPhysics(),
                                                                                                                                       shrinkWrap: true,
                                                                                                                                       scrollDirection: Axis.vertical,
                                                                                                                                       itemCount: snapshot.data!.length,
@@ -696,6 +704,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     );
                                                                                   } else {
                                                                                     return  ListView.builder(
+                                                                                        physics: ClampingScrollPhysics(),
                                                                                         shrinkWrap: true,
                                                                                         scrollDirection: Axis.vertical,
                                                                                         itemCount: 1,
@@ -714,7 +723,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                             time = time.substring(0,2);
                                                                                             int t = int.parse(time);
                                                                                             String t1 = (updatedAt.add(Duration(hours: t))).toString();
-                                                                                            time = t1;
+                                                                                            time = t1.substring(0,19);
                                                                                           }
                                                                                           if(time == '' || time == null){
                                                                                             time = '----';
@@ -751,7 +760,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                             Text('$time' ,style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
-                                                                                                                color: Colors.black,),):Container(),
+                                                                                                                color: Colors.blue,),):Container(),
                                                                                                           ]
                                                                                                       )
                                                                                                   )

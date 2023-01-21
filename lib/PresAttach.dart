@@ -52,6 +52,7 @@ class _PresAttachPage extends State<PresAttach> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Stack(children: [
               //Header
               Container(
@@ -207,7 +208,8 @@ class _PresAttachPage extends State<PresAttach> {
                                                     );
                                                     } else {
                                                       return  ListView.builder(
-                                                      shrinkWrap: true,
+                                                          physics: ClampingScrollPhysics(),
+                                                          shrinkWrap: true,
                                                       scrollDirection: Axis.vertical,
                                                       itemCount: 1,
                                                       itemBuilder: (context, index) {
@@ -316,6 +318,7 @@ class _PresAttachPage extends State<PresAttach> {
                                                         );
                                                       } else {
                                                         return ListView.builder(
+                                                            physics: ClampingScrollPhysics(),
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
@@ -532,7 +535,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. You can view the order in orders page.",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes...",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[

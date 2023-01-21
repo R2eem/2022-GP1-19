@@ -22,11 +22,22 @@ class Cart extends State<CartPage> {
   int _selectedIndex = 1;
   String searchString = "";
   //We will consider the cart empty
+  //Check if cart empty ot not, if its empty 'cartNotEmpty == false' it will display a message otherwise will display items
   bool cartNotEmpty = false;
+  //to show continue button
+  bool full = false;
   int cartItemNum = 0;
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
+
+  ///To change value of variable 'full'
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -120,7 +131,7 @@ class Cart extends State<CartPage> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 10),
-                                      height: 620,
+                                      height: 550,
                                       width: size.width,
                                       child: Column(children: [
                                         Expanded(
@@ -402,7 +413,7 @@ class Cart extends State<CartPage> {
                                                                     }
                                                                   });
                                                             })
-                                                        ///If 'cartnotEmpty' is false; cart is empty show this message
+                                                        ///If 'cartnotEmpty' is false; then cart is empty show this message
                                                             : Container(
                                                             child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -486,12 +497,14 @@ class Cart extends State<CartPage> {
             ])),
         //Button continue
         persistentFooterButtons: [
+          full?
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
-              )),
+              )):Container(),
+          full?
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
@@ -503,7 +516,7 @@ class Cart extends State<CartPage> {
                     Icons.arrow_forward_ios_outlined,
                     color: Colors.white,
                     size: 24.0,
-                  ))),
+                  ))):Container()
         ],
         //Bottom navigation bar
         bottomNavigationBar: Container(
@@ -618,7 +631,6 @@ class Cart extends State<CartPage> {
           }
           else{
             numOfPres--;
-            print(numOfPres);
           }
         }
         //Delete medication
@@ -713,6 +725,26 @@ class Cart extends State<CartPage> {
       }
     }
   }
+
+  ///Get cif cart empty or not
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      //If query have objects then set true
+      full = true;
+      setState(() {});
+    } else {
+      //If query have no object then set false
+      full = false;
+    }
+  }
+
   void showError(String errorMessage) {
     showDialog(
       context: context,
