@@ -68,6 +68,8 @@ async function DisplayCustomers() {
            Emailquery.equalTo("objectId",UserId)
            let Result = await Emailquery.find();
            var customerEmail = Result[0]
+           const query = new Parse.Query("Customer");
+            query.equalTo("Block",false)
        document.getElementById('CustomerTable').innerHTML +='<tr id='+i+'></tr>';
        document.getElementById(i).innerHTML += "<td>"+customers.get("Firstname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Lastname")+"</td>";
@@ -75,8 +77,13 @@ async function DisplayCustomers() {
        document.getElementById(i).innerHTML += "<td>"+customers.get("Email")+"</td>";
        //document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Block</button></td>';
-        document.getElementById(i).innerHTML += '<td id="'+customers.id+'"></td>';
+       if(query.equalTo("Block",false)){
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+       }
+       else {
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
+       }    
+           document.getElementById(i).innerHTML += '<td id="'+customers.id+'"></td>';
         count = count+1;
 
 }
@@ -126,7 +133,7 @@ setAttribute("type", "submit");
 }
 
 
-//search customers by phonenumber and email
+//search customers
 async function searchCustomers(){
 
 //remove no result message
@@ -145,7 +152,7 @@ document.getElementById('CustomerTable').innerHTML = "";
 for(let i=0; i<results.length;i++){    
 var customer = results[i];   
 
-if (customer.get("Phonenumber").startsWith(searchString)||customer.get("Email").startsWith(searchString)){  
+if (customer.get("Phonenumber").startsWith(searchString)||customer.get("Email").startsWith(searchString)||customer.get("Firstname").startsWith(searchString)){  
         var customerId = customer.id;
         var customerName = customer.get("Firstname");
         var customerEmail = customer.get("Email");
@@ -157,7 +164,14 @@ if (customer.get("Phonenumber").startsWith(searchString)||customer.get("Email").
        document.getElementById(i).innerHTML += "<td>"+customer.get("Email")+"</td>";
       // document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+       if(query.equalTo("Block",false)){
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+       }
+       else {
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
+
+       }
+
         document.getElementById(i).innerHTML += '<td id="'+customer.id+'"></td>';
         count = count+1;
 }    
@@ -249,7 +263,7 @@ document.getElementById('results0').innerHTML = "Sorry there is no pharmacies wi
             <h1>Customers</h1>
             <br>
 
-            <input id="search" type="text" placeholder="Search by customer Phonenumber .." onkeyup="searchCustomers()" />
+            <input id="search" type="text" placeholder="Search by customer name or phonenumber or email  .." onkeyup="searchCustomers()" />
 
             <br> <br> 
             <p id="Customersresults"></p>
