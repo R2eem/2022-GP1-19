@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -42,7 +41,7 @@ class Locations extends State<SavedLocationPage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo
+            ///App logo
             Container(
               child: SafeArea(
                 child: Column(
@@ -59,7 +58,7 @@ class Locations extends State<SavedLocationPage> {
                             height: 80,
                           ),
                         ),
-                        //Controls location page title
+                        ///Controls location page title
                         Container(
                           margin: EdgeInsets.fromLTRB(30, 13, 0, 0),
                           child: Text(
@@ -87,7 +86,7 @@ class Locations extends State<SavedLocationPage> {
                               child: Column(children: [
                                 Expanded(
                                     child: FutureBuilder<List<ParseObject>>(
-                                        future: getSavedLocations(), //Will change LocationNotEmpty value
+                                        future: getSavedLocations(), //Will change LocationPageNotEmpty value
                                         builder: (context, snapshot) {
                                           switch (snapshot.connectionState) {
                                             case ConnectionState.none:
@@ -112,12 +111,9 @@ class Locations extends State<SavedLocationPage> {
                                               } else {
                                                 return LocationPageNotEmpty
                                                     ? ListView.builder(
-                                                    scrollDirection:
-                                                    Axis.vertical,
-                                                    itemCount:
-                                                    snapshot.data!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                    scrollDirection: Axis.vertical,
+                                                    itemCount: snapshot.data!.length,
+                                                    itemBuilder: (context, index) {
                                                       //Get Parse Object Values
                                                       //Get customer locations from Locations table
                                                       NoOfLocation = snapshot.data!.length; //Save number of Locations
@@ -154,6 +150,7 @@ class Locations extends State<SavedLocationPage> {
                                                                   return  ListView.builder(
                                                                       shrinkWrap: true,
                                                                       scrollDirection: Axis.vertical,
+                                                                      physics: ClampingScrollPhysics(),
                                                                       itemCount: 1,
                                                                       itemBuilder: (context, index) {
                                                                         final address = snapshot.data!;
@@ -341,7 +338,7 @@ class Locations extends State<SavedLocationPage> {
 
   }
 
-  //Get customer's locations  from Locations table
+  ///Get customer's locations  from Locations table
   Future<List<ParseObject>> getSavedLocations() async {
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
@@ -363,7 +360,7 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
-  //Delete location from locations table
+  ///Delete location from locations table
   Future<bool> deleteLocation(LocID) async {
     //Query the location from locations table
     final QueryBuilder<ParseObject> parseQuery =
@@ -385,6 +382,7 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
+  ///Convert coordinates to address
   Future<Placemark> getUserLocation(currentPostion) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         currentPostion['latitude'], currentPostion['longitude']);

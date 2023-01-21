@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/PharmacyLogin.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:untitled/PharmacyLogin.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
 
@@ -36,8 +36,12 @@ class Signup extends State<PharmacySignUp> {
   bool _hasPasswordOneSpecial = false;
   bool _hasPasswordOneUpper = false;
   bool _hasPasswordOneLower = false;
+  var country;
+  var locality;
+  var subLocality;
+  var street;
 
-  //Password validation caller
+  ///Password validation caller
   onPasswordChanged(String password) {
     final specialRegex = RegExp(r'(?=.*?[#?!@$%^&*-])');
     final upperRegex = RegExp(r'(?=.*[A-Z])');
@@ -76,7 +80,7 @@ class Signup extends State<PharmacySignUp> {
                     child: HeaderWidget(
                         150, false, Icons.person_add_alt_1_rounded),
                   ),
-                  //Controls app logo and page title
+                  ///App logo and page title
                   SafeArea(
                     child: Column(
                         children: [
@@ -119,7 +123,7 @@ class Signup extends State<PharmacySignUp> {
                                     key: _formKey,
                                     child: Column(
                                         children: [
-                                          //FirstName
+                                          ///PharmacyName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -134,6 +138,8 @@ class Signup extends State<PharmacySignUp> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper()
                                                   .textInputDecoration(
@@ -144,7 +150,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //LastName
+                                          ///CommercialRegister
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -173,7 +179,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //email
+                                          ///email
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -190,7 +196,9 @@ class Signup extends State<PharmacySignUp> {
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
                                                 EmailValidator(
-                                                    errorText: 'enter a valid email address')
+                                                    errorText: 'enter a valid email address'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper()
                                                   .textInputDecoration(
@@ -201,7 +209,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Phonenumber
+                                          ///Phonenumber
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -272,7 +280,7 @@ class Signup extends State<PharmacySignUp> {
                                                 .inputBoxDecorationShaddow(),
                                           ),
                                           SizedBox(height: 20.0),
-                                          //Password
+                                          ///Password
                                           Container(
                                             child: TextFormField(
                                               onTap: () =>
@@ -346,7 +354,7 @@ class Signup extends State<PharmacySignUp> {
                                                     offset: const Offset(0, 5),
                                                   )
                                                 ]),),
-                                          //Password validation list
+                                          ///Password validation list
                                           Visibility(
                                             visible: _showValidation,
                                             child:
@@ -495,7 +503,7 @@ class Signup extends State<PharmacySignUp> {
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          //confirm password
+                                          ///confirm password
                                           Container(
                                             child: TextFormField(
                                               obscureText: !_isVisibleConfirm,
@@ -566,7 +574,7 @@ class Signup extends State<PharmacySignUp> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Signup button
+                                          ///Signup button
                                           Container(
                                             decoration: ThemeHelper()
                                                 .buttonBoxDecoration(context),
@@ -634,11 +642,51 @@ class Signup extends State<PharmacySignUp> {
                                 ]),
                           ),
                         ]),
-                  )
+                  ),
+                  FutureBuilder<Placemark>(
+                      future: getUserLocation(),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                          case ConnectionState.waiting:
+                            return Center(
+                              child: Container(
+                                  width: 200,
+                                  height: 5,
+                                  child:LinearProgressIndicator()),
+                            );
+                          default:
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text(
+                                    "Error..."),
+                              );
+                            }
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: Text(
+                                    "No Data..."),
+                              );
+                            } else {
+                              return  ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: 1,
+                                  itemBuilder: (context, index) {
+                                    final address = snapshot.data!;
+                                    country = address.country;
+                                    locality = address.locality;
+                                    subLocality = address.subLocality;
+                                    street = address.street;
+                                    return Container();
+                                  });
+                            }
+                        }
+                      }),
                 ])));
   }
 
-  //Show success message function
+  ///Show success message function
   void showSuccess() {
     showDialog(
       context: context,
@@ -665,7 +713,7 @@ class Signup extends State<PharmacySignUp> {
     );
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if (errorMessage.compareTo('Account already exists for this username.') ==
         0) {
@@ -701,7 +749,7 @@ class Signup extends State<PharmacySignUp> {
     );
   }
 
-  //User signup function
+  ///User signup function
   Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
@@ -711,7 +759,7 @@ class Signup extends State<PharmacySignUp> {
 
     final user = ParseUser.createUser(email, password, email);
 
-    //Check unique phone number in pharmacist table
+    ///Check unique phone number in pharmacist table
     QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(
         ParseObject('Pharmacist'));
     queyPhonenumber.whereEqualTo('PhoneNumber', '0$phonenumber');
@@ -722,8 +770,13 @@ class Signup extends State<PharmacySignUp> {
         var response = await user.signUp();
         if (response.success) {
           final createPharmacist = ParseObject('Pharmacist')
-            ..set('PharmacyName', PharmacyName)..set('CommercialRegister', ComRegister)..set(
-                'PhoneNumber', '0$phonenumber')..set('user', user)..set('JoinRequest', "UnderProcessing")..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long));
+            ..set('PharmacyName', PharmacyName)
+            ..set('CommercialRegister', ComRegister)
+            ..set('PhoneNumber', '0$phonenumber')
+            ..set('user', user)
+            ..set('JoinRequest', "UnderProcessing")
+            ..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long))
+            ..set('Address', '$street, $subLocality, $locality, $country');
           await createPharmacist.save();
 
           showSuccess();
@@ -734,5 +787,12 @@ class Signup extends State<PharmacySignUp> {
       else
         (showError('phoneNumber'));
     }
+  }
+
+  Future<Placemark> getUserLocation() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        widget.lat, widget.long);
+    Placemark place = placemarks[0];
+    return place;
   }
 }
