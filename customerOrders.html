@@ -13,6 +13,201 @@
     type="text/javascript"
     src="https://npmcdn.com/parse/dist/parse.min.js"
   ></script>
+  <style>
+#search{
+    width: 100%;
+    padding: 10px 10px;
+    display: inline-block;
+    border-radius: 15px;
+    box-sizing: border-box;
+    margin-left: 10%;
+    margin-right: auto;
+}
+
+#Orderresults {
+    margin-left: 15%;
+    margin-right: auto;
+}
+
+#results0{
+    margin-left: 45%;
+    margin-right: auto;
+}
+  </style>
+                              <script>
+                                // Initialize Parse
+                                Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5", "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+                                Parse.serverURL = "https://parseapi.back4app.com/";
+                                  
+                                
+                                //Check if user logged in
+                                async function sessionCheck(){
+                                    const currentUser = await Parse.User.current();
+                                     if (currentUser === null) {
+                                        window.location.replace("log_in_page.html");
+                                    }
+                                }
+                                sessionCheck();
+    
+                                 async function retrieveOrders() {
+
+                                    var count =0;
+                                    ///Query orders
+                                    let query1 = new Parse.Query("Orders");
+                                    let results = await query1.find();
+                                     
+                                    for (i=0; i<results.length; i++){
+                                        
+                                        var order = results[i]
+                                        
+                                           //Dosplay order information
+                                           document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                           //Query customer information
+                                           customerId = order.get("Customer_id").id
+                                           let customerquery = new Parse.Query('Customer')
+                                           customerquery.equalTo("objectId",customerId)
+                                           let Result = await customerquery.find();
+                                           var customerinfo = Result[0]
+                                           document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                           document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                            
+                                           ///Query pharmacy name if there is assigned pharmacy for order
+                                           var selectedPharmacy;
+                                           var pharmExist = false; 
+                                           if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
+                                            let pharmListquery = new Parse.Query('PharmaciesList')
+                                            pharmListquery.equalTo("OrderId",order)
+                                            let queryResult = await pharmListquery.find();
+                                            for (n=0; n<queryResult.length; n++){
+                                                var pharmListinfo = queryResult[n]
+                                                ///If there is assigned pharmacy show name else nothing
+                                                if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                    selectedPharmacyId = pharmListinfo.get("PharmacyId").id
+                                                    pharmExist = true
+                                                    let pharmacyquery = new Parse.Query('Pharmacist')
+                                                    pharmacyquery.equalTo("objectId",selectedPharmacyId)
+                                                    let Result = await pharmacyquery.find();
+                                                    var pharmListinfo = Result[0]
+                                                    selectedPharmacy = pharmListinfo.get("PharmacyName")
+                                                }
+                                                else if (!pharmExist){
+                                                    selectedPharmacy = 'No pharmacy assigned.'
+                                                }
+                                            }    
+                                            document.getElementById(i).innerHTML += "<td>"+selectedPharmacy+"</td>"                                   
+                                        }
+                                           document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                           document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
+                                           count = count+1
+    
+                                    }
+                                    //display number of results
+                                    document.getElementById('Orderresults').innerHTML = "Results: "+count;
+                                    if(count == 0) {
+                                        document.getElementById('results0').innerHTML = "Sorry there is no orders";
+                                    }
+                                }
+                                 retrieveOrders();
+    
+                                 //User log out
+                                 async function doUserLogOut () {
+                                    try {
+                                        await Parse.User.logOut();
+                                     // To verify that current user is now empty, currentAsync can be used
+                                     const currentUser = await Parse.User.current();
+                                     if (currentUser === null) {
+                                        alert('Success! No user is logged in anymore!');
+                                    }
+                                     // Update state variable holding current user
+                                     getCurrentUser();
+                                     //return window.location.replace("log_in_page.html");
+                                    } catch (error) {
+                                        alert(`Error! ${error.message}`);
+                                        return false;
+                                    }
+                                };
+    
+                                 //search orders
+                                 async function searchOrders(){
+    
+                                    //remove no result message
+                                    document.getElementById('results0').innerHTML = " ";
+    
+                                    var count =0;
+                                    var searchString = document.getElementById('search').value;
+                                    searchString = searchString.toUpperCase();
+    
+                                    const queryCustomers = new Parse.Query("Customer");
+                                    const customerResults = await queryCustomers.find();
+    
+                                    
+                                    //clear the table of orders
+                                    document.getElementById('orderTableBody').innerHTML = "";
+    
+                                    for(let j=0; j<customerResults.length;j++){    
+        
+                                        var customer = customerResults[j];        
+    
+                                        if (((customer.get("Firstname")).toUpperCase()).startsWith(searchString)){  
+
+                                            var CustomerId = {
+                                                __type: 'Pointer',
+                                                className: 'Customer',
+                                                objectId: customer.id
+                                            }
+    
+                                            ///Query orders
+                                            let query1 = new Parse.Query("Orders");
+                                            query1.equalTo("Customer_id",CustomerId)
+                                            let results = await query1.find();
+                                     
+                                            for (i=0; i<results.length; i++){                              
+                                                var order = results[i]
+                                                //Display order information
+                                                document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                                document.getElementById(i).innerHTML = "<td>"+customer.get("Firstname")+" "+customer.get("Lastname")+"</td>"
+                                                document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                                count = count+1;
+
+                                                ///Query pharmacy name if there is assigned pharmacy for order
+                                                var selectedPharmacy;
+                                                var pharmExist = false; 
+                                                if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
+                                                    let pharmListquery = new Parse.Query('PharmaciesList')
+                                                    pharmListquery.equalTo("OrderId",order)
+                                                    let queryResult = await pharmListquery.find();
+                                                    for (n=0; n<queryResult.length; n++){
+                                                        var pharmListinfo = queryResult[n]
+                                                        ///If there is assigned pharmacy show name else nothing
+                                                        if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                            selectedPharmacyId = pharmListinfo.get("PharmacyId").id
+                                                            pharmExist = true
+                                                            let pharmacyquery = new Parse.Query('Pharmacist')
+                                                            pharmacyquery.equalTo("objectId",selectedPharmacyId)
+                                                            let Result = await pharmacyquery.find();
+                                                            var pharmListinfo = Result[0]
+                                                            selectedPharmacy = pharmListinfo.get("PharmacyName")
+                                                        }
+                                                        else if (!pharmExist){
+                                                            selectedPharmacy = 'No pharmacy assigned.'
+                                                        }
+                                                    }  
+                                                    document.getElementById(i).innerHTML += "<td>"+selectedPharmacy+"</td>" 
+                                                }
+                                                document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                                document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
+                                            }
+                                        }    
+                                    }
+                                    
+                                    //display number of results
+                                    document.getElementById('Orderresults').innerHTML = "Results: "+count;
+                                    if(count == 0) {
+                                        document.getElementById('results0').innerHTML = "Sorry there is no orders for this name";
+                                    }
+                                }
+    
+                                </script> 
 
 </head>
 <body>
@@ -69,7 +264,11 @@
         <!----------------------------------END OF ASIDE-------------->
         <main>
             <h1>Orders</h1>
-            <p id="demo"></p>
+            <br>
+            <input id="search" type="text" placeholder="Search by Customer or Pharmacy name.." onkeyup="searchOrders()" />
+            <br>
+            <p id="Orderresults"></p>
+
             <!---------------------------RECENT ORDERS----------------------------> 
             <div class="recent-orders">
                 <table id="OrdersTable">
@@ -77,7 +276,7 @@
                         <tr>
                             <th>Customer name</th>
                             <th>Order status</th>
-                            <th>Order location</th>
+                            <th>Selected pharmacy</th>
                             <th>Total price</th>
                             <th>Details</th>
                         </tr>
@@ -87,72 +286,12 @@
                 </table>
             </div>
      <!--------------------------- END OF RECENT ORDERS----------------------------> 
+     <br><br><br>
+     <p id="results0"></p>
 </main>
 <!------------------------- END OF MAIN ------------------>
     </div>
 </div>
 </div>  
 </body>
-                             
-                            <script>
-                            // Initialize Parse
-                            Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5", "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
-                            Parse.serverURL = "https://parseapi.back4app.com/";
-                              
-                            
-                            //Check if user logged in
-                            async function sessionCheck(){
-                                const currentUser = await Parse.User.current();
-                                 if (currentUser === null) {
-                                    window.location.replace("log_in_page.html");
-                                }
-                            }
-                            sessionCheck();
-
-                             async function retrieveOrders() {
-                                ///Query orders
-                                let query1 = new Parse.Query("Orders");
-                                let results = await query1.find();
-                                 
-                                for (i=0; i<results.length; i++){
-                                    
-                                    var order = results[i]
-                                    
-                                       //Dosplay order information
-                                       document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
-                                       //Query customer information
-                                       customerId = order.get("Customer_id").id
-                                       let customerquery = new Parse.Query('Customer')
-                                       customerquery.equalTo("objectId",customerId)
-                                       let Result = await customerquery.find();
-                                       var customerinfo = Result[0]
-                                       document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
-                                       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
-
-                                }
-                            }
-                             retrieveOrders();
-
-                             //User log out
-                             async function doUserLogOut () {
-                                try {
-                                    await Parse.User.logOut();
-                                 // To verify that current user is now empty, currentAsync can be used
-                                 const currentUser = await Parse.User.current();
-                                 if (currentUser === null) {
-                                    alert('Success! No user is logged in anymore!');
-                                }
-                                 // Update state variable holding current user
-                                 getCurrentUser();
-                                 //return window.location.replace("log_in_page.html");
-                                } catch (error) {
-                                    alert(`Error! ${error.message}`);
-                                    return false;
-                                }
-                            };
-
-                            </script> 
 </html>
