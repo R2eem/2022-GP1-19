@@ -67,6 +67,11 @@
     margin-right: auto;
 }
 
+.medicationImg{
+    width: 100px;
+    height: 100px;
+}
+
   </style>
     <script
          type="text/javascript"
@@ -89,7 +94,7 @@
   sessionCheck();
 
 async function DisplayMedications() { 
-    
+
 
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
@@ -107,7 +112,14 @@ async function DisplayMedications() {
        var MedId = medication.id;
        var MedName = medication.get("TradeName");
        document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-       document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+       if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+       document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
        document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -116,9 +128,10 @@ async function DisplayMedications() {
        
       
       
-}       
+}  
 //change (All) filter to active color
-changeStyle('btn1');
+changeStyle('btn1');     
+
         }
 
 
@@ -145,6 +158,39 @@ changeStyle('btn1');
     //clear the table of medications
     document.getElementById('MedTableBody').innerHTML = "";
 
+
+//display the medications in table if selected is All
+if(category == "All"){
+for(let i=0; i<results.length;i++){  
+    
+    var medication = results[i];   
+    var MedId = medication.id;
+    var MedName = medication.get("TradeName");
+    
+    document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
+    document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
+    document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
+    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="MedDetails.html?id='+MedId+' ">Details</a></td>';
+    document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
+    count = count+1;
+    
+} 
+  //display number of results
+  document.getElementById('Medresults').innerHTML = "Results: "+count;
+  //change (All) filter to active color
+  changeStyle('btn1');
+ }     
+
+
+ if(category != "All"){
     //display the medications in table based on selected filter
     for(let i=0; i<results.length;i++){  
     
@@ -154,7 +200,14 @@ changeStyle('btn1');
        var MedName = medication.get("TradeName");
        
        document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-       document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+       if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+' ></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+       document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
        document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -162,16 +215,11 @@ changeStyle('btn1');
        document.getElementById(i).innerHTML += '<td><button onclick= deleteMedication("'+MedId+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button></td>";
        count = count+1;
        }
-       
+    }
      //display number of results
      document.getElementById('Medresults').innerHTML = "Results: "+count;
 }       
         }
-
-
-
-
-
 
 
 
@@ -201,7 +249,14 @@ async function searchMedication(){
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -219,8 +274,16 @@ if (document.getElementById('btn2').style.backgroundColor == 'rgb(204, 148, 203)
     if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
+
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -241,7 +304,13 @@ if (document.getElementById('btn3').style.backgroundColor == 'rgb(204, 148, 203)
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
-    document.getElementById(i).innerHTML = "<td>"+medication.get("TradeName")+"</td>";
+    if(medication.get("Image") != null){
+       document.getElementById(i).innerHTML =  '<td><img class="medicationImg" src='+medication.get("Image").url()+'></td>';
+       }
+       else{
+        document.getElementById(i).innerHTML =  '<td></td>';
+       }
+    document.getElementById(i).innerHTML += "<td>"+medication.get("TradeName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("ScientificName")+"</td>";
     document.getElementById(i).innerHTML += "<td>"+medication.get("Strength")+" "+medication.get("StrengthUnit")+"</td>";
     document.getElementById(i).innerHTML +="<td>"+medication.get("Publicprice")+"SAR</td>";
@@ -274,7 +343,7 @@ if(confirm(text)==true){
             const medication = await query.get(MedId);
             //destroy the object
             let result = await medication.destroy();
-            alert(MedName+ "Medication Deleted");
+            alert(MedName+ " Medication Deleted");
             location.reload();
             
         }catch(error){
@@ -349,7 +418,7 @@ if(confirm(text)==true){
             <br> <br> 
 
             <div id="MedFilter">
-                <button id="btn1" onclick=" DisplayMedications()">All</button>
+                <button id="btn1" onclick=" DisplayFilterMedications('All')">All</button>
                 <button id="btn2" onclick=" DisplayFilterMedications('Prescription');changeStyle('btn2')"> Prescription Medications</button>
                 <button id="btn3" onclick=" DisplayFilterMedications('OTC');changeStyle('btn3')"> NonPrescription Medications</button>
                   
@@ -364,7 +433,8 @@ if(confirm(text)==true){
             
                 <table id="MedTable">
                     <thead>
-                        <tr>                          
+                        <tr>                 
+                            <th>Medication Image</th>         
                             <th>Trade Name</th>
                             <th>Scientific Name</th>
                             <th>Strength</th>

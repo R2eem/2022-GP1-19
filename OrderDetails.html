@@ -84,8 +84,8 @@
                <h2>Medications</h2>
                <p id="medList" style="text-align:left; font-size: 1.3em;"> </p>
                <br>
-               <h2>Order location</h2>
-               <p id="orderLocation" style="text-align:left; font-size: 1.3em;"> </p>
+               <h2>Selected Pharmacy</h2>
+               <p id="selectedPharmacy" style="text-align:left; font-size: 1.3em;"> </p>
                <br>
             </div>
              <!--------------------------- END OF Display Medication Details----------------------------> 
@@ -158,9 +158,31 @@ query2.get(orderId)
                                         document.getElementById('medList').innerHTML += "<p>"+order.get("MedicationsList")[0][j]['quantity'] +'x '+orderinfo.get("TradeName")+" "+orderinfo.get("Strength")+" "+orderinfo.get("StrengthUnit")+"</p></br>"
                                        }
                                     }
-                                    document.getElementById('orderLocation').innerHTML += "<td>"+order.get("Address")+"</td>"
-
-
+                                       ///Query pharmacy name if there is assigned pharmacy for order
+                                       var selectedPharmacy;
+                                       var pharmExist = false; 
+                                       if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
+                                        let pharmListquery = new Parse.Query('PharmaciesList')
+                                        pharmListquery.equalTo("OrderId",order)
+                                        let queryResult = await pharmListquery.find();
+                                        for (n=0; n<queryResult.length; n++){
+                                            var pharmListinfo = queryResult[n]
+                                            ///If there is assigned pharmacy show name else nothing
+                                            if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                selectedPharmacyId = pharmListinfo.get("PharmacyId").id
+                                                pharmExist = true
+                                                let pharmacyquery = new Parse.Query('Pharmacist')
+                                                pharmacyquery.equalTo("objectId",selectedPharmacyId)
+                                                let Result = await pharmacyquery.find();
+                                                var pharmListinfo = Result[0]
+                                                selectedPharmacy = pharmListinfo.get("PharmacyName")
+                                            }
+                                            else if (!pharmExist){
+                                                selectedPharmacy = 'No pharmacy assigned.'
+                                            }
+                                        }    
+                                        document.getElementById('selectedPharmacy').innerHTML += "<td>"+selectedPharmacy+"</td>"                                   
+                                    }
 
 }, (error) => {
   // The object was not retrieved successfully.

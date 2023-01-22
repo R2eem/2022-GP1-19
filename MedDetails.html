@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
     <!----STYLESHEET -->
     <link rel="stylesheet" href="./style.css"> 
+    <style>
+
+
+#MedDetails1{
+    float: left;
+    margin:12px;
+}
+
+    </style>
     <script
          type="text/javascript"
          src="https://npmcdn.com/parse/dist/parse.min.js"
@@ -34,8 +43,8 @@ if(confirm(text)==true){
             const medication = await query.get(MedId);
             //destroy the object
             let result = await medication.destroy();
-            alert(MedName+ "Medication Deleted");
-            location.reload();
+            alert(MedName+ " Medication Deleted");
+            window.location.replace("Medications.html");
             
         }catch(error){
             alert('Failed to delete object, with error code: ' + error.message);
@@ -104,6 +113,10 @@ if(confirm(text)==true){
         
             <!---------------------------Display Medication Details----------------------------> 
             <div id="divMedDetails">
+                <div id="MedDetails1">
+                </div>
+                
+                <div id="MedDetails2">
                <h2 id="tradeName"> </h2> 
                <hr class="new1">
                <h3 id="price" style="text-align:left; font-size: 1.3em;"> </h3>
@@ -117,6 +130,11 @@ if(confirm(text)==true){
                <p id="company" style="text-align:left; font-size: 1.3em;"> </p>
                <p id="country" style="text-align:left; font-size: 1.3em;"> </p>
                <br>
+               <br>
+               <br>
+               <br>
+            </div>
+      
                <div id="divMedDetailss"></div>
                <br>
             </div>
@@ -154,6 +172,10 @@ query2.get(medicationId)
   // The object was retrieved successfully.
   var Medid = medId.id;
   var MedName = medId.get("TradeName");
+  if(medId.get("Image") != null){
+
+document.getElementById('MedDetails1').innerHTML += '<img id="imgg" src='+medId.get("Image").url()+' width="300" height="300">';
+}
   document.getElementById('tradeName').innerHTML += medId.get("TradeName")+"<br>";
   document.getElementById('divMedDetails').innerHTML += "<hr>";
   document.getElementById('price').innerHTML += "<br>"+medId.get("Publicprice")+"SAR";
@@ -167,7 +189,10 @@ query2.get(medicationId)
   document.getElementById('country').innerHTML += "Marketing Country: "+ medId.get("MarketingCountry");
   document.getElementById('divMedDetailss').innerHTML += '<button id="trash" onclick= deleteMedication("'+Medid+'","'+MedName+'")><i'+" class="+'"fa fa-trash"'+" aria-hidden="+'"true"'+" ></i></button>";
   document.getElementById('divMedDetailss').innerHTML += '<input id="updateInput" type=button onclick=NavigateToUpdatePage("'+Medid+'") value="Update"/>';
-}, (error) => {
+
+  
+  }
+, (error) => {
   // The object was not retrieved successfully.
 
 }); 

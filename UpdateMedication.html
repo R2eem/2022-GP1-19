@@ -129,8 +129,8 @@
                     <label for="PharmaceuticalForm">Pharmaceutical Form:</label>
                     <br>
                     <select name="PharmaceuticalForm" id="PharmaceuticalForm">
-                        <option value=""></option>
-                      <option value="Caplet">Capsule</option>
+            
+                      <option value="Capsule">Capsule</option>
                       <option value="Cream">Cream</option>
                       <option value="Drop">Drop</option>
                       <option value="Granules">Granules</option>
@@ -158,7 +158,7 @@
                     <label for="LegalStatus">Legal Status:</label>
                     <br>
                     <select name="LegalStatus" id="LegalStatus">
-                        <option value=""></option>
+                       
                       <option value="OTC">OTC</option>
                       <option value="Prescription">Prescription</option>
                     </select>
@@ -176,6 +176,15 @@
                       <input name="MarketingCountry" id="MarketingCountry" type="text" placeholder="" required="" aria-required="true"/>
                       <p id="MarketingCountryP" style="color: red;"></p>
                     </div>
+
+
+                    <div class="inputbox">
+                      <label for="medImage">Upload a medication picture:</label>
+                      <input type="file"
+                             id="medImage" name="medImage"
+                             accept="jpg , png">
+                     <p id="imageP" style="color: red;"></p>
+                      </div>
 
                   </br>
                     <div class="inputbox">
@@ -209,7 +218,7 @@ async function displayMedInfo(){
 const query = window.location.search;
 const urlParams = new URLSearchParams(query);
 const medicationId = urlParams.get('id');
-console.log(medicationId);
+
 
 
 const query2 = new Parse.Query("Medications");
@@ -242,13 +251,13 @@ query2.get(medicationId)
     
 
 //update medication
-async function  updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry){
-    alert("jeje22");
+async function  updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage){
+    
 // get the id from URL
 const query2 = window.location.search;
 const urlParams = new URLSearchParams(query2);
 const med = urlParams.get('id');
-console.log(med);
+
 
 const query3 = new Parse.Query("Medications");
 const medication = await query3.get(med);
@@ -268,6 +277,17 @@ const medication = await query3.get(med);
         medication.set("MarketingCountry", MarketingCountry);
 
 
+        if(MedicationImage != null){        
+var file = MedicationImage;
+var name = "photo.jpg";
+var parseFile = new Parse.File(name,file);
+
+parseFile.save().then( function(){}
+, function(error){});
+
+medication.set("Image", parseFile);
+}
+
         try{
             //Save the update
             let result = await medication.save();
@@ -278,6 +298,11 @@ const medication = await query3.get(med);
         }   
         
 }
+
+//validation of image format
+var maxSize = 400000; 
+let AllowedExtension = ['image/jpg','image/png','image/jpeg'];
+let type;
 
 
 async function validate(){
@@ -293,6 +318,7 @@ async function validate(){
     var LegalStatus = document.getElementById('LegalStatus').value;
     var MarketingCompany = document.getElementById('MarketingCompany').value;
     var MarketingCountry = document.getElementById('MarketingCountry').value;
+    var MedicationImage = document.getElementById('medImage').files[0];
     
 
     
@@ -328,14 +354,10 @@ async function validate(){
         if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('PackageTypeP').innerHTML = ""}
 
-        if (document.getElementById('PharmaceuticalForm').value == "None") {document.getElementById('PharmaceuticalFormP').innerHTML = "please select one pharmaceutical form"; }
-           else {document.getElementById('PharmaceuticalFormP').innerHTML = ""}
-
+       
         if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('UsageMethodP').innerHTML = ""}
   
-        if (document.getElementById('LegalStatusP').value == "None") {document.getElementById('LegalStatusP').innerHTML += "please select one legal status"  }
-           else {document.getElementById('LegalStatusP').innerHTML = ""}
 
         if (MarketingCompany.length>50) { document.getElementById('MarketingCompanyP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('MarketingCompanyP').innerHTML = ""}
@@ -343,17 +365,45 @@ async function validate(){
         if (MarketingCountry.length>50) { document.getElementById('MarketingCountryP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('MarketingCountryP').innerHTML = ""}
 
-        if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-          && Price<=100000 && PackageType.length<=50 && UsageMethod.length<=50 && MarketingCompany.length<=50
-             && MarketingCountry.length<=50)
-          {
- alert("jeje");
-          updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry);
-           } 
 
-}
+           if(MedicationImage != null){
+              type = MedicationImage.type;
+            if(AllowedExtension.indexOf(type)<=-1){
+            document.getElementById('imageP').innerHTML = "image should be jpg or png or jpeg";}
+            else{
+              if (MedicationImage.size>maxSize){
+                document.getElementById('imageP').innerHTML = "image size should be under 400KB";
+              }
+              else{document.getElementById('imageP').innerHTML = "";}
+            }
+          }    
 
-}
+
+          if(MedicationImage != null){
+          if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
+              && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
+              UsageMethod.length<=50 && MarketingCompany.length<=50
+              && MarketingCountry.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
+              {
+               
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+
+              }}
+
+              //if there is no image 
+              else{
+                if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
+              && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
+              UsageMethod.length<=50 && MarketingCompany.length<=50
+              && MarketingCountry.length<=50 )
+              {
+              
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+
+              }}
+   
+}}
+
 
 //User log out
 async function doUserLogOut () {
