@@ -69,35 +69,38 @@ async function DisplayCustomers() {
            let Result = await Emailquery.find();
            var customerEmail = Result[0]
            const query = new Parse.Query("Customer");
-            query.equalTo("Block",false)
-       document.getElementById('CustomerTable').innerHTML +='<tr id='+i+'></tr>';
+       document.getElementById('CustomerTableBody').innerHTML +='<tr id='+i+'></tr>';
        document.getElementById(i).innerHTML += "<td>"+customers.get("Firstname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Lastname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Phonenumber")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Email")+"</td>";
        //document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       if(query.equalTo("Block",false)){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+       if(customers.get('Block')==false){
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Block</button></td>';
        }
        else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Unblock</button></td>';
        }    
            document.getElementById(i).innerHTML += '<td id="'+customers.id+'"></td>';
         count = count+1;
+}    
 
-}
 //display number of results
 document.getElementById('Customersresults').innerHTML = "Results: "+count; 
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no pharmacies with this name";
+document.getElementById('results0').innerHTML = "Sorry there is no customers";
 }       
         }
+
+
  DisplayCustomers(); 
 
- async function ifBlocked(CustomerId ,CustomerName,CustomerEmail){
+
+ //Block
+ async function Block(CustomerId ,CustomerName,CustomerEmail){
     if(confirm("Are you sure you want to block customer "+CustomerName+"?")){
     const query = new Parse.Object("Customer");
     query.set("objectId",CustomerId)
@@ -114,6 +117,25 @@ document.getElementById('results0').innerHTML = "Sorry there is no pharmacies wi
     }
 }
 
+//Unblock
+async function Unblock(CustomerId ,CustomerName,CustomerEmail){
+    if(confirm("Are you sure you want to Unblock customer "+CustomerName+"?")){
+    const query = new Parse.Object("Customer");
+    query.set("objectId",CustomerId)
+    query.set("Block",false)
+    try{
+            //Save the Object
+            let result = await query.save();
+            alert("Customer "+CustomerName+' has been Unblocked');
+            sendEmail(CustomerName,CustomerEmail,CustomerId);
+        }catch(error){
+            alert(error)
+            alert('Failed to Unblock customer ' +CustomerName);
+        }
+    }
+}
+
+
 function sendEmail(CustomerName,CustomerEmail,CustomerId){
     if(confirm("You need to send email to customer "+CustomerName)){
     var form = document.createElement("form");
@@ -122,13 +144,13 @@ function sendEmail(CustomerName,CustomerEmail,CustomerId){
     form.setAttribute("enctype", "text/plain");
   
      var sendButton = document.createElement("input");
-     sendButton.
-setAttribute("type", "submit");
+     sendButton.setAttribute("type", "submit");
      sendButton.setAttribute("value", "SendEmail");
      sendButton.setAttribute("class","primary");
      form.appendChild(sendButton);
     
      document.getElementById(CustomerId).appendChild(form);
+     
 }
 }
 
@@ -141,38 +163,38 @@ document.getElementById('results0').innerHTML = " ";
 
 var count =0;
 var searchString = document.getElementById('search').value;
-searchString = searchString;
+searchString = searchString.toUpperCase();
 const query = new Parse.Query("Customer");
-query.equalTo("Block",false)
 query.limit(200);
 const results = await query.find();
 
-document.getElementById('CustomerTable').innerHTML = "";
+//clear the table of customers
+document.getElementById('CustomerTableBody').innerHTML = "";
 
 for(let i=0; i<results.length;i++){    
 var customer = results[i];   
 
-if (customer.get("Phonenumber").startsWith(searchString)||customer.get("Email").startsWith(searchString)||customer.get("Firstname").startsWith(searchString)){  
+if (customer.get("Phonenumber").startsWith(searchString)||
+((customer.get("Email").toUpperCase()).startsWith(searchString))||
+(customer.get("Firstname").toUpperCase()).startsWith(searchString)){  
         var customerId = customer.id;
         var customerName = customer.get("Firstname");
         var customerEmail = customer.get("Email");
-        document.getElementById('CustomerTable').innerHTML += '<tr id='+i+'></tr>';
-        document.getElementById('CustomerTable').innerHTML +='<tr id='+i+'></tr>';
+
+       document.getElementById('CustomerTableBody').innerHTML += '<tr id='+i+'></tr>';
        document.getElementById(i).innerHTML += "<td>"+customer.get("Firstname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customer.get("Lastname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customer.get("Phonenumber")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customer.get("Email")+"</td>";
       // document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       if(query.equalTo("Block",false)){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+       if(customer.get('Block')==false){
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
        }
        else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
-
-       }
-
-        document.getElementById(i).innerHTML += '<td id="'+customer.id+'"></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
+       }    
+           document.getElementById(i).innerHTML += '<td id="'+customer.id+'"></td>';
         count = count+1;
 }    
 }      
@@ -182,27 +204,21 @@ document.getElementById('Customersresults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no pharmacies with this name";
+document.getElementById('results0').innerHTML = "Sorry there is no customer matche to your search";
 }
 }
 
 //User log out
- async function doUserLogOut () {
-    try {
-         await Parse.User.logOut();
-         // To verify that current user is now empty, currentAsync can be used
-         const currentUser = await Parse.User.current();
-         if (currentUser === null) {
-            alert('Success! No user is logged in anymore!');
-         }
-         // Update state variable holding current user
-          getCurrentUser();
-         //return window.location.replace("log_in_page.html");
-          } catch (error) {
-             alert(`Error! ${error.message}`);
-                return false;
-          }
-};
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
  
 </script>   
 </head>
@@ -280,7 +296,7 @@ document.getElementById('results0').innerHTML = "Sorry there is no pharmacies wi
                             <th>Block</th>                          
                         </tr>
                     </thead>
-                    <tbody id="CustomerTable">
+                    <tbody id="CustomerTableBody">
                        
                     </tbody>
                 </table>  

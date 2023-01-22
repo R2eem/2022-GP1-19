@@ -145,9 +145,33 @@
                       <option value="Gel">Gel</option>
                       <option value="Liquid">Liquid</option>
                       <option value="Lozenge">Lozenge</option>
+                      <option value="Other">Other</option>
                     </select>
                     <p id="PharmaceuticalFormP" style="color: red;"></p>
                     </div>
+                     
+                    <div id = 'other'>
+
+                    </div>
+                    
+                    <script>
+                      document.getElementById('PharmaceuticalForm').addEventListener("change", otherText);
+                      ///Call this method when other is selected in the drop down menu
+                      async function otherText(){
+                        if(document.getElementById('PharmaceuticalForm').value == 'Other'){
+                          document.getElementById('other').innerHTML =  '<label for="otherText">Other:</label>';
+                          document.getElementById('other').innerHTML += '<br>';
+                          document.getElementById('other').innerHTML +='<div class="inputbox">';
+                          document.getElementById('other').innerHTML +='<input name="othertext" id="getOther" type="text" placeholder="" required="" aria-required="true"/>';
+                          document.getElementById('other').innerHTML +='<p id="otherP" style="color: red;"></p>';
+                          document.getElementById('other').innerHTML +='</div>';
+                        }
+                      ///Call this method when other is selected in the drop down menu
+                        if(document.getElementById('PharmaceuticalForm').value != 'Other'){
+                          document.getElementById('other').innerHTML =  '';
+                        }
+                  }
+                    </script>
 
                     <div class="inputbox">
                         <label for="UsageMethod">Usage Method</label>
@@ -217,6 +241,10 @@
 //add new medication
 async function  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage){
 
+  ///Check the value of the PharmaceuticalForm if its from the drop down or other
+  if(PharmaceuticalForm=='Other'){
+    PharmaceuticalForm = document.getElementById('getOther').value;
+  }
         const med = new Parse.Object("Medications");
         //set the object
         med.set("TradeName", TradeName);
@@ -266,12 +294,13 @@ let type;
 //Validation of add medication form
 async function validate(){
 
+
     var TradeName = document.getElementById('TradeName').value;
     var ScientificName = document.getElementById('ScientificName').value;
     var Strength = document.getElementById('Strength').value;
     var StrengthUnit = document.getElementById('StrengthUnit').value;
     var Price = document.getElementById('Price').value;
-    var PackageType = document.getElementById('PackageType').value;
+    var PackageType = document.getElementById('PackageType').value; 
     var PharmaceuticalForm = document.getElementById('PharmaceuticalForm').value;
     var UsageMethod = document.getElementById('UsageMethod').value;
     var LegalStatus = document.getElementById('LegalStatus').value;
@@ -315,6 +344,13 @@ async function validate(){
           if (document.getElementById('PharmaceuticalForm').value == "None") {
             document.getElementById('PharmaceuticalFormP').innerHTML = "please select one pharmaceutical form"; }
             else {document.getElementById('PharmaceuticalFormP').innerHTML = ""}
+          
+          if (document.getElementById('PharmaceuticalForm').value == "Other") {
+            if(document.getElementById('getOther').value.length>50){
+              document.getElementById('otherP').innerHTML = "should be less than 50 characters";
+             }
+             else {document.getElementById('otherP').innerHTML = ""}
+          }
 
           if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
             else {document.getElementById('UsageMethodP').innerHTML = ""}
@@ -350,8 +386,12 @@ async function validate(){
               && MarketingCountry.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
               {
                
-          addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
-
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
+                  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+                }
+                else if(PharmaceuticalForm != 'Other'){
+                  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
               }}
 
               //if there is no image 
@@ -361,9 +401,12 @@ async function validate(){
               UsageMethod.length<=50 && MarketingCompany.length<=50
               && MarketingCountry.length<=50 )
               {
-              
-          addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
-
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
+                  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+                }
+                else if(PharmaceuticalForm != 'Other'){
+                  addMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
               }}
    
 }}

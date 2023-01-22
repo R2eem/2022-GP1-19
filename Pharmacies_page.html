@@ -60,7 +60,7 @@ async function retriveListOfOPharmacies(){
     query1.equalTo("Block",false)
 
     const query2 = new Parse.Query("Pharmacist");
-    query2.equalTo("JoinRequest","rejected")
+    query2.equalTo("JoinRequest","declined")
     query2.equalTo("Block",false)
 
     let query = Parse.Query.or(query1, query2);
@@ -144,7 +144,7 @@ const query1 = new Parse.Query("Pharmacist");
 query1.equalTo("JoinRequest","accepted")
 query1.equalTo("Block",false)
 const query2 = new Parse.Query("Pharmacist");
-query2.equalTo("JoinRequest","rejected")
+query2.equalTo("JoinRequest","declined")
 query2.equalTo("Block",false)
 let query = Parse.Query.or(query1, query2);
 query.limit(200);

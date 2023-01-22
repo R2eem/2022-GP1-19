@@ -106,14 +106,14 @@ async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
 }
 
 async function ifDecline(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to reject pharmacy "+pharmacyName+" join request?")){
+    if(confirm("Are you sure you want to decline pharmacy "+pharmacyName+" join request?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId);
-    query.set("JoinRequest","rejected");
+    query.set("JoinRequest","delined");
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been rejected');
+            alert("Pharmacy "+pharmacyName+' has been declined');
             sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
