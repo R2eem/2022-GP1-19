@@ -69,7 +69,7 @@
               <i class="fa fa-list-alt" aria-hidden="true"></i>
               <h3>Orders</h3>
             </a>
-            <a href="" onclick="doUserLogOut()">
+            <a href="" onclick="doUserLogOut(); return false">
               <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <h3>Log out</h3>
             </a>
@@ -406,22 +406,16 @@ async function validate(){
 
 
 //User log out
-async function doUserLogOut () {
-    try {
-        await Parse.User.logOut();
-        // To verify that current user is now empty, currentAsync can be used
-        const currentUser = await Parse.User.current();
-        if (currentUser === null) {
-            alert('Success! No user is logged in anymore!');
-        }
-        // Update state variable holding current user
-        getCurrentUser();
-        //return window.location.replace("log_in_page.html");
-    } catch (error) {
-        alert(`Error! ${error.message}`);
-        return false;
-    }    
-};
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
 
 
     </script>
