@@ -3,7 +3,7 @@
 :root{
     --color-primary: #E397DE; 
     --color-danger:  #ff7782;
-    --color-success:  #41f1b6;
+    --color-success:  #3dc538;
     --color-warning:  #ffbb55;
     --color-white:  #fff;
     --color-info-dark:  #6d8da1;
@@ -125,6 +125,17 @@ b{
 
 .primary{
     color: var(--color-primary);
+    background-color: white;
+}
+
+.primary2{
+   color: var(--color-danger);
+    background-color: white;
+}
+
+.primary3{
+    color: var(--color-success);
+    background-color: white;
 }
 
 .danger{
@@ -752,4 +763,53 @@ main .customer i{
 #hDiv{
     color: black;
     font-size: large;
+}
+
+
+/*=============== Display Declined Pharmacies  ==============================*/
+
+main .med2{
+    margin-top: 2rem; 
+}
+
+main .med2 table{
+    background: var(--color-white);
+    width: 100%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    border-spacing:15px;
+    
+}
+
+main .med2 table:hover{
+    box-shadow: none;
+}
+
+main .med2 a{
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+    color: var(--color-primary);
+}
+
+
+main .med2 i{
+    font-size: 20px;
+    color: gray;
+    background-color: white;
+}
+
+
+#hDiv{
+    color: black;
+    font-size: large;
+}
+
+.caption{
+    font-size: medium;
 }

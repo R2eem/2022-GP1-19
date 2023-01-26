@@ -87,6 +87,30 @@ async function totalOrders(){
 }
 
 totalOrders();
+
+///Admin name
+async function AdminInfo(){
+    
+    const currentUser = await Parse.User.current();
+         var userId = currentUser.id;
+         var userPointer = {
+           __type: 'Pointer',
+           className: '_User',
+           objectId: currentUser.id
+         }
+
+         var Admin = Parse.Object.extend("Admin");
+         query = new Parse.Query(Admin);
+         query.equalTo("user", userPointer);
+         const results = await query.find();
+         for (let i = 0; i < results.length; i++) {
+           var admin = results[i];
+           document.getElementById('adminName').innerHTML= "Hello, "+admin.get("AdminName");
+         }
+      
+}
+
+ AdminInfo();
     </script>
     <div class="container">
         <aside class="aside">
@@ -138,7 +162,29 @@ totalOrders();
         <main>
             <h1>Admin Dashboard</h1>
 
-        </br></br>
+        </br>
+        <div class="left">
+            <!---------------TOP -->
+            <div class="top">
+                <!-- <button  class="o" id="menu-btn">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button> -->
+                <!-- <div class="theme-toggler">
+                    <i class="fa fa-sun-o active"aria-hidden="true"></i>
+                    <i class="fa fa-moon-o" aria-hidden="true"></i>
+                </div> -->
+                <div class="profile">
+                    <div class="info">
+                        <p id="adminName"></p>
+                        <small class="text-muted">Admin</small>
+                    </div>
+                    <!-- <div class="profile-photo">
+                        <img src="./images/profile.jpg">
+                    </div> -->
+                </div>
+            </div>
+            </div></br>
+            <!---------------END TOP -->
             <div class="date" id="date">
                 <script>
                      const dateNow = new Date();
