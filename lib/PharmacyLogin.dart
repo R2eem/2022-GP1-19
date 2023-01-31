@@ -370,8 +370,8 @@ class Login extends State<PharmacyLogin> {
           if ("UnderProcessing" == pharmacy.get('JoinRequest')) {
             showError("Your join request is under processing");
           }
-          if ("rejected" == pharmacy.get('JoinRequest')) {
-            showError("Sorry, Your join request is rejected");
+          if ("declined" == pharmacy.get('JoinRequest')) {
+            showError("Sorry, Your join request is declined");
           }
 
           ///If credentials correct and blocked don't enter account

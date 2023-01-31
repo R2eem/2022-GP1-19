@@ -425,6 +425,8 @@ class Orders extends State<OrdersPage> {
     ///Query orders that are under processing and check if the order passed the time then make order declined
     var allDeclined;
     var orderCreatedAt;
+    var accepted;
+    var extraTime = 0;
 
     final query1Response = await query1.query();
     if (query1Response.success && query1Response.results != null) {
@@ -446,6 +448,16 @@ class Orders extends State<OrdersPage> {
             allDeclined = false;
           }
         }
+        ///Check if any pharmacy accepted the order
+        for (var o in parseQueryResponse.results!) {
+          if (o.get('OrderStatus') == 'Accepted') {
+            accepted = true;
+          }
+        }
+        if(accepted){
+          extraTime =15;
+        }
+
 
         ///For customer If all pharmacies declined the order before time passes make order declined for customer
         if (allDeclined) {
@@ -459,7 +471,7 @@ class Orders extends State<OrdersPage> {
         if (!allDeclined) {
             String d1 = (DateTime.now()).subtract(Duration(hours: 3)).toString();
             ///30 minutes
-            String d2 = (orderCreatedAt.add(Duration(minutes: 30))).toString();
+            String d2 = (orderCreatedAt.add(Duration(minutes: (30+extraTime)))).toString();
             d1 = d1.substring(0, 19);
             d2 = d2.substring(0, 19);
             DateTime date1 = DateTime.parse(d1);

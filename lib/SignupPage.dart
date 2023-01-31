@@ -500,7 +500,8 @@ class Signup extends State<SignupPage> {
             ..set('Firstname', firstname)
             ..set('Lastname', lastname)
             ..set('Phonenumber', '0$phonenumber')
-            ..set('user', user);
+            ..set('user', user)
+            ..set('Email', email);
           await createCustomer.save();
           showSuccess();
         } else {

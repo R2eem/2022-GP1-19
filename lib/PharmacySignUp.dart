@@ -776,7 +776,8 @@ class Signup extends State<PharmacySignUp> {
             ..set('user', user)
             ..set('JoinRequest', "UnderProcessing")
             ..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long))
-            ..set('Address', '$street, $subLocality, $locality, $country');
+            ..set('Address', '$street, $subLocality, $locality, $country')
+            ..set('Email', email);
           await createPharmacist.save();
 
           showSuccess();

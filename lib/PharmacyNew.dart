@@ -224,7 +224,7 @@ class PharmacyNew extends State<PharmacyNewO>
                                                     final orderCreatedDate = newOrder.get("createdAt").toString();
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
-                                                    ///If order is accepted from the pharmacy display as waitong for customer confirmation
+                                                    ///If order is accepted from the pharmacy display as waiting for customer confirmation
                                                     if(OrderStatus == 'Accepted'){
                                                       OrderStatus = 'Waiting';//Pending
                                                     }

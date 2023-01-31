@@ -535,7 +535,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes...",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the 30 minutes end.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -617,7 +617,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes...",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the 30 minutes end.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[

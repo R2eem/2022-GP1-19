@@ -675,7 +675,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                           ]),
                                                                       SizedBox(height: 15,),
 
-                                                                      ///If order is not new then display note -- check if customer submit order and then its cancelled what happens to the note??
+                                                                      ///If order is not new then display note
                                                                       if(widget.orderStatus != ("New"))
                                                                         FutureBuilder<ParseObject>(
                                                                             future: getNote(),

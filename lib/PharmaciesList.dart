@@ -645,14 +645,7 @@ class PharmacyList extends State<PharmacyListPage> {
   }
 
   Future<bool> confirmOrder(orderId, pharmacyId) async {
-    NativeNotify.sendIndieNotification(
-        2338,
-        'dX0tKYd2XD2DOtsUirIumj',
-        pharmacyId,
-        'Tiryaq',
-        'Order $orderId is confirmed',
-        '',
-        '');
+    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', pharmacyId, 'Tiryaq', 'Order $orderId is confirmed', '', '');
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')
