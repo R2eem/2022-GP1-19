@@ -7,7 +7,6 @@ import 'Cart.dart';
 import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Orders.dart';
-import 'common/theme_helper.dart';
 import 'main.dart';
 
 
@@ -35,7 +34,7 @@ class Settings extends State<SettingsPage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
               child: SafeArea(
                 child: Column(
@@ -54,7 +53,7 @@ class Settings extends State<SettingsPage> {
                                 height: 80,
                               ),
                             ),
-                            //Controls Cart page title
+                            ///Controls Cart page title
                             Container(
                               margin: EdgeInsets.fromLTRB(0, 10,60, 0),
                               child: Text(
@@ -107,7 +106,7 @@ class Settings extends State<SettingsPage> {
                             )
                           ]),
                       SizedBox(height: 80,),
-                      //Controls settings page display
+                      ///Controls settings page display
                       Container(
                         child:Card(
                           elevation: 4.0,
@@ -186,7 +185,7 @@ class Settings extends State<SettingsPage> {
                 )))
     );
   }
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     showDialog(
       context: context,
@@ -208,7 +207,7 @@ class Settings extends State<SettingsPage> {
     );
   }
 
-  //User logout function
+  ///User logout function
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();

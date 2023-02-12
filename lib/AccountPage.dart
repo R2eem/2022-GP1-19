@@ -46,7 +46,7 @@ class _AccountPage extends State<AccountPage>{
                       Navigator.of(context).pop();
                     }, icon: Icon(Icons.keyboard_arrow_left),),
                 ),
-                //Controls the profile icon
+                ///Profile icon
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
@@ -66,7 +66,7 @@ class _AccountPage extends State<AccountPage>{
                           child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),//control the profile icon
                         ),
                         SizedBox(height: 40,),
-                        //Current user account information
+                        ///Current user account information
                         Form(
                           key: _formKey,
                           child: Column(
@@ -356,7 +356,7 @@ class _AccountPage extends State<AccountPage>{
     );
   }
 
-  //Function to update user information
+  ///Function to update user information
   Future<void> updateInfo(userId, CustomerId, editFirstname, editLastname, editPhonenumber) async {
     var object;
     //Query the user from Customer table using CustomerId
@@ -389,13 +389,13 @@ class _AccountPage extends State<AccountPage>{
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -407,7 +407,7 @@ class _AccountPage extends State<AccountPage>{
       return [];
     }
   }
-  //Function called when update is successful
+  ///Function called when update is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess() {
     showDialog(
@@ -425,7 +425,7 @@ class _AccountPage extends State<AccountPage>{
         });
   }
 
-  //Function called when update is not successful
+  ///Function called when update is not successful
   //Show Alertdialog and wait for user interaction
   void showError(String errorMessage) {
     showDialog(

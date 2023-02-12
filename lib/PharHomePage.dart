@@ -31,7 +31,7 @@ class PharmacyHome extends State<PharHomePage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
                 child: SafeArea(
                     child: Column(
@@ -175,7 +175,7 @@ class PharmacyHome extends State<PharHomePage> {
                                 }
                               }),
                           SizedBox(height: 35,),
-                          //Categories navigation buttons
+                          ///Categories navigation buttons
                           Center(child: Column(
                             children: [
                               GestureDetector(
@@ -269,13 +269,13 @@ class PharmacyHome extends State<PharHomePage> {
       //Bottom navigation bar
     );}
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Pharmacist table
+  ///Function to get current user from Pharmacist table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Pharmacist'));

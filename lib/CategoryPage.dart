@@ -108,7 +108,7 @@ class Category extends State<CategoryPage> {
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
               child: SafeArea(
                   child: Column(
@@ -182,9 +182,9 @@ class Category extends State<CategoryPage> {
                       ))
                     ]),
                 SizedBox(
-                  height: 55,
+                  height: 25,
                 ),
-                //Controls category page display
+                ///Category page display
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -193,7 +193,7 @@ class Category extends State<CategoryPage> {
                       height: size.height - 150,
                       width: size.width,
                       child: Column(children: [
-                        //Search bar
+                        ///Search bar
                         Material(
                             elevation: 4,
                             shadowColor: Colors.grey,
@@ -291,7 +291,75 @@ class Category extends State<CategoryPage> {
                         SizedBox(
                           height: 15,
                         ),
-                        //Medications list diplay
+                        FutureBuilder<List<ParseObject>>(
+                              future: getMedication(searchString),
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return Center(
+                                    );
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    }
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    } else {
+                                      return Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children:[
+                                            Text(
+                                              'Resutls: ${snapshot.data!.length}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontFamily: "Lato",
+                                                  fontSize: 17,
+                                                  fontWeight:
+                                                  FontWeight.w700),
+                                            ),
+                                            ///If the no medication matches the search string then display no medication message
+                                            (snapshot.data!.length==0)?
+                                            Container(
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 60,
+                                                      ),
+                                                      Text(
+                                                        "Sorry we could't find any match,",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                      Text(
+                                                        "try another search or continue shopping through the categories.",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                    ])):Container(),
+                                          ]);
+                                    }
+                                }
+                              }),
+                        ///Medications list display
                         Expanded(
                             //Get medications
                             child: FutureBuilder<List<ParseObject>>(
@@ -343,9 +411,8 @@ class Category extends State<CategoryPage> {
                                               if (medGet.get<ParseFileBase>('Image') != null) {
                                                 image = medGet.get<ParseFileBase>('Image')!;
                                               }
-                                              //Display medication that matches the search string if exist
-                                              return  (image == null)
-                                                      ? GestureDetector(
+                                              ///Display medication that matches the search string if exist
+                                              return GestureDetector(
                                                           //Navigate to medication details page
                                                           onTap: () => Navigator.of(
                                                                   context)
@@ -362,10 +429,17 @@ class Category extends State<CategoryPage> {
                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                   children: [
-                                                                Image
+                                                                    (image == null)?
+                                                                    Image
                                                                     .asset(
                                                                   'assets/listIcon.png', height: 100, width: 70,
-                                                                ),
+                                                                ):Image
+                                                                        .network(
+                                                                      image!.url!,
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      height: 120, width: 90,
+                                                                    ),
                                                                Text(
                                                                     TradeName,
                                                                  textAlign: TextAlign.center,
@@ -404,8 +478,7 @@ class Category extends State<CategoryPage> {
                                                                       FontStyle.italic),
                                                                 ),
                                                                     Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
                                                                         children:[
                                                                           Ink(
                                                                         decoration:
@@ -415,7 +488,7 @@ class Category extends State<CategoryPage> {
                                                                           borderRadius:
                                                                               BorderRadius.circular(15),
                                                                         )),
-                                                                        //Add to cart button
+                                                                        ///Add to cart button
                                                                         child: IconButton(
                                                                             onPressed: () async {
                                                                               if (await addToCart(medId, customerId)) {
@@ -436,140 +509,11 @@ class Category extends State<CategoryPage> {
                                                                       ),]),
 
 
-                                                              ])))
-                                                      : GestureDetector(
-                                                          //Navigate to medication details page
-                                                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, customerId))),
-                                                          //Medication card information
-                                                          child: Card(
-                                                              elevation: 3,
-                                                              margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                                                              color: Colors.white,
-                                                              child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                              Image
-                                                                  .network(
-                                                              image!.url!,
-                                                                fit: BoxFit
-                                                                    .fill,
-                                                                height: 120, width: 90,
-                                                              ),
-                                                                 Text(
-                                                                    TradeName,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            "Lato",
-                                                                        fontSize:
-                                                                            17,
-                                                                        fontWeight:
-                                                                            FontWeight.w700),
-                                                                  ),
-
-                                                                      Text(
-                                                                    '$ScientificName',
-                                                                        textAlign: TextAlign.center,
-                                                                        style: TextStyle(
-                                                                        fontFamily:
-                                                                            "Lato",
-                                                                        fontSize:
-                                                                            14,
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontStyle:
-                                                                            FontStyle.italic),
-                                                                  ),
-                                                                Text(
-                                                                  '$Publicprice SAR',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                      "Lato",
-                                                                      fontSize:
-                                                                      14,
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontStyle:
-                                                                      FontStyle.italic),
-                                                                ),
-                                                              Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children:[
-                                                                    Ink(
-                                                                        decoration:
-                                                                            ShapeDecoration.fromBoxDecoration(BoxDecoration(
-                                                                          color:
-                                                                              HexColor('#fad2fc'),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(15),
-                                                                        )),
-                                                                        //Add to cart button
-                                                                        child: IconButton(
-                                                                            onPressed: () async {
-                                                                              if (await addToCart(medId, customerId)) {
-                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                  content: Text(
-                                                                                    "$TradeName added to your cart",
-                                                                                    style: TextStyle(fontSize: 20),
-                                                                                  ),
-                                                                                  duration: Duration(milliseconds: 3000),
-                                                                                ));
-                                                                              }
-                                                                              ;
-                                                                            },
-                                                                            icon: const Icon(
-                                                                              Icons.add_shopping_cart_rounded,
-                                                                              color: Colors.black,
-                                                                              size: 20.0,
-                                                                            )),
-                                                                      ),]),
-
                                                               ])));
                                             });
                                       }
                                   }
                                 })),
-                        //If the medication doesn't matches the search string then don't display
-                        /*Container(
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Sorry we could't find any match,",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                  Text(
-                                    "try another search or continue shopping through the categories.",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                ])),*/
-
                         SizedBox(
                           height: 80,
                         )
@@ -632,7 +576,7 @@ class Category extends State<CategoryPage> {
                 ))));
   }
 
-  //Function to get medications
+  ///Function to get medications
   Future<List<ParseObject>> getMedication(searchString) async {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -647,13 +591,13 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
         QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -666,7 +610,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(medId, customerId) async {
     bool exist = false;
     var medInCart;

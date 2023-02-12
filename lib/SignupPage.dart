@@ -32,7 +32,7 @@ class Signup extends State<SignupPage> {
   bool _hasPasswordOneUpper = false;
   bool _hasPasswordOneLower = false;
 
-  //Password validation caller
+  ///Password validation caller
   onPasswordChanged(String password) {
     final specialRegex = RegExp(r'(?=.*?[#?!@$%^&*-])');
     final upperRegex = RegExp(r'(?=.*[A-Z])');
@@ -69,7 +69,7 @@ class Signup extends State<SignupPage> {
                     height: 150,
                     child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
                   ),
-                  //Controls app logo and page title
+                  ///App logo and page title
                   SafeArea(
                     child: Column(
                         children: [
@@ -101,7 +101,7 @@ class Signup extends State<SignupPage> {
                                     key: _formKey,
                                     child: Column(
                                         children: [
-                                          //FirstName
+                                          ///FirstName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -114,13 +114,15 @@ class Signup extends State<SignupPage> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //LastName
+                                          ///LastName
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -133,13 +135,15 @@ class Signup extends State<SignupPage> {
                                               validator: MultiValidator([
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //email
+                                          ///email
                                           Container(
                                             child:TextFormField(
                                               autovalidateMode:
@@ -153,14 +157,16 @@ class Signup extends State<SignupPage> {
                                                 RequiredValidator(
                                                     errorText: 'this field is required'),
                                                 EmailValidator(
-                                                    errorText: 'enter a valid email address')
+                                                    errorText: 'enter a valid email address'),
+                                                MaxLengthValidator(50,
+                                                    errorText: 'must be 50 character long'),
                                               ]),
                                               decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),),
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),),
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Phonenumber
+                                          ///Phonenumber
                                           Container(
                                             child: TextFormField(
                                               autovalidateMode:
@@ -171,11 +177,11 @@ class Signup extends State<SignupPage> {
                                                 FilteringTextInputFormatter.digitsOnly,
                                                 FilteringTextInputFormatter.deny(
                                                   RegExp(r'^[0-4]+'),
-                                                  ),
+                                                ),
                                                 FilteringTextInputFormatter.deny(
                                                   RegExp(r'^[6-9]+'),
                                                 ),
-                                                ],
+                                              ],
                                               textCapitalization: TextCapitalization.none,
                                               autocorrect: false,
                                               obscureText: false,
@@ -203,7 +209,7 @@ class Signup extends State<SignupPage> {
                                             decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                           ),
                                           SizedBox(height: 20.0),
-                                          //Password
+                                          ///Password
                                           Container(
                                             child: TextFormField(
                                               onTap: () => _showValidation = !_showValidation,
@@ -247,7 +253,7 @@ class Signup extends State<SignupPage> {
                                                 offset: const Offset(0, 5),
                                               )
                                             ]),),
-                                          //Password validation list
+                                          ///Password validation list
                                           Visibility(
                                             visible: _showValidation,
                                             child:
@@ -340,7 +346,7 @@ class Signup extends State<SignupPage> {
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          //confirm password
+                                          ///confirm password
                                           Container(
                                             child: TextFormField(
                                               obscureText: !_isVisibleConfirm,
@@ -381,7 +387,7 @@ class Signup extends State<SignupPage> {
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          //Signup button
+                                          ///Signup button
                                           Container(
                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                             child: ElevatedButton(
@@ -424,7 +430,7 @@ class Signup extends State<SignupPage> {
                   )])));
   }
 
-  //Show success message function
+  ///Show success message function
   void showSuccess() {
     showDialog(
       context: context,
@@ -444,7 +450,7 @@ class Signup extends State<SignupPage> {
     );
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if(errorMessage.compareTo('Account already exists for this username.')==0){
       errorMessage = 'Account already exists for this email address.';
@@ -473,7 +479,7 @@ class Signup extends State<SignupPage> {
     );
   }
 
-  //User signup function
+  ///User signup function
   Future<void> doUserRegistration() async {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
@@ -482,7 +488,7 @@ class Signup extends State<SignupPage> {
     var phonenumber = controllerPhoneNumber.text.trim();
     final user = ParseUser.createUser(email, password, email);
 
-    //Check unique phone number in Customer table
+    ///Check unique phone number in Customer table
     QueryBuilder<ParseObject> queyPhonenumber = QueryBuilder<ParseObject>(ParseObject('Customer'));
     queyPhonenumber.whereEqualTo('Phonenumber', '0$phonenumber');
     var apiResponse = await queyPhonenumber.query();
