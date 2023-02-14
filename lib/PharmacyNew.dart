@@ -25,6 +25,13 @@ class PharmacyNew extends State<PharmacyNewO>
   int _selectedTab = 0;
   bool noOrder = true;
 
+  ///To check order status before displaying
+  @override
+  void initState() {
+    super.initState();
+    checkOrders();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -456,53 +463,22 @@ class PharmacyNew extends State<PharmacyNewO>
   }
 
 
-  ///Get pharmacy new orders
-  Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
-    final QueryBuilder<ParseObject> queryNewOrders1 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders1.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryNewOrders1.whereEqualTo('OrderStatus', 'New');
+  //Check orders status
+  Future<void> checkOrders() async {
 
-    final QueryBuilder<ParseObject> queryNewOrders2 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders2.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryNewOrders2.whereEqualTo('OrderStatus', 'Accepted');
+    ///Query orders that are under processing and check if the order passed the time then make order declined
+    var orderId;
+    var allDeclined;
+    var orderCreatedAt;
+    var accepted = false;
+    var extraTime = 0;
 
+    //Query customer current orders
+    final QueryBuilder<ParseObject> query1 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query1.whereEqualTo('OrderStatus','Under processing');
 
-    final QueryBuilder<ParseObject> queryNewOrders3 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders3.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryNewOrders3.whereEqualTo('OrderStatus', 'Under preparation');
-
-
-    final QueryBuilder<ParseObject> queryNewOrders4 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders4.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryNewOrders4.whereEqualTo('OrderStatus', 'Ready for pick up');
-
-    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
-      ParseObject("PharmaciesList"),
-      [queryNewOrders1, queryNewOrders2, queryNewOrders3, queryNewOrders4],
-    );
-
-      var orderId;
-
-      //Query customer current orders
-      final QueryBuilder<ParseObject> query1 =
-      QueryBuilder<ParseObject>(ParseObject('Orders'));
-      query1.whereEqualTo('OrderStatus','Under processing');
-
-      ///Query orders that are under processing and check if the order passed the time then make order declined
-      var allDeclined;
-      var orderCreatedAt;
-      var accepted;
-      var extraTime = 0;
-
-      final query1Response = await query1.query();
+    final query1Response = await query1.query();
     if (query1Response.success && query1Response.results != null) {
       for (var order in query1Response.results!) {
         allDeclined = true;
@@ -516,15 +492,15 @@ class PharmacyNew extends State<PharmacyNewO>
 
 
         ///Check if all pharmacies declined the order
-        for (var o in parseQueryResponse.results!) {
-          if (o.get('OrderStatus') != 'Declined') {
+        for (var pharmaciesList in parseQueryResponse.results!) {
+          if (pharmaciesList.get('OrderStatus') != 'Declined') {
             allDeclined = false;
           }
         }
 
         ///Check if any pharmacy accepted the order
-        for (var o in parseQueryResponse.results!) {
-          if (o.get('OrderStatus') == 'Accepted') {
+        for (var pharmaciesList in parseQueryResponse.results!) {
+          if (pharmaciesList.get('OrderStatus') == 'Accepted') {
             accepted = true;
           }
         }
@@ -541,7 +517,7 @@ class PharmacyNew extends State<PharmacyNewO>
 
         ///*********Time code
 
-        ///If order not declined and the customer didn't select a pharmacy check time
+        ///If order not declined and customer didn't select a pharmacy check time
         if (!allDeclined) {
           String d1 = (DateTime.now()).subtract(Duration(hours: 3)).toString();
           ///Original time 30 minutes
@@ -559,12 +535,12 @@ class PharmacyNew extends State<PharmacyNewO>
           ///cancel order only for pharmacies who didn't reply
           if (accepted && date1.isAfter(date2)) {
             ///For pharmacies
-            for (var o in parseQueryResponse.results!) {
+            for (var pharmaciesList in parseQueryResponse.results!) {
               ///If pharmacy declined or accepted order leave as it is for that pharmacy
               ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (o.get('OrderStatus') != 'Declined') {
-                if (o.get('OrderStatus') != 'Accepted') {
-                  var update = o..set('OrderStatus', 'Cancelled');
+              if (pharmaciesList.get('OrderStatus') != 'Declined') {
+                if (pharmaciesList.get('OrderStatus') != 'Accepted') {
+                  var update = pharmaciesList..set('OrderStatus', 'Cancelled');
                   final ParseResponse parseResponse = await update.save();
                 }
               }
@@ -576,11 +552,11 @@ class PharmacyNew extends State<PharmacyNewO>
           ///order status cancelled for pharmacies who accepted or didn't reply
           if (date1.isAfter(date2)) { //date2 here either will be original or with extra time
             ///For pharmacies
-            for (var o in parseQueryResponse.results!) {
+            for (var pharmaciesList in parseQueryResponse.results!) {
               ///If pharmacy declined order leave as declined for that pharmacy
               ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (o.get('OrderStatus') != 'Declined') {
-                var update = o..set('OrderStatus', 'Cancelled');
+              if (pharmaciesList.get('OrderStatus') != 'Declined') {
+                var update = pharmaciesList..set('OrderStatus', 'Cancelled');
                 final ParseResponse parseResponse = await update.save();
               }
             }
@@ -592,6 +568,39 @@ class PharmacyNew extends State<PharmacyNewO>
         }
       }
     }
+  }
+
+  ///Get pharmacy new orders
+  Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
+    final QueryBuilder<ParseObject> queryNewOrders1 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    queryNewOrders1.whereEqualTo('PharmacyId',
+        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
+    queryNewOrders1.whereEqualTo('OrderStatus', 'New');
+
+    final QueryBuilder<ParseObject> queryNewOrders2 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    queryNewOrders2.whereEqualTo('PharmacyId',
+        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
+    queryNewOrders2.whereEqualTo('OrderStatus', 'Accepted');
+
+    final QueryBuilder<ParseObject> queryNewOrders3 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    queryNewOrders3.whereEqualTo('PharmacyId',
+        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
+    queryNewOrders3.whereEqualTo('OrderStatus', 'Under preparation');
+
+    final QueryBuilder<ParseObject> queryNewOrders4 =
+    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
+    queryNewOrders4.whereEqualTo('PharmacyId',
+        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
+    queryNewOrders4.whereEqualTo('OrderStatus', 'Ready for pick up');
+
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("PharmaciesList"),
+      [queryNewOrders1, queryNewOrders2, queryNewOrders3, queryNewOrders4],
+    );
+
     final ParseResponse apiResponse = await mainQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
