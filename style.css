@@ -196,11 +196,7 @@ aside .sidebar a i {
     transition: all 300ms ease;
 }
 
-aside .sidebar a:last-child{
-    position: absolute;
-    bottom: 2rem;
-    width: 100%;
-}
+
 
 aside .sidebar a.active{
     background: var(--color-light);
@@ -367,13 +363,25 @@ main .recent-orders table{
     transition: all 300ms ease;
 }
 
+#OrdersTable{
+    background: var(--color-white);
+    width: 150%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+}
+
 main .recent-orders table:hover{
     box-shadow: none;
 }
-
+main table thead th{
+    border-bottom: 2px solid var(--color-light);
+}
 main table tbody td{
     height: 2.8rem;
-    border-bottom: 1px solid var(--color-light);
+    border-bottom: 2px solid var(--color-light);
     color: var(--color-dark-variant);
 }
 
@@ -519,187 +527,191 @@ box-shadow: var(--box-shadow);
     color: #E397DE;
 }
 
-/*============================== MEDIA QUERIES ========================== for tablet and small labtops */
-@media screen and (max-width: 1200px){
-    
-        .container{
-            width: 94%;
-            grid-template-columns: 7rem auto 23rem;
-        }
-
-        aside .logo h2 {
-            display: none;
-        }
-
-        aside .sidebar h3{
-             display: none;
-        }
-
-        aside .sidebar a{
-            width: 5.6rem;
-       }
-
-       aside .sidebar a:last-child{
-         position: relative;
-         margin-top: 1.8rem;  
-       }
-
-       main .insights{
-        grid-template-columns: 1fr;
-        gap: 0;
-       }
-
-       main .recent-orders{
-        width: 94%;
-        position:absolute;
-        left: 50%
-        transform:translateX(-50%);
-        margin: 2rem 0 0 8.8rem;
-    }
-
-    main .recent-orders table{
-        width: 83vw;
-    }
-    main table thead tr th:last-child,
-    main table thead tr th:first-child{
-        display: none;
-    }
-
-    main table tbody tr td:last-child,
-    main table tbody tr td:first-child{
-        display: none;
-    } 
+.medList {
+    text-align: left;
 }
 
-/*============================== MEDIA QUERIES ========================== for  mobile*/
+table {
+    border-collapse: separate;
+    border-spacing: 30px 0;
+}
+td {
+    padding: 10px 0;
+}
 
-@media screen and (max-width: 768px) {
-    .container{
-        width: 100%;
-        grid-template-columns: 1fr;
-    }
+/*============================== MEDIA QUERIES ==========================
+for tablet and mobile
+*/
 
-    aside{
-        position: fixed;
-        left: -100%;
-        background: var(--color-white);
-        width:  18rem;
-        z-index: 3;
-        box-shadow: 1rem 3rem 4rem var(--color-light);
-        height: 100vh;
-        padding-right: var(--card-padding);
-        display: none;
-        animation: showMenu 400ms ease forwards   ;
-    }
 
-    @keyframes showMenu {
-        to{
-            left: 0;
-        }
-        
-    }
 
-    aside .logo{
-        margin-left: 1rem;
-    }
+
+
+
+
+
+/*=============== Display Medications ==============================*/
+
+main .med{
+    margin-top: 2rem; 
+}
+
+main .med table{
+    background: var(--color-white);
+    width: 100%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    border-spacing:15px;
     
-    aside .sidebar h2{
-        display: inline;
-    }
+}
 
-    aside .sidebar h3{
-        display: inline;
-    }
+main .med table:hover{
+    box-shadow: none;
+}
 
-    aside .sidebar a{
-        width: 100%;
-        height: 3.4rem;
-    }
-
-    aside .sidebar a:last-child{
-        position: absolute;
-        bottom: 5rem;   
-    }
-
-    aside .close{
-        display: inline-block;
-        cursor: pointer;  
-    }
-
-    main{
-        margin-top: 8rem;
-        padding: 0 1rem;
-    }
-
-    main .recent-orders{
-        position: relative;
-        margin: 3rem 0 0 0 ;
-        width: 100%;
-    }
-
-    main .recent-orders table{
-        width: 100%;
-        margin: 0;
-    }
-
-    .right{
-        width: 94%;
-        margin: 0 auto 4rem;
-    }
-
-    .right .top{
-        position: fixed;
-        top: 0;
-        left: 0;
-        align-items: center;
-        padding: 0 0.8rem;
-        height: 4.6rem;
-        background: var(--color-white);
-        width: 100%;
-        margin: 0;
-        z-index: 2;
-        box-shadow: 0 1rem 1rem var(--color-light);
-    }
-
-    .right .top .theme-toggler{
-        width: 4.4rem;
-        position: absolute;
-        left: 66%;
-    }
-
-    .right .profile .info{
-        display: none;
-    }
-
-    .right .top button{
-        display: inline-block;
-        background: transparent;
-        cursor: pointer;
-        color: var(--color-dark);
-        position: absolute;
-        left: 1rem;
-    }
-
-    .right .top button span{
-        font-size: 2rem;
-
-    }
-
-
-
-
-
-
-
-
-
-
-
+main .med a{
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+    color: var(--color-primary);
 }
 
 
+main .med i{
+    font-size: 20px;
+    color: gray;
+    background-color: white;
+}
 
-/*=============== Display Customers ==============================*/
+ 
+#divMedDetails{
+    background: var(--color-white);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 4rem;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    width: 100%;
+}
+
+#divMedDetails div:hover {
+    box-shadow: none;
+}
+
+#hDiv{
+    color: black;
+    font-size: large;
+}
+
+
+hr.new1 {
+    border-top: 3px solid gray;
+    
+  }
+
+#trash{
+    font-size: 25px;
+    color: gray;
+    background-color: white;
+    float: right;
+} 
+
+.addDiv{
+    background: rgb(237, 207, 244);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 4rem;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 20%;
+    margin-right: auto;
+    width: 80%;
+}
+
+
+main .addDiv input {
+    width: 100%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px ;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  #addInput{
+  color: white;
+    background-color: rgb(204, 0, 204);
+    width:35%;
+    margin-left: 30% ;
+    margin-right:auto;
+    
+  }
+
+  #updateInput{
+    color: white;
+      background-color: rgb(204, 0, 204);
+      padding: 5px;
+      width:15%;
+      float: right;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-right: 20px;
+     
+      
+    }
+
+ #updateInput2{
+   color: white;
+    background-color: rgb(204, 0, 204);
+    width:35%;
+    margin-left: 30% ;
+    margin-right:auto;
+    }
+  
+
+  
+  
+  #PharmaceuticalForm {
+    width: 60%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+  }
+    
+
+  #LegalStatus {
+    width: 60%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+  }    
+
+  /*=============== Display Customers ==============================*/
 
 main .customer{
     margin-top: 2rem; 
@@ -741,5 +753,3 @@ main .customer i{
     color: black;
     font-size: large;
 }
-
-
