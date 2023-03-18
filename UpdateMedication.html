@@ -37,43 +37,39 @@
                  </div>
         </div>
         <div class="sidebar">
-            <a href="index.html">
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                <h3>Dashboard</h3>
-            </a>
-            <a href="ViewCustomers.html">
+          <a href="index.html">
+              <i class="fa fa-th-large" aria-hidden="true"></i>
+              <h3>Dashboard</h3>
+          </a>
+          <a href="Medications.html"  class="active">
+              <i class="fa fa-medkit" aria-hidden="true"></i>
+              <h3>Medications</h3>
+          </a>
+          <a href="ViewCustomers.html">
               <i class="fa fa-users" aria-hidden="true"></i>
-                <h3>Customers</h3>
-            </a>
-            <a href="Pharmacies_page.html">
+              <h3>Customers</h3>
+          </a>
+          <a href="Pharmacies_page.html">
               <i class="fa fa-plus-square" aria-hidden="true"></i>
               <h3>Pharmacies</h3>
           </a>
-          <a href="Blocked_pharmacies_page.html">
-              <i class="fa fa-plus-square" aria-hidden="true"></i>
-              <h3>Blocked Pharmacies</h3>
+          <a href="customerOrders.html" >
+              <i class="fa fa-list-alt" aria-hidden="true"></i>
+              <h3>Orders</h3>
           </a>
           <a href="Pharmacies_Join_Request_Page.html">
               <i class="fa fa-envelope" aria-hidden="true"></i>
               <h3>Join requests</h3>
-            </a>
-            <a href="Medications.html" class="active">
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
-            <a href="AddMedication.html">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <h3>Add Medications</h3>
-            </a>
-            <a href="customerOrders.html"  >
-              <i class="fa fa-list-alt" aria-hidden="true"></i>
-              <h3>Orders</h3>
-            </a>
-            <a href="" onclick="doUserLogOut()">
+          </a>
+          <a href="AddMedication.html">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+              <h3>Add Medications</h3>
+          </a>
+          <a href="" onclick="doUserLogOut(); return false">
               <i class="fa fa-sign-out" aria-hidden="true"></i>
-                <h3>Log out</h3>
-            </a>
-        </div>
+              <h3>Log out</h3>
+          </a>
+      </div>
         </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
@@ -144,9 +140,32 @@
                       <option value="Gel">Gel</option>
                       <option value="Liquid">Liquid</option>
                       <option value="Lozenge">Lozenge</option>
+                      <option value="Other">Other</option>
                     </select>
                     <p id="PharmaceuticalFormP" style="color: red;"></p>
                     </div>
+                    
+                    <div id = 'other'>
+
+                    </div>
+                    <script>
+                      document.getElementById('PharmaceuticalForm').addEventListener("change", otherText);
+                      ///Call this method when other is selected in the drop down menu
+                      async function otherText(){
+                        if(document.getElementById('PharmaceuticalForm').value == 'Other'){
+                          document.getElementById('other').innerHTML =  '<label for="otherText">Other:</label>';
+                          document.getElementById('other').innerHTML += '<br>';
+                          document.getElementById('other').innerHTML +='<div class="inputbox">';
+                          document.getElementById('other').innerHTML +='<input name="othertext" id="getOther" type="text" placeholder="" required="" aria-required="true"/>';
+                          document.getElementById('other').innerHTML +='<p id="otherP" style="color: red;"></p>';
+                          document.getElementById('other').innerHTML +='</div>';
+                        }
+                      ///Call this method when other is selected in the drop down menu
+                        if(document.getElementById('PharmaceuticalForm').value != 'Other'){
+                          document.getElementById('other').innerHTML =  '';
+                        }
+                  }
+                    </script>
 
                     <div class="inputbox">
                         <label for="UsageMethod">Usage Method</label>
@@ -238,6 +257,24 @@ query2.get(medicationId)
   document.getElementById('MarketingCountry').value = medId.get("MarketingCountry");
   
 
+  ///If PharmaceuticalForm is not of the dropdown menu options then display in text input
+if(medId.get("PharmaceuticalForm") != 'Capsule' && medId.get("PharmaceuticalForm") != 'Cream' &&
+medId.get("PharmaceuticalForm") != 'Drop' && medId.get("PharmaceuticalForm") != 'Granules' &&
+medId.get("PharmaceuticalForm") != 'Ointment' && medId.get("PharmaceuticalForm") != 'Powder' &&
+medId.get("PharmaceuticalForm") != 'Solution' && medId.get("PharmaceuticalForm") != 'Spray' &&
+medId.get("PharmaceuticalForm") != 'Syrup' && medId.get("PharmaceuticalForm") != 'Tablet' &&
+medId.get("PharmaceuticalForm") != 'Caplet' && medId.get("PharmaceuticalForm") != 'Gel' &&
+medId.get("PharmaceuticalForm") != 'Liquid' && medId.get("PharmaceuticalForm") != 'Lozenge'){
+  document.getElementById('PharmaceuticalForm').value = 'Other';
+  document.getElementById('other').innerHTML =  '<label for="otherText">Other:</label>';
+  document.getElementById('other').innerHTML += '<br>';
+  document.getElementById('other').innerHTML +='<div class="inputbox">';
+  document.getElementById('other').innerHTML +='<input name="othertext" id="getOther" type="text" value="'+medId.get('PharmaceuticalForm')+'" placeholder="" required="" aria-required="true"/>';
+  document.getElementById('other').innerHTML +='<p id="otherP" style="color: red;"></p>';
+  document.getElementById('other').innerHTML +='</div>';
+}
+
+                     
 
 }, (error) => {
     alert(error);
@@ -261,6 +298,11 @@ const med = urlParams.get('id');
 
 const query3 = new Parse.Query("Medications");
 const medication = await query3.get(med);
+
+  ///Check the value of the PharmaceuticalForm if its from the drop down or other
+  if(PharmaceuticalForm=='Other'){
+    PharmaceuticalForm = document.getElementById('getOther').value;
+  }
 
         //update the medication the object
         medication.set("TradeName", TradeName);
@@ -354,7 +396,13 @@ async function validate(){
         if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('PackageTypeP').innerHTML = ""}
 
-       
+        if (document.getElementById('PharmaceuticalForm').value == "Other") {
+             if(document.getElementById('getOther').value.length>50){
+              document.getElementById('otherP').innerHTML = "should be less than 50 characters";
+             }
+             else {document.getElementById('otherP').innerHTML = ""}
+        }
+
         if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
            else {document.getElementById('UsageMethodP').innerHTML = ""}
   
@@ -385,9 +433,13 @@ async function validate(){
               UsageMethod.length<=50 && MarketingCompany.length<=50
               && MarketingCountry.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
               {
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
                
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
-
+              }
+              else if(PharmaceuticalForm != 'Other'){
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
               }}
 
               //if there is no image 
@@ -397,31 +449,28 @@ async function validate(){
               UsageMethod.length<=50 && MarketingCompany.length<=50
               && MarketingCountry.length<=50 )
               {
-              
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
-
+                }
+                else if(PharmaceuticalForm != 'Other'){
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
               }}
    
 }}
 
 
 //User log out
-async function doUserLogOut () {
-    try {
-        await Parse.User.logOut();
-        // To verify that current user is now empty, currentAsync can be used
-        const currentUser = await Parse.User.current();
-        if (currentUser === null) {
-            alert('Success! No user is logged in anymore!');
-        }
-        // Update state variable holding current user
-        getCurrentUser();
-        //return window.location.replace("log_in_page.html");
-    } catch (error) {
-        alert(`Error! ${error.message}`);
-        return false;
-    }    
-};
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
 
 
     </script>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin_Dashboard</title>
+    <title>Orders</title>
     <!---- MATERIAL CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
     <!----STYLESHEET -->
@@ -32,6 +32,10 @@
                     <i class="fa fa-th-large" aria-hidden="true"></i>
                     <h3>Dashboard</h3>
                 </a>
+                <a href="Medications.html" >
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
                 <a href="ViewCustomers.html">
                     <i class="fa fa-users" aria-hidden="true"></i>
                     <h3>Customers</h3>
@@ -40,27 +44,19 @@
                     <i class="fa fa-plus-square" aria-hidden="true"></i>
                     <h3>Pharmacies</h3>
                 </a>
-                <a href="Blocked_pharmacies_page.html">
-                    <i class="fa fa-plus-square" aria-hidden="true"></i>
-                    <h3>Blocked Pharmacies</h3>
+                <a href="customerOrders.html"  class="active">
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
                 </a>
                 <a href="Pharmacies_Join_Request_Page.html">
                     <i class="fa fa-envelope" aria-hidden="true"></i>
                     <h3>Join requests</h3>
                 </a>
-                <a href="Medications.html">
-                    <i class="fa fa-medkit" aria-hidden="true"></i>
-                    <h3>Medications</h3>
-                </a>
                 <a href="AddMedication.html">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <h3>Add Medications</h3>
                 </a>
-                <a href="customerOrders.html" class="active" >
-                    <i class="fa fa-list-alt" aria-hidden="true"></i>
-                    <h3>Orders</h3>
-                </a>
-                <a href="" onclick="doUserLogOut()">
+                <a href="" onclick="doUserLogOut(); return false">
                     <i class="fa fa-sign-out" aria-hidden="true"></i>
                     <h3>Log out</h3>
                 </a>
@@ -137,22 +133,16 @@
                              retrieveOrders();
 
                              //User log out
-                             async function doUserLogOut () {
+                             async function doUserLogOut () { 
+                                if(confirm('Are you sure you want to log out?')){
                                 try {
                                     await Parse.User.logOut();
-                                 // To verify that current user is now empty, currentAsync can be used
-                                 const currentUser = await Parse.User.current();
-                                 if (currentUser === null) {
-                                    alert('Success! No user is logged in anymore!');
-                                }
-                                 // Update state variable holding current user
-                                 getCurrentUser();
-                                 //return window.location.replace("log_in_page.html");
+                                    return window.location.replace("log_in_page.html");
+                                    
                                 } catch (error) {
                                     alert(`Error! ${error.message}`);
-                                    return false;
-                                }
-                            };
+                                }}
+                            }
 
                             </script> 
 </html>
