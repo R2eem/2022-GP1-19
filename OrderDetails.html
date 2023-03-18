@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+    <link rel="stylesheet" href="./style.css"> 
+    <script
+         type="text/javascript"
+         src="https://npmcdn.com/parse/dist/parse.min.js"
+       ></script>
+       <script>
+
+        // Initialize Parse
+        Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5",
+         "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); 
+           Parse.serverURL = "https://parseapi.back4app.com/";  
+
+</script>
+
+    
+</head>
+<body>
+    <div class="container">
+        <aside class="aside">
+        <div class="top">
+            <div class="logo">
+                <img src="./images/logo.png">
+                <h2>Tiryaq</h2>
+            </div>
+            <div class="close" id="close-btn">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                 </div>
+        </div>
+        <div class="sidebar">
+            <a href="index.html">
+                <i class="fa fa-th-large" aria-hidden="true"></i>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="ViewCustomers.html">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                <h3>Customers</h3>
+            </a>
+            <a href="Pharmacies_page.html">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Pharmacies</h3>
+            </a>
+            <a href="Blocked_pharmacies_page.html">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Blocked Pharmacies</h3>
+            </a>
+            <a href="Pharmacies_Join_Request_Page.html">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <h3>Join requests</h3>
+            </a>
+            <a href="Medications.html" >
+                <i class="fa fa-medkit" aria-hidden="true"></i>
+                <h3>Medications</h3>
+            </a>
+            <a href="AddMedication.html">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                <h3>Add Medications</h3>
+            </a>
+            <a href="customerOrders.html" class="active" >
+                <i class="fa fa-list-alt" aria-hidden="true"></i>
+                <h3>Orders</h3>
+            </a>
+            <a href="" onclick="doUserLogOut()">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <h3>Log out</h3>
+            </a>
+        </div>
+        </aside>
+        <!----------------------------------END OF ASIDE-------------->
+        <main id="mainn">
+            <h1>Order Details</h1>
+        
+            <!---------------------------Display Medication Details----------------------------> 
+            <div id="divMedDetails">
+               <h2>Medications</h2>
+               <p id="medList" style="text-align:left; font-size: 1.3em;"> </p>
+               <br>
+               <h2>Selected Pharmacy</h2>
+               <p id="selectedPharmacy" style="text-align:left; font-size: 1.3em;"> </p>
+               <br>
+            </div>
+             <!--------------------------- END OF Display Medication Details----------------------------> 
+        </main>
+        <!------------------------- END OF MAIN ------------------>
+
+            </div>
+        </div>
+    </div>  
+</body>
+
+<script>
+
+  //Check if user logged in
+  async function sessionCheck(){
+     const currentUser = await Parse.User.current();
+     if (currentUser === null) {
+        window.location.replace("log_in_page.html");
+     }
+  }
+  sessionCheck();
+
+
+                                      
+
+
+async function displayOrderDetails(){   
+    
+const query = window.location.search;
+const urlParams = new URLSearchParams(query);
+const orderId = urlParams.get('id');
+
+
+const query2 = new Parse.Query("Orders");
+query2.get(orderId)
+.then(async function list(order){
+                                       ///Query medication list accepted from the assigned pharmacy if there is one   
+                                       ///&& because we want only orders that are any type of these                                    
+                                       if(order.get("OrderStatus")!== 'Under processing' && order.get("OrderStatus")!== 'Cancelled' && order.get("OrderStatus")!== 'Declined'){
+                                        let pharmListquery = new Parse.Query('PharmaciesList')
+                                        pharmListquery.equalTo("OrderId",order)
+                                        let queryResult = await pharmListquery.find();
+                                        for (n=0; n<queryResult.length; n++){
+                                            var pharmListinfo = queryResult[n]
+                                            if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                ///Query medication list information that is accepted from the pharmacy
+                                                for (j = 0 ; j< pharmListinfo.get("MedicationsList")[0].length; j++){
+                                                  let medquery = new Parse.Query('Medications');
+                                                  medquery.contains('objectId',pharmListinfo.get("MedicationsList")[0][j]['medId2']);
+                                                  let queryResult = await medquery.find();
+                                                  var medinfo = queryResult[0]
+                                                  if(pharmListinfo.get("MedicationsList")[0][j]['isChecked']== true){
+                                                    document.getElementById('medList').innerHTML += "<p><i  class='fa fa-check'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+
+                                                  }
+                                                  else{
+                                                    document.getElementById('medList').innerHTML += "<p><i class='fa fa-close'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+                                                  }
+                                                }                                             
+                                            }
+                                        }    
+                                    }
+                                    else{
+                                       //Query medication list information and quantity of initial order
+                                       for (j = 0 ; j< order.get("MedicationsList")[0].length; j++){
+                                        let medquery = new Parse.Query('Medications');
+                                        medquery.contains('objectId',order.get("MedicationsList")[0][j]['medId']);
+                                        let queryResult = await medquery.find();
+                                        var orderinfo = queryResult[0]
+                                        document.getElementById('medList').innerHTML += "<p>"+order.get("MedicationsList")[0][j]['quantity'] +'x '+orderinfo.get("TradeName")+" "+orderinfo.get("Strength")+" "+orderinfo.get("StrengthUnit")+"</p></br>"
+                                       }
+                                    }
+                                       ///Query pharmacy name if there is assigned pharmacy for order
+                                       var selectedPharmacy;
+                                       var pharmExist = false; 
+                                       if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
+                                        let pharmListquery = new Parse.Query('PharmaciesList')
+                                        pharmListquery.equalTo("OrderId",order)
+                                        let queryResult = await pharmListquery.find();
+                                        for (n=0; n<queryResult.length; n++){
+                                            var pharmListinfo = queryResult[n]
+                                            ///If there is assigned pharmacy show name else nothing
+                                            if(pharmListinfo.get("OrderStatus")=='Under preparation'||pharmListinfo.get("OrderStatus")=='Ready for pick up'||pharmListinfo.get("OrderStatus")=='Collected'){
+                                                selectedPharmacyId = pharmListinfo.get("PharmacyId").id
+                                                pharmExist = true
+                                                let pharmacyquery = new Parse.Query('Pharmacist')
+                                                pharmacyquery.equalTo("objectId",selectedPharmacyId)
+                                                let Result = await pharmacyquery.find();
+                                                var pharmListinfo = Result[0]
+                                                selectedPharmacy = pharmListinfo.get("PharmacyName")
+                                            }
+                                            else if (!pharmExist){
+                                                selectedPharmacy = 'No pharmacy assigned.'
+                                            }
+                                        }    
+                                        document.getElementById('selectedPharmacy').innerHTML += "<td>"+selectedPharmacy+"</td>"                                   
+                                    }
+
+}, (error) => {
+  // The object was not retrieved successfully.
+
+}); 
+
+       
+}
+    
+displayOrderDetails(); 
+   
+
+//User log out
+async function doUserLogOut () {
+    try {
+        await Parse.User.logOut();
+        // To verify that current user is now empty, currentAsync can be used
+        const currentUser = await Parse.User.current();
+        if (currentUser === null) {
+            alert('Success! No user is logged in anymore!');
+        }
+        // Update state variable holding current user
+        getCurrentUser();
+        //return window.location.replace("log_in_page.html");
+    } catch (error) {
+        alert(`Error! ${error.message}`);
+        return false;
+    }    
+};
+    </script>
+
+
+</html>
