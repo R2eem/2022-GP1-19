@@ -8,6 +8,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
+import 'package:badges/badges.dart' as badges;
 
 class medDetailsPage extends StatefulWidget {
   //Get customer id and medication id as a parameter
@@ -20,6 +21,14 @@ class medDetailsPage extends StatefulWidget {
 
 class MedDetails extends State<medDetailsPage> {
   int _selectedIndex = 0;
+  int numOfItems = 0;
+
+  ///To change the badge value
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -395,8 +404,10 @@ class MedDetails extends State<medDetailsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
@@ -472,6 +483,22 @@ class MedDetails extends State<medDetailsPage> {
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
       return true;
+    }
+  }
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
     }
   }
 }

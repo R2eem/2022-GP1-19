@@ -7,6 +7,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'LoginPage.dart';
 import 'OrderDetails.dart';
 import 'Settings.dart';
+import 'package:badges/badges.dart' as badges;
 
 
 class OrdersPage extends StatefulWidget {
@@ -21,11 +22,14 @@ class Orders extends State<OrdersPage> {
   int _selectedIndex = 2;
   int orderNum = 1;
   bool currentOrders = true;
+  int numOfItems = 0;
 
   ///To check order status before displaying
+  ///To change the badge value
   @override
   void initState() {
     super.initState();
+    checkEmptiness();
     checkOrders();
   }
 
@@ -363,8 +367,8 @@ class Orders extends State<OrdersPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30
-                    ),
+                        iconSize: 30,
+                      ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -576,6 +580,23 @@ class Orders extends State<OrdersPage> {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
     }
   }
 

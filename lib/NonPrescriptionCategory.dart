@@ -8,6 +8,7 @@ import 'Cart.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'medDetails.dart';
+import 'package:badges/badges.dart' as badges;
 
 class NonPrescriptionCategory extends StatefulWidget {
   //Get customer id as a parameter
@@ -23,7 +24,14 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
   String searchString ='';
   String packageType ='';
   int _selectedTab = 0 ;
-  num counter = 71;
+  int numOfItems = 0;
+
+  ///To change the badge value
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +83,6 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                       Material(
                         elevation: 4,
                         shadowColor: Colors.grey,
-                        borderRadius: BorderRadius.circular(30),
                         child: TextField(
                           //Whenever value in text field changes set state
                         onChanged: (value) {
@@ -377,8 +384,10 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                       icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                        ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
@@ -409,6 +418,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryNonPresMedication.whereContains('LegalStatus', 'OTC');
     queryNonPresMedication.setLimit(200);
+    queryNonPresMedication.whereEqualTo('Deleted', false);
     queryNonPresMedication.orderByAscending('TradeName');
     queryNonPresMedication.whereStartsWith('TradeName', searchString);
     queryNonPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
@@ -458,6 +468,22 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
         ..set('Quantity', ++quantity);
       await incrementQuantity.save();
       return true;
+    }
+  }
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
     }
   }
 }

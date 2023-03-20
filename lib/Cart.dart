@@ -9,6 +9,8 @@ import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
+import 'package:badges/badges.dart' as badges;
+
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -30,6 +32,7 @@ class Cart extends State<CartPage> {
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
+  int numOfItems = 0;
 
   ///To change value of variable 'full'
   @override
@@ -360,6 +363,7 @@ class Cart extends State<CartPage> {
                                                                                                                                 setState(() {
                                                                                                                                   //Modify the counter
                                                                                                                                   if (counter > 1) {
+                                                                                                                                    numOfItems++;
                                                                                                                                     counter--;
                                                                                                                                   }
                                                                                                                                 });
@@ -384,6 +388,7 @@ class Cart extends State<CartPage> {
                                                                                                                                 //Send medication id. customer id and the counter after modification
                                                                                                                                 increment(medId, widget.customerId, counter! ,Publicprice);
                                                                                                                                 setState(() {
+                                                                                                                                  numOfItems++;
                                                                                                                                   counter++;
                                                                                                                                 });
                                                                                                                               },
@@ -535,7 +540,8 @@ class Cart extends State<CartPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -726,7 +732,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  ///Get cif cart empty or not
+  ///Get if cart empty or not
   Future<void> checkEmptiness() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
@@ -738,10 +744,12 @@ class Cart extends State<CartPage> {
     if (apiResponse.success && apiResponse.results != null) {
       //If query have objects then set true
       full = true;
+      numOfItems = apiResponse.count;
       setState(() {});
     } else {
       //If query have no object then set false
       full = false;
+      numOfItems = 0;
     }
   }
 

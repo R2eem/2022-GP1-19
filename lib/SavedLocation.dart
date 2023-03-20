@@ -9,6 +9,7 @@ import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Settings.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:badges/badges.dart' as badges;
 
 
 
@@ -25,6 +26,14 @@ class Locations extends State<SavedLocationPage> {
   bool LocationPageNotEmpty = false;
   int NoOfLocation = 0;
   String loc ="";
+  int numOfItems = 0;
+
+  ///To change the badge value
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
 
 
 
@@ -311,8 +320,10 @@ class Locations extends State<SavedLocationPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                  ),
                     GButton(
                         icon: Icons.receipt_long,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
@@ -388,5 +399,21 @@ class Locations extends State<SavedLocationPage> {
         currentPostion['latitude'], currentPostion['longitude']);
     Placemark place = placemarks[0];
     return place;
+  }
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
+    }
   }
 }

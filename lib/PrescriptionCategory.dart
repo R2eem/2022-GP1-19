@@ -8,6 +8,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'Cart.dart';
 import 'Settings.dart';
 import 'medDetails.dart';
+import 'package:badges/badges.dart' as badges;
+
 
 class PrescriptionCategory extends StatefulWidget {
   //Get customer id as a parameter
@@ -24,6 +26,15 @@ class Prescription extends State<PrescriptionCategory>
   String packageType = '';
   int _selectedTab = 0;
   bool noMed = true;
+  int numOfItems = 0;
+
+  ///To change the badge value
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -87,7 +98,6 @@ class Prescription extends State<PrescriptionCategory>
                           Material(
                               elevation: 4,
                               shadowColor: Colors.grey,
-                              borderRadius: BorderRadius.circular(30),
                               child: TextField(
                                 //Whenever value in text field changes set state
                                 onChanged: (value) {
@@ -477,7 +487,8 @@ class Prescription extends State<PrescriptionCategory>
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        iconSize: 30,
+                     ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -524,6 +535,7 @@ class Prescription extends State<PrescriptionCategory>
         QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
     queryPresMedication.setLimit(200);
+    queryPresMedication.whereEqualTo('Deleted', false);
     queryPresMedication.orderByAscending('TradeName');
     queryPresMedication.whereStartsWith('TradeName', searchString);
     queryPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
@@ -572,6 +584,22 @@ class Prescription extends State<PrescriptionCategory>
       var incrementQuantity = medInCart..set('Quantity', ++quantity);
       await incrementQuantity.save();
       return true;
+    }
+  }
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
     }
   }
 }

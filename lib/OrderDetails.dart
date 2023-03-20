@@ -11,6 +11,7 @@ import 'Orders.dart';
 import 'PharmaciesList.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
+import 'package:badges/badges.dart' as badges;
 
 
 class OrderDetailsPage extends StatefulWidget {
@@ -30,6 +31,14 @@ class OrderDetails extends State<OrderDetailsPage> {
   bool acceptedOrDeclined = false;
   ///Check if the order is declined before time passed
   bool pharmacyDeclined = false;
+  int numOfItems = 0;
+
+  ///To change the badge value
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -576,11 +585,11 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                             text: TextSpan(
                                                                                                               children: [
                                                                                                                 WidgetSpan(
-                                                                                                                  child: Icon(Icons.person),
+                                                                                                                  child: Icon(Icons.person, size: 20,),
                                                                                                                 ),
                                                                                                                 TextSpan(
                                                                                                                   text: " $firstname $lastname, $phonenumber",
-                                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
                                                                                                                 ),
                                                                                                               ],
                                                                                                             ),
@@ -589,11 +598,11 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                             text: TextSpan(
                                                                                                               children: [
                                                                                                                 WidgetSpan(
-                                                                                                                  child: Icon(Icons.location_on),
+                                                                                                                  child: Icon(Icons.location_on,  size: 20,),
                                                                                                                 ),
                                                                                                                 TextSpan(
                                                                                                                   text: " $street, $subLocality, $locality, $country",
-                                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
                                                                                                                 ),
                                                                                                               ],
                                                                                                             ),
@@ -1095,7 +1104,8 @@ class OrderDetails extends State<OrderDetailsPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -1356,5 +1366,21 @@ class OrderDetails extends State<OrderDetailsPage> {
       return true;
     }
     return false;
+  }
+  ///Get if number of items in cart
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      numOfItems = 0;
+    }
   }
 }

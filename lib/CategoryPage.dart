@@ -11,6 +11,8 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:native_notify/native_notify.dart';
+import 'package:badges/badges.dart' as badges;
+
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -197,7 +199,6 @@ class Category extends State<CategoryPage> {
                         Material(
                             elevation: 4,
                             shadowColor: Colors.grey,
-                            borderRadius: BorderRadius.circular(30),
                             child: TextField(
                               //Whenever value in text field changes set state
                               onChanged: (value) {
@@ -581,6 +582,7 @@ class Category extends State<CategoryPage> {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryMedication.setLimit(300);
+    queryMedication.whereEqualTo('Deleted', false);
     queryMedication.orderByAscending('TradeName');
     queryMedication.whereStartsWith('TradeName', searchString);
     final ParseResponse apiResponse = await queryMedication.query();
