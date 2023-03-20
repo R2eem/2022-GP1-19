@@ -98,6 +98,7 @@ async function DisplayMedications() {
 
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
+    query.equalTo("Deleted", false);
     query.limit(400);
     query.ascending("TradeName");
     const results = await query.find();
@@ -151,6 +152,7 @@ changeStyle('btn1');
 
     //retrieve the list of medications
     const query = new Parse.Query("Medications");
+    query.equalTo("Deleted", false);
     query.limit(400);
     query.ascending("TradeName");
     const results = await query.find();
@@ -233,6 +235,7 @@ async function searchMedication(){
     var searchString = document.getElementById('search').value;
     searchString = searchString.toUpperCase();
     const query = new Parse.Query("Medications");
+    query.equalTo("Deleted", false);
     query.limit(400);
     query.ascending("TradeName");
     const results = await query.find();
@@ -271,7 +274,7 @@ if (document.getElementById('btn2').style.backgroundColor == 'rgb(204, 148, 203)
     for(let i=0; i<results.length;i++){    
     var medication = results[i];   
     if (medication.get("LegalStatus") == 'Prescription' ){
-    if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
+    if (((medication.get("TradeName")).toUpperCase()).startsWith(searchString) || ((medication.get("ScientificName")).toUpperCase()).startsWith(searchString)){ 
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
 
@@ -300,7 +303,7 @@ if (document.getElementById('btn3').style.backgroundColor == 'rgb(204, 148, 203)
     var medication = results[i];   
 
     if (medication.get("LegalStatus") == 'OTC' ){
-    if (medication.get("TradeName").startsWith(searchString) || medication.get("ScientificName").startsWith(searchString)){  
+    if (((medication.get("TradeName")).toUpperCase()).startsWith(searchString) || ((medication.get("ScientificName")).toUpperCase()).startsWith(searchString)){ 
     var MedId = medication.id;
     var MedName = medication.get("TradeName");
     document.getElementById('MedTableBody').innerHTML +='<tr id='+i+'></tr>';
@@ -335,15 +338,27 @@ if(count == 0) {
 //delete medication
 async function deleteMedication(MedId,MedName) {
 const query = new Parse.Query("Medications");
+query.equalTo("Deleted", false);
      
 let text = "Are you sure you want to delete "+MedName+ " medication?";
 
 if(confirm(text)==true){
         try{
-            const medication = await query.get(MedId);
-            //destroy the object
-            let result = await medication.destroy();
+            const medication = await query.get(MedId);           
+            medication.set("Deleted", true);
+            //Save 
+            let result = await medication.save();  
             alert(MedName+ " Medication Deleted");
+
+            //Delete the medication from cart if is there
+            query2 = new Parse.Query("Cart");
+            const results2 = await query2.find();
+            for(let i=0; i<results2.length;i++){ 
+             if(results2[i].get("medication").id == MedId){
+             const CartMedication = await query2.get(results2[i].id); 
+             let result2 = await CartMedication.destroy();
+                }
+             }
             location.reload();
             
         }catch(error){
@@ -368,9 +383,13 @@ if(confirm(text)==true){
                  </div>
         </div>
         <div class="sidebar">
-            <a href="index.html">
+            <a href="index.html" >
                 <i class="fa fa-th-large" aria-hidden="true"></i>
                 <h3>Dashboard</h3>
+            </a>
+            <a href="Medications.html" class="active">
+                <i class="fa fa-medkit" aria-hidden="true"></i>
+                <h3>Medications</h3>
             </a>
             <a href="ViewCustomers.html">
                 <i class="fa fa-users" aria-hidden="true"></i>
@@ -380,27 +399,19 @@ if(confirm(text)==true){
                 <i class="fa fa-plus-square" aria-hidden="true"></i>
                 <h3>Pharmacies</h3>
             </a>
-            <a href="Blocked_pharmacies_page.html">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Blocked Pharmacies</h3>
+            <a href="customerOrders.html" >
+                <i class="fa fa-list-alt" aria-hidden="true"></i>
+                <h3>Orders</h3>
             </a>
             <a href="Pharmacies_Join_Request_Page.html">
                 <i class="fa fa-envelope" aria-hidden="true"></i>
                 <h3>Join requests</h3>
             </a>
-            <a href="Medications.html" class="active">
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
             <a href="AddMedication.html">
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <h3>Add Medications</h3>
             </a>
-            <a href="customerOrders.html"  >
-                <i class="fa fa-list-alt" aria-hidden="true"></i>
-                <h3>Orders</h3>
-            </a>
-            <a href="" onclick="doUserLogOut()">
+            <a href="" onclick="doUserLogOut(); return false">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <h3>Log out</h3>
             </a>
@@ -475,22 +486,16 @@ document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
 }
 
 //User log out
-async function doUserLogOut () {
-    try {
-        await Parse.User.logOut();
-        // To verify that current user is now empty, currentAsync can be used
-        const currentUser = await Parse.User.current();
-        if (currentUser === null) {
-            alert('Success! No user is logged in anymore!');
-        }
-        // Update state variable holding current user
-        getCurrentUser();
-        //return window.location.replace("log_in_page.html");
-    } catch (error) {
-        alert(`Error! ${error.message}`);
-        return false;
-    }    
-};
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
 
 </script>
 
