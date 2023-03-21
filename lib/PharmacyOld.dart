@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:untitled/PharHomePage.dart';
+import 'PharmacyOrdersDetails.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyLogin.dart';
-import 'PharmacyOrdereDetails.dart';
 
 
 class PharmacyOldO extends StatefulWidget {
@@ -20,6 +21,7 @@ class PharmacyOld extends State<PharmacyOldO>
 
   String filter = '';
   int _selectedTab = 0;
+  bool noOrder = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +32,14 @@ class PharmacyOld extends State<PharmacyOldO>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
         child: Stack(children: [
           //Header
           Container(
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
             child: SafeArea(
               child: Column(
@@ -48,11 +51,11 @@ class PharmacyOld extends State<PharmacyOldO>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                            child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
                               iconSize: 40,
                               color: Colors.white,
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharHomePage()));
                               }, icon: Icon(Icons.keyboard_arrow_left),),
                           ),
 
@@ -98,29 +101,37 @@ class PharmacyOld extends State<PharmacyOldO>
                     SizedBox(
                       height: 20,
                     ),
-                    //Filter tabs
+                    ///Filter tabs
                     TabBar(
                         onTap: (index) {
                           //
                           setState(
                                 () {
                               _selectedTab = index;
-                              if (_selectedTab == 0)
+                              if (_selectedTab == 0){
                                 filter = '';
-                              if (_selectedTab == 1)
+                                noOrder = true;
+                              }
+                              if (_selectedTab == 1){
                                 filter = 'Cancelled';
-                              if (_selectedTab == 2)
+                                noOrder = true;
+                              }
+                              if (_selectedTab == 2){
                                 filter = 'Collected';
-                              if (_selectedTab == 3)
+                                noOrder = true;
+                              }
+                              if (_selectedTab == 3){
                                 filter = 'Declined';
+                                noOrder = true;
+                              }
                             },
                           );
                         },
                         isScrollable:
-                        true, //if the tabs are a lot we can scroll them
+                        true, //if tabs are a lot we can scroll them
                         controller: _tabController,
                         labelColor: Colors
-                            .grey[900], // the tab is clicked on now color
+                            .grey[900], //color of active tab
                         unselectedLabelColor: Colors.grey,
                         tabs: [
                           Tab(
@@ -165,7 +176,7 @@ class PharmacyOld extends State<PharmacyOldO>
                             child: Column(children: [
                               Expanded(
                                   child: FutureBuilder<List<ParseObject>>(
-                                      future: GetNewOrders(widget.pharmacyId), //Will change LocationNotEmpty value
+                                      future: GetNewOrders(widget.pharmacyId),
                                       builder: (context, snapshot) {
                                         switch (snapshot.connectionState) {
                                           case ConnectionState.none:
@@ -189,16 +200,19 @@ class PharmacyOld extends State<PharmacyOldO>
                                               );
                                             } else {
                                               return ListView.builder(
+                                                  physics: ClampingScrollPhysics(),
                                                   scrollDirection: Axis.vertical,
                                                   itemCount: snapshot.data!.length,
                                                   itemBuilder: (context, index) {
                                                     final newOrder = snapshot.data![index];
                                                     final orderId = newOrder.get('OrderId').objectId;
                                                     final OrderStatus = newOrder.get('OrderStatus')!;
-                                                    final distance = newOrder.get('Distance')!;
                                                     final orderCreatedDate = newOrder.get("createdAt").toString();
                                                     final orderdate = orderCreatedDate.substring(0,11);
                                                     final orderTime = orderCreatedDate.substring(10,19);
+                                                    if(OrderStatus.contains(filter)){
+                                                      noOrder = false;
+                                                    }
                                                     return  (OrderStatus.contains(filter))?
                                                     GestureDetector(
                                                         onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharmacyOrdersDetailsPage(orderId, OrderStatus, widget.pharmacyId))),
@@ -218,7 +232,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                                       mainAxisSize: MainAxisSize.max,
                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                                       children: <Widget>[
-                                                                                        Text('New order',
+                                                                                        Text('Old order',
                                                                                           maxLines: 2,
                                                                                           softWrap: true,
                                                                                           style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700 ,
@@ -273,7 +287,21 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                       ),
                                                                     ),
                                                                   ],
-                                                                ))):Container();
+                                                                )))
+                                                    ///When its last iteration of displaying orders and no order matched filter yet display this message
+                                                        :(noOrder && index == snapshot.data!.length-1)?
+                                                    Center(
+                                                        child:Column(
+                                                            children:[
+                                                              Icon(Icons.pending_actions_outlined,color: Colors.black45,size: 30,),
+                                                              Text("No $filter orders yet.",style: TextStyle(
+                                                                  fontFamily: "Lato",
+                                                                  fontSize: 18,
+                                                                  color: Colors.black45,
+                                                                  fontWeight: FontWeight.w700),)
+                                                            ]
+                                                        )
+                                                    ):Container();
                                                   } );
                                             } }
                                       })
@@ -288,7 +316,7 @@ class PharmacyOld extends State<PharmacyOldO>
   }
 
 
-  //Get pharmacy new orders
+  ///Get pharmacy new orders
   Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
     final QueryBuilder<ParseObject> queryOldOrders1 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -310,15 +338,9 @@ class PharmacyOld extends State<PharmacyOldO>
     queryOldOrders3.whereEqualTo('OrderStatus', 'Declined');
 
 
-    final QueryBuilder<ParseObject> queryOldOrders4 =
-    QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryOldOrders4.whereEqualTo('PharmacyId',
-        (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
-    queryOldOrders4.whereEqualTo('OrderStatus', '');
-
     QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
       ParseObject("PharmaciesList"),
-      [queryOldOrders1, queryOldOrders2, queryOldOrders3, queryOldOrders4],
+      [queryOldOrders1, queryOldOrders2, queryOldOrders3],
     );
     final ParseResponse apiResponse = await mainQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
@@ -349,8 +371,6 @@ class PharmacyOld extends State<PharmacyOldO>
     );
   }
 
-
-
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();
@@ -362,7 +382,4 @@ class PharmacyOld extends State<PharmacyOldO>
       showError(response.error!.message);
     }
   }
-
-
-
 }

@@ -1,15 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/PharmacyNew.dart';
-import 'package:untitled/main.dart';
+import 'package:untitled/PharmacySettings.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyOld.dart';
-import 'common/theme_helper.dart';
-import 'package:untitled/PharmacySignUp.dart';
+import 'PharmacyLogin.dart';
 
 
 class PharHomePage extends StatefulWidget {
@@ -19,7 +18,7 @@ class PharHomePage extends StatefulWidget {
 }
 
 class PharmacyHome extends State<PharHomePage> {
-
+  int _selectedIndex = 0;
   var pharmacyId;
 
   @override
@@ -34,7 +33,7 @@ class PharmacyHome extends State<PharHomePage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
                 child: SafeArea(
                     child: Column(
@@ -42,6 +41,8 @@ class PharmacyHome extends State<PharHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
                                 Container(
                                   margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -52,9 +53,43 @@ class PharmacyHome extends State<PharHomePage> {
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                                  child: Text("", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                                ),]),
+                                    child:  IconButton(
+                                      onPressed: (){
+                                        Widget cancelButton = TextButton(
+                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                          onPressed:  () {
+                                            doUserLogout();
+                                          },
+                                        );
+                                        Widget continueButton = TextButton(
+                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                          onPressed:  () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        );
+                                        // set up the AlertDialog
+                                        AlertDialog alert = AlertDialog(
+                                          title: Text("Are you sure you want to log out?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                                          content: Text(""),
+                                          actions: [
+                                            cancelButton,
+                                            continueButton,
+                                          ],
+                                        );
+                                        // show the dialog
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return alert;
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.logout_outlined ,color: Colors.white, size: 30,
+                                      ),
+                                    )
+                                ),
+                              ]),
                           SizedBox(height: 35,),
                           //Get user from user table
                           FutureBuilder<ParseUser?>(
@@ -142,7 +177,7 @@ class PharmacyHome extends State<PharHomePage> {
                                 }
                               }),
                           SizedBox(height: 35,),
-                          //Categories navigation buttons
+                          ///Categories navigation buttons
                           Center(child: Column(
                             children: [
                               GestureDetector(
@@ -173,7 +208,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   height: 150,
                                                 ),
                                                 Text(
-                                                  "New orders",
+                                                  "Active orders",
                                                   style: TextStyle(
                                                     fontFamily: "Lato",
                                                     color: HexColor(
@@ -215,7 +250,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   width: 150,
                                                   height: 150,),
                                                 Text(
-                                                  "Old orders",
+                                                  "Inactive orders",
                                                   style: TextStyle(
                                                     fontFamily: "Lato",
                                                     color: HexColor(
@@ -234,15 +269,41 @@ class PharmacyHome extends State<PharHomePage> {
                           )]))),
           ])),
       //Bottom navigation bar
+        bottomNavigationBar: Container(
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+                    }
+                  }),
+                )))
     );}
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Pharmacist table
+  ///Function to get current user from Pharmacist table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
@@ -252,6 +313,38 @@ class PharmacyHome extends State<PharHomePage> {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
+    }
+  }
+
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PharmacyLogin()));
+      });
+    } else {
+      showError(response.error!.message);
     }
   }
 }

@@ -3,23 +3,24 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/SavedLocation.dart';
 import 'AccountPage.dart';
-import 'Cart.dart';
-import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'Orders.dart';
+import 'PharHomePage.dart';
+import 'PharmacyAccountPage.dart';
 import 'main.dart';
 
 
-class SettingsPage extends StatefulWidget {
+class PharmacySettingsPage extends StatefulWidget {
   //Get customer id as a parameter
-  final String customerId;
-  const SettingsPage(this.customerId);
+  final String pharmacyId;
+  const PharmacySettingsPage(this.pharmacyId);
   @override
   Settings createState() => Settings();
 }
 
-class Settings extends State<SettingsPage> {
-  int _selectedIndex = 3;
+class Settings extends State<PharmacySettingsPage> {
+  int _selectedIndex = 1;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class Settings extends State<SettingsPage> {
                                 height: 80,
                               ),
                             ),
-                            ///Controls Cart page title
+                            ///Controls settings page title
                             Container(
                               margin: EdgeInsets.fromLTRB(0, 10,60, 0),
                               child: Text(
@@ -117,24 +118,14 @@ class Settings extends State<SettingsPage> {
                               //My account
                               ListTile(
                                 leading:Icon(Icons.person , color: Colors.purple.shade200, size: 30,) ,
-                                title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
+                                title: Text("Pharmacy Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
                                 trailing: Icon(Icons.keyboard_arrow_right, size: 30,),
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyAccountPage()));
                                 },
                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
                               ),
                               _buildDriver(),//Design
-                              //My locations
-                              ListTile(
-                                leading:Icon(Icons.location_on , color: Colors.purple.shade200, size: 30,) ,
-                                title: Text("My Locations",style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
-                                trailing: Icon(Icons.keyboard_arrow_right, size: 30),
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SavedLocationPage(widget.customerId)));
-                                },
-                                contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
-                              ),
 
                             ],
                           ),
@@ -160,12 +151,6 @@ class Settings extends State<SettingsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                    GButton(
                         icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                   ],
@@ -173,13 +158,9 @@ class Settings extends State<SettingsPage> {
                   onTabChange: (index) => setState(() {
                     _selectedIndex = index;
                     if (_selectedIndex == 0) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
-                    } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
-                    } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(widget.pharmacyId)));
                     }
                   }),
                 )))

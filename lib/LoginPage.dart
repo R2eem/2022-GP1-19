@@ -38,7 +38,7 @@ class Login extends State<LoginPage> {
                     height: _headerHeight,
                     child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
                   ),
-                  //Controls app logo and title
+                  ///App logo and title
                   SafeArea(
                       child: Column(
                           children: [
@@ -68,10 +68,9 @@ class Login extends State<LoginPage> {
                                     //Form
                                     Form(
                                       key: _formKey,
-                                      //child: SingleChildScrollView(
                                       child: Column(
                                         children: <Widget>[
-                                          //email
+                                          ///email
                                           Container(
                                             child:TextFormField(
                                               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -90,7 +89,7 @@ class Login extends State<LoginPage> {
                                           SizedBox(
                                             height: 30,
                                           ),
-                                          //password
+                                          ///password
                                           Container(
                                             child:TextFormField(
                                               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -134,7 +133,7 @@ class Login extends State<LoginPage> {
                                           SizedBox(
                                             height: 15,
                                           ),
-                                          //Navigation to forgot password page
+                                          ///Navigation to forgot password page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(10,0,10,20),
                                             alignment: Alignment.topRight,
@@ -147,7 +146,7 @@ class Login extends State<LoginPage> {
                                             ),
                                           ),
 
-                                          //Login button
+                                          ///Login button
                                           Container(
                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                             child: ElevatedButton(
@@ -165,10 +164,9 @@ class Login extends State<LoginPage> {
                                                 }
                                             ),
                                           ),
-                                          //Navigation to signup page
+                                          ///Navigation to signup page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(10,20,10,20),
-                                            //child: Text('Don\'t have an account? Create'),
                                             child: Text.rich(
                                                 TextSpan(
                                                     children: [
@@ -194,7 +192,7 @@ class Login extends State<LoginPage> {
         ));
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if(errorMessage.compareTo('Invalid username/password.')==0){
       errorMessage = 'Invalid email or password. Please try again.';
@@ -211,6 +209,9 @@ class Login extends State<LoginPage> {
             new TextButton(
               child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
+                if(errorMessage.compareTo('Account blocked, contact Tiryaq admin.')==0){
+                  doUserLogout();
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -220,20 +221,82 @@ class Login extends State<LoginPage> {
     );
   }
 
-  //User log in function
+  ///User log in function
   void doUserLogin() async {
+    var object;
+    var id;
+    var type;
+    bool block = false;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    final user = ParseUser(email, password, null);
+    QueryBuilder<ParseObject> queryCustomer1 =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryCustomer1.whereEqualTo('email', email);
+    final ParseResponse apiResponse1 = await queryCustomer1.query();
 
-    var response = await user.login();
+    ///If user exist search for type otherwise invalid inputs
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        object = o as ParseObject;
+        id = object.get('objectId');
+      }
+    }
+    ///If account not signed up in Tiryaq
+    else {
+      showError('Invalid username/password.');
+    }
 
+    //If user exist in Customer table then log in successfully
+    if (id != null) {
+      QueryBuilder<ParseObject> queryCustomer2 =
+      QueryBuilder<ParseObject>(ParseObject('Customer'));
+      queryCustomer2.whereEqualTo('user', (ParseUser.forQuery()
+        ..objectId = id).toPointer());
+      final ParseResponse apiResponse2 = await queryCustomer2.query();
+
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          type = 'Customer';
+          block = o.get('Block');
+        }
+      }
+      if (type == 'Customer') {
+        final user = ParseUser(email, password, null);
+
+        var response = await user.login();
+
+        ///If credentials correct and not blocked enter account
+        if (response.success && !block) {
+          setState(() {
+            isLoggedIn = true;
+          });
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CategoryPage()));
+
+          ///If credentials correct and blocked don't enter account
+        } else if(response.success && block){
+          showError('Account blocked, contact Tiryaq admin.');
+        }
+        ///If credentials not correct and blocked don't enter account
+        else{
+          showError(response.error!.message);
+        }
+      }
+      ///Account not customer
+      else {
+        showError('Invalid username/password.');
+      }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
     if (response.success) {
       setState(() {
-        isLoggedIn = true;
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
     } else {
       showError(response.error!.message);
     }

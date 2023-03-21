@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'CategoryPage.dart';
-import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
-import 'Settings.dart';
 
 
 class PharmacyListPage extends StatefulWidget {
@@ -33,6 +28,7 @@ class PharmacyList extends State<PharmacyListPage> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Stack(children: [
               //Header
               Container(
@@ -102,6 +98,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                           );
                                         } else {
                                           return ListView.builder(
+                                              physics: ClampingScrollPhysics(),
                                               shrinkWrap: true,
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data!.length,
@@ -118,17 +115,19 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 var note = null;
                                                 var time = null;
                                                 var medicationListStatus = null;
-                                                if (OrderStatus2 ==
-                                                    'Accepted' ||
-                                                    OrderStatus2 ==
-                                                        'Declined') {
-                                                  note =
-                                                  pharmDetails.get('Note')!;
-                                                  time =
-                                                  pharmDetails.get('Time')!;
-                                                  medicationListStatus =
-                                                  pharmDetails.get(
-                                                      'MedicationsList')!;
+                                                if (OrderStatus2 == 'Accepted') {
+                                                  note = pharmDetails.get('Note')!;
+                                                  time = pharmDetails.get('Time')!;
+                                                  medicationListStatus = pharmDetails.get('MedicationsList')!;
+                                                  if(note ==''){
+                                                    note = 'No note';
+                                                  }
+                                                }
+                                                if (OrderStatus2 == 'Declined') {
+                                                  note = pharmDetails.get('Note')!;
+                                                  if(note ==''){
+                                                    note = 'No note';
+                                                  }
                                                 }
                                                 return FutureBuilder<
                                                     List<ParseObject>>(
@@ -166,6 +165,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                           } else {
                                                             return ListView
                                                                 .builder(
+                                                                physics: ClampingScrollPhysics(),
                                                                 shrinkWrap: true,
                                                                 scrollDirection: Axis
                                                                     .vertical,
@@ -189,11 +189,11 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                       ParseGeoPoint>(
                                                                       'Location')!;
                                                                   if (OrderStatus2 ==
-                                                                      'Accept/Decline') {
+                                                                      'New') {
                                                                     OrderStatus2 =
                                                                     'Under processing';
                                                                   }
-                                                                  return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined' || OrderStatus2 == 'Under preparation' || OrderStatus2 == 'Ready for pick up')
+                                                                  return (OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
                                                                       ? Card(
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment
@@ -267,6 +267,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               else {
                                                                                                 return ListView
                                                                                                     .builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis
                                                                                                         .vertical,
@@ -298,22 +299,20 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               }
                                                                                           }
                                                                                         }),
-                                                                                    Text(
-                                                                                      '$OrderStatus2',
-                                                                                      style: TextStyle(
-                                                                                          fontFamily: "Lato",
-                                                                                          fontSize: 15,
-                                                                                          color: Colors
-                                                                                              .black,
-                                                                                          fontWeight: FontWeight
-                                                                                              .w500),),
-                                                                                    (OrderStatus2 ==
-                                                                                        'Accepted')
+                                                                                    (OrderStatus2 == 'Accepted')
                                                                                         ?
                                                                                     Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment
-                                                                                            .start,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
+                                                                                          Text(
+                                                                                            '$OrderStatus2',
+                                                                                            style: TextStyle(
+                                                                                                fontFamily: "Lato",
+                                                                                                fontSize: 15,
+                                                                                                color: Colors
+                                                                                                    .green,
+                                                                                                fontWeight: FontWeight
+                                                                                                    .w700),),
                                                                                           Text(
                                                                                             'Pharmacist note: $note',
                                                                                             style: TextStyle(
@@ -324,7 +323,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                 fontWeight: FontWeight
                                                                                                     .w500),),
                                                                                           Text(
-                                                                                            'Order may take $time hours to be ready.',
+                                                                                            'Order expected to be ready at $time.',
                                                                                             style: TextStyle(
                                                                                                 fontFamily: "Lato",
                                                                                                 fontSize: 15,
@@ -361,6 +360,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                         );
                                                                                                       } else {
                                                                                                         return  ListView.builder(
+                                                                                                            physics: ClampingScrollPhysics(),
                                                                                                             shrinkWrap: true,
                                                                                                             scrollDirection: Axis.vertical,
                                                                                                             itemCount: snapshot.data!.length,
@@ -370,6 +370,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                               final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
                                                                                                               final Strength = medDetails.get<num>('Strength')!;
                                                                                                               final StrengthUnit = medDetails.get<String>('StrengthUnit')!;
+                                                                                                              final Publicprice = medDetails.get('Publicprice')!;
 
                                                                                                               return Card(
                                                                                                                   child: Column(
@@ -387,14 +388,14 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                 Row(
                                                                                                                                     children:[
                                                                                                                                       Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                      Text('$medications ' ,style: TextStyle(
+                                                                                                                                      Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
                                                                                                                                           fontFamily: "Lato",
                                                                                                                                           fontSize: 17,
                                                                                                                                           color: Colors.black,
                                                                                                                                           fontWeight: FontWeight.w600),
                                                                                                                                         maxLines: 2,),
                                                                                                                                     ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
@@ -415,14 +416,14 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                 Row(
                                                                                                                                     children:[
                                                                                                                                       Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
-                                                                                                                                      Text('$medications ' ,style: TextStyle(
+                                                                                                                                      Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
                                                                                                                                           fontFamily: "Lato",
                                                                                                                                           fontSize: 17,
                                                                                                                                           color: Colors.black,
                                                                                                                                           fontWeight: FontWeight.w600),
                                                                                                                                         maxLines: 2,),
                                                                                                                                     ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
+                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
@@ -560,7 +561,17 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                         'Declined')
                                                                                         ?
                                                                                     Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
+                                                                                          Text(
+                                                                                            '$OrderStatus2',
+                                                                                            style: TextStyle(
+                                                                                                fontFamily: "Lato",
+                                                                                                fontSize: 15,
+                                                                                                color: Colors
+                                                                                                    .red,
+                                                                                                fontWeight: FontWeight
+                                                                                                    .w700),),
                                                                                           Text(
                                                                                             'Pharmacist note: $note',
                                                                                             style: TextStyle(
@@ -600,6 +611,7 @@ class PharmacyList extends State<PharmacyListPage> {
         ParseObject('PharmaciesList'));
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
       ..objectId = widget.orderId).toPointer());
+    parseQuery.orderByAscending('Distance');
 
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
@@ -633,14 +645,7 @@ class PharmacyList extends State<PharmacyListPage> {
   }
 
   Future<bool> confirmOrder(orderId, pharmacyId) async {
-    NativeNotify.sendIndieNotification(
-        2338,
-        'dX0tKYd2XD2DOtsUirIumj',
-        pharmacyId,
-        'Tiryaq',
-        'Order $orderId is confirmed',
-        '',
-        '');
+    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', pharmacyId, 'Tiryaq', 'Order $orderId is confirmed', '', '');
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')
@@ -651,13 +656,11 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy
-            .get('PharmacyId')
-            .objectId == pharmacyId) {
+        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Under preparation');
           final ParseResponse parseResponse = await update.save();
         }
-        else {
+        else if(pharmacy.get('OrderStatus') != 'Declined'){
           var update = pharmacy..set('OrderStatus', 'Cancelled');
           final ParseResponse parseResponse = await update.save();
         }
@@ -668,7 +671,7 @@ class PharmacyList extends State<PharmacyListPage> {
 
       final apiResponse2 = await parseQuery2.query();
 
-      //change order status for pharmacy
+      //change order status in orders table
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           var object = o as ParseObject;
@@ -690,6 +693,7 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     }
+
     return [];
   }
 }

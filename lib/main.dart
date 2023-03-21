@@ -6,7 +6,6 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyLogin.dart';
 import 'common/theme_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:native_notify/native_notify.dart';
 
 
@@ -58,7 +57,7 @@ class HomePage extends StatelessWidget {
                   height: _headerHeight,
                   child: HeaderWidget(_headerHeight, false, Icons.login_rounded),
                 ),
-                //Controls page logo and title
+                ///Page logo and title
                 SafeArea(
                   child: Container(
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -74,7 +73,7 @@ class HomePage extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(fontFamily: 'Lato',fontSize: 25, fontWeight: FontWeight.bold),),
                           SizedBox(height: 50,),
-                          //Customer button
+                          ///Customer button
                           Container(
                             decoration: ThemeHelper().buttonBoxDecoration(context),
                             child: ElevatedButton(
@@ -89,7 +88,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 35,),
-                          //Pharmacy button
+                          ///Pharmacy button
                           Container(
                             decoration: ThemeHelper().buttonBoxDecoration(context),
                             child: ElevatedButton(
