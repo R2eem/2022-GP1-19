@@ -46,6 +46,7 @@ dependencies:
   hexcolor: ^2.0.4
   badges: ^3.0.2
   flutter_countdown_timer: ^4.1.0
+  flutter_image_slideshow: any
 
 dev_dependencies:
   flutter_test:

@@ -91,9 +91,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             });
                           },
                           style:
-                          TextStyle(color: Colors.grey, fontSize: 19),
+                          TextStyle(color: Colors.grey, fontSize: 15),
                           decoration: InputDecoration(
-                            filled: true,
+                            filled: false,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30),

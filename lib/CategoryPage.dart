@@ -12,6 +12,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 
 class CategoryPage extends StatefulWidget {
@@ -207,9 +208,9 @@ class Category extends State<CategoryPage> {
                                 });
                               },
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 19),
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                               decoration: InputDecoration(
-                                filled: true,
+                                filled: false,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -220,6 +221,44 @@ class Category extends State<CategoryPage> {
                                 prefixIconColor: Colors.pink[100],
                               ),
                             )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        ImageSlideshow(
+                          // Width of the [ImageSlideshow].
+                          width: double.infinity,
+                          // Height of the [ImageSlideshow].
+                          height: 150,
+                          // The page to show when first creating the [ImageSlideshow].
+                          initialPage: 0,
+                          // The color to paint the indicator.
+                          indicatorColor: Colors.purple,
+                          // The color to paint behind th indicator.
+                          indicatorBackgroundColor: Colors.grey,
+                          // The widgets to display in the [ImageSlideshow].
+                          children: [
+                            Image.asset(
+                              'assets/logo.png',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/prescription.jpeg',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/medicationnono.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                          // Called whenever the page in the center of the viewport changes.
+                          onPageChanged: (value) {
+                            print('Page changed: $value');
+                          },
+                          // Auto scroll interval.
+                          autoPlayInterval: 3000,
+                          // Loops back to first slide.
+                          isLoop: true,
+                        ),
                         SizedBox(
                           height: 30,
                         ),
@@ -391,7 +430,7 @@ class Category extends State<CategoryPage> {
                                                 maxCrossAxisExtent: 300,
                                                 childAspectRatio: 1/1.8,),
                                             padding: EdgeInsets.only(
-                                                top: 10.0, bottom: 20.0),
+                                                top: 10.0, bottom: 70.0),
                                             scrollDirection: Axis.vertical,
                                             itemCount: snapshot.data!.length,
                                             itemBuilder: (context, index) {
@@ -526,9 +565,6 @@ class Category extends State<CategoryPage> {
                                       }
                                   }
                                 })),
-                        SizedBox(
-                          height: 80,
-                        )
                       ]),
                     ))
               ]))),

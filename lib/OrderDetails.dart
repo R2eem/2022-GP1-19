@@ -20,8 +20,8 @@ class OrderDetailsPage extends StatefulWidget {
   final String customerId;
   final String orderId;
   final bool currentOrder;
-  final DateTime dateForTimer;
-  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder, this.dateForTimer);
+  final _countdownTime;
+  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder, this._countdownTime);
   @override
   OrderDetails createState() => OrderDetails();
 }
@@ -34,18 +34,13 @@ class OrderDetails extends State<OrderDetailsPage> {
   ///Check if the order is declined before time passed
   bool pharmacyDeclined = false;
   int numOfItems = 0;
-  var _countdownTime;
-  ///To change the badge value
-  @override
-  void initState() {
-    super.initState();
-    checkEmptiness();
-  }
+  DateTime dateForTimer = DateTime.now();
+  var newCountDown = 0;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    _countdownTime = widget.dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
+    //_countdownTime = dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
     return RefreshIndicator(
         displacement: 150,
         backgroundColor: Colors.white,
@@ -53,10 +48,59 @@ class OrderDetails extends State<OrderDetailsPage> {
         strokeWidth: 3,
         triggerMode: RefreshIndicatorTriggerMode.onEdge,
         onRefresh: () async {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => super.widget));
+
+          ///Refresh timer when refreshing the page
+          Future<void> timer(orderId) async {
+            var orderCreatedAt;
+            var accepted = false;
+            var extraTime = 0;
+
+            //Query order details
+            final QueryBuilder<ParseObject> order =
+            QueryBuilder<ParseObject>(ParseObject('Orders'));
+            order.whereEqualTo('objectId', orderId);
+
+            final apiResponse = await order.query();
+
+            //Check pharmacy list for the order
+            if (apiResponse.success && apiResponse.results != null) {
+              for (var order in apiResponse.results!) {
+                orderCreatedAt = order.get('createdAt');
+                final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
+                    ParseObject('PharmaciesList'));
+                parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
+                  ..objectId = orderId).toPointer());
+                final parseQueryResponse = await parseQuery.query();
+
+
+                ///Check if any pharmacy accepted the order
+                for (var pharmaciesList in parseQueryResponse.results!) {
+                  if (pharmaciesList.get('OrderStatus') == 'Accepted') {
+                    accepted = true;
+                  }
+                }
+                if (accepted) {
+                  ///Time with extra time if order accepted from pharmacies
+                  extraTime = 15;
+                  String d3 = (orderCreatedAt.add(Duration(minutes: (30 + extraTime)))).toString();
+                  d3 = d3.substring(0, 19);
+                  dateForTimer = DateTime.parse(d3);
+                }
+                else {
+                  ///Original time 30 minutes
+                  String d2 = (orderCreatedAt.add(Duration(minutes: (30)))).toString();
+                  d2 = d2.substring(0, 19);
+                  dateForTimer = DateTime.parse(d2);
+                }
+              }
+            }
+            newCountDown = dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => OrderDetailsPage(widget.customerId, orderId, true, newCountDown)));
+          };
+          timer(widget.orderId);
         },
         child: Stack(
         children: <Widget>[ListView(physics: ClampingScrollPhysics(),
@@ -105,14 +149,27 @@ class OrderDetails extends State<OrderDetailsPage> {
                 SizedBox(
                   height: 55,
                 ),
+                        ///Display count down for current orders
+                        widget.currentOrder?
                         /// Countdown Widget
-                        CountdownTimer(
-                          endTime: _countdownTime,
-                          textStyle: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
+                        Column(
+                            children: [
+                              CountdownTimer(
+                                endTime: widget._countdownTime,
+                                textStyle: TextStyle(
+                                  fontSize: 28.0,
+                                  color: Colors.grey.shade700,
+                                ),
+                                endWidget: const Center(
+                                  child: Text('Time expired, no more replies'),
+                                ),
+                              ),
+                              Text('Note: Pharmacy replies will be displayed during the first 30 mins,'
+                                  '\n you have to select one before the timer expires.',style: TextStyle(
+                                  fontFamily: "Lato",
+                                  fontWeight: FontWeight.w600)),
+                            
+                            ]):Container(),
                 SingleChildScrollView(
                     physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
@@ -1377,21 +1434,5 @@ class OrderDetails extends State<OrderDetailsPage> {
       return true;
     }
     return false;
-  }
-  ///Get if number of items in cart
-  Future<void> checkEmptiness() async {
-    //Query customer cart
-    final QueryBuilder<ParseObject> customerCart =
-    QueryBuilder<ParseObject>(ParseObject('Cart'));
-    customerCart.whereEqualTo('customer',
-        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final apiResponse = await customerCart.query();
-
-    if (apiResponse.success && apiResponse.results != null) {
-      numOfItems = apiResponse.count;
-      setState(() {});
-    } else {
-      numOfItems = 0;
-    }
   }
 }

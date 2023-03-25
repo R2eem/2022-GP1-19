@@ -23,7 +23,61 @@ class Orders extends State<OrdersPage> {
   int orderNum = 1;
   bool currentOrders = true;
   int numOfItems = 0;
-  late DateTime dateForTimer;
+  DateTime dateForTimer = DateTime.now();
+  var _countdownTime = 0;
+
+
+  //Check orders time
+  Future<void> timer(orderId) async {
+    var orderCreatedAt;
+    var accepted = false;
+    var extraTime = 0;
+
+    //Query order details
+    final QueryBuilder<ParseObject> order =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    order.whereEqualTo('objectId', orderId);
+
+    final apiResponse = await order.query();
+
+    //Check pharmacy list for the order
+    if (apiResponse.success && apiResponse.results != null) {
+      for (var order in apiResponse.results!) {
+        orderCreatedAt = order.get('createdAt');
+        final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
+            ParseObject('PharmaciesList'));
+        parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
+          ..objectId = orderId).toPointer());
+        final parseQueryResponse = await parseQuery.query();
+
+
+        ///Check if any pharmacy accepted the order
+        for (var pharmaciesList in parseQueryResponse.results!) {
+          if (pharmaciesList.get('OrderStatus') == 'Accepted') {
+            accepted = true;
+          }
+        }
+        if (accepted) {
+          ///Time with extra time if order accepted from pharmacies
+          extraTime = 15;
+          String d3 = (orderCreatedAt.add(Duration(minutes: (30 + extraTime)))).toString();
+          d3 = d3.substring(0, 19);
+          dateForTimer = DateTime.parse(d3);
+        }
+        else {
+          ///Original time 30 minutes
+          String d2 = (orderCreatedAt.add(Duration(minutes: (30)))).toString();
+          d2 = d2.substring(0, 19);
+          dateForTimer = DateTime.parse(d2);
+        }
+      }
+    }
+    _countdownTime = dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
+    print(dateForTimer.add(Duration(hours: 3)));
+    print(dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch);
+    print(DateTime.now());
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, orderId, true, _countdownTime)));
+  }
 
   ///To check order status before displaying
   ///To change the badge value
@@ -132,7 +186,7 @@ class Orders extends State<OrdersPage> {
                               scrollDirection: Axis.vertical,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
-                                            child: FutureBuilder<List<ParseObject>> (
+                                            child: FutureBuilder<List<ParseObject>>  (
                                                 future: getCustomerCurrentOrders(),
                                                 builder: (context, snapshot) {
                                                   switch (snapshot
@@ -189,7 +243,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true, dateForTimer))),
+                                                                  onTap: () =>  timer(OrderId),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -304,7 +358,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, dateForTimer))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, 0))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -473,7 +527,6 @@ class Orders extends State<OrdersPage> {
           DateTime date1 = DateTime.parse(d1);
           DateTime date2 = DateTime.parse(d2);
           DateTime date3 = DateTime.parse(d3);
-          dateForTimer = DateTime.parse(d2);
           ///If there is acceptance from pharmacies and original time passed +
           ///cancel order only for pharmacies who didn't reply
           if (accepted && date1.isAfter(date2)) {
@@ -490,7 +543,6 @@ class Orders extends State<OrdersPage> {
             }
             ///Update time, add extra time
             date2 = date3;
-            dateForTimer = date3;
           }
           ///If time passed make order status declined for customer +
           ///order status cancelled for pharmacies who accepted or didn't reply
@@ -512,14 +564,10 @@ class Orders extends State<OrdersPage> {
         }
       }
     }
-    print(dateForTimer.add(Duration(hours: 3)));
-    print(dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch);
-    print(DateTime.now());
-
 }
 
   //Get customer current orders from orders table
-  Future<List<ParseObject>> getCustomerCurrentOrders() async {
+  Future<List<ParseObject>> getCustomerCurrentOrders() => Future.delayed(Duration(seconds: 2), () async {
 
     //Query customer current orders
     final QueryBuilder<ParseObject> query1 =
@@ -552,11 +600,11 @@ class Orders extends State<OrdersPage> {
     } else {
       return [];
     }
-  }
+  });
 
   //Get customer previous orders from orders table
   ///Wait for current orders to appear so if any orders become declined will appear in this query
-  Future<List<ParseObject>> getCustomerPreviousOrders() async {
+  Future<List<ParseObject>> getCustomerPreviousOrders() => Future.delayed(Duration(seconds: 3), () async {
     //Query customer cart
     final QueryBuilder<ParseObject> query1 =
     QueryBuilder<ParseObject>(ParseObject('Orders'));
@@ -587,7 +635,7 @@ class Orders extends State<OrdersPage> {
     } else {
       return [];
     }
-  }
+  });
 
   ///Get if number of items in cart
   Future<void> checkEmptiness() async {
