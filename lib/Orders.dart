@@ -23,6 +23,7 @@ class Orders extends State<OrdersPage> {
   int orderNum = 1;
   bool currentOrders = true;
   int numOfItems = 0;
+  late DateTime dateForTimer;
 
   ///To check order status before displaying
   ///To change the badge value
@@ -188,7 +189,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true, dateForTimer))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -303,7 +304,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, dateForTimer))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -472,7 +473,7 @@ class Orders extends State<OrdersPage> {
           DateTime date1 = DateTime.parse(d1);
           DateTime date2 = DateTime.parse(d2);
           DateTime date3 = DateTime.parse(d3);
-
+          dateForTimer = DateTime.parse(d2);
           ///If there is acceptance from pharmacies and original time passed +
           ///cancel order only for pharmacies who didn't reply
           if (accepted && date1.isAfter(date2)) {
@@ -489,6 +490,7 @@ class Orders extends State<OrdersPage> {
             }
             ///Update time, add extra time
             date2 = date3;
+            dateForTimer = date3;
           }
           ///If time passed make order status declined for customer +
           ///order status cancelled for pharmacies who accepted or didn't reply
@@ -510,6 +512,10 @@ class Orders extends State<OrdersPage> {
         }
       }
     }
+    print(dateForTimer.add(Duration(hours: 3)));
+    print(dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch);
+    print(DateTime.now());
+
 }
 
   //Get customer current orders from orders table

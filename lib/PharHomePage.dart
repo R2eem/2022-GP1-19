@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -7,6 +8,7 @@ import 'package:untitled/PharmacyNew.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyOld.dart';
 import 'PharmacyLogin.dart';
+import 'PharmacySettings.dart';
 
 
 class PharHomePage extends StatefulWidget {
@@ -16,7 +18,7 @@ class PharHomePage extends StatefulWidget {
 }
 
 class PharmacyHome extends State<PharHomePage> {
-
+  int _selectedIndex = 0;
   var pharmacyId;
 
   @override
@@ -267,6 +269,33 @@ class PharmacyHome extends State<PharHomePage> {
                           )]))),
             ])),
       //Bottom navigation bar
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+              }
+            }),
+          )),
     );}
 
   ///Function to get current logged in user

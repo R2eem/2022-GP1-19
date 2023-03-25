@@ -389,7 +389,7 @@ class Category extends State<CategoryPage> {
                                         return GridView.builder(
                                             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                                                 maxCrossAxisExtent: 300,
-                                                childAspectRatio: 1/1.5,),
+                                                childAspectRatio: 1/1.8,),
                                             padding: EdgeInsets.only(
                                                 top: 10.0, bottom: 20.0),
                                             scrollDirection: Axis.vertical,
@@ -408,6 +408,7 @@ class Category extends State<CategoryPage> {
                                                       'ScientificName')!;
                                               final Publicprice = medGet
                                                   .get<num>('Publicprice')!;
+                                              final LegalStatus = medGet.get("LegalStatus")!;
                                               ParseFileBase? image;
                                               if (medGet.get<ParseFileBase>('Image') != null) {
                                                 image = medGet.get<ParseFileBase>('Image')!;
@@ -478,8 +479,15 @@ class Category extends State<CategoryPage> {
                                                                       fontStyle:
                                                                       FontStyle.italic),
                                                                 ),
+                                                                    (LegalStatus == 'Prescription')?
+                                                                    Text('Requires prescription',
+                                                                      style: TextStyle(
+                                                                          fontFamily: 'Lato',
+                                                                          fontSize: 14,
+                                                                          color: Colors.red),):
+                                                                    SizedBox(width: 0,),
                                                                     Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                                         children:[
                                                                           Ink(
                                                                         decoration:
@@ -487,8 +495,10 @@ class Category extends State<CategoryPage> {
                                                                           color:
                                                                               HexColor('#fad2fc'),
                                                                           borderRadius:
-                                                                              BorderRadius.circular(15),
+                                                                              BorderRadius.circular(0),
                                                                         )),
+                                                                            width: size.width/3,
+                                                                            height: size.height/22,
                                                                         ///Add to cart button
                                                                         child: IconButton(
                                                                             onPressed: () async {
@@ -508,6 +518,7 @@ class Category extends State<CategoryPage> {
                                                                               size: 20.0,
                                                                             )),
                                                                       ),]),
+                                                                    SizedBox(height: 5,)
 
 
                                                               ])));

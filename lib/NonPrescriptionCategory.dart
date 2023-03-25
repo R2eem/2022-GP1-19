@@ -67,7 +67,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
-                            child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                            child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                           ),]),
               SizedBox(height: 25,),
               ///Controls Non-prescription category page display
@@ -251,7 +251,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                     return GridView.builder(
                                         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                                             maxCrossAxisExtent: 300,
-                                            childAspectRatio: 1/1.5,),
+                                            childAspectRatio: 1/1.8,),
                                         padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                         scrollDirection: Axis.vertical,
                                         itemCount: snapshot.data!.length,
@@ -332,7 +332,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                               FontStyle.italic),
                                                         ),
                                                         Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            mainAxisAlignment: MainAxisAlignment.center,
                                                             children:[
                                                               Ink(
                                                                 decoration:
@@ -340,8 +340,10 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                   color:
                                                                   HexColor('#fad2fc'),
                                                                   borderRadius:
-                                                                  BorderRadius.circular(15),
+                                                                  BorderRadius.circular(0),
                                                                 )),
+                                                                width: size.width/3,
+                                                                height: size.height/22,
                                                                 //Add to cart button
                                                                 child: IconButton(
                                                                     onPressed: () async {
@@ -361,6 +363,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                       size: 20.0,
                                                                     )),
                                                               ),]),
+                                                        SizedBox(height: 5,)
                                                       ])));
                                         });
                                   }

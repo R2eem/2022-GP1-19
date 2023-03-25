@@ -71,7 +71,7 @@ class Prescription extends State<PrescriptionCategory>
                   Container(
                     margin: EdgeInsets.fromLTRB(40, 13, 0, 0),
                     child: Text(
-                      'Prescription' + '\n' + 'Medications',
+                      '',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: 'Lato',
@@ -333,7 +333,7 @@ class Prescription extends State<PrescriptionCategory>
                                           return GridView.builder(
                                               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                                                   maxCrossAxisExtent: 300,
-                                                  childAspectRatio: 1/1.5,),
+                                                  childAspectRatio: 1/1.8,),
                                               padding: EdgeInsets.only(
                                                   top: 10.0, bottom: 70.0),
                                               scrollDirection: Axis.vertical,
@@ -428,8 +428,13 @@ class Prescription extends State<PrescriptionCategory>
                                                                         fontStyle:
                                                                         FontStyle.italic),
                                                                   ),
+                                                                  Text('Requires prescription',
+                                                                    style: TextStyle(
+                                                                        fontFamily: 'Lato',
+                                                                        fontSize: 14,
+                                                                        color: Colors.red),),
                                                                   Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                                       children:[
                                                                         Ink(
                                                                           decoration:
@@ -437,8 +442,10 @@ class Prescription extends State<PrescriptionCategory>
                                                                             color:
                                                                             HexColor('#fad2fc'),
                                                                             borderRadius:
-                                                                            BorderRadius.circular(15),
+                                                                            BorderRadius.circular(0),
                                                                           )),
+                                                                          width: size.width/3,
+                                                                          height: size.height/22,
                                                                           //Add to cart button
                                                                           child: IconButton(
                                                                               onPressed: () async {
@@ -459,7 +466,7 @@ class Prescription extends State<PrescriptionCategory>
                                                                                 size: 20.0,
                                                                               )),
                                                                         ),]),
-
+                                                                  SizedBox(height: 5,)
                                                                 ])));
                                               });
                                         }

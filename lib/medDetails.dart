@@ -100,6 +100,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                final LegalStatus = medDetails.get("LegalStatus")!;
                                                                 ParseFileBase? image;
                                                                 if(medDetails.get<ParseFileBase>('Image') != null){
                                                                   image = medDetails.get<ParseFileBase>('Image')!;
@@ -168,6 +169,14 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                               fontWeight: FontWeight.w600
                                                                                                           ),
                                                                                                         ),
+                                                                                                        SizedBox(height: 10,),
+                                                                                                        (LegalStatus == 'Prescription')?
+                                                                                                        Text('Requires prescription',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: 'Lato',
+                                                                                                              fontSize: 14,
+                                                                                                              color: Colors.red),):
+                                                                                                        SizedBox(width: 0,),
                                                                                                         SizedBox(height: 10,),
                                                                                                         Row(
                                                                                                             children: [

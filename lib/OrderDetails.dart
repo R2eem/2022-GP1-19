@@ -12,6 +12,7 @@ import 'PharmaciesList.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 
 class OrderDetailsPage extends StatefulWidget {
@@ -19,7 +20,8 @@ class OrderDetailsPage extends StatefulWidget {
   final String customerId;
   final String orderId;
   final bool currentOrder;
-  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder);
+  final DateTime dateForTimer;
+  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder, this.dateForTimer);
   @override
   OrderDetails createState() => OrderDetails();
 }
@@ -32,7 +34,7 @@ class OrderDetails extends State<OrderDetailsPage> {
   ///Check if the order is declined before time passed
   bool pharmacyDeclined = false;
   int numOfItems = 0;
-
+  var _countdownTime;
   ///To change the badge value
   @override
   void initState() {
@@ -43,6 +45,7 @@ class OrderDetails extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    _countdownTime = widget.dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
     return RefreshIndicator(
         displacement: 150,
         backgroundColor: Colors.white,
@@ -102,6 +105,14 @@ class OrderDetails extends State<OrderDetailsPage> {
                 SizedBox(
                   height: 55,
                 ),
+                        /// Countdown Widget
+                        CountdownTimer(
+                          endTime: _countdownTime,
+                          textStyle: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
                 SingleChildScrollView(
                     physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
@@ -303,7 +314,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                   note = 'No note';
                                                                                 }
                                                                               }
-                                                                              if(pharmDetails.get('Time')!=null) {
+                                                                              if(pharmDetails.get('Time')!=null && pharmDetails.get('Time')!='') {
                                                                                 time = pharmDetails.get('Time')!;
                                                                                 time = time.substring(0,2);
                                                                                 int t = int.parse(time);

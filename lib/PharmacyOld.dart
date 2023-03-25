@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/PharHomePage.dart';
 import 'PharmacyOrdersDetails.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyLogin.dart';
+import 'PharmacySettings.dart';
 
 
 class PharmacyOldO extends StatefulWidget {
@@ -22,6 +24,7 @@ class PharmacyOld extends State<PharmacyOldO>
   String filter = '';
   int _selectedTab = 0;
   bool noOrder = true;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -214,14 +217,14 @@ class PharmacyOld extends State<PharmacyOldO>
                                                       noOrder = false;
                                                     }
                                                     return  (OrderStatus.contains(filter))?
-                                                    GestureDetector(
-                                                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharmacyOrdersDetailsPage(orderId, OrderStatus, widget.pharmacyId))),
-                                                        child:StatefulBuilder(
+                                                       GestureDetector(
+                                                           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharmacyOrdersDetailsPage(orderId, OrderStatus, widget.pharmacyId))),
+                                                        child: StatefulBuilder(
                                                             builder: (BuildContext context, StateSetter setState) =>
                                                                 Stack( //display Locations cards
                                                                   children: <Widget>[
                                                                     Container(
-                                                                      margin: EdgeInsets.only(left: 16, right: 16, top: 20),
+                                                                      margin: EdgeInsets.only(top: 20),
                                                                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                       child: Row(
                                                                         children: <Widget>[
@@ -232,17 +235,6 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                                       mainAxisSize: MainAxisSize.max,
                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                                       children: <Widget>[
-                                                                                        Text('Old order',
-                                                                                          maxLines: 2,
-                                                                                          softWrap: true,
-                                                                                          style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700 ,
-                                                                                              background: Paint()
-                                                                                                ..strokeWidth = 25.0
-                                                                                                ..color =  HexColor('#c7a1d1').withOpacity(0.5)
-                                                                                                ..style = PaintingStyle.stroke
-                                                                                                ..strokeJoin = StrokeJoin.round
-                                                                                          ),),
-                                                                                        SizedBox(height: 15,),
                                                                                         Container(
                                                                                           child: Row(
                                                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,12 +274,12 @@ class PharmacyOld extends State<PharmacyOldO>
                                                                                                 fontWeight: FontWeight.w700),
                                                                                           ),
                                                                                         ),
-                                                                                      ])))
+                                                                                      ]))),
+                                                                          Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
                                                                         ],
                                                                       ),
-                                                                    ),
-                                                                  ],
-                                                                )))
+                                                                    ),],)
+                                                                ))
                                                     ///When its last iteration of displaying orders and no order matched filter yet display this message
                                                         :(noOrder && index == snapshot.data!.length-1)?
                                                     Center(
@@ -306,12 +298,40 @@ class PharmacyOld extends State<PharmacyOldO>
                                             } }
                                       })
 
-                              )]),
+                              ), SizedBox(height: 100,)]),
                           ),)),
-                  ]),
+             ]),
             ),)
           ,])
         ,),
+        //Bottom navigation bar
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(widget.pharmacyId)));
+              }
+            }),
+          )),
     );
   }
 
