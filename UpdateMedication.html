@@ -551,6 +551,9 @@
                     <div class="inputbox">
                       <input id="updateInput2" type="submit" name="submit" value="Update">
                     </div>  
+                    <div class="inputbox">
+                      <input id="updateInput2"  type=button onclick=NavigateToMedications("'+Medid+'") name="submit" value="Cancel">
+                    </div>  
                 </div>
                 </form>
             </div>
@@ -564,6 +567,11 @@
 </body>
 
 <script>
+
+async function NavigateToMedications(medId){
+window.location.replace('Medications.html?id='+medId+'');
+
+}
 
     //Check if user logged in
     async function sessionCheck(){
