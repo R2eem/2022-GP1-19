@@ -43,50 +43,56 @@ async function doUserLogOut () {
       }}
 }
 
-//Total number of pharmacies
-async function totalPharmacies(){
-    var count =0;
-    const query = new Parse.Query("Pharmacist");
+// //Total number of pharmacies
+// async function totalPharmacies(){
+//     var count =0;
+//     //const progress_pharmacies = document.querySelector(".progress-done-pharmacies");  //to reach the progress bar 
+//     const query = new Parse.Query("Pharmacist");
 
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var pharmacies = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalPharmacies').innerHTML = count;
-}
+//     const results = await query.find();
+//     for (let i = 0; i < results.length; i++) {
+//         var pharmacies = results[i];
+//         count = count+1;
+//     }
+//     document.getElementById('TotalPharmacies').innerHTML = count;
+//     //changeWidth(progress_pharmacies,count)
+// }
 
-totalPharmacies();
+// totalPharmacies();
 
-//Total number of customers
-async function totalCustomers(){
-    var count =0;
-    const query = new Parse.Query("Customer");
+// //Total number of customers
+// async function totalCustomers(){
+//     var count =0;
+//     //const progress_customer = document.querySelector(".progress-done-Cusotmer"); //to reach the progress bar 
+//     const query = new Parse.Query("Customer");
 
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var customers = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalCustomers').innerHTML = count;
-}
+//     const results = await query.find();
+//     for (let i = 0; i < results.length; i++) {
+//         var customers = results[i];
+//         count = count+1;
+//     }
+//     document.getElementById('TotalCustomers').innerHTML = count;
+//    // changeWidth(progress_customer,count)
+// }
 
-totalCustomers();
+// totalCustomers();
 
-//Total number of orders
-async function totalOrders(){
-    var count =0;
-    const query = new Parse.Query("Orders");
+// //Total number of orders
+// async function totalOrders(){
+//     var count =0;
+//     //const progress_orders = document.querySelector(".progress-done-orders"); //to reach the progress bar 
+//     const query = new Parse.Query("Orders");
 
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var orders = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalOrders').innerHTML = count;
-}
+//     const results = await query.find();
+//     for (let i = 0; i < results.length; i++) {
+//         var orders = results[i];
+//         count = count+1;
+//     }
+//     document.getElementById('TotalOrders').innerHTML = count;
+//    // changeWidth(progress_orders,count)
+// }
 
-totalOrders();
+// totalOrders();
 
 ///Admin name
 async function AdminInfo(){
@@ -111,53 +117,58 @@ async function AdminInfo(){
 }
 
  AdminInfo();
+
+
     </script>
     <div class="container">
         <aside class="aside">
-        <div class="top">
-            <div class="logo">
-                <img src="./images/logo.png">
-                <h2>Tiryaq</h2>
+            <div class="top">
+                <div class="logo">
+                    <img src="./images/logo.png">
+                    <h2>Tiryaq</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                     </div>
             </div>
-            <div class="close" id="close-btn">
-                <i class="fa fa-times" aria-hidden="true"></i>
-                 </div>
-        </div>
-        <div class="sidebar">
-            <a href="index.html" class="active">
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                <h3>Dashboard</h3>
-            </a>
-            <a href="Medications.html" >
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
-            <a href="ViewCustomers.html">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                <h3>Customers</h3>
-            </a>
-            <a href="Pharmacies_page.html">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-            <a href="customerOrders.html" >
-                <i class="fa fa-list-alt" aria-hidden="true"></i>
-                <h3>Orders</h3>
-            </a>
-            <a href="Pharmacies_Join_Request_Page.html">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requests</h3>
-            </a>
-            <a href="AddMedication.html">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <h3>Add Medications</h3>
-            </a>
-            <a href="" onclick="doUserLogOut(); return false">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                <h3>Log out</h3>
-            </a>
-        </div>
-        </aside>
+            <div class="sidebar">
+                <a href="index.html" class="active">
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="ViewCustomers.html">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>Customers</h3>
+                </a>
+                <a href="customerOrders.html" >
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
+                </a>
+                <a href="Medications.html" >
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+            
+                <a href="Pharmacies_page.html">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+              
+                <a href="Pharmacies_Join_Request_Page.html">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <h3>Join requests</h3>
+                </a>
+              
+                <a href="" onclick="doUserLogOut(); return false">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <h3>Log out</h3>
+                </a>
+            </div>
+            </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
             <h1>Admin Dashboard</h1>
@@ -204,6 +215,9 @@ async function AdminInfo(){
                     <div class="left">
                         <h3>Total customers</h3>
                         <h1 id="TotalCustomers"></h1>
+                        <div class="progress-cusotmer">
+                            <div class="progress-done-Cusotmer"></div>
+                        </div>
                     </div>
                 </div> 
                 <small class="text-muted"></small>
@@ -215,6 +229,10 @@ async function AdminInfo(){
                         <div class="left">
                             <h3>Total pharmacies</h3>
                             <h1 id="TotalPharmacies"></h1>
+                            <div class="progress-pharmacies">
+                                <div class="progress-done-pharmacies"></div>
+                            </div>
+
                         </div>
                     </div> 
                     <small class="text-muted"></small>
@@ -226,6 +244,9 @@ async function AdminInfo(){
                             <div class="left">
                                 <h3>Total orders</h3>
                                 <h1 id="TotalOrders"></h1>
+                                <div class="progress-orders">
+                                    <div class="progress-done-orders"></div>
+                                </div>
                             </div>
                         </div> 
                         <small class="text-muted"></small>
@@ -233,6 +254,7 @@ async function AdminInfo(){
                         <!--------------END OF ORDERS----------->   
                          
             </div>
+            <script src="progressBar.js"></script>
             <!---------------------------END OF insights ----------------------------> 
         </main>
         <!------------------------- END OF MAIN ------------------>
