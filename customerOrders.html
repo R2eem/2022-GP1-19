@@ -149,6 +149,8 @@
                                        document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
 
                                 }
+                                //change (All) filter to active color
+                                changeStyle('btn1');  
                             }
                              retrieveOrders();
 
@@ -190,7 +192,8 @@ if(category == "All"){
                                        document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
 
                                 }
-
+ //change (All) filter to active color
+ changeStyle('btn1');
 }     
 
 if(category != "All"){
@@ -223,6 +226,22 @@ for (i=0; i<results.length; i++){
 
 }       
     }
+
+    async function changeStyle(btn){
+
+//change the other filters to white
+document.getElementById('btn1').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn2').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn3').style.backgroundColor ='#f1f1f1';
+document.getElementById('btn4').style.backgroundColor ='#f1f1f1';
+document.getElementById('btn5').style.backgroundColor ='#f1f1f1';
+
+
+
+//change the selected filter to active color
+document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
+
+}
 
                              //User log out
                              async function doUserLogOut () { 
