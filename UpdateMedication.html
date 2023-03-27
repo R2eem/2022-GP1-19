@@ -552,7 +552,7 @@
                       <input id="updateInput2" type="submit" name="submit" value="Update">
                     </div>  
                     <div class="inputbox">
-                      <input id="updateInput2"  type=button onclick=NavigateToMedications("'+Medid+'") name="submit" value="Cancel">
+                      <input id="updateInput2"  type=button onclick=NavigateToMedications() name="submit" value="Cancel">
                     </div>  
                 </div>
                 </form>
@@ -568,8 +568,8 @@
 
 <script>
 
-async function NavigateToMedications(medId){
-window.location.replace('Medications.html?id='+medId+'');
+async function NavigateToMedications(){
+window.location.replace('Medications.html');
 
 }
 
