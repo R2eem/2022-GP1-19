@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocked Pharmacies Page</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+    <link rel="stylesheet" href="./style.css"> 
+
+    <style>
+
+        #search{
+            width: 100%;
+            padding: 10px 10px;
+            display: inline-block;
+            border-radius: 15px;
+            box-sizing: border-box;
+            margin-left: 10%;
+            margin-right: auto;
+        }
+        
+        #Medresults {
+            margin-left: 15%;
+            margin-right: auto;
+        }
+        
+        #results0{
+            margin-left: 45%;
+            margin-right: auto;
+        }
+        
+          </style>
+
+    <script type="text/javascript"
+            src=" https://npmcdn.com/parse/dist/parse.min.js"> 
+    </script> 
+
+
+    <script>
+    // Initialize Parse
+    Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5", "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+    Parse.serverURL = "https://parseapi.back4app.com/";
+
+  //Check if user logged in
+  async function sessionCheck(){
+     const currentUser = await Parse.User.current();
+     if (currentUser === null) {
+        window.location.replace("log_in_page.html");
+     }
+  }
+  sessionCheck();
+   
+async function retriveListOfOPharmacies(){
+    var count =0;
+    const query = new Parse.Query("Pharmacist");
+    query.equalTo("Block",true)
+    const results = await query.find();
+    for (let i = 0; i < results.length; i++) {
+        var pharmacies = results[i];
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("JoinRequest")+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifNotBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>UnBlock</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+    }
+     //display number of results
+document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
+
+if(count == 0) {
+
+document.getElementById('results0').innerHTML = "No blocked pharmcies";
+
+}
+}
+
+retriveListOfOPharmacies();
+
+async function ifNotBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
+    if(confirm("Are you sure you want to UnBlock pharmacy "+pharmacyName+"?")){
+    const query = new Parse.Object("Pharmacist");
+    query.set("objectId",pharmacyId)
+    query.set("Block",false)
+    try{
+            //Save the Object
+            let result = await query.save();
+            alert("Pharmacy "+pharmacyName+' has been UnBlocked');
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+        }catch(error){
+            alert('Failed to Unblock pharmacy ' +pharmacyName);
+        }
+    }
+}
+
+function sendEmail(pharmacyName,pharmacyEmail,pharmacyId){
+    if(confirm("You need to send email to pharmacy "+pharmacyName)){
+    
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We apologize to inform you that your account has been [blocked, unblocked] on date [day/month/year], because of [reason].'+
+
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team';  
+     
+}
+
+}
+//search pharmacies
+async function searchPharmacies(){
+
+//remove no result message
+document.getElementById('results0').innerHTML = " ";
+
+var count =0;
+var searchString = document.getElementById('search').value;
+searchString = searchString.toUpperCase();
+const query = new Parse.Query("Pharmacist");
+query.equalTo("Block",true)
+query.limit(200);
+query.ascending("PharmacyName");
+const results = await query.find();
+
+//clear the table of medications
+document.getElementById('pharmaciesTableBody').innerHTML = "";
+
+for(let i=0; i<results.length;i++){    
+var pharmacies = results[i];   
+
+if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){  
+        var pharmacyId = pharmacies.id;
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("JoinRequest")+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifNotBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>UnBlock</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+}    
+}      
+
+//display number of results
+document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
+
+if(count == 0) {
+
+document.getElementById('results0').innerHTML = "Sorry there is no pharmacies with this name";
+
+}
+
+}
+//User log out
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
+</script>
+ 
+</head>
+<body>
+    <div class="container">
+        <aside class="aside">
+        <div class="top">
+            <div class="logo">
+                <img src="./images/logo.png">
+                <h2>Tiryaq</h2>
+            </div>
+            <div class="close" id="close-btn">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                 </div>
+        </div>
+        <div class="sidebar">
+            <a href="index.html">
+                <i class="fa fa-th-large" aria-hidden="true"></i>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="Medications.html" >
+                <i class="fa fa-medkit" aria-hidden="true"></i>
+                <h3>Medications</h3>
+            </a>
+            <a href="ViewCustomers.html">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                <h3>Customers</h3>
+            </a>
+            <a href="Pharmacies_page.html">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Pharmacies</h3>
+            </a>
+            <a href="customerOrders.html" >
+                <i class="fa fa-list-alt" aria-hidden="true"></i>
+                <h3>Orders</h3>
+            </a>
+            <a href="Pharmacies_Join_Request_Page.html">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <h3>Join requests</h3>
+            </a>
+            <a href="Blocked_pharmacies_page.html" class="active">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Blocked Pharmacies</h3>
+            </a>
+            <a href="AddMedication.html">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                <h3>Add Medications</h3>
+            </a>
+            <a href="" onclick="doUserLogOut(); return false">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <h3>Log out</h3>
+            </a>
+        </div>
+        </aside>
+        <!----------------------------------END OF ASIDE-------------->
+        <main>
+            <h1 id="hDivv"> </h1>
+            <h1>Pharmacies</h1>
+            <br>
+           
+            <input id="search" type="text" placeholder="Search by pharmacy name.." onkeyup="searchPharmacies()" />
+
+            <br> <br> 
+
+            <p id="PharmaciesResults"></p>
+
+            <!---------------------------LIST OF PHARMACIES----------------------------> 
+            <div class="med">
+                <table id="MedTable">
+                    <thead>
+                        <tr>
+                            <th>Pharmacy name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Commercial register</th>
+                            <th>Address</th>
+                            <th>Join request</th>
+                            
+                       
+                        </tr>
+                    </thead>
+                    <tbody id="pharmaciesTableBody">
+                        <tr id="hi">
+
+                        </tr>
+
+                    </tbody>
+                </table>
+               
+            </div> 
+        
+             <!--------------------------- END OF LIST OF PHARMACIES----------------------------> 
+             <br><br><br>
+            <p id="results0"></p> 
+        </main>
+        <!------------------------- END OF MAIN ------------------> 
+</body>
+</html>
