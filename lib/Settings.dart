@@ -8,7 +8,6 @@ import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Orders.dart';
 import 'main.dart';
-import 'package:badges/badges.dart' as badges;
 
 
 class SettingsPage extends StatefulWidget {
@@ -21,13 +20,27 @@ class SettingsPage extends StatefulWidget {
 
 class Settings extends State<SettingsPage> {
   int _selectedIndex = 3;
-  int numOfItems = 0;
 
-  ///To change the badge value
+  ///To check user block status
   @override
   void initState() {
     super.initState();
-    checkEmptiness();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
   }
 
   @override
@@ -196,24 +209,9 @@ class Settings extends State<SettingsPage> {
                 )))
     );
   }
-  ///Get if number of items in cart
-  Future<void> checkEmptiness() async {
-    //Query customer cart
-    final QueryBuilder<ParseObject> customerCart =
-    QueryBuilder<ParseObject>(ParseObject('Cart'));
-    customerCart.whereEqualTo('customer',
-        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final apiResponse = await customerCart.query();
 
-    if (apiResponse.success && apiResponse.results != null) {
-      numOfItems = apiResponse.count;
-      setState(() {});
-    } else {
-      numOfItems = 0;
-    }
-  }
   ///Show error message function
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -230,7 +228,6 @@ class Settings extends State<SettingsPage> {
           ],
         );
       },
-
     );
   }
 
@@ -243,7 +240,7 @@ class Settings extends State<SettingsPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

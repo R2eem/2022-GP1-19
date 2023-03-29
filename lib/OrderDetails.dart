@@ -7,11 +7,11 @@ import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'PharmaciesList.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 
@@ -21,7 +21,8 @@ class OrderDetailsPage extends StatefulWidget {
   final String orderId;
   final bool currentOrder;
   final _countdownTime;
-  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder, this._countdownTime);
+  final String orderStatus;
+  const OrderDetailsPage(this.customerId, this.orderId, this.currentOrder, this._countdownTime, this.orderStatus);
   @override
   OrderDetails createState() => OrderDetails();
 }
@@ -36,6 +37,40 @@ class OrderDetails extends State<OrderDetailsPage> {
   int numOfItems = 0;
   DateTime dateForTimer = DateTime.now();
   var newCountDown = 0;
+
+  ///To check user block status
+  @override
+  void initState() {
+    super.initState();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +89,7 @@ class OrderDetails extends State<OrderDetailsPage> {
             var orderCreatedAt;
             var accepted = false;
             var extraTime = 0;
+            var orderStatus;
 
             //Query order details
             final QueryBuilder<ParseObject> order =
@@ -66,6 +102,7 @@ class OrderDetails extends State<OrderDetailsPage> {
             if (apiResponse.success && apiResponse.results != null) {
               for (var order in apiResponse.results!) {
                 orderCreatedAt = order.get('createdAt');
+                orderStatus = order.get('OrderStatus');
                 final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
                     ParseObject('PharmaciesList'));
                 parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
@@ -98,7 +135,7 @@ class OrderDetails extends State<OrderDetailsPage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => OrderDetailsPage(widget.customerId, orderId, true, newCountDown)));
+                    builder: (BuildContext context) => OrderDetailsPage(widget.customerId, orderId, true, newCountDown, orderStatus)));
           };
           timer(widget.orderId);
         },
@@ -150,7 +187,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                   height: 55,
                 ),
                         ///Display count down for current orders
-                        widget.currentOrder?
+                        (widget.orderStatus == 'Under processing')?
                         /// Countdown Widget
                         Column(
                             children: [
@@ -363,6 +400,8 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                               final pharmDetails = snapshot.data![index1];
                                                                               final pharmacyId = pharmDetails.get('PharmacyId').objectId;
                                                                               var OrderStatus2 = pharmDetails.get('OrderStatus')!;
+                                                                              var Distance = pharmDetails.get('Distance')!;
+                                                                              Distance = num.parse(Distance.toStringAsFixed(2));
                                                                               var note = 'No note';
                                                                               var time = '';
                                                                               if(pharmDetails.get('Note')!=null) {
@@ -375,7 +414,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                 time = pharmDetails.get('Time')!;
                                                                                 time = time.substring(0,2);
                                                                                 int t = int.parse(time);
-                                                                                String t1 = (updatedAt.add(Duration(hours: t))).toString();
+                                                                                String t1 = (updatedAt.add(Duration(hours: t+3))).toString();
                                                                                 time = t1.substring(0,19);
                                                                               }
 
@@ -431,10 +470,15 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                             width: size.width,
                                                                                                             color: Colors.grey.shade200,
                                                                                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                                              Row(
+                                                                                                                children:[
                                                                                                               Text(
                                                                                                                 '$pharmacyName ',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w700),
                                                                                                               ),
+                                                                                                              Text(
+                                                                                                                ' -  ${Distance} Km',
+                                                                                                                style: TextStyle( fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w500),),]),
                                                                                                               Text(
                                                                                                                 '$pharmPhonenumber',
                                                                                                                 style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
@@ -1434,5 +1478,25 @@ class OrderDetails extends State<OrderDetailsPage> {
       return true;
     }
     return false;
+  }
+  ///Show error message function
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

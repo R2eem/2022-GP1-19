@@ -5,10 +5,10 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Cart.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'medDetails.dart';
-import 'package:badges/badges.dart' as badges;
 
 class NonPrescriptionCategory extends StatefulWidget {
   //Get customer id as a parameter
@@ -24,13 +24,40 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
   String searchString ='';
   String packageType ='';
   int _selectedTab = 0 ;
-  int numOfItems = 0;
 
-  ///To change the badge value
+  ///To check user block status
   @override
   void initState() {
     super.initState();
-    checkEmptiness();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
   }
 
   @override
@@ -473,20 +500,24 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
       return true;
     }
   }
-  ///Get if number of items in cart
-  Future<void> checkEmptiness() async {
-    //Query customer cart
-    final QueryBuilder<ParseObject> customerCart =
-    QueryBuilder<ParseObject>(ParseObject('Cart'));
-    customerCart.whereEqualTo('customer',
-        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final apiResponse = await customerCart.query();
-
-    if (apiResponse.success && apiResponse.results != null) {
-      numOfItems = apiResponse.count;
-      setState(() {});
-    } else {
-      numOfItems = 0;
-    }
+  ///Show error message function
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

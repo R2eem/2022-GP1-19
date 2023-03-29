@@ -9,6 +9,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'Cart.dart';
 import 'Orders.dart';
 import 'PharHomePage.dart';
+import 'PharmacyLogin.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
 import 'package:untitled/CategoryPage.dart';
@@ -27,6 +28,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var pharmacyId;
+
 
   @override
   Widget build(BuildContext context) {
@@ -351,13 +353,19 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
     return currentUser;
   }
 
-  ///Function to get current user from phrmacist table
+  ///Function to get current user from pharmacist table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryPharmacies =
     QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
     queryPharmacies.whereContains('user', userId);
     final ParseResponse apiResponse = await queryPharmacies.query();
     if (apiResponse.success && apiResponse.results != null) {
+      ///If pharmacy blocked then force logout
+      for (var pharmacy in apiResponse.results!) {
+        if(pharmacy.get('Block')){
+          doUserLogout();
+        }
+      }
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
@@ -401,5 +409,37 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
         );
       },
     );
+  }
+
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PharmacyLogin()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
   }
 }

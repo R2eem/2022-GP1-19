@@ -11,6 +11,7 @@ import 'package:untitled/Location.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'dart:io';
@@ -45,6 +46,40 @@ class _PresAttachPage extends State<PresAttach> {
   var locality;
   var subLocality;
   var street;
+
+  ///To check user block status
+  @override
+  void initState() {
+    super.initState();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -752,10 +787,15 @@ class _PresAttachPage extends State<PresAttach> {
             'pharmacyLocation': object.get('Location')
           };
 
+          ///contain will not be empty if the pharmacy already exist in the array so no need to add it again
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
           if (contain.isEmpty) {
-            pharmacies.add(pharmacy);
-            pharmaciesLocation.add(pharmacyLocation);
+            ///Send order only to nonBlocked pharmacies
+            if(object.get('Block') == false){
+              pharmacies.add(pharmacy);
+              pharmaciesLocation.add(pharmacyLocation);
+            }
+
           }
         }
       }
@@ -806,6 +846,26 @@ class _PresAttachPage extends State<PresAttach> {
         widget.lat, widget.lng);
     Placemark place = placemarks[0];
     return place;
+  }
+  ///Show error message function
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

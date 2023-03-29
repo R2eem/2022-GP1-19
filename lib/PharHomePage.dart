@@ -311,13 +311,19 @@ class PharmacyHome extends State<PharHomePage> {
     queryCustomers.whereContains('user', userId);
     final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
+      ///If pharmacy blocked then force logout
+      for (var pharmacy in apiResponse.results!) {
+        if(pharmacy.get('Block')){
+          doUserLogout();
+        }
+      }
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
     }
   }
 
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -345,7 +351,7 @@ class PharmacyHome extends State<PharHomePage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PharmacyLogin()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

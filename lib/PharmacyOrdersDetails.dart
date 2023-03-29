@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -47,6 +46,28 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   String time = '';
   int _selectedIndex = 0;
 
+  ///To check order status before displaying
+  ///To check user block status
+  @override
+  void initState() {
+    super.initState();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    queryCustomers.whereContains('objectId', widget.pharmacyId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If pharmacy blocked then force logout
+      for (var pharmacy in apiResponse.results!) {
+        if(pharmacy.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
 
   @override
   void dispose() {

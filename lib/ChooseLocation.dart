@@ -6,6 +6,8 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/PresAttach.dart';
 import 'package:geocoding/geocoding.dart';
 
+import 'LoginPage.dart';
+
 
 
 class ChooseLocation extends StatefulWidget {
@@ -24,6 +26,40 @@ class Locations extends State<ChooseLocation> {
   String loc ="";
   num lat = 0;
   num long = 0;
+
+  ///To check user block status
+  @override
+  void initState() {
+    super.initState();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +178,7 @@ class Locations extends State<ChooseLocation> {
                                                                 return  ListView.builder(
                                                                     shrinkWrap: true,
                                                                     scrollDirection: Axis.vertical,
+                                                                    physics: ClampingScrollPhysics(),
                                                                     itemCount: 1,
                                                                     itemBuilder: (context, index) {
                                                                       final address = snapshot.data!;
@@ -285,5 +322,26 @@ class Locations extends State<ChooseLocation> {
     lat = loc.latitude;
     long = loc.longitude;
 
+  }
+
+  ///Show error message function
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

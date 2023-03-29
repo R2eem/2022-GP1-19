@@ -7,7 +7,6 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'LoginPage.dart';
 import 'OrderDetails.dart';
 import 'Settings.dart';
-import 'package:badges/badges.dart' as badges;
 
 
 class OrdersPage extends StatefulWidget {
@@ -30,6 +29,7 @@ class Orders extends State<OrdersPage> {
   //Check orders time
   Future<void> timer(orderId) async {
     var orderCreatedAt;
+    var orderStatus;
     var accepted = false;
     var extraTime = 0;
 
@@ -44,6 +44,7 @@ class Orders extends State<OrdersPage> {
     if (apiResponse.success && apiResponse.results != null) {
       for (var order in apiResponse.results!) {
         orderCreatedAt = order.get('createdAt');
+        orderStatus = order.get('OrderStatus');
         final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
             ParseObject('PharmaciesList'));
         parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
@@ -73,19 +74,31 @@ class Orders extends State<OrdersPage> {
       }
     }
     _countdownTime = dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
-    print(dateForTimer.add(Duration(hours: 3)));
-    print(dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch);
-    print(DateTime.now());
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, orderId, true, _countdownTime)));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, orderId, true, _countdownTime, orderStatus)));
   }
 
   ///To check order status before displaying
-  ///To change the badge value
+  ///To check user block status
   @override
   void initState() {
     super.initState();
-    checkEmptiness();
+    checkBlock();
     checkOrders();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
   }
 
   @override
@@ -358,7 +371,7 @@ class Orders extends State<OrdersPage> {
 
                                                               return  GestureDetector(
                                                                 //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, 0))),
+                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, 0, 'PreviousOrder'))),
                                                                   //Order card information
                                                                   child: Card(
                                                                       elevation: 3,
@@ -637,24 +650,8 @@ class Orders extends State<OrdersPage> {
     }
   });
 
-  ///Get if number of items in cart
-  Future<void> checkEmptiness() async {
-    //Query customer cart
-    final QueryBuilder<ParseObject> customerCart =
-    QueryBuilder<ParseObject>(ParseObject('Cart'));
-    customerCart.whereEqualTo('customer',
-        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
-    final apiResponse = await customerCart.query();
 
-    if (apiResponse.success && apiResponse.results != null) {
-      numOfItems = apiResponse.count;
-      setState(() {});
-    } else {
-      numOfItems = 0;
-    }
-  }
-
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -683,7 +680,7 @@ class Orders extends State<OrdersPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

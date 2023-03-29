@@ -4,6 +4,7 @@ import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:geocoding/geocoding.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 
 
@@ -19,6 +20,40 @@ class PharmacyListPage extends StatefulWidget {
 class PharmacyList extends State<PharmacyListPage> {
   int _selectedIndex = 2;
   bool presRequired = false;
+
+  ///To check user block status
+  @override
+  void initState() {
+    super.initState();
+    checkBlock();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
+  }
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +143,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 final pharmacyId = pharmDetails
                                                     .get('PharmacyId')
                                                     .objectId;
-                                                final Distance = pharmDetails
+                                                var Distance = pharmDetails
                                                     .get('Distance')!;
                                                 var OrderStatus2 = pharmDetails
                                                     .get('OrderStatus')!;
@@ -129,6 +164,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                     note = 'No note';
                                                   }
                                                 }
+                                                Distance = num.parse(Distance.toStringAsFixed(2));
                                                 return FutureBuilder<
                                                     List<ParseObject>>(
                                                     future: getPharmDetails(
@@ -213,7 +249,8 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                   crossAxisAlignment: CrossAxisAlignment
                                                                                       .start,
                                                                                   children: [
-                                                                                    Text(
+                                                                                    Row(
+                                                                              children:[Text(
                                                                                       '$pharmacyName ',
                                                                                       style: TextStyle(
                                                                                           fontFamily: "Lato",
@@ -222,6 +259,15 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               .black,
                                                                                           fontWeight: FontWeight
                                                                                               .w600),),
+                                                                                    Text(
+                                                                                      ' -  ${Distance} Km',
+                                                                                      style: TextStyle(
+                                                                                          fontFamily: "Lato",
+                                                                                          fontSize: 17,
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontWeight: FontWeight
+                                                                                              .w500),),]),
                                                                                     Text(
                                                                                       '$pharmPhonenumber',
                                                                                       style: TextStyle(
@@ -695,5 +741,25 @@ class PharmacyList extends State<PharmacyListPage> {
     }
 
     return [];
+  }
+  ///Show error message function
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -9,7 +9,6 @@ import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-import 'package:badges/badges.dart' as badges;
 
 
 class CartPage extends StatefulWidget {
@@ -35,10 +34,27 @@ class Cart extends State<CartPage> {
   int numOfItems = 0;
 
   ///To change value of variable 'full'
+  ///To check user block status
   @override
   void initState() {
     super.initState();
+    checkBlock();
     checkEmptiness();
+  }
+
+  Future<void> checkBlock() async {
+    QueryBuilder<ParseObject> queryCustomers =
+    QueryBuilder<ParseObject>(ParseObject('Customer'));
+    queryCustomers.whereContains('objectId', widget.customerId);
+    final ParseResponse apiResponse = await queryCustomers.query();
+    if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
+    }
   }
 
   @override
@@ -753,7 +769,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -781,7 +797,7 @@ class Cart extends State<CartPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

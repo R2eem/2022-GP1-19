@@ -11,7 +11,6 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:native_notify/native_notify.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 
@@ -27,6 +26,7 @@ class Category extends State<CategoryPage> {
   bool searchNotEmpty = true;
   bool alwaysTrue = true;
   bool noMed = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +252,6 @@ class Category extends State<CategoryPage> {
                           ],
                           // Called whenever the page in the center of the viewport changes.
                           onPageChanged: (value) {
-                            print('Page changed: $value');
                           },
                           // Auto scroll interval.
                           autoPlayInterval: 3000,
@@ -653,6 +652,12 @@ class Category extends State<CategoryPage> {
     queryCustomers.whereContains('user', userId);
     final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
+      ///If customer blocked then force logout
+      for (var customer in apiResponse.results!) {
+        if(customer.get('Block')){
+          doUserLogout();
+        }
+      }
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
@@ -699,7 +704,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -735,7 +740,7 @@ class Category extends State<CategoryPage> {
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }
