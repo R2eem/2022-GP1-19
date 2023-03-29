@@ -749,7 +749,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                             time = orderDetail.get('Time')!;
                                                                                             time = time.substring(0,2);
                                                                                             int t = int.parse(time);
-                                                                                            String t1 = (updatedAt.add(Duration(hours: t))).toString();
+                                                                                            String t1 = (updatedAt.add(Duration(hours: t+3))).toString();
                                                                                             time = t1.substring(0,19);
                                                                                           }
                                                                                           if(time == '' || time == null){
