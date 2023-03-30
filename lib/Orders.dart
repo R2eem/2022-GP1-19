@@ -121,12 +121,9 @@ class Orders extends State<OrdersPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  Align(
+                                    alignment: Alignment.topLeft,
                                     child: Image.asset(
                                       'assets/logoheader.png',
                                       fit: BoxFit.contain,
@@ -134,6 +131,7 @@ class Orders extends State<OrdersPage> {
                                       height: 80,
                                     ),
                                   ),
+                                  Spacer(),
                                   Container(
                                       child: IconButton(
                                         onPressed: () {

@@ -173,7 +173,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                   Container(
                     margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
                     child: Text(
-                      'Order details',
+                      '',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: 'Lato',
@@ -201,11 +201,22 @@ class OrderDetails extends State<OrderDetailsPage> {
                                   child: Text('Time expired, no more replies'),
                                 ),
                               ),
-                              Text('Note: Pharmacy replies will be displayed during the first 30 mins,'
-                                  '\n you have to select one before the timer expires.',style: TextStyle(
-                                  fontFamily: "Lato",
-                                  fontWeight: FontWeight.w600)),
-                            
+                              Row(
+                                  children:[
+                                    SizedBox(width: 20,),
+                                    Flexible(
+                                      child:
+                                      Text('Note: Order will be canceled if the timer expires before choosing one pharmacy.',style: TextStyle(
+                                        fontFamily: "Lato",
+                                        fontWeight: FontWeight.w600,),
+                                        textAlign: TextAlign.justify,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(width: 20,),
+                                  ]
+                              )
                             ]):Container(),
                 SingleChildScrollView(
                     physics: ClampingScrollPhysics(),
@@ -560,7 +571,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                       },
                                                                                                       child:
                                                                                                       Text(
-                                                                                                        'View Pharmacies List'
+                                                                                                        'View Pharmacies responses'
                                                                                                             .toUpperCase(),
                                                                                                         style: TextStyle(
                                                                                                             fontFamily: 'Lato',
@@ -576,7 +587,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                 Container(
                                                                                                     child: Column(
                                                                                                         children:[Text(
-                                                                                                          'Waiting for pharmacies reply... ',
+                                                                                                          'Waiting for pharmacies responses... ',
                                                                                                           style: TextStyle(
                                                                                                               fontFamily: 'Lato',
                                                                                                               fontSize: 16,
@@ -584,7 +595,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                               color: Colors.red),
                                                                                                         ),
                                                                                                           Text(
-                                                                                                            '*Refresh page to check new replies.',
+                                                                                                            '*Refresh page for new responses.',
                                                                                                             style: TextStyle(
                                                                                                                 fontFamily: 'Lato',
                                                                                                                 fontSize: 12,
@@ -1169,7 +1180,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                ''',
                                                                                     style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
                                                                                     children: <TextSpan>[
-                                                                                      TextSpan(text: 'Please note that you cannot undo this process!!!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                                                      TextSpan(text: 'Please note that you cannot undo this process!', style: TextStyle(color: Colors.red)),
                                                                                     ],
                                                                                   ),
                                                                                 ),

@@ -1,18 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/PharmacySettings.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'Cart.dart';
-import 'Orders.dart';
 import 'PharHomePage.dart';
 import 'PharmacyLogin.dart';
-import 'Settings.dart';
 import 'common/theme_helper.dart';
-import 'package:untitled/CategoryPage.dart';
 
 
 class PharmacyAccountPage extends StatefulWidget{
@@ -139,8 +134,12 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                               pharmacyId = user.get<String>('objectId')!;
                                                               final PharmacyName = user.get<String>('PharmacyName')!;
                                                               final Phonenumber = user.get<String>('PhoneNumber')!;
+                                                              final ComRegNum = user.get('CommercialRegister')!;
+                                                              final Address = user.get('Address')!;
                                                               final controllerPharmacyName = TextEditingController(text: PharmacyName);
                                                               final controllerEmail = TextEditingController(text: email);
+                                                              final controllerComRegNum = TextEditingController(text: ComRegNum);
+                                                              final controllerAddress = TextEditingController(text: Address);
                                                               final controllerPhoneNumber = TextEditingController(text: Phonenumber.substring(1,));
                                                               //Display information
                                                               return Column( children: [
@@ -170,6 +169,19 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                       offset: const Offset(0, 5),
                                                                     )
                                                                   ]),
+                                                                ),
+                                                                SizedBox(height: 25.0),
+                                                                //Commercial number
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    readOnly: true,
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerComRegNum,
+                                                                    decoration: ThemeHelper().textInputDecoration('Commercial register number',"Commercial register number") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
                                                                 SizedBox(height: 25.0),
                                                                 //Phonenumber
@@ -223,6 +235,20 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
+                                                                SizedBox(height: 25.0),
+                                                                //Address
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    readOnly: true,
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerAddress,
+                                                                    maxLines:3,
+                                                                    decoration: ThemeHelper().textInputDecoration('Address',"Address") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                ),
                                                                 SizedBox(height: 35.0),
 
                                                                 //Save changes button
@@ -239,7 +265,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
@@ -248,7 +274,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },

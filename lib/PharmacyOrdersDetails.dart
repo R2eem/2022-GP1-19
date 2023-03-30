@@ -97,29 +97,16 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: IconButton(
                                     iconSize: 40,
                                     color: Colors.white,
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     }, icon: Icon(Icons.keyboard_arrow_left),),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text(
-                                    'Orders Details',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 27,
-                                        color: Colors.white70,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                                Spacer(),
                                 Container(
                                     child:  IconButton(
                                       onPressed: (){

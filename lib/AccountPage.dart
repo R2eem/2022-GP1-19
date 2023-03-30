@@ -297,7 +297,7 @@ class _AccountPage extends State<AccountPage>{
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
@@ -306,7 +306,7 @@ class _AccountPage extends State<AccountPage>{
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
@@ -356,21 +356,8 @@ class _AccountPage extends State<AccountPage>{
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,
-                        iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30,
-                        /*leading: numOfItems != 0? badges.Badge(
-                          position: badges.BadgePosition.topEnd(top: -10, end: -12),
-                          showBadge: true,
-                          badgeContent: Text('$numOfItems'),
-                          badgeStyle: badges.BadgeStyle(
-                            shape: badges.BadgeShape.circle,
-                            badgeColor: Colors.redAccent,
-                            padding: EdgeInsets.all(5),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Icon(Icons.shopping_cart),
-                        ): null*/),
+                        icon: Icons.shopping_cart, iconActiveColor: Colors.purple.shade200, iconSize: 30,
+                    ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),

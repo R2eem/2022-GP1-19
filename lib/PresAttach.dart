@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -103,16 +102,13 @@ class _PresAttachPage extends State<PresAttach> {
                           children: [
                             Row(
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  Align(
+                                    alignment: Alignment.topLeft,
                                     child: Image.asset('assets/logoheader.png',
                                       fit: BoxFit.contain,
                                       width: 110,
                                       height: 80,
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
                                   ),
                                 ]),
                             ///Show upload prescription button if there is prescribed medicine
@@ -570,7 +566,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the time end.",
+                              "Thank you for your order.\nCheck order in orders page for more information.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -652,7 +648,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the time end.",
+                              "Thank you for your order.\nCheck order in orders page for more information.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -791,7 +787,7 @@ class _PresAttachPage extends State<PresAttach> {
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
           if (contain.isEmpty) {
             ///Send order only to nonBlocked pharmacies
-            if(object.get('Block') == false){
+            if(object.get('Block') == false && object.get('JoinRequest') == 'accepted'){
               pharmacies.add(pharmacy);
               pharmaciesLocation.add(pharmacyLocation);
             }
@@ -804,8 +800,8 @@ class _PresAttachPage extends State<PresAttach> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           object = o as ParseObject;
-          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'] == widget.lat){
-            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'] == widget.lng){
+          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'].toStringAsFixed(5) == widget.lat.toStringAsFixed(5)){
+            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'].toStringAsFixed(5) == widget.lng.toStringAsFixed(5)){
               locationExist = true;
             }
           }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/SavedLocation.dart';
-import 'AccountPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharHomePage.dart';
 import 'PharmacyAccountPage.dart';
@@ -64,10 +61,9 @@ class Settings extends State<PharmacySettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,70, 0),
+                            Align(
+                              alignment: Alignment.topLeft,
                               child: Image.asset(
                                 'assets/logoheader.png',
                                 fit: BoxFit.contain,
@@ -77,7 +73,7 @@ class Settings extends State<PharmacySettingsPage> {
                             ),
                             ///Controls settings page title
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,60, 0),
+                              margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
                               child: Text(
                                 'Settings',
                                 textAlign: TextAlign.center,
@@ -88,6 +84,7 @@ class Settings extends State<PharmacySettingsPage> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
+                            Spacer(),
                             Container(
                                 child:  IconButton(
                                   onPressed: (){

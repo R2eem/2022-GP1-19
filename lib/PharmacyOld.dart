@@ -71,18 +71,16 @@ class PharmacyOld extends State<PharmacyOldO>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                            child: IconButton(
                               iconSize: 40,
                               color: Colors.white,
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => PharHomePage()));
                               }, icon: Icon(Icons.keyboard_arrow_left),),
                           ),
-
+                          Spacer(),
                           Container(
                               child:  IconButton(
                                 onPressed: (){
@@ -119,11 +117,10 @@ class PharmacyOld extends State<PharmacyOldO>
                                   Icons.logout_outlined ,color: Colors.white, size: 30,
                                 ),
                               )
-
                           ),
                         ]),
                     SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     ///Filter tabs
                     TabBar(
@@ -222,7 +219,22 @@ class PharmacyOld extends State<PharmacyOldO>
                                               return Center(
                                                 child: Text("No Data..."),
                                               );
-                                            } else {
+                                            }
+                                            if(snapshot.data!.length==0){
+                                              return Center(
+                                                  child:Column(
+                                                      children:[
+                                                        Icon(Icons.pending_actions_outlined,color: Colors.black45,size: 30,),
+                                                        Text("No $filter orders yet.",style: TextStyle(
+                                                            fontFamily: "Lato",
+                                                            fontSize: 18,
+                                                            color: Colors.black45,
+                                                            fontWeight: FontWeight.w700),)
+                                                      ]
+                                                  )
+                                              );
+                                            }
+                                            else {
                                               return ListView.builder(
                                                   physics: ClampingScrollPhysics(),
                                                   scrollDirection: Axis.vertical,

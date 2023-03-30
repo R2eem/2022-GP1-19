@@ -84,8 +84,8 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [Row(
                         children:[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          Align(
+                            alignment: Alignment.topLeft,
                             child: Image.asset('assets/logoheader.png',
                               fit: BoxFit.contain,
                               width: 110,
@@ -206,7 +206,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children:[
                                           Text(
-                                            'Resutls: ${snapshot.data!.length}',
+                                            'Results: ${snapshot.data!.length}',
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 fontFamily: "Lato",
@@ -224,18 +224,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                       height: 60,
                                                     ),
                                                     Text(
-                                                      "Sorry we could't find any match,",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                          "Lato",
-                                                          fontSize:
-                                                          20,),
-                                                      textAlign:
-                                                      TextAlign
-                                                          .center,
-                                                    ),
-                                                    Text(
-                                                      "try another search or continue shopping through the categories.",
+                                                      "Sorry, No results match your search.",
                                                       style: TextStyle(
                                                           fontFamily:
                                                           "Lato",
@@ -365,9 +354,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                                                 decoration:
                                                                 ShapeDecoration.fromBoxDecoration(BoxDecoration(
                                                                   color:
-                                                                  HexColor('#fad2fc'),
+                                                                  HexColor('#c7a1d1').withOpacity(0.5),
                                                                   borderRadius:
-                                                                  BorderRadius.circular(0),
+                                                                  BorderRadius.circular(5),
                                                                 )),
                                                                 width: size.width/3,
                                                                 height: size.height/22,

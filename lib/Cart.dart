@@ -77,10 +77,9 @@ class Cart extends State<CartPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,80, 0),
+                                  Align(
+                                    alignment: Alignment.topLeft,
                                     child: Image.asset(
                                       'assets/logoheader.png',
                                       fit: BoxFit.contain,
@@ -90,7 +89,7 @@ class Cart extends State<CartPage> {
                                   ),
                                   //Controls Cart page title
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,100, 0),
+                                    margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
                                     child: Text(
                                       'Cart',
                                       textAlign: TextAlign.center,
@@ -101,6 +100,7 @@ class Cart extends State<CartPage> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
+                                  Spacer(),
                                   Container(
                                       child:  IconButton(
                                         onPressed: (){
@@ -286,7 +286,7 @@ class Cart extends State<CartPage> {
                                                                                             context: context,
                                                                                             builder: (BuildContext context) {
                                                                                               return AlertDialog(
-                                                                                                title: Text("Are you sure you wish to delete this item?",
+                                                                                                title: Text("Are you sure you want to delete this item?",
                                                                                                     style: TextStyle(
                                                                                                       fontFamily: 'Lato',
                                                                                                       fontSize: 20,
@@ -294,11 +294,11 @@ class Cart extends State<CartPage> {
                                                                                                 actions: <Widget>[
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(true),
-                                                                                                    child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(false),
-                                                                                                    child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                 ],
                                                                                               );

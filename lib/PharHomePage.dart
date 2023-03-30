@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -41,17 +40,16 @@ class PharmacyHome extends State<PharHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                Align(
+                                  alignment: Alignment.topLeft,
                                   child: Image.asset('assets/logoheader.png',
                                     fit: BoxFit.contain,
                                     width: 110,
                                     height: 80,
                                   ),
                                 ),
+                                Spacer(),
                                 Container(
                                     child:  IconButton(
                                       onPressed: (){

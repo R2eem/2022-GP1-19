@@ -81,26 +81,13 @@ class Locations extends State<SavedLocationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        Align(
+                          alignment: Alignment.topLeft,
                           child: Image.asset(
                             'assets/logoheader.png',
                             fit: BoxFit.contain,
                             width: 110,
                             height: 80,
-                          ),
-                        ),
-                        ///Controls location page title
-                        Container(
-                          margin: EdgeInsets.fromLTRB(30, 13, 0, 0),
-                          child: Text(
-                            'My Locations',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 27,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ]),
@@ -213,7 +200,7 @@ class Locations extends State<SavedLocationPage> {
                                                                                 context: context,
                                                                                 builder: (BuildContext context) {
                                                                                   return AlertDialog(
-                                                                                    title: Text("Are you sure you wish to delete this Location?",
+                                                                                    title: Text("Are you sure you want to delete this Location?",
                                                                                         style: TextStyle(
                                                                                           fontFamily: 'Lato',
                                                                                           fontSize: 20,
@@ -221,11 +208,11 @@ class Locations extends State<SavedLocationPage> {
                                                                                     actions: <Widget>[
                                                                                       TextButton(
                                                                                         onPressed: () => Navigator.of(context).pop(true),
-                                                                                        child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                        child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                       ),
                                                                                       TextButton(
                                                                                         onPressed: () => Navigator.of(context).pop(false),
-                                                                                        child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                        child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                       ),
                                                                                     ],
                                                                                   );
@@ -238,7 +225,7 @@ class Locations extends State<SavedLocationPage> {
                                                                               if (await deleteLocation(LocID)) {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                   content: Text(
-                                                                                    "the Location is deleted",
+                                                                                    "Location is deleted",
                                                                                     style: TextStyle(fontSize: 20),
                                                                                   ),
                                                                                   duration: Duration(milliseconds: 3000),

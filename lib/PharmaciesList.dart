@@ -92,7 +92,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                   ),
                                   Container(
                                     margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
-                                    child: Text('Pharamcies list',
+                                    child: Text('',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontFamily: 'Lato',
@@ -574,12 +574,10 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                       children: <
                                                                                                           TextSpan>[
                                                                                                         TextSpan(
-                                                                                                            text: 'Please note that you cannot undo this process!!!',
+                                                                                                            text: 'Please note that you cannot undo this process!',
                                                                                                             style: TextStyle(
                                                                                                                 color: Colors
-                                                                                                                    .red,
-                                                                                                                fontWeight: FontWeight
-                                                                                                                    .bold)),
+                                                                                                                    .red,)),
                                                                                                       ],
                                                                                                     ),
                                                                                                   ),
