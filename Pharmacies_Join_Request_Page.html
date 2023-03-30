@@ -22,7 +22,7 @@
             margin-right: auto;
         }
         
-        #Medresults {
+        #PharmaciesResults {
             margin-left: 15%;
             margin-right: auto;
         }
@@ -83,61 +83,28 @@ document.getElementById('PharmaciesResults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = " No pharmacies join request";
+document.getElementById('results0').innerHTML = "There are no join requests yet";
 
 }
       
 }
-// async function retriveListOfDecliendOPharmacies(){
-//     var count2 =0;
-//     const query = new Parse.Query("Pharmacist");
-//     query.equalTo("JoinRequest","declined")
-//     const results = await query.find();
-//     for (let j = 0; j < results.length; j++) {
-//             var pharmacies = results[j];   
-//             var pharmacyId = pharmacies.id;
-//             var pharmacyName = pharmacies.get("PharmacyName");
-//             var pharmacyEmail = pharmacies.get("Email");
-//             var joinDate = pharmacies.get("createdAt").toString();
-//              joinDate =joinDate.substring(0,16);
-//             document.getElementById('pharmaciesTableBody2').innerHTML += '<tr id='+"T"+j+'></tr>';
-//             document.getElementById("T"+j).innerHTML += "<td>"+pharmacyName+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+pharmacyEmail+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+pharmacies.get("Address")+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+joinDate+"</td>";
-//             document.getElementById("T"+j).innerHTML  += "<td>"+pharmacies.get("JoinRequest")+"</td>";
-//             document.getElementById("T"+j).innerHTML  += '<td><button class="primary" onclick= ifAccept("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Accept</button></td>';
-//             document.getElementById("T"+j).innerHTML  += '<td id="'+pharmacies.id+'"></td>';
-//             count2 = count2+1;
-//     }
-//  //display number of results
-// document.getElementById('PharmaciesResults2').innerHTML = "Results Of Declined Pharmacies: "+count2; 
 
-// if(count2 == 0) {
-
-// document.getElementById('results02').innerHTML = " No declined pharmacies";
-
-// }
-      
-// }
 
 
 retriveListOfOPharmacies();
 
-// retriveListOfDecliendOPharmacies();
 
 async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to accept pharmacy "+pharmacyName+" join request?")){
+    if(confirm("Are you sure you want to accept "+pharmacyName+" pharmacy join request?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId);
     query.set("JoinRequest","accepted");
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been accepted');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been accepted');
+            var a = "accepted"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
         }
@@ -146,37 +113,32 @@ async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
 }
 
 async function ifDecline(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to reject pharmacy "+pharmacyName+" join request?")){
+    if(confirm("Are you sure you want to decline "+pharmacyName+" pharmacy join request?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId);
     query.set("JoinRequest","declined");
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been rejected');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been declined');
+            var a = "declined"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
         }
     }
 }
 
-function sendEmail(pharmacyName,pharmacyEmail,pharmacyId){
-    if(confirm("Yout need to send email to pharmacy "+pharmacyName)){
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "mailto:"+ pharmacyEmail);
-    form.setAttribute("enctype", "text/plain");
-  
-     var sendButton = document.createElement("input");
-     sendButton.setAttribute("type", "submit");
-     sendButton.setAttribute("value", "SendEmail");
-     sendButton.setAttribute("class","primary");
-     form.appendChild(sendButton);
+function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a){
+    if(confirm("You "+a+" "+pharmacyName+" pharmacy, please inform "+pharmacyName+" pharmacy by sending an email")){
     
-     document.getElementById(pharmacyId).appendChild(form);
-}
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We would like to inform you that your account has been [accepted, declined] on date [day/month/year], because of [reason].'+
 
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team';  
+    }
 }
 
  //search pharmacies
@@ -226,49 +188,16 @@ for(let i=0; i<results.length;i++){
     }  
     }   
 
-//     for(let i=0; i<results.length;i++){    
-//     var pharmacies = results[i];   
-//    if(pharmacies.get("JoinRequest") == "declined"){
-//         if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){ 
-//             var pharmacies = results[i];   
-//             var pharmacyId = pharmacies.id;
-//             var pharmacyName = pharmacies.get("PharmacyName");
-//             var pharmacyEmail = pharmacies.get("Email");
-//             var joinDate = pharmacies.get("createdAt").toString();
-//              joinDate =joinDate.substring(0,16);
-//             document.getElementById('pharmaciesTableBody2').innerHTML += '<tr id='+"T"+i+'></tr>';
-//             document.getElementById("T"+i).innerHTML += "<td>"+pharmacyName+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+pharmacyEmail+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+pharmacies.get("Address")+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+joinDate+"</td>";
-//             document.getElementById("T"+i).innerHTML  += "<td>"+pharmacies.get("JoinRequest")+"</td>";
-//             document.getElementById("T"+i).innerHTML  += '<td><button class="primary" onclick= ifAccept("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Accept</button></td>';
-//             document.getElementById("T"+i).innerHTML  += '<td id="'+pharmacies.id+'"></td>';
-//             count2 = count2+1;
-//          }
-
-//     }
-//     } 
 
 //display number of results of join request 
 document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no pharmacies join request with this name";
+document.getElementById('results0').innerHTML = "Sorry, No results match your search";
 
 }
 
-//display number of results of declined pharmacies 
-// document.getElementById('PharmaciesResults2').innerHTML = "Results Of Declined Pharmacies: "+count2; 
-
-// if(count2 == 0) {
-
-// document.getElementById('results02').innerHTML = "Sorry there is no declined pharmacies with this name";
-
-// }
 
 }
 
@@ -314,30 +243,33 @@ async function doUserLogOut () {
                     <i class="fa fa-th-large" aria-hidden="true"></i>
                     <h3>Dashboard</h3>
                 </a>
-                <a href="Medications.html" >
-                    <i class="fa fa-medkit" aria-hidden="true"></i>
-                    <h3>Medications</h3>
-                </a>
                 <a href="ViewCustomers.html">
                     <i class="fa fa-users" aria-hidden="true"></i>
                     <h3>Customers</h3>
-                </a>
-                <a href="Pharmacies_page.html">
-                    <i class="fa fa-plus-square" aria-hidden="true"></i>
-                    <h3>Pharmacies</h3>
                 </a>
                 <a href="customerOrders.html" >
                     <i class="fa fa-list-alt" aria-hidden="true"></i>
                     <h3>Orders</h3>
                 </a>
+
+                <a href="Medications.html" >
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                 <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+                <a href="Pharmacies_page.html">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+              
                 <a href="Pharmacies_Join_Request_Page.html" class="active">
                     <i class="fa fa-envelope" aria-hidden="true"></i>
                     <h3>Join requests</h3>
                 </a>
-                <a href="AddMedication.html">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    <h3>Add Medications</h3>
-                </a>
+              
                 <a href="" onclick="doUserLogOut(); return false">
                     <i class="fa fa-sign-out" aria-hidden="true"></i>
                     <h3>Log out</h3>
@@ -380,33 +312,7 @@ async function doUserLogOut () {
             </div>  
             <br><br><br>
                 <p id="results0"></p>
-             <!--------------------------- END OF LIST OF PHARMACIES----------------------------> 
-             <!-- <p id="PharmaciesResults2"></p> -->
-              <!---------------------------LIST OF DECLINED PHARMACIES----------------------------> 
-            <!-- <div class="med2">
-                <table id="MedTable2">
-                    <caption class="caption">Declined Pharmacies</caption>
-                    <thead>
-                        <tr>
-                            <th>Pharmacy name</th>
-                            <th>Phone number</th>
-                            <th>Email</th>
-                            <th>Commercial register</th>
-                            <th>Address</th>
-                            <th>Join date</th>
-                            <th>Join request</th>
-                       
-                        </tr>
-                    </thead>
-                    <tbody id="pharmaciesTableBody2">
-                        
-        
-                    </tbody>
-                </table>
             
-            </div>  
-            <br><br><br>
-                <p id="results02"></p> -->
              <!-- ------------------------- END OF LIST OF DECLINED PHARMACIES--------------------------  -->
         </main>
         <!------------------------- END OF MAIN ------------------> 

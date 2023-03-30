@@ -12,7 +12,50 @@
 
     <style>
 
-        #search{
+#btn1 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#btn2 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#btn3 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#btn4 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+
+#MedFilter button:hover{
+   color: rgb(168, 42, 168);
+}
+
+
+#MedFilter{
+    margin-left: 35%;
+    margin-right: auto;
+}
+
+#search{
             width: 100%;
             padding: 10px 10px;
             display: inline-block;
@@ -22,17 +65,17 @@
             margin-right: auto;
         }
         
-        #Medresults {
+ #PharmaciesResults {
             margin-left: 15%;
             margin-right: auto;
         }
         
-        #results0{
+ #results0{
             margin-left: 45%;
             margin-right: auto;
         }
         
-          </style>
+  </style>
 
     <script type="text/javascript"
             src=" https://npmcdn.com/parse/dist/parse.min.js"> 
@@ -55,30 +98,27 @@
    
 async function retriveListOfOPharmacies(){
     var count =0;
-    const query1 = new Parse.Query("Pharmacist");
-    query1.equalTo("JoinRequest","accepted")
-    query1.equalTo("Block",false)
-
-    const query2 = new Parse.Query("Pharmacist");
-    query2.equalTo("JoinRequest","rejected")
-    query2.equalTo("Block",false)
-
-    let query = Parse.Query.or(query1, query2);
-
-
+    const query = new Parse.Query("Pharmacist");
+    query.equalTo("JoinRequest","accepted")
+    query.equalTo("Block",false)
     const results = await query.find();
     for (let i = 0; i < results.length; i++) {
         var pharmacies = results[i];
         var pharmacyName = pharmacies.get("PharmacyName");
         var pharmacyEmail = pharmacies.get("Email");
+        var joinDate = pharmacies.get("createdAt").toString();
+        var JoinRequest = pharmacies.get("JoinRequest");
+        joinDate =joinDate.substring(0,16);
+        var BlockedORnot = pharmacies.get("Block");
         document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
         document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
-        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("JoinRequest")+"</td>";
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Block</button></td>';
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary2"  onclick= ifBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Block</button></td>';
         document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
         count = count+1;
     }
@@ -87,49 +127,211 @@ document.getElementById('PharmaciesResults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "No pharmcies";
+document.getElementById('results0').innerHTML = "There are no registered pharmacies yet";
 
 }
+//change (accepted) filter to active color
+changeStyle('btn1');   
 }
 
+
+// displat accepted pharmacies 
 retriveListOfOPharmacies();
 
+
+// Filter the pharmacies based on pharmacy status 
+ async function DisplayFilterPharmacies(BlockORnot) { 
+
+    //clear search when filter is changed
+    document.getElementById('search').value = "";
+    var count =0;
+
+    //retrieve the list of pharmacies
+    const query1 = new Parse.Query("Pharmacist");
+    query1.equalTo("JoinRequest","accepted")
+
+
+    const query2 = new Parse.Query("Pharmacist");
+    query2.equalTo("JoinRequest","declined")
+
+    let query = Parse.Query.or(query1, query2);
+    query.limit(200);
+    query.ascending("PharmacyName");
+    const results = await query.find();
+    
+    //clear the table of pharmacies
+    document.getElementById('pharmaciesTableBody').innerHTML = "";
+
+//display the pharmacies in table if selected is accepted
+if(BlockORnot == false){
+for(let i=0; i<results.length;i++){ 
+        var pharmacies = results[i];
+        if (pharmacies.get("JoinRequest") == "accepted" &&  pharmacies.get("Block") == false){ 
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        var JoinRequest = pharmacies.get("JoinRequest");
+        var joinDate = pharmacies.get("createdAt").toString();
+        joinDate =joinDate.substring(0,16);
+        var BlockedORnot = pharmacies.get("Block");
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary2"  onclick= ifBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Block</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+    
+} }
+      //display number of results
+document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
+
+  //change (accepted) filter to active color
+  changeStyle('btn1');
+ }     
+
+
+ if(BlockORnot == "declined"){
+    //display the pharmacies in table based on selected filter
+    for(let i=0; i<results.length;i++){  
+        var pharmacies = results[i];
+       if (pharmacies.get("JoinRequest") == "declined" ){
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        var joinDate = pharmacies.get("createdAt").toString();
+        var JoinRequest = pharmacies.get("JoinRequest");
+        joinDate =joinDate.substring(0,16);
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary3" onclick= ifAccept("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Accept</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+    
+} 
+      //display number of results
+document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
+
+}       
+   } 
+
+   if(BlockORnot == true){
+    //display the pharmacies in table based on selected filter
+    for(let i=0; i<results.length;i++){  
+        var pharmacies = results[i];
+        if (pharmacies.get("Block") == true){
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        var joinDate = pharmacies.get("createdAt").toString();
+        var JoinRequest = pharmacies.get("JoinRequest");
+        joinDate =joinDate.substring(0,16);
+        var BlockedORnot = pharmacies.get("Block");
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary3"  onclick= ifNotBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>UnBlock</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+    
+      //display number of results
+document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
+
+}    } 
+
+   } 
+}
+
+async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
+    if(confirm("Are you sure you want to accept "+pharmacyName+" pharmacy join request?")){
+    const query = new Parse.Object("Pharmacist");
+    query.set("objectId",pharmacyId);
+    query.set("JoinRequest","accepted");
+    try{
+            //Save the Object
+            let result = await query.save();
+            alert(pharmacyName+' pharmacy has been accepted');
+            var a = "accepted"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
+        }catch(error){
+            alert('Failed to update pharmacy ' +pharmacyName);
+        }
+    }
+    
+}
+
 async function ifBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to block pharmacy "+pharmacyName+"?")){
+    if(confirm("Are you sure you want to block "+pharmacyName+" pharmacy?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId)
     query.set("Block",true)
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been blocked');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been blocked');
+            var a = "blocked"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to block pharmacy ' +pharmacyName);
         }
     }
 }
 
-function sendEmail(pharmacyName,pharmacyEmail,pharmacyId){
-    if(confirm("You need to send email to pharmacy "+pharmacyName)){
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "mailto:"+ pharmacyEmail);
-    form.setAttribute("enctype", "text/plain");
-  
-     var sendButton = document.createElement("input");
-     sendButton.setAttribute("type", "submit");
-     sendButton.setAttribute("value", "SendEmail");
-     sendButton.setAttribute("class","primary");
-     form.appendChild(sendButton);
+async function ifNotBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
+    if(confirm("Are you sure you want to UnBlock "+pharmacyName+" pharmacy?")){
+    const query = new Parse.Object("Pharmacist");
+    query.set("objectId",pharmacyId)
+    query.set("Block",false)
+    try{
+            //Save the Object
+            let result = await query.save();
+            alert(pharmacyName+' pharmacy has been UnBlocked');
+            var a = "UnBlocked"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
+        }catch(error){
+            alert('Failed to Unblock pharmacy ' +pharmacyName);
+        }
+    }
+}
+
+function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a){
+    if(confirm("You "+a+" "+pharmacyName+" pharmacy, please inform "+pharmacyName+" pharmacy by sending an email")){
     
-     document.getElementById(pharmacyId).appendChild(form);
-     
-  
+        if( a == "blocked" || a == "UnBlocked"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We apologize to inform you that your account has been [blocked, unblocked] on date [day/month/year], because of [reason].'+
 
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team'; 
+     }
+
+     else if (a == "accepted"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We would like to inform you that your account has been [accepted, declined] on date [day/month/year], because of [reason].'+
+
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team';   
+     }
+
+     //location.reload();
+     }
+     //location.reload();
 }
 
-}
 
  //search pharmacies
  async function searchPharmacies(){
@@ -142,10 +344,8 @@ var searchString = document.getElementById('search').value;
 searchString = searchString.toUpperCase();
 const query1 = new Parse.Query("Pharmacist");
 query1.equalTo("JoinRequest","accepted")
-query1.equalTo("Block",false)
 const query2 = new Parse.Query("Pharmacist");
-query2.equalTo("JoinRequest","rejected")
-query2.equalTo("Block",false)
+query2.equalTo("JoinRequest","declined")
 let query = Parse.Query.or(query1, query2);
 query.limit(200);
 query.ascending("PharmacyName");
@@ -154,34 +354,108 @@ const results = await query.find();
 //clear the table of medications
 document.getElementById('pharmaciesTableBody').innerHTML = "";
 
+//if the filter selected is (accepted)
+if (document.getElementById('btn1').style.backgroundColor == 'rgb(204, 148, 203)'){
 for(let i=0; i<results.length;i++){    
 var pharmacies = results[i];   
 
-if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){  
-        var pharmacyId = pharmacies.id;
+        if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){  
+
+        if (pharmacies.get("JoinRequest") == "accepted" &&  pharmacies.get("Block") == false){ 
         var pharmacyName = pharmacies.get("PharmacyName");
         var pharmacyEmail = pharmacies.get("Email");
+        var JoinRequest = pharmacies.get("JoinRequest");
+        var joinDate = pharmacies.get("createdAt").toString();
+        joinDate =joinDate.substring(0,16);
+        var BlockedORnot = pharmacies.get("Block");
         document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
         document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
         document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
-        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("JoinRequest")+"</td>";
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= ifBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Block</button></td>';
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary2"  onclick= ifBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Block</button></td>';
         document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
         count = count+1;
-}    
-}      
+}    }
+} }   
+
+//if the filter selected is (declined)
+if (document.getElementById('btn2').style.backgroundColor == 'rgb(204, 148, 203)'){
+    for(let i=0; i<results.length;i++){    
+    var pharmacies = results[i];   
+    if (pharmacies.get("JoinRequest") == "declined"){
+    if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){  
+        var pharmacyId = pharmacies.id;
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        var joinDate = pharmacies.get("createdAt").toString();
+        var JoinRequest = pharmacies.get("JoinRequest");
+        joinDate =joinDate.substring(0,16);
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary3" onclick= ifAccept("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>Accept</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+}    }
+}  }
+
+//if the filter selected is (blocked)
+if (document.getElementById('btn3').style.backgroundColor == 'rgb(204, 148, 203)'){
+    for(let i=0; i<results.length;i++){    
+    var pharmacies = results[i];   
+    if (pharmacies.get("Block") == true ){
+    if (((pharmacies.get("PharmacyName")).toUpperCase()).startsWith(searchString)){  
+        var pharmacyId = pharmacies.id;
+        var pharmacyName = pharmacies.get("PharmacyName");
+        var pharmacyEmail = pharmacies.get("Email");
+        var joinDate = pharmacies.get("createdAt").toString();
+        var JoinRequest = pharmacies.get("JoinRequest");
+        joinDate =joinDate.substring(0,16);
+        var BlockedORnot = pharmacies.get("Block");
+        document.getElementById('pharmaciesTableBody').innerHTML += '<tr id='+i+'></tr>';
+        document.getElementById(i).innerHTML += "<td>"+pharmacyName+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("PhoneNumber")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacyEmail+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("CommercialRegister")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+pharmacies.get("Address")+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+joinDate+"</td>";
+        document.getElementById(i).innerHTML += "<td>"+JoinRequest+"</td>";
+        document.getElementById(i).innerHTML += '<td><button class="primary3"  onclick= ifNotBlocked("'+pharmacies.id+'","'+pharmacyName+'","'+pharmacyEmail+'")>UnBlock</button></td>';
+        document.getElementById(i).innerHTML += '<td id="'+pharmacies.id+'"></td>';
+        count = count+1;
+}    }
+}  }
 
 //display number of results
 document.getElementById('PharmaciesResults').innerHTML = "Results: "+count; 
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no pharmacies with this name";
+document.getElementById('results0').innerHTML = "Sorry, No results match your search";
 
 }
+
+}
+
+//change style of the filter when clicked
+async function changeStyle(btn){
+
+//change the other filters to white
+document.getElementById('btn1').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn2').style.backgroundColor = '#f1f1f1';
+document.getElementById('btn3').style.backgroundColor ='#f1f1f1';
+
+//change the selected filter to active color
+document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
 
 }
 
@@ -228,19 +502,11 @@ async function doUserLogOut () {
                 <i class="fa fa-users" aria-hidden="true"></i>
                 <h3>Customers</h3>
             </a>
-            <a href="Pharmacies_page.html" class="active">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
+            <a href="customerOrders.html" >
+                <i class="fa fa-list-alt" aria-hidden="true"></i>
+                <h3>Orders</h3>
             </a>
-            <a href="Blocked_pharmacies_page.html">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Blocked Pharmacies</h3>
-            </a>
-            <a href="Pharmacies_Join_Request_Page.html">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requests</h3>
-            </a>
-            <a href="Medications.html">
+            <a href="Medications.html" >
                 <i class="fa fa-medkit" aria-hidden="true"></i>
                 <h3>Medications</h3>
             </a>
@@ -248,11 +514,18 @@ async function doUserLogOut () {
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <h3>Add Medications</h3>
             </a>
-            <a href="customerOrders.html"  >
-                <i class="fa fa-list-alt" aria-hidden="true"></i>
-                <h3>Orders</h3>
+          
+            <a href="Pharmacies_page.html" class="active">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3>Pharmacies</h3>
             </a>
-            <a href="" onclick="doUserLogOut()">
+          
+            <a href="Pharmacies_Join_Request_Page.html">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <h3>Join requests</h3>
+            </a>
+          
+            <a href="" onclick="doUserLogOut(); return false">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <h3>Log out</h3>
             </a>
@@ -268,6 +541,15 @@ async function doUserLogOut () {
 
             <br> <br> 
 
+            <div id="MedFilter">
+                <button id="btn1" onclick=" DisplayFilterPharmacies(false)">Accepted Pharmacies</button>
+                <button id="btn2" onclick=" DisplayFilterPharmacies('declined');changeStyle('btn2')"> Declined Pharmacies</button>
+                <button id="btn3" onclick=" DisplayFilterPharmacies(true);changeStyle('btn3')">Blocked Pharmacies</button>
+               
+                
+                  
+            </div>
+
             <p id="PharmaciesResults"></p>
 
             <!---------------------------LIST OF PHARMACIES----------------------------> 
@@ -280,6 +562,7 @@ async function doUserLogOut () {
                             <th>Email</th>
                             <th>Commercial register</th>
                             <th>Address</th>
+                            <th>Join date</th>
                             <th>Join request</th>
                        
                         </tr>
