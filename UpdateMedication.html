@@ -124,7 +124,7 @@
                       <p id="PackageTypeP" style="color: red;"></p>
                     </div>
 
-                    <div >
+                    <div class="custom-select">
                     <label for="PharmaceuticalForm">Pharmaceutical Form:</label>
                     <br>
                     <select name="PharmaceuticalForm" id="PharmaceuticalForm">
@@ -148,7 +148,7 @@
                     <p id="PharmaceuticalFormP" style="color: red;"></p>
                     </div>
                     
-                    <div id = 'other'>
+                    <div id = 'other' class="inputbox">
 
                     </div>
                     <script>
@@ -187,7 +187,7 @@
                     </div>
 
 
-                    <div >
+                    <div class="custom-select">
                       <label for="MarketingCompany">Marketing Company</label>
                       <br>
                       <select name="MarketingCompany" id="MarketingCompany">
@@ -265,18 +265,18 @@
                       <p id="MarketingCompanyP" style="color: red;"></p>
                       </div>
                       
-                      <div id = 'other2'>
+                      <div id = 'other2' class="inputbox">
   
                       </div>
                       <script>
-                        document.getElementById('MarketingCompany').addEventListener("change", otherText);
+                        document.getElementById('MarketingCompany').addEventListener("change", otherCompany);
                         ///Call this method when other is selected in the drop down menu
-                        async function otherText(){
+                        async function otherCompany(){
                           if(document.getElementById('MarketingCompany').value == 'Other'){
-                            document.getElementById('other2').innerHTML =  '<label for="otherText">Other:</label>';
+                            document.getElementById('other2').innerHTML =  '<label for="otherCompany">Other:</label>';
                             document.getElementById('other2').innerHTML += '<br>';
                             document.getElementById('other2').innerHTML +='<div class="inputbox">';
-                            document.getElementById('other2').innerHTML +='<input name="othertext" id="getOther2" type="text" placeholder="" required="" aria-required="true"/>';
+                            document.getElementById('other2').innerHTML +='<input name="otherCompany" id="getOther2" type="text" placeholder="" required="" aria-required="true"/>';
                             document.getElementById('other2').innerHTML +='<p id="otherP2" style="color: red;"></p>';
                             document.getElementById('other2').innerHTML +='</div>';
                           }
@@ -411,7 +411,7 @@
                         <option value="Kyrgyzstan">Kyrgyzstan</option>
                         <option value="Lao">Lao People's Democratic Republic</option>
                         <option value="Latvia">Latvia</option>
-                        <option value="Lebanon" selected>Lebanon</option>
+                        <option value="Lebanon">Lebanon</option>
                         <option value="Lesotho">Lesotho</option>
                         <option value="Liberia">Liberia</option>
                         <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
@@ -552,7 +552,7 @@
                       <input id="updateInput2" type="submit" name="submit" value="Update">
                     </div>  
                     <div class="inputbox">
-                      <input id="updateInput2"  type=button onclick=NavigateToMedications() name="submit" value="Cancel">
+                      <input  id="updateInput2" type=button onclick=NavigateToMedications() name="submit" value="Cancel">
                     </div>  
                 </div>
                 </form>
@@ -568,8 +568,8 @@
 
 <script>
 
-async function NavigateToMedications(){
-window.location.replace('Medications.html');
+async function NavigateToMedications(medId){
+window.location.replace('Medications.html?id='+medId+'');
 
 }
 
@@ -661,10 +661,10 @@ medId.get("MarketingCompany") != 'LABORATORIES THEA S.I.S' && medId.get("Marketi
 medId.get("MarketingCompany") != 'GlaxoSmithKline Consumer Healthcare Saudi Limited' && medId.get("MarketingCompany") != 'SANOFI AVENTIS GROUPE'&&
 medId.get("MarketingCompany") != 'Biocodex' && medId.get("MarketingCompany") != 'Laboratoires Besins International'){
   document.getElementById('MarketingCompany').value = 'Other';
-  document.getElementById('other2').innerHTML =  '<label for="otherText">Other:</label>';
+  document.getElementById('other2').innerHTML =  '<label for="otherCompany">Other:</label>';
   document.getElementById('other2').innerHTML += '<br>';
   document.getElementById('other2').innerHTML +='<div class="inputbox">';
-  document.getElementById('other2').innerHTML +='<input name="othertext" id="getOther2" type="text" value="'+medId.get('MarketingCompany')+'" placeholder="" required="" aria-required="true"/>';
+  document.getElementById('other2').innerHTML +='<input name="otherCompany" id="getOther2" type="text" value="'+medId.get('MarketingCompany')+'" placeholder="" required="" aria-required="true"/>';
   document.getElementById('other2').innerHTML +='<p id="otherP2" style="color: red;"></p>';
   document.getElementById('other2').innerHTML +='</div>';
 }
@@ -769,53 +769,51 @@ async function validate(){
     && LegalStatus != '' && MarketingCompany !=''  && MarketingCountry != '')
     {
 
-         if (TradeName.length>50) {document.getElementById('TradeNameP').innerHTML = "should be less than 50 characters" ;}
+         if (TradeName.length>50) {document.getElementById('TradeNameP').innerHTML = "trade name should be less than 50 characters" ;}
            else {document.getElementById('TradeNameP').innerHTML = ""}
 
-         if (ScientificName.length>50) { document.getElementById('ScientificNameP').innerHTML = "should be less than 50 characters" ;}
+         if (ScientificName.length>50) { document.getElementById('ScientificNameP').innerHTML = "scientific name should be less than 50 characters" ;}
            else {document.getElementById('ScientificNameP').innerHTML = ""}
 
 
          //check if the strength is number first then check the limit
          if(isNaN(Strength)){document.getElementById('StrengthP').innerHTML = "strength should be a number"}
            else{
-               if (Strength>10000) { document.getElementById('StrengthP').innerHTML = "should be less than 10000" ;}
+               if (Strength>10000) { document.getElementById('StrengthP').innerHTML = "strength should be less than 10000" ;}
             else {document.getElementById('StrengthP').innerHTML = ""}
                }
 
-        if (StrengthUnit.length>50) { document.getElementById('StrengthUnitP').innerHTML = "should be less than 50 characters" ;}
+        if (StrengthUnit.length>50) { document.getElementById('StrengthUnitP').innerHTML = "strength unit should be less than 50 characters" ;}
             else {document.getElementById('StrengthUnitP').innerHTML = ""}
 
         //check if the price is number first then check the limit
         if(isNaN(Price)){document.getElementById('PriceP').innerHTML = "price should be a number"}
            else{
-              if (Price>100000) { document.getElementById('PriceP').innerHTML = "should be less than 100000" ;}
+              if (Price>100000) { document.getElementById('PriceP').innerHTML = "price should be less than 100000" ;}
               else {document.getElementById('PriceP').innerHTML = ""}
                }
 
-        if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
+        if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "package type should be less than 50 characters" ;}
            else {document.getElementById('PackageTypeP').innerHTML = ""}
 
         if (document.getElementById('PharmaceuticalForm').value == "Other") {
              if(document.getElementById('getOther').value.length>50){
-              document.getElementById('otherP').innerHTML = "should be less than 50 characters";
+              document.getElementById('otherP').innerHTML = "pharmaceutical form should be less than 50 characters";
              }
              else {document.getElementById('otherP').innerHTML = ""}
         }
 
-        if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
+        if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "usage method should be less than 50 characters" ;}
            else {document.getElementById('UsageMethodP').innerHTML = ""}
   
 
-             if (document.getElementById('MarketingCompany').value == "Other") {
+        if (document.getElementById('MarketingCompany').value == "Other") {
              if(document.getElementById('getOther2').value.length>50){
-              document.getElementById('otherP2').innerHTML = "should be less than 50 characters";
+              document.getElementById('otherP2').innerHTML = "marketing company should be less than 50 characters";
              }
              else {document.getElementById('otherP2').innerHTML = ""}
         }
 
-        if (MarketingCountry.length>50) { document.getElementById('MarketingCountryP').innerHTML = "should be less than 50 characters" ;}
-           else {document.getElementById('MarketingCountryP').innerHTML = ""}
 
 
            if(MedicationImage != null){
@@ -830,33 +828,53 @@ async function validate(){
             }
           }    
 
-
-          if(MedicationImage != null){
+        if(MedicationImage != null){
           if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-              && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
-              UsageMethod.length<=50 && MarketingCompany.length<=50 && MarketingCompany != "None"
-              && MarketingCountry.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
+             && Price<=100000 && PackageType.length<=50  && 
+              UsageMethod.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
               {
-                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
-               
+                //If both are option 'OTHER'
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50
+                 &&
+                  MarketingCompany == 'Other' && document.getElementById('getOther2').value.length<=50){
+                  updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
+              //If both are not option 'OTHER'
+              else if(PharmaceuticalForm != 'Other' && MarketingCompany != 'Other'){
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
               }
-              else if(PharmaceuticalForm != 'Other'){
+              //If only PharmaceuticalForm on option 'OTHER'
+              else if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50 && MarketingCompany != 'Other'){
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
+              //If only MarketingCompany on option 'OTHER'
+              else if(MarketingCompany == 'Other' && document.getElementById('getOther2').value.length<=50 && PharmaceuticalForm != 'Other'){
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
               }
               }}
-
-              //if there is no image 
               else{
                 if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-              && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
-              UsageMethod.length<=50 && MarketingCompany.length<=50
-              && MarketingCountry.length<=50 )
+             && Price<=100000 && PackageType.length<=50 &&  
+              UsageMethod.length<=50 
+              )
               {
-                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50){
+                //If both are option 'OTHER'
+                if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50
+                 &&
+                  MarketingCompany == 'Other' && document.getElementById('getOther2').value.length<=50){
+                  updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+
+              }
+              //If both are not option 'OTHER'
+              else if(PharmaceuticalForm != 'Other' && MarketingCompany != 'Other'){
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
-                }
-                else if(PharmaceuticalForm != 'Other'){
+              }
+              //If only PharmaceuticalForm on option 'OTHER'
+              else if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50 && MarketingCompany != 'Other'){
+                updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
+              }
+              //If only MarketingCompany on option 'OTHER'
+              else if(MarketingCompany == 'Other' && document.getElementById('getOther2').value.length<=50 && PharmaceuticalForm != 'Other'){
                 updateMedication(TradeName,ScientificName,Strength,StrengthUnit,Price,PackageType,PharmaceuticalForm,UsageMethod,LegalStatus,MarketingCompany,MarketingCountry,MedicationImage);
               }
               }}

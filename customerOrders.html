@@ -13,6 +13,17 @@
     type="text/javascript"
     src="https://npmcdn.com/parse/dist/parse.min.js"
   ></script>
+  <style>
+    #Ordersresults {
+    margin-left: 15%;
+    margin-right: auto;
+    }
+
+    #results0{
+    margin-left: 45%;
+    margin-right: auto;
+    }
+  </style>
 
 </head>
 <body>
@@ -69,18 +80,9 @@
         <main>
             <h1>Orders</h1>
             <p id="demo"></p>
+            <p id="Ordersresults"></p>
+
             <!---------------------------RECENT ORDERS----------------------------> 
-
-            <div id="MedFilter">
-                <button id="btn1" onclick=" DisplayFilterOrders('All')">All</button>
-                <button id="btn2" onclick=" DisplayFilterOrders('Collected');changeStyle('btn2')"> Collected Orders</button>
-                <button id="btn3" onclick=" DisplayFilterOrders('Declined');changeStyle('btn3')"> Declined Orders</button>
-                <button id="btn4" onclick=" DisplayFilterOrders('Ready for pick up');changeStyle('btn4')"> Ready for pick up Orders</button>
-                <button id="btn5" onclick=" DisplayFilterOrders('Under preparation');changeStyle('btn5')"> Under preparation Orders</button>
-                  
-            </div>
-
-            
             <div class="med">
                 <table id="MedTable">
                     <thead>
@@ -125,6 +127,9 @@
                                 ///Query orders
                                 let query1 = new Parse.Query("Orders");
                                 let results = await query1.find();
+
+                                document.getElementById('Ordersresults').innerHTML = "Results: "+results.length;
+
                                  
                                 for (i=0; i<results.length; i++){
                                     
@@ -146,102 +151,11 @@
                                        document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
                                        document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
                                        document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
-                                       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
+                                       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>';
 
                                 }
-                                //change (All) filter to active color
-                                changeStyle('btn1');  
                             }
                              retrieveOrders();
-
-
- async function DisplayFilterOrders(category) { 
-
-//retrieve the list of medications
-const query = new Parse.Query("Orders");
-query.limit(400);
-query.ascending("OrderStatus");
-const results = await query.find();
-
-//clear the table of medications
-document.getElementById('orderTableBody').innerHTML = "";
-
-
-//display the orders in table if selected is All
-if(category == "All"){
-    for (i=0; i<results.length; i++){
-                                    
-                                    var order = results[i]
-                                    
-                                       //Dosplay order information
-                                       document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
-                                       //Query customer information
-                                       customerId = order.get("Customer_id").id
-                                       let customerquery = new Parse.Query('Customer')
-                                       customerquery.equalTo("objectId",customerId)
-                                       let Result = await customerquery.find();
-                                       var customerinfo = Result[0]
-                                       
-                                       
-                                       document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
-                                       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
-
-                                }
- //change (All) filter to active color
- changeStyle('btn1');
-}     
-
-if(category != "All"){
-//display the orders in table based on selected filter
-for (i=0; i<results.length; i++){
-                                    
-                                    var order = results[i]
-                                    if (Orders.get("OrderStatus") == category ){
-                                    
-                                       //Dosplay order information
-                                       document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
-                                       //Query customer information
-                                       customerId = order.get("Customer_id").id
-                                       let customerquery = new Parse.Query('Customer')
-                                       customerquery.equalTo("objectId",customerId)
-                                       let Result = await customerquery.find();
-                                       var customerinfo = Result[0]
-                                       
-                                       
-                                       document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
-                                       document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
-                                       document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+' ">Details</a></td>';
-
-                                }}
-
-
-}       
-    }
-
-    async function changeStyle(btn){
-
-//change the other filters to white
-document.getElementById('btn1').style.backgroundColor = '#f1f1f1';
-document.getElementById('btn2').style.backgroundColor = '#f1f1f1';
-document.getElementById('btn3').style.backgroundColor ='#f1f1f1';
-document.getElementById('btn4').style.backgroundColor ='#f1f1f1';
-document.getElementById('btn5').style.backgroundColor ='#f1f1f1';
-
-
-
-//change the selected filter to active color
-document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
-
-}
 
                              //User log out
                              async function doUserLogOut () { 

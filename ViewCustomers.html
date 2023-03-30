@@ -25,7 +25,7 @@
     margin-right: auto;
 }
 
-#Customerresults {
+#Customersresults {
     margin-left: 15%;
     margin-right: auto;
 }
@@ -34,6 +34,8 @@
     margin-left: 45%;
     margin-right: auto;
 }
+
+
 </style>
        <script>
 
@@ -79,10 +81,10 @@ async function DisplayCustomers() {
        //document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
        if(customers.get('Block')==false){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Block</button></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary2"  onclick= Block("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Block</button></td>';
        }
        else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Unblock</button></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary3"  onclick= Unblock("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Unblock</button></td>';
        }    
            document.getElementById(i).innerHTML += '<td id="'+customers.id+'"></td>';
         count = count+1;
@@ -93,7 +95,7 @@ document.getElementById('Customersresults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no customers";
+document.getElementById('results0').innerHTML = "There are no registered customers yet";
 }       
         }
 
@@ -111,7 +113,8 @@ document.getElementById('results0').innerHTML = "Sorry there is no customers";
             //Save the Object
             let result = await query.save();
             alert("Customer "+CustomerName+' has been blocked');
-            sendEmail(CustomerName,CustomerEmail,CustomerId);
+            var a = "blocked"
+            sendEmail(CustomerName,CustomerEmail,CustomerId,a);
         }catch(error){
             alert(error)
             alert('Failed to block customer ' +CustomerName);
@@ -129,7 +132,8 @@ async function Unblock(CustomerId ,CustomerName,CustomerEmail){
             //Save the Object
             let result = await query.save();
             alert("Customer "+CustomerName+' has been Unblocked');
-            sendEmail(CustomerName,CustomerEmail,CustomerId);
+            var a = "UnBlocked"
+            sendEmail(CustomerName,CustomerEmail,CustomerId,a);
         }catch(error){
             alert(error)
             alert('Failed to Unblock customer ' +CustomerName);
@@ -138,21 +142,15 @@ async function Unblock(CustomerId ,CustomerName,CustomerEmail){
 }
 
 
-function sendEmail(CustomerName,CustomerEmail,CustomerId){
-    if(confirm("You need to send email to customer "+CustomerName)){
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "mailto:"+ CustomerEmail);
-    form.setAttribute("enctype", "text/plain");
-  
-     var sendButton = document.createElement("input");
-     sendButton.setAttribute("type", "submit");
-     sendButton.setAttribute("value", "SendEmail");
-     sendButton.setAttribute("class","primary");
-     form.appendChild(sendButton);
-    
-     document.getElementById(CustomerId).appendChild(form);
-     
+function sendEmail(CustomerName,CustomerEmail,CustomerId,a){
+    if(confirm("You "+a+" customer "+CustomerName+", please inform "+CustomerName+" by sending an email")){
+
+        window.location.href='mailto:'+CustomerEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+CustomerName+', We apologize to inform you that your account has been [blocked, unblocked] on date [day/month/year], because of [reason].'+
+
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team';    
 }
 }
 
@@ -193,10 +191,10 @@ if (customer.get("Phonenumber").startsWith(searchString)||
       // document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
        //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
        if(customer.get('Block')==false){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary2"  onclick= Block("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
        }
        else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
+        document.getElementById(i).innerHTML += '<td><button class="primary3"  onclick= Unblock("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
        }    
            document.getElementById(i).innerHTML += '<td id="'+customer.id+'"></td>';
         count = count+1;
@@ -208,7 +206,7 @@ document.getElementById('Customersresults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no customer matche to your search";
+document.getElementById('results0').innerHTML = "Sorry, No results match your search";
 }
 }
 
@@ -279,12 +277,19 @@ async function doUserLogOut () {
         <main>
             <h1 id="hDivv"> </h1>
             <h1>Customers</h1>
+            
             <br>
 
             <input id="search" type="text" placeholder="Search by customer name or phonenumber or email  .." onkeyup="searchCustomers()" />
 
             <br> <br> 
+            
             <p id="Customersresults"></p>
+
+            
+
+        
+         
 
             <!---------------------------Display Customers----------------------------> 
             <div class="customer">

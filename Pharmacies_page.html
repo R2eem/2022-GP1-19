@@ -65,7 +65,7 @@
             margin-right: auto;
         }
         
- #Medresults {
+ #PharmaciesResults {
             margin-left: 15%;
             margin-right: auto;
         }
@@ -127,7 +127,7 @@ document.getElementById('PharmaciesResults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "No pharmcies";
+document.getElementById('results0').innerHTML = "There are no registered pharmacies yet";
 
 }
 //change (accepted) filter to active color
@@ -255,15 +255,16 @@ document.getElementById('PharmaciesResults').innerHTML = "Results: "+count;
 }
 
 async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to accept pharmacy "+pharmacyName+" join request?")){
+    if(confirm("Are you sure you want to accept "+pharmacyName+" pharmacy join request?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId);
     query.set("JoinRequest","accepted");
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been accepted');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been accepted');
+            var a = "accepted"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
         }
@@ -272,15 +273,16 @@ async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
 }
 
 async function ifBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to block pharmacy "+pharmacyName+"?")){
+    if(confirm("Are you sure you want to block "+pharmacyName+" pharmacy?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId)
     query.set("Block",true)
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been blocked');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been blocked');
+            var a = "blocked"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to block pharmacy ' +pharmacyName);
         }
@@ -288,41 +290,48 @@ async function ifBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
 }
 
 async function ifNotBlocked(pharmacyId ,pharmacyName,pharmacyEmail){
-    if(confirm("Are you sure you want to UnBlock pharmacy "+pharmacyName+"?")){
+    if(confirm("Are you sure you want to UnBlock "+pharmacyName+" pharmacy?")){
     const query = new Parse.Object("Pharmacist");
     query.set("objectId",pharmacyId)
     query.set("Block",false)
     try{
             //Save the Object
             let result = await query.save();
-            alert("Pharmacy "+pharmacyName+' has been UnBlocked');
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId);
+            alert(pharmacyName+' pharmacy has been UnBlocked');
+            var a = "UnBlocked"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
         }catch(error){
             alert('Failed to Unblock pharmacy ' +pharmacyName);
         }
     }
 }
 
-function sendEmail(pharmacyName,pharmacyEmail,pharmacyId){
-    if(confirm("You need to send email to pharmacy "+pharmacyName)){
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "mailto:"+ pharmacyEmail);
-    form.setAttribute("enctype", "text/plain");
-  
-     var sendButton = document.createElement("input");
-     sendButton.setAttribute("type", "submit");
-     sendButton.setAttribute("value", "SendEmail");
-     sendButton.setAttribute("class","primary");
-     form.appendChild(sendButton);
+function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a){
+    if(confirm("You "+a+" "+pharmacyName+" pharmacy, please inform "+pharmacyName+" pharmacy by sending an email")){
     
-     document.getElementById(pharmacyId).appendChild(form);
-     
-  
+        if( a == "blocked" || a == "UnBlocked"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We apologize to inform you that your account has been [blocked, unblocked] on date [day/month/year], because of [reason].'+
 
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team'; 
+     }
+
+     else if (a == "accepted"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+pharmacyName+', We would like to inform you that your account has been [accepted, declined] on date [day/month/year], because of [reason].'+
+
+        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
+
+        ' thank you,'+
+        ' Tiryaq team';   
+     }
+
+     //location.reload();
+     }
+     //location.reload();
 }
 
-}
 
  //search pharmacies
  async function searchPharmacies(){
@@ -431,7 +440,7 @@ document.getElementById('PharmaciesResults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no pharmacies with this name";
+document.getElementById('results0').innerHTML = "Sorry, No results match your search";
 
 }
 

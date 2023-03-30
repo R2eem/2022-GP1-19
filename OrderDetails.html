@@ -79,11 +79,40 @@
         
             <!---------------------------Display Medication Details----------------------------> 
             <div id="divMedDetails">
-               <h2>Medications</h2>
-               <p id="medList" style="text-align:left; font-size: 1.3em;"> </p>
+               <h2>Order details</h2>
                <br>
-               <h2>Selected Pharmacy</h2>
-               <p id="selectedPharmacy" style="text-align:left; font-size: 1.3em;"> </p>
+               <h3>Order ID:</h3>
+               <p id="orderID"></p>
+               <br>
+               <h3>Order created date:</h3>
+               <p id="orderDate"></p>
+               <br>
+               <h3>Order status:</h3>
+               <p id="orderStatus"></p>
+               <br>
+               <h3>Customer name:</h3>
+               <p id="customerName"></p>
+               <br>
+               <h3>Customer phone number:</h3>
+               <p id="customerPhonenumber"></p>
+               <br>
+               <h3>Customer email:</h3>
+               <p id="customerEmail"></p>
+               <br>
+               <h3>Customer location:</h3>
+               <p id="customerLocation"></p>
+               <br>
+               <h3>Medications:</h3>
+               <p id="medList"></p>
+               <br>
+               <h3>Total price:</h3>
+               <p id="totalPrice"></p>
+               <br>
+               <div id="pharmacy">
+               <h3>Selected Pharmacy</h3>
+               <p id="selectedPharmacy"></p>
+               <br>
+               </div>
                <br>
             </div>
              <!--------------------------- END OF Display Medication Details----------------------------> 
@@ -115,6 +144,22 @@ async function displayOrderDetails(){
 const query = window.location.search;
 const urlParams = new URLSearchParams(query);
 const orderId = urlParams.get('id');
+const orderDate = urlParams.get('orderDate');
+const orderStatus = urlParams.get('orderStatus');
+const customerLocation = urlParams.get('customerLocation');
+const totalPrice = urlParams.get('totalPrice');
+const customerName = urlParams.get('customerName');
+const customerPhonenumber = urlParams.get('customerPhonenumber');
+const customerEmail = urlParams.get('customerEmail');
+
+document.getElementById('orderID').innerHTML +=  orderId                                  
+document.getElementById('orderDate').innerHTML +=  orderDate                                  
+document.getElementById('orderStatus').innerHTML +=  orderStatus                                  
+document.getElementById('customerLocation').innerHTML +=  customerLocation                                  
+document.getElementById('totalPrice').innerHTML += totalPrice+" SR"                                  
+document.getElementById('customerName').innerHTML +=  customerName                                  
+document.getElementById('customerPhonenumber').innerHTML +=  customerPhonenumber                                  
+document.getElementById('customerEmail').innerHTML +=  customerEmail                                  
 
 
 const query2 = new Parse.Query("Orders");
@@ -136,11 +181,11 @@ query2.get(orderId)
                                                   let queryResult = await medquery.find();
                                                   var medinfo = queryResult[0]
                                                   if(pharmListinfo.get("MedicationsList")[0][j]['isChecked']== true){
-                                                    document.getElementById('medList').innerHTML += "<p><i  class='fa fa-check'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+                                                    document.getElementById('medList').innerHTML += "<i  class='fa fa-check'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+" - "+medinfo.get("Publicprice")+" SR<br>"
 
                                                   }
                                                   else{
-                                                    document.getElementById('medList').innerHTML += "<p><i class='fa fa-close'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+"</p></br>"
+                                                    document.getElementById('medList').innerHTML += "<i class='fa fa-close'></i> "+order.get("MedicationsList")[0][j]['quantity'] +'x '+medinfo.get("TradeName")+" "+medinfo.get("Strength")+" "+medinfo.get("StrengthUnit")+" - "+medinfo.get("Publicprice")+" SR<br>"
                                                   }
                                                 }                                             
                                             }
@@ -153,11 +198,14 @@ query2.get(orderId)
                                         medquery.contains('objectId',order.get("MedicationsList")[0][j]['medId']);
                                         let queryResult = await medquery.find();
                                         var orderinfo = queryResult[0]
-                                        document.getElementById('medList').innerHTML += "<p>"+order.get("MedicationsList")[0][j]['quantity'] +'x '+orderinfo.get("TradeName")+" "+orderinfo.get("Strength")+" "+orderinfo.get("StrengthUnit")+"</p></br>"
+                                        document.getElementById('medList').innerHTML += order.get("MedicationsList")[0][j]['quantity'] +'x '+orderinfo.get("TradeName")+" "+orderinfo.get("Strength")+" "+orderinfo.get("StrengthUnit")+" - "+orderinfo.get("Publicprice")+" SR<br>"
                                        }
                                     }
                                        ///Query pharmacy name if there is assigned pharmacy for order
                                        var selectedPharmacy;
+                                       var pharmacyLocation;
+                                       var pharmacyPhonenumber;
+                                       var pharmacyEmail;
                                        var pharmExist = false; 
                                        if(order.get("OrderStatus")!== 'Under processing' || order.get("OrderStatus")!== 'Cancelled' || order.get("OrderStatus")!== 'Declined'){
                                         let pharmListquery = new Parse.Query('PharmaciesList')
@@ -174,12 +222,21 @@ query2.get(orderId)
                                                 let Result = await pharmacyquery.find();
                                                 var pharmListinfo = Result[0]
                                                 selectedPharmacy = pharmListinfo.get("PharmacyName")
+                                                pharmacyLocation = pharmListinfo.get("Address")
+                                                pharmacyPhonenumber = pharmListinfo.get("PhoneNumber")
+                                                pharmacyEmail = pharmListinfo.get("Email")
                                             }
                                             else if (!pharmExist){
                                                 selectedPharmacy = 'No pharmacy assigned.'
                                             }
                                         }    
-                                        document.getElementById('selectedPharmacy').innerHTML += "<td>"+selectedPharmacy+"</td>"                                   
+                                        document.getElementById('selectedPharmacy').innerHTML += selectedPharmacy     
+                                        if(selectedPharmacy != 'No pharmacy assigned.')  {
+                                            document.getElementById('pharmacy').innerHTML += "<h3>Pharmacy location</h3><p id='pharmacyLocation'>"+pharmacyLocation+"</p><br>"
+                                            document.getElementById('pharmacy').innerHTML += "<h3>Pharmacy phone number</h3><p id='pharmacyPhonenumber'>"+pharmacyPhonenumber+"</p><br>"
+                                            document.getElementById('pharmacy').innerHTML += "<h3>Pharmacy email</h3><p id='pharmacyEmail'>"+pharmacyEmail+"</p><br>"
+
+                                        }                     
                                     }
 
 }, (error) => {

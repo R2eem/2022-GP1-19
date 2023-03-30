@@ -307,49 +307,6 @@ main .insights h3{
     font-size: 1rem;
 }
 
-main .insights .progress{
-    position: relative;
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
-}
-
-main .insights svg{
-    width: 7rem;
-    height: 7rem;
-}
-
-main .insights svg circle{
-    fill: none;
-    stroke: var(--color-primary);
-    stroke-width: 14;
-    stroke-linecap: round;
-    transform: translate(5px, 5px);
-    stroke-dasharray: 110;
-    stroke-dashoffset: 92;
-}
-
-main .insights .customers svg circle{
-    stroke-dashoffset: -30;
-    stroke-dasharray: 200;
-}
-
-main .insights .pharmacies svg circle{
-    stroke-dashoffset: 20;
-    stroke-dasharray: 80;
-}
-
-main .insights .progress .number {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 main .insights small{
     margin-top: 1.6rem; 
     display: block;  
@@ -587,7 +544,7 @@ for tablet and mobile
 	main .recent-orders{
 	width: 94%;
 	position:absolute;
-	left: 50%
+	left: 50%;
 	transform:translateX(-50%);
 	margin: 2rem 0 0 8.8rem;
 	}
@@ -1001,4 +958,105 @@ main .med2 i{
 
 .caption{
     font-size: medium;
+}
+/*=============== change the progress bar width  ==============================*/
+
+.progress-cusotmer{
+    background-color: lightgray;
+    border-radius: 20px;
+    height: 20px;
+    width: 300px;
+}
+
+.progress-done-Cusotmer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: repeating-linear-gradient(
+        to left,
+        #c56fbf,
+        #e3a0e0,
+        #f5d4f5
+    );
+    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
+    border-radius: 20px;
+    color:#fff;
+    height: 100%;
+    width: 0;
+    transition: 1s ease 0.3s;
+}
+
+.progress-pharmacies{
+    background-color: lightgray;
+    border-radius: 20px;
+    height: 20px;
+    width: 300px;
+}
+
+.progress-done-pharmacies{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: repeating-linear-gradient(
+        to left,
+        #c56fbf,
+        #e3a0e0,
+        #f5d4f5
+    );
+    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
+    border-radius: 20px;
+    color:#fff;
+    height: 100%;
+    width: 0;
+    transition: 1s ease 0.3s;
+}
+
+.progress-orders{
+    background-color: lightgray;
+    border-radius: 20px;
+    height: 20px;
+    width: 300px;
+}
+
+.progress-done-orders{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: repeating-linear-gradient(
+        to left,
+        #c56fbf,
+        #e3a0e0,
+        #f5d4f5
+    );
+    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
+    border-radius: 20px;
+    color:#fff;
+    height: 100%;
+    width: 0;
+    transition: 1s ease 0.3s;
+}
+
+.progress{
+    background-color: lightgray;
+    border-radius: 20px;
+    height: 20px;
+    width: 300px;
+}
+
+.progress-done{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: repeating-linear-gradient(
+        to left,
+        #0546e0,
+        #1120f9af,
+        #4892f9
+    );
+    box-shadow: 0 5px 5px -6px #0546e0, 0 3px 7px #1120f9af ;
+    border-radius: 20px;
+    color:#fff;
+    height: 100%;
+    width: 0;
+    transition: 1s ease 0.3s;
 }
