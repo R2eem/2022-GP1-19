@@ -237,15 +237,15 @@ class Category extends State<CategoryPage> {
                           // The widgets to display in the [ImageSlideshow].
                           children: [
                             Image.asset(
-                              'assets/logo.png',
+                              'assets/Slide1.png',
                               fit: BoxFit.cover,
                             ),
                             Image.asset(
-                              'assets/prescription.jpeg',
+                              'assets/Slide2.png',
                               fit: BoxFit.cover,
                             ),
                             Image.asset(
-                              'assets/medicationnono.png',
+                              'assets/Slide3.png',
                               fit: BoxFit.cover,
                             ),
                           ],
