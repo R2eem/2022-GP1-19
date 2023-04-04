@@ -1,10 +1,10 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:latlong/latlong.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Location.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -827,13 +827,16 @@ class _PresAttachPage extends State<PresAttach> {
     }
   }
   ///Calculate distance between customer and pharmacy
-  double calculateDistance(lat1, lon1, lat2, lon2){
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 - c((lat2 - lat1) * p)/2 +
-        c(lat1 * p) * c(lat2 * p) *
-            (1 - c((lon2 - lon1) * p))/2;
-    return 12742 * asin(sqrt(a));
+  calculateDistance(lat1, lon1, lat2, lon2){
+    final Distance distance = new Distance();
+
+    //calculate distance in meter for better accuracy
+    final distanceMeter = distance.as(LengthUnit.Meter,
+        new LatLng(lat1,lon1),new LatLng(lat2,lon2));
+
+    //Convert distance to kilometers
+    var distanceKM = distanceMeter/1000;
+    return distanceKM;
   }
 
   ///Convert coordinates to address

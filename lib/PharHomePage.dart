@@ -196,8 +196,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Align(
-                                          alignment: Alignment.bottomLeft,
+                                        child: Center(
                                             child: Column(
                                               children: [
                                                 Image.asset('assets/thumbnail_iconNew.png',
@@ -239,8 +238,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Align(
-                                          alignment: Alignment.bottomLeft,
+                                        child: Center(
                                           child: Column(
                                             children: [
                                               Image.asset('assets/thumbnail_iconOld.png',
