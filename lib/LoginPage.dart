@@ -205,9 +205,6 @@ class Login extends State<LoginPage> {
             new TextButton(
               child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
-                if(errorMessage.compareTo('Account blocked, contact Tiryaq admin.')==0){
-                  doUserLogout();
-                }
                 Navigator.of(context).pop();
               },
             ),
@@ -222,7 +219,6 @@ class Login extends State<LoginPage> {
     var object;
     var id;
     var type;
-    bool block = false;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
@@ -254,7 +250,6 @@ class Login extends State<LoginPage> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           type = 'Customer';
-          block = o.get('Block');
         }
       }
       if (type == 'Customer') {
@@ -262,19 +257,16 @@ class Login extends State<LoginPage> {
 
         var response = await user.login();
 
-        ///If credentials correct and not blocked enter account
-        if (response.success && !block) {
+        ///If credentials correct login
+        if (response.success) {
           setState(() {
             isLoggedIn = true;
           });
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => CategoryPage()));
 
-          ///If credentials correct and blocked don't enter account
-        } else if(response.success && block){
-          showError('Account blocked, contact Tiryaq admin.');
         }
-        ///If credentials not correct and blocked don't enter account
+        ///If credentials not correct show messaage
         else{
           showError(response.error!.message);
         }

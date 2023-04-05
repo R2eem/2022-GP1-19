@@ -786,8 +786,8 @@ class _PresAttachPage extends State<PresAttach> {
           ///contain will not be empty if the pharmacy already exist in the array so no need to add it again
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
           if (contain.isEmpty) {
-            ///Send order only to nonBlocked pharmacies
-            if(object.get('Block') == false && object.get('JoinRequest') == 'accepted'){
+            ///Send order only to accepted pharmacies
+            if(object.get('JoinRequest') == 'accepted'){
               pharmacies.add(pharmacy);
               pharmaciesLocation.add(pharmacyLocation);
             }

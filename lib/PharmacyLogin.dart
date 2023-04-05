@@ -294,7 +294,6 @@ class Login extends State<PharmacyLogin> {
     var pharmacy;
     var id;
     var type;
-    bool block = false;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
@@ -327,7 +326,6 @@ class Login extends State<PharmacyLogin> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           type = 'Pharmacy';
-          block = o.get('Block');
           pharmacy = o;
         }
       }
@@ -336,8 +334,8 @@ class Login extends State<PharmacyLogin> {
 
         var response = await user.login();
 
-        ///If credentials correct and not blocked enter account
-        if (response.success && !block) {
+        ///If credentials correct login
+        if (response.success) {
           setState(() {
             isLoggedIn = true;
           });
@@ -350,13 +348,8 @@ class Login extends State<PharmacyLogin> {
           if ("declined" == pharmacy.get('JoinRequest')) {
             showError("Sorry, Your join request is declined");
           }
-
-          ///If credentials correct and blocked don't enter account
-        } else if (response.success && block) {
-          showError('Account blocked, contact Tiryaq admin.');
         }
-
-        ///If credentials not correct and blocked don't enter account
+        ///If credentials not correct don't login
         else {
           showError(response.error!.message);
         }
