@@ -81,13 +81,13 @@
 
 }
 
-/*same as used for medication*/
-#MedFilter button:hover{
+
+#OrdersFilter button:hover{
    color: rgb(168, 42, 168);
 }
 
-/*same as used for medication*/
-#MedFilter{
+
+#OrdersFilter{
     margin-left: 35%;
     margin-right: auto;
 }
@@ -158,7 +158,7 @@
             <h1>Orders</h1>
             <p id="demo"></p>
             <br> <br> 
-            <div id="MedFilter">
+            <div id="OrdersFilter">
                 <button id="btn1" onclick=" DisplayFilterOrders('All');changeStyle('btn1')">All</button>
                 <button id="btn2" onclick=" DisplayFilterOrders('UnderProcessing');changeStyle('btn2')">Under Processing</button>
                 <button id="btn3" onclick=" DisplayFilterOrders('Cancelled');changeStyle('btn3')">Cancelled</button>
@@ -171,9 +171,8 @@
             <p id="OrdersResults"></p>
 
             <!---------------------------RECENT ORDERS----------------------------> 
-            <!--------same class and table used in medication class---------> 
-            <div class="med">
-                <table id="MedTable">
+            <div class="orders">
+                <table id="ordersTable">
                     <thead>
                         <tr>
                             <th>Customer name</th>
@@ -217,14 +216,14 @@
                              async function retrieveOrders() {
                                 var count =0;
                                 ///Query orders
-                                let query1 = new Parse.Query("Orders");
-                                let results = await query1.find();
+                                let query = new Parse.Query("Orders");
+                                let results = await query.find();
 
                                 for (i=0; i<results.length; i++){
                                     
                                     var order = results[i]
                                     
-                                       //Dosplay order information
+                                       //Display order information
                                        document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
                                        //Query customer information
                                        customerId = order.get("Customer_id").id
@@ -242,10 +241,7 @@
                                        document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                        document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>';
                                        count=count+1;
-
-                                       //change (All) filter to active color
-                                       changeStyle('btn1');
-
+                                       
                                 }
                                     //display number of results
                                     document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
@@ -253,22 +249,14 @@
 
                                     document.getElementById('results0').innerHTML = "There are no orders yet";
 
-                                     }  
+                                     } 
+                                     //change (All) filter to active color
+                                     changeStyle('btn1'); 
+                                     
                                   }
 
                              retrieveOrders();
 
-                             //User log out
-                             async function doUserLogOut () { 
-                                if(confirm('Are you sure you want to log out?')){
-                                try {
-                                    await Parse.User.logOut();
-                                    return window.location.replace("log_in_page.html");
-                                    
-                                } catch (error) {
-                                    alert(`Error! ${error.message}`);
-                                }}
-                            }
                             //change style of the filter when clicked
                              async function changeStyle(btn){
 
@@ -286,19 +274,44 @@
 
                               }
                             // Filter the Orders based on Order status 
-                            async function DisplayFilterOrders(OrderStatus) { 
-                            var count =0;
+                            async function DisplayFilterOrders(OrderStatus) {
+                                document.getElementById('OrdersResults').innerHTML = "Results: "+"";
 
-                            //retrieve the list of orders
-                            let query1 = new Parse.Query("Orders");
-                            query1.descending("createdAt");
-                            const results = await query1.find();
+                                var count =0;
 
-                            //clear the table of orders
-                            document.getElementById('orderTableBody').innerHTML = "";
+                                //retrieve the list of orders
+                                const query1 = new Parse.Query("Orders");
+                                query1.equalTo("OrderStatus","Under processing");
+
+                                const query2 = new Parse.Query("Orders");
+                                query2.equalTo("OrderStatus","Cancelled");
+
+                                
+
+                                const query3 = new Parse.Query("Orders");
+                                query3.equalTo("OrderStatus","Declined");
+
+                                const query4 = new Parse.Query("Orders");
+                                query4.equalTo("OrderStatus","Under preparation");
+
+                                const query5 = new Parse.Query("Orders");
+                                query5.equalTo("OrderStatus","Ready for pick up");
+
+                                const query6 = new Parse.Query("Orders");
+                                query6.equalTo("OrderStatus","Collected");
+
+                                let query = Parse.Query.or(query1,query2,query3,query4,query5,query6);
+                                query.descending("createdAt");
+                                const results = await query.find();
+                                
+
+                                //clear the table of orders
+                               document.getElementById('orderTableBody').innerHTML = "";
+                               
 
                             //display the orders in table if selected is all
                             if(OrderStatus == 'All'){
+                                
                             for(let i=0; i<results.length;i++){ 
                    
                                     var order = results[i]
@@ -318,11 +331,13 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
-                                    count = count+1;
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                    count = count+1; 
+                                      
                                      }
-                                    //change (All) filter to active color
+                                     
+                                     //display number of results
+                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count;
+                                    //change (all) filter to active color
                                     changeStyle('btn1');
                                     }
  
@@ -348,10 +363,12 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1;
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
-                                      }                       
+                         
+                                      }  
+                                                      
                                     }
+                                     //display number of results
+                                     document.getElementById('OrdersResults').innerHTML = "Results: "+count;   
  
                                    } 
 
@@ -377,10 +394,12 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1;  
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                    
                                    }
+                                   
                                 }
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
   
                                    } 
 
@@ -406,10 +425,12 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1;
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count;    
+                                        
                                    }
+                                   
                                 }   
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
                                    } 
 
 
@@ -434,10 +455,13 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1;
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                    
                                    }
-                                }    
+                                   
+                                }  
+                                
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
                                    }
 
 
@@ -462,10 +486,12 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1;
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                    
                                    }
-                                }     
+                                   
+                                }   
+                                  //display number of results
+                                  document.getElementById('OrdersResults').innerHTML = "Results: "+count;   
                                    }
 
 
@@ -490,13 +516,27 @@
                                     document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                     document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
                                     count = count+1; 
-                                    //display number of results
-                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count;  
+                                     
                                    }
-                                }    
+                                  
+                                }  
+                                //display number of results
+                                document.getElementById('OrdersResults').innerHTML = "Results: "+count;   
                                    }
 
                                  }
+
+                                 //User log out
+                             async function doUserLogOut () { 
+                                if(confirm('Are you sure you want to log out?')){
+                                try {
+                                    await Parse.User.logOut();
+                                    return window.location.replace("log_in_page.html");
+                                    
+                                } catch (error) {
+                                    alert(`Error! ${error.message}`);
+                                }}
+                            }
 
                             </script> 
 </html>

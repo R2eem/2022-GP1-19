@@ -52,7 +52,7 @@
   }
   sessionCheck();
 
-   
+//retrive list of pharmacies with a join request 
 async function retriveListOfOPharmacies(){
     var count =0;
     const query = new Parse.Query("Pharmacist");
@@ -94,6 +94,7 @@ document.getElementById('results0').innerHTML = "There are no join requests yet"
 retriveListOfOPharmacies();
 
 
+//if join request is accepted 
 async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
     if(confirm("Are you sure you want to accept "+pharmacyName+" pharmacy join request?")){
     const query = new Parse.Object("Pharmacist");
@@ -103,8 +104,8 @@ async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
             //Save the Object
             let result = await query.save();
             alert(pharmacyName+' pharmacy has been accepted');
-            var a = "accepted"
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
+            var message = "accepted"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,message);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
         }
@@ -112,6 +113,7 @@ async function ifAccept(pharmacyId ,pharmacyName,pharmacyEmail){
     
 }
 
+//if join request is delined 
 async function ifDecline(pharmacyId ,pharmacyName,pharmacyEmail){
     if(confirm("Are you sure you want to decline "+pharmacyName+" pharmacy join request?")){
     const query = new Parse.Object("Pharmacist");
@@ -121,27 +123,29 @@ async function ifDecline(pharmacyId ,pharmacyName,pharmacyEmail){
             //Save the Object
             let result = await query.save();
             alert(pharmacyName+' pharmacy has been declined');
-            var a = "declined"
-            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a);
+            var message = "declined"
+            sendEmail(pharmacyName,pharmacyEmail,pharmacyId,message);
         }catch(error){
             alert('Failed to update pharmacy ' +pharmacyName);
         }
     }
 }
 
-function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a){
-    if(confirm("You "+a+" "+pharmacyName+" pharmacy, please inform "+pharmacyName+" pharmacy by sending an email")){
 
-        if(a=="accepted"){
-        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear pharmacy'+pharmacyName+', We would like to inform you that your account has been '+a+' on date [day/month/year].'+
+// inform the pharmacist  of the join request status 
+function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,message){
+    if(confirm("You "+message+" "+pharmacyName+" pharmacy, please inform "+pharmacyName+" pharmacy by sending an email")){
+
+        if(message=="accepted"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear pharmacy'+pharmacyName+', We would like to inform you that your request has been '+message+' on date [day/month/year].'+
 
         ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
 
         ' thank you,'+
         ' Tiryaq team';  
     }
-    if(a=="declined"){
-        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear pharmacy'+pharmacyName+', We apologize to inform you that your account has been '+a+' on date [day/month/year], because of [reason].'+
+    if(message=="declined"){
+        window.location.href='mailto:'+pharmacyEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear pharmacy'+pharmacyName+', We apologize to inform you that your request has been '+message+' on date [day/month/year], because of [reason].'+
 
         ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
 
@@ -156,18 +160,15 @@ function sendEmail(pharmacyName,pharmacyEmail,pharmacyId,a){
 
 //remove no result message
 document.getElementById('results0').innerHTML = " ";
-// document.getElementById('results02').innerHTML = " ";
+
 
 var count =0;
-// var count2 =0;
+
 var searchString = document.getElementById('search').value;
 searchString = searchString.toUpperCase();
 const query = new Parse.Query("Pharmacist");
 query.equalTo("JoinRequest","Under processing")
-// const query2 = new Parse.Query("Pharmacist");
-// query2.equalTo("JoinRequest","declined")
-// let query = Parse.Query.or(query1, query2);
-query.limit(200);
+
 query.ascending("PharmacyName");
 const results = await query.find();
 
@@ -297,8 +298,8 @@ async function doUserLogOut () {
             <p id="PharmaciesResults"></p>
 
             <!---------------------------LIST OF PHARMACIES----------------------------> 
-            <div class="med">
-                <table id="MedTable">
+            <div class="pharmacies">
+                <table id="pharmaciesTable">
                     
                     <thead>
                         <tr>
