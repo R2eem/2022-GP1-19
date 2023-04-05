@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in page</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+   <link rel="stylesheet" href="./loginStyle.css"> 
+       <script
+         type="text/javascript"
+         src="https://npmcdn.com/parse/dist/parse.min.js"
+       ></script>
+     </head>
+    <body>
+      <section>
+        <div class="color"></div>
+        <div class="color"></div>
+        <div class="color"></div>
+        <div class="box">
+          <div class="square" style="--i:0;"></div>
+          <div class="square" style="--i:1;"></div>
+          <div class="square" style="--i:2;"></div>
+          <div class="square" style="--i:3;"></div>
+          <div class="square" style="--i:4;"></div>
+          <div class="container">
+            <form class="" onsubmit="validate();return false">
+            <div class="form">
+              <h2>Admin login </h2>
+              <div id="login-error-msg-holder">
+                <span id="error"></span>
+              </div>
+                <div class="inputbox">
+                  <input name="email" id="email" type="email" placeholder="email"  required="" aria-required="true" /> 
+                </div>
+                <div class="inputbox">
+                  <input name="pass" id="password" type="password" placeholder="Password" required="" aria-required="true"/>
+                </div>
+              </br>
+                <input type="checkbox" onclick="visibility()"><span id="showpass">&nbsp Show Password</span>
+                <div class="inputbox">
+                  <input type="submit" name="submit" id="submit" value="Login">
+                </div>  
+            </div>
+            </form>
+          </div>
+        </div>
+      </section> 
+    </body>
+     <script>
+       // Initialize Parse
+       Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5", "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+       Parse.serverURL = "https://parseapi.back4app.com/";
+   
+       async function logIn() {
+        var email=document.getElementById('email').value;
+        var pass=document.getElementById('password').value;
+
+        ///Get user account from user table
+        var User = Parse.Object.extend("User");
+        query1 = new Parse.Query(User);
+        query1.equalTo("email", email);
+        query1.first().then(function(user){
+
+        if(user){
+          var userId = user.id;
+          var userPointer = {
+            __type: 'Pointer',
+            className: '_User',
+            objectId: user.id
+          }
+          ///Check user account in admin table
+          var Admin = Parse.Object.extend("Admin");
+          query2 = new Parse.Query(Admin);
+          query2.equalTo("user", userPointer);
+          query2.first().then(function(admin){
+
+          if(admin){
+            var user = Parse.User
+            .logIn(email, pass).then(function(user) {
+            window.location.replace("index.html");
+            }).catch(function(error){
+              ///Error if inputs incorrect
+              document.getElementById("error").textContent = "Invalid email and/or password";
+              document.getElementById("error").style.color = "red";
+              document.getElementById("error").style.fontSize = "small";
+            });
+          }
+          else {
+          //Error if account exist but not admin
+          document.getElementById("error").textContent = "Invalid email and/or password";
+          document.getElementById("error").style.color = "red";
+          document.getElementById("error").style.fontSize = "small";
+          }    
+        })
+        } else{
+          ///Error if account doesn't exist
+          document.getElementById("error").textContent = "Invalid email and/or password";
+          document.getElementById("error").style.color = "red";
+          document.getElementById("error").style.fontSize = "small";
+        }
+      })
+}
+  
+
+
+    async function validate(){
+        //access fields
+        var email=document.getElementById('email').value;
+        var pass=document.getElementById('password').value;
+    
+       if(email != '' && pass !='')
+        {
+          logIn();
+        } 
+      }
+
+function visibility() {
+  var password= document.getElementById("password");
+  if (password.type === "password") {
+    password.type = "text";
+  } else {
+    password.type = "password";
+  }
+}
+    </script>
+
+</html>

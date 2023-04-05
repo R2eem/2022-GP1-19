@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin_Dashboard</title>
+    <!---- MATERIAL CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+    <!----STYLESHEET -->
+    <link rel="stylesheet" href="./style.css"> 
+    <script type="text/javascript"
+    src=" https://npmcdn.com/parse/dist/parse.min.js"> 
+</script> 
+</head>
+<body>
+    <script>
+
+         // Initialize Parse
+         Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5",
+         "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); 
+           Parse.serverURL = "https://parseapi.back4app.com/";
+
+
+  //Check if user logged in
+  async function sessionCheck(){
+     const currentUser = await Parse.User.current();
+     if (currentUser === null) {
+        window.location.replace("log_in_page.html");
+     }
+  }
+  sessionCheck();
+
+//User log out
+async function doUserLogOut () { 
+   if(confirm('Are you sure you want to log out?')){
+      try {
+           await Parse.User.logOut();
+           return window.location.replace("log_in_page.html");
+                                 
+      } catch (error) {
+           alert(`Error! ${error.message}`);
+      }}
+}
+
+///Admin name
+async function AdminInfo(){
+    
+    const currentUser = await Parse.User.current();
+         var userId = currentUser.id;
+         var userPointer = {
+           __type: 'Pointer',
+           className: '_User',
+           objectId: currentUser.id
+         }
+
+         var Admin = Parse.Object.extend("Admin");
+         query = new Parse.Query(Admin);
+         query.equalTo("user", userPointer);
+         const results = await query.find();
+         for (let i = 0; i < results.length; i++) {
+           var admin = results[i];
+           document.getElementById('adminName').innerHTML= "Hello, "+admin.get("AdminName");
+         }
+      
+}
+
+ AdminInfo();
+
+
+    </script>
+    <div class="container">
+        <aside class="aside">
+            <div class="top">
+                <div class="logo">
+                    <img src="./images/logo.png">
+                    <h2>Tiryaq</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                     </div>
+            </div>
+            <div class="sidebar">
+                <a href="index.html" class="active">
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="ViewCustomers.html">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>Customers</h3>
+                </a>
+                <a href="customerOrders.html" >
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
+                </a>
+                <a href="Medications.html" >
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+            
+                <a href="Pharmacies_page.html">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+              
+                <a href="Pharmacies_Join_Request_Page.html">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <h3>Join requests</h3>
+                </a>
+              
+                <a href="" onclick="doUserLogOut(); return false">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <h3>Log out</h3>
+                </a>
+            </div>
+            </aside>
+        <!----------------------------------END OF ASIDE-------------->
+        <main>
+            <h1>Admin Dashboard</h1>
+
+        </br>
+        <div class="left">
+            <!---------------TOP -->
+            <div class="top">
+                <!-- <button  class="o" id="menu-btn">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button> -->
+                <div class="profile">
+                    <div class="info">
+                        <p id="adminName"></p>
+                        <small class="text-muted">Admin</small>
+            </div>
+            </div></br>
+            <!---------------END TOP -->
+            <div class="date" id="date">
+                <script>
+                     const dateNow = new Date();
+                     const time = dateNow.toLocaleTimeString();
+                     const date = dateNow.toLocaleDateString();
+                     document.getElementById('date').innerHTML = "Today: " +date;
+                     document.getElementById('date').innerHTML += "\t"+time;
+                </script>
+            </div>
+        </br></br>
+
+ <!--------------------------- insights ----------------------------> 
+            <div class="insights">
+                <div class="customers" onclick="window.location.replace('ViewCustomers.html')">
+                <i class="fa fa-users" aria-hidden="true"></i> 
+                <div class="middile">
+                    <div class="left">
+                        <h3 id="TotalCustomerText">Total customers</h3>
+                        <h1 id="TotalCustomers"></h1>
+                    </div>
+                </div> 
+                <small class="text-muted"></small>
+                </div>
+                <!--------------END OF CUSTOMERS----------->
+                <div class="pharmacies" onclick="window.location.replace('Pharmacies_page.html')">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i> 
+                    <div class="middile">
+                        <div class="left">
+                            <h3 id="TotalPharmaciesText">Total pharmacies</h3>
+                            <h1 id="TotalPharmacies"></h1>
+                        </div>
+                    </div> 
+                    <small class="text-muted"></small>
+                    </div>
+                    <!--------------END OF PHARMACIES----------->
+                    <div class="orders" onclick="window.location.replace('customerOrders.html')">
+                        <i class="fa fa-list-alt" aria-hidden="true"></i>
+                        <div class="middile">
+                            <div class="left">
+                                <h3 id="TotalOrdersText">Total orders</h3>
+                                <h1 id="TotalOrders"></h1>
+                            </div>
+                        </div> 
+                        <small class="text-muted"></small>
+                        </div>
+                        <!--------------END OF ORDERS----------->   
+                         
+            </div>
+            <script src="dashboardPanle.js"></script>
+            <!---------------------------END OF insights ----------------------------> 
+        </main>
+        <!------------------------- END OF MAIN ------------------>
+    </div>  
+</body>
+</html>
