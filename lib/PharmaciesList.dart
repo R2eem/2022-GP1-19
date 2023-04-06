@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'CategoryPage.dart';
-import 'Cart.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'package:full_screen_image/full_screen_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'Orders.dart';
-import 'Settings.dart';
 
 
 class PharmacyListPage extends StatefulWidget {
@@ -33,6 +28,7 @@ class PharmacyList extends State<PharmacyListPage> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Stack(children: [
               //Header
               Container(
@@ -61,7 +57,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                   ),
                                   Container(
                                     margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
-                                    child: Text('Pharamcies list',
+                                    child: Text('',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontFamily: 'Lato',
@@ -102,6 +98,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                           );
                                         } else {
                                           return ListView.builder(
+                                              physics: ClampingScrollPhysics(),
                                               shrinkWrap: true,
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data!.length,
@@ -111,7 +108,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 final pharmacyId = pharmDetails
                                                     .get('PharmacyId')
                                                     .objectId;
-                                                final Distance = pharmDetails
+                                                var Distance = pharmDetails
                                                     .get('Distance')!;
                                                 var OrderStatus2 = pharmDetails
                                                     .get('OrderStatus')!;
@@ -132,6 +129,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                     note = 'No note';
                                                   }
                                                 }
+                                                Distance = num.parse(Distance.toStringAsFixed(2));
                                                 return FutureBuilder<
                                                     List<ParseObject>>(
                                                     future: getPharmDetails(
@@ -168,6 +166,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                           } else {
                                                             return ListView
                                                                 .builder(
+                                                                physics: ClampingScrollPhysics(),
                                                                 shrinkWrap: true,
                                                                 scrollDirection: Axis
                                                                     .vertical,
@@ -195,7 +194,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                     OrderStatus2 =
                                                                     'Under processing';
                                                                   }
-                                                                  return (OrderStatus2 == 'Under processing' || OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
+                                                                  return (OrderStatus2 == 'Accepted' || OrderStatus2 == 'Declined')
                                                                       ? Card(
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment
@@ -215,7 +214,8 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                   crossAxisAlignment: CrossAxisAlignment
                                                                                       .start,
                                                                                   children: [
-                                                                                    Text(
+                                                                                    Row(
+                                                                              children:[Text(
                                                                                       '$pharmacyName ',
                                                                                       style: TextStyle(
                                                                                           fontFamily: "Lato",
@@ -224,6 +224,15 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               .black,
                                                                                           fontWeight: FontWeight
                                                                                               .w600),),
+                                                                                    Text(
+                                                                                      ' -  ${Distance} Km',
+                                                                                      style: TextStyle(
+                                                                                          fontFamily: "Lato",
+                                                                                          fontSize: 17,
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontWeight: FontWeight
+                                                                                              .w500),),]),
                                                                                     Text(
                                                                                       '$pharmPhonenumber',
                                                                                       style: TextStyle(
@@ -269,6 +278,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               else {
                                                                                                 return ListView
                                                                                                     .builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis
                                                                                                         .vertical,
@@ -361,6 +371,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                         );
                                                                                                       } else {
                                                                                                         return  ListView.builder(
+                                                                                                            physics: ClampingScrollPhysics(),
                                                                                                             shrinkWrap: true,
                                                                                                             scrollDirection: Axis.vertical,
                                                                                                             itemCount: snapshot.data!.length,
@@ -528,12 +539,10 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                       children: <
                                                                                                           TextSpan>[
                                                                                                         TextSpan(
-                                                                                                            text: 'Please note that you cannot undo this process!!!',
+                                                                                                            text: 'Please note that you cannot undo this process!',
                                                                                                             style: TextStyle(
                                                                                                                 color: Colors
-                                                                                                                    .red,
-                                                                                                                fontWeight: FontWeight
-                                                                                                                    .bold)),
+                                                                                                                    .red,)),
                                                                                                       ],
                                                                                                     ),
                                                                                                   ),
@@ -611,6 +620,7 @@ class PharmacyList extends State<PharmacyListPage> {
         ParseObject('PharmaciesList'));
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
       ..objectId = widget.orderId).toPointer());
+    parseQuery.orderByAscending('Distance');
 
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.results != null) {
@@ -644,14 +654,7 @@ class PharmacyList extends State<PharmacyListPage> {
   }
 
   Future<bool> confirmOrder(orderId, pharmacyId) async {
-    NativeNotify.sendIndieNotification(
-        2338,
-        'dX0tKYd2XD2DOtsUirIumj',
-        pharmacyId,
-        'Tiryaq',
-        'Order $orderId is confirmed',
-        '',
-        '');
+    NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', pharmacyId, 'Tiryaq', 'Order $orderId is confirmed', '', '');
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
         ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')

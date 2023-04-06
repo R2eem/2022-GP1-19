@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'PharHomePage.dart';
 import 'PharmacyNew.dart';
 import 'PharmacyLogin.dart';
 import 'package:full_screen_image/full_screen_image.dart';
+import 'PharmacySettings.dart';
 import 'common/theme_helper.dart';
+import 'package:native_notify/native_notify.dart';
+
 
 class PharmacyOrdersDetailsPage extends StatefulWidget {
   final String orderId;
@@ -29,35 +33,41 @@ class checkBoxState{
     this.value = false,
   });
 }
+const List<String> list = <String>['Select time','2 hours', '4 hours', '6 hours', '8 hours', '10 hours', '12 hours', '24 hours', '36 hours', '48 hours'];
+
 
 class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   bool presRequired = false;
   List medList = [];
   List medicationsList2 = [];
-  Set _saved = Set();
   FocusNode textSecondFocusNode = new FocusNode();// when focusing on the note field
   TextEditingController noteDescriptionController = new TextEditingController(); // to get the text written in note field
   bool value = false;
+  String time = '';
+  int _selectedIndex = 0;
+
 
   @override
   void dispose() {
     noteDescriptionController.dispose();
     super.dispose();
   }
+  String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
           child: Stack(children: [
             //Header
             Container(
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
                 child: SafeArea(
                     child: Column(
@@ -65,29 +75,16 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: IconButton(
                                     iconSize: 40,
                                     color: Colors.white,
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     }, icon: Icon(Icons.keyboard_arrow_left),),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Text(
-                                    'Orders Details',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 27,
-                                        color: Colors.white70,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                                Spacer(),
                                 Container(
                                     child:  IconButton(
                                       onPressed: (){
@@ -129,6 +126,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                               ]),
                           SizedBox(height: 55,),
                           SingleChildScrollView(
+                              physics: ClampingScrollPhysics(),
                               scrollDirection: Axis.vertical,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
@@ -159,6 +157,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                           );
                                         } else {
                                           return  ListView.builder(
+                                              physics: ClampingScrollPhysics(),
                                               shrinkWrap: true,
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data!.length,
@@ -166,6 +165,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                 final customerCurrentOrders = snapshot.data![index];
                                                 final OrderId = customerCurrentOrders.get('objectId');
                                                 final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                final updatedAt = customerCurrentOrders.get('updatedAt')!;
                                                 final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
                                                 final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
                                                 final medicationsList = customerCurrentOrders.get('MedicationsList')!;
@@ -176,6 +176,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                         quantity: medicationsList[0][i]['quantity'].toString(),
                                                       )
                                                   );}
+                                                ///If order consist of prescription then store as true
                                                 var prescription = null;
                                                 if(customerCurrentOrders.get('Prescription') != null){
                                                   presRequired = true;
@@ -225,6 +226,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                   );
                                                                                 } else {
                                                                                   return  ListView.builder(
+                                                                                      physics: ClampingScrollPhysics(),
                                                                                       shrinkWrap: true,
                                                                                       scrollDirection: Axis.vertical,
                                                                                       itemCount: 1,
@@ -331,6 +333,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     );
                                                                                   } else {
                                                                                     return  ListView.builder(
+                                                                                        physics: ClampingScrollPhysics(),
                                                                                         shrinkWrap: true,
                                                                                         scrollDirection: Axis.vertical,
                                                                                         itemCount: snapshot.data!.length,
@@ -344,7 +347,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           if(value != medList[i].value){
                                                                                             value = medList[i].value;
                                                                                           }
-                                                                                          // to display  medication list in checkbox
+                                                                                          ///Display  medication list in checkbox for ONLY new orders otherwise display as text
                                                                                           return StatefulBuilder(
                                                                                             builder: (BuildContext context, StateSetter setState) =>
                                                                                             (widget.orderStatus == 'New')?
@@ -430,6 +433,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                 );
                                                                                               } else {
                                                                                                 return ListView.builder(
+                                                                                                    physics: ClampingScrollPhysics(),
                                                                                                     shrinkWrap: true,
                                                                                                     scrollDirection: Axis.vertical,
                                                                                                     itemCount: 1,
@@ -462,6 +466,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                           }
                                                                                         }),
                                                                                                   SizedBox(height: 20,),
+                                                                                                  ///Display medications and their status
                                                                                                   Text('List of medication:' ,style: TextStyle(
                                                                                                       fontFamily: "Lato",
                                                                                                       fontSize: 19,
@@ -495,6 +500,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                             );
                                                                                                           } else {
                                                                                                             return  ListView.builder(
+                                                                                                                physics: ClampingScrollPhysics(),
                                                                                                                 shrinkWrap: true,
                                                                                                                 scrollDirection: Axis.vertical,
                                                                                                                 itemCount: snapshot.data!.length,
@@ -530,6 +536,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                                   );
                                                                                                                                 } else {
                                                                                                                                   return  ListView.builder(
+                                                                                                                                      physics: ClampingScrollPhysics(),
                                                                                                                                       shrinkWrap: true,
                                                                                                                                       scrollDirection: Axis.vertical,
                                                                                                                                       itemCount: snapshot.data!.length,
@@ -617,6 +624,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
 
 
                                                                       SizedBox(height: 20,),
+                                                                      ///Display prescription if exist
                                                                       presRequired ?
                                                                       Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -658,6 +666,8 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                 fontWeight: FontWeight.w700),),
                                                                           ]),
                                                                       SizedBox(height: 15,),
+
+                                                                      ///If order is not new then display note
                                                                       if(widget.orderStatus != ("New"))
                                                                         FutureBuilder<ParseObject>(
                                                                             future: getNote(),
@@ -686,16 +696,30 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     );
                                                                                   } else {
                                                                                     return  ListView.builder(
+                                                                                        physics: ClampingScrollPhysics(),
                                                                                         shrinkWrap: true,
                                                                                         scrollDirection: Axis.vertical,
                                                                                         itemCount: 1,
                                                                                         itemBuilder: (context, index) {
                                                                                           final orderDetail = snapshot.data!;
-                                                                                          var note = orderDetail.get("Note");
-                                                                                          if(note == ''){
+                                                                                          var note = null;
+                                                                                          if(orderDetail.get('Note')!=null) {
+                                                                                            note = orderDetail.get("Note");
+                                                                                          }
+                                                                                          if(note == '' || note == null){
                                                                                             note = 'No note';
                                                                                           }
-                                                                                          final time = orderDetail.get("Time");
+                                                                                          var time = null;
+                                                                                          if(orderDetail.get('Time')!=null && orderDetail.get('Time')!='') {
+                                                                                            time = orderDetail.get('Time')!;
+                                                                                            time = time.substring(0,2);
+                                                                                            int t = int.parse(time);
+                                                                                            String t1 = (updatedAt.add(Duration(hours: t+3))).toString();
+                                                                                            time = t1.substring(0,19);
+                                                                                          }
+                                                                                          if(time == '' || time == null){
+                                                                                            time = '----';
+                                                                                          }
                                                                                           return Card(
                                                                                               child: Column(
                                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -718,15 +742,17 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                 fontSize: 17,
                                                                                                                 color: Colors.black,),),
                                                                                                             SizedBox(height: 10,),
+                                                                                                            (time!=null)?
                                                                                                             Text('Order is expected to be ready at:' ,style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
                                                                                                                 color: Colors.black,
-                                                                                                                fontWeight: FontWeight.w600),),
+                                                                                                                fontWeight: FontWeight.w600),):Container(),
+                                                                                                            (time!=null)?
                                                                                                             Text('$time' ,style: TextStyle(
                                                                                                                 fontFamily: "Lato",
                                                                                                                 fontSize: 17,
-                                                                                                                color: Colors.black,),),
+                                                                                                                color: Colors.blue,),):Container(),
                                                                                                           ]
                                                                                                       )
                                                                                                   )
@@ -737,6 +763,8 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                   }
                                                                               }}
                                                                         ),
+
+                                                                      ///If order is new then display text field for note
                                                                       if(widget.orderStatus.contains("New"))
                                                                         Text('Note: ' ,style: TextStyle(
                                                                             fontFamily: "Lato",
@@ -766,6 +794,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                             ),
                                                                           ),
                                                                         ),
+                                                                      ///If order is new then display time selection
                                                                       if(widget.orderStatus.contains("New"))
                                                                         Text('Expected Time for order to be ready: ' ,style: TextStyle(
                                                                             fontFamily: "Lato",
@@ -773,23 +802,26 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                             color: Colors.black,
                                                                             fontWeight: FontWeight.w700),),
                                                                       if(widget.orderStatus.contains("New"))
-                                                                          ElevatedButton(
-                                                                            style: ElevatedButton.styleFrom(backgroundColor: HexColor('#c7a1d1'),
-                                                                            ),
-                                                                            onPressed: _selectDate,
-                                                                            child: Text('SELECT TIME',
-                                                                                style: TextStyle(
-                                                                                    fontFamily: 'Lato',
-                                                                                    fontSize: 15,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.white)),
-                                                                          ),
-                                                                      SizedBox(height: 8),
-                                                                      if(widget.orderStatus.contains("New") && date != '')
-                                                                        Text(
-                                                                          'Selected time: $date ${_time.format(context)}',
+                                                                        DropdownButton<String>(
+                                                                          value: dropdownValue,
+                                                                          onChanged: (String? value) {
+                                                                            // This is called when the user selects an item.
+                                                                            setState(() {
+                                                                              dropdownValue = value!;
+                                                                              time = value!;
+                                                                            });
+                                                                            },
+                                                                          items: list.map<DropdownMenuItem<String>>((String value) {
+                                                                            return DropdownMenuItem<String>(
+                                                                              value: value,
+                                                                              child: Text(value),
+                                                                            );
+                                                                          }).toList(),
                                                                         ),
+                                                                      SizedBox(height: 8),
+                                                                      ///If order is new display accept and decline button
                                                                       if(widget.orderStatus.contains("New"))
+                                                                        ///Accept button
                                                                         Padding(
                                                                           padding: EdgeInsets.only(top:1),
                                                                           child: Row(
@@ -802,6 +834,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                     child:ElevatedButton(
                                                                                       style: ThemeHelper().buttonStyle(),
                                                                                       onPressed: (){
+                                                                                        ///Check if there is at least one checked item before accepting
                                                                                         bool emptyOrNot= false;
                                                                                         for (int i = 0; i < medList.length; i++) {
                                                                                           if (medList[i].value == true ){
@@ -830,10 +863,12 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                             continueButton,
                                                                                           ],
                                                                                         );
+                                                                                        ///If no checked items show error message
                                                                                         if(emptyOrNot == false){
                                                                                           showError2();
                                                                                         }
-                                                                                        else if(date == ''){
+                                                                                        ///If not time selected show error message
+                                                                                        else if(time == '' || time == 'Select time'){
                                                                                           showError3();
                                                                                         }
                                                                                         else {
@@ -849,6 +884,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                       }, child: Text('Accept'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                                     ),
                                                                                   ),),
+                                                                                ///Decline button
                                                                                 Padding(
                                                                                     padding: EdgeInsets.only(left:5 , top:10),
                                                                                     child:Container(
@@ -891,7 +927,128 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
 
                                                                               ]),
                                                                         ),
-
+                                                                      ///If order under preparation show update status button
+                                                                      (widget.orderStatus == 'Under preparation')?
+                                                                      Column(
+                                                                          children:[
+                                                                            Center(
+                                                                              child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                  backgroundColor: HexColor('#c7a1d1'),
+                                                                                ),
+                                                                                child:Text("Ready for pick up",style:
+                                                                                TextStyle(
+                                                                                    fontFamily: 'Lato',
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.white)),
+                                                                                onPressed: (){
+                                                                                  Widget cancelButton = TextButton(
+                                                                                    child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () async {
+                                                                                      if (await RPUOrder(OrderId)) {
+                                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                          content: Text("Order status for order number $OrderId has been updated",
+                                                                                            style: TextStyle(fontSize: 20),),
+                                                                                          duration: Duration(milliseconds: 3000),
+                                                                                        ));
+                                                                                      };
+                                                                                    },
+                                                                                  );
+                                                                                  Widget continueButton = TextButton(
+                                                                                    child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  );
+                                                                                  // set up the AlertDialog
+                                                                                  AlertDialog alert = AlertDialog(
+                                                                                    title: RichText(
+                                                                                      text: TextSpan(
+                                                                                        text: '''Are you sure you want to update status for order $OrderId?
+                                                                                                           ''',
+                                                                                        style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                      ),
+                                                                                    ),
+                                                                                    content: Text(""),
+                                                                                    actions: [
+                                                                                      cancelButton,
+                                                                                      continueButton,
+                                                                                    ],
+                                                                                  );
+                                                                                  // show the dialog
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext context) {
+                                                                                      return alert;
+                                                                                    },
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          ]):Container(),
+                                                                      ///If order ready for pick up show update status button
+                                                                      (widget.orderStatus == 'Ready for pick up')?
+                                                                      Column(
+                                                                          children:[
+                                                                            Center(
+                                                                              child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                  backgroundColor: HexColor('#c7a1d1'),
+                                                                                ),
+                                                                                child:Text("Order collected",style:
+                                                                                TextStyle(
+                                                                                    fontFamily: 'Lato',
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.white)),
+                                                                                onPressed: (){
+                                                                                  Widget cancelButton = TextButton(
+                                                                                    child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () async {
+                                                                                      if (await collectedOrder(OrderId)) {
+                                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacyNewO(widget.pharmacyId)));
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                          content: Text("Order status for order number $OrderId has been updated",
+                                                                                            style: TextStyle(fontSize: 20),),
+                                                                                          duration: Duration(milliseconds: 3000),
+                                                                                        ));
+                                                                                      };
+                                                                                    },
+                                                                                  );
+                                                                                  Widget continueButton = TextButton(
+                                                                                    child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                    onPressed:  () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  );
+                                                                                  // set up the AlertDialog
+                                                                                  AlertDialog alert = AlertDialog(
+                                                                                    title: RichText(
+                                                                                      text: TextSpan(
+                                                                                        text: '''Are you sure you want to update status for order $OrderId?
+                                                                                                           ''',
+                                                                                        style: TextStyle(color: Colors.black, fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                      ),
+                                                                                    ),
+                                                                                    content: Text(""),
+                                                                                    actions: [
+                                                                                      cancelButton,
+                                                                                      continueButton,
+                                                                                    ],
+                                                                                  );
+                                                                                  // show the dialog
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext context) {
+                                                                                      return alert;
+                                                                                    },
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          ]):Container()
                                                                     ]) ))));
                                               });
                                         }
@@ -900,10 +1057,38 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                           ),
                         ]))),
           ])),
+        //Bottom navigation bar
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(widget.pharmacyId)));
+              }
+            }),
+          )),
     );
   }
 
-  //Get customer current orders from orders table
+  ///Get customer current orders from orders table
   Future<List<ParseObject>> getOrderDetails() async {
     //Query order details
     final QueryBuilder<ParseObject> order =
@@ -918,7 +1103,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       return [];
     }
   }
-  //Function to get medication details
+  ///Function to get medication details
   Future<List<ParseObject>> getMedDetails(medicationsList) async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
     parseQuery.whereEqualTo('objectId', medicationsList);
@@ -931,7 +1116,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return [];
   }
 
-  //Get medications of the selected pharmacy
+  ///Get medications and their status from the pharmacy
   Future<List<ParseObject>> getMedList() async {
     final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
     parseQuery1.whereEqualTo('OrderId',(ParseObject('Orders')..objectId = widget.orderId ).toPointer());
@@ -963,7 +1148,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Function to get customer details
+  ///Function to get customer details
   Future<ParseObject> getCustomerDetails() async {
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
         ParseObject('Orders'));
@@ -994,7 +1179,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return null!;
   }
 
-  //Get total price
+  ///Get total price after accepting the order with the accepted items
   Future<String> getTotalPrice() async {
     num totalPrice = 0;
 
@@ -1033,6 +1218,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         var object = o as ParseObject;
         List med = object.get('MedicationsList');
 
+        ///Calculate the total price
         for (int i = 0; i < med[0].length; i++) {
           if (med[0][i]['isChecked'] == true) {
             final QueryBuilder<ParseObject> parseQuery =
@@ -1057,7 +1243,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return totalPrice.toStringAsFixed(2);
   }
 
-  // function to send if the order is accepted or declined to the customer
+  ///Function to send if the order is accepted or declined to the customer
   Future<void> SendToCustomer(orderStatus,pharmacyId ,note) async {
     //Store customer medications in list
     for (int i = 0; i < medList.length; i++) {
@@ -1086,9 +1272,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         object = o as ParseObject;
       }
     }
-    String date = _date.toString();
-    date = date.substring(0,11);
-    String time = '$date ${_time.format(context)}';
     //Update the information in pharmacyList table
     var todo = object
       ..set('OrderStatus',orderStatus)
@@ -1106,6 +1289,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
+  ///Get note of the pharmacy for specific order
   Future<ParseObject> getNote() async {
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
@@ -1122,6 +1306,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return null!;
   }
 
+  ///Change value of the check boxes
   void changeValue(medId, value){
     for(int i = 0; i < medList.length; i++){
       print(medList[i].medID == (medId));
@@ -1131,45 +1316,82 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     }
   }
 
-  //Time picker
-  TimeOfDay _time = TimeOfDay(hour: 12, minute: 00);
+  ///Update order from under preparation to ready for pick up
+  Future<bool> RPUOrder(orderId) async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
+    final apiResponse1 = await parseQuery1.query();
 
-  void _selectTime() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time,
-      initialEntryMode: TimePickerEntryMode.input,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time = newTime;
-      });
+    //change order status for pharmacy
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        var pharmacy = o as ParseObject;
+        if (pharmacy.get('PharmacyId')
+            .objectId == widget.pharmacyId) {
+          var update = pharmacy..set('OrderStatus', 'Ready for pick up');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      //change order status for customer
+      final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+          ParseObject('Orders'));
+      parseQuery2.whereEqualTo('objectId', orderId);
+
+      final apiResponse2 = await parseQuery2.query();
+
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          var object = o as ParseObject;
+          var update = object..set('OrderStatus', 'Ready for pick up');
+          var customerId = object.get('Customer_id').objectId;
+          NativeNotify.sendIndieNotification(2338, 'dX0tKYd2XD2DOtsUirIumj', customerId, 'Tiryaq', 'Your order number $orderId is ready for pick up', '', '');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      return true;
     }
+    return false;
   }
 
-  //Date picker
-  DateTime _date = DateTime(2023, 1, 20);
-  String date = '';
+  ///Update order from ready for pick up to collected
+  Future<bool> collectedOrder(orderId) async {
+    final QueryBuilder<ParseObject> parseQuery1 = QueryBuilder<ParseObject>(
+        ParseObject('PharmaciesList'));
+    parseQuery1.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = orderId ).toPointer());
+    final apiResponse1 = await parseQuery1.query();
 
-  void _selectDate() async {
-    final DateTime? newDate = await showDatePicker(
-      context: context,
-      initialDate: _date,
-      firstDate: DateTime(2023, 1),
-      lastDate: DateTime(2023, 12),
-      helpText: 'Select a date',
-    );
-    if (newDate != null) {
-      setState(() {
-        _date = newDate;
-        date = _date.toString();
-        date = date.substring(0,11);
-        _selectTime();
-      });
+    //change order status for pharmacy
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        var pharmacy = o as ParseObject;
+        if (pharmacy
+            .get('PharmacyId')
+            .objectId == widget.pharmacyId) {
+          var update = pharmacy..set('OrderStatus', 'Collected');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      final QueryBuilder<ParseObject> parseQuery2 = QueryBuilder<ParseObject>(
+          ParseObject('Orders'));
+      parseQuery2.whereEqualTo('objectId', orderId);
+
+      final apiResponse2 = await parseQuery2.query();
+
+      //change order status for customer
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          var object = o as ParseObject;
+          var update = object..set('OrderStatus', 'Collected');
+          final ParseResponse parseResponse = await update.save();
+        }
+      }
+      return true;
     }
+    return false;
   }
 
-  //Function called when updating order status is successful
+  ///Function called when updating order status is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess(pharmacyId) {
     showDialog(
@@ -1187,7 +1409,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
         });
   }
 
-  //Function called when updating order status  is not successful
+  ///Function called when updating order status is not successful
   //Show Alertdialog and wait for user interaction
   void showError(String errorMessage) {
     showDialog(
@@ -1208,7 +1430,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     );
   }
 
-    //alert message to tell the pharmacy he must check at least one medication before clicking accept
+    ///alert message to tell the pharmacy he must check at least one medication before clicking accept
     //Show Alertdialog and wait for user interaction
     void showError2() {
       showDialog(
@@ -1229,7 +1451,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       );
     }
 
-  //alert message to tell the pharmacy he must enter time before clicking accept
+  ///alert message to tell the pharmacy he must enter time before clicking accept
   //Show Alertdialog and wait for user interaction
   void showError3() {
     showDialog(

@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
 import 'package:untitled/ChooseLocation.dart';
+import 'LoginPage.dart';
 import 'PresAttach.dart';
 import 'common/theme_helper.dart';
-//import 'package:geocoding/geocoding.dart';
 
 
 class Locationpage extends StatefulWidget{
@@ -161,24 +160,5 @@ class _LocationPage extends State<Locationpage> {
 
 
     return position;
-  }
-
-  getAddress(lat,long) async{
-    print("---------------------------");
-    print(lat);
-    print(long);
-    print("---------------------------");
-
-    //List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    // String palcename = placemarks.first.administrativeArea.toString() + ", " +  placemarks.first.street.toString();
-//print(palcename);
-
-    //List placemarks = await placemarkFromCoordinates(lat, long);
-    // Placemark place = placemarks[0];
-    // address = '${place.street}, ${place.country}';
-    // print(address);
-    // setState(()  {
-    // });
-
   }
 }

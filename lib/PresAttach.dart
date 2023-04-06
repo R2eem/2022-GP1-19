@@ -1,16 +1,16 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:latlong/latlong.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Location.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'dart:io';
@@ -41,11 +41,11 @@ class _PresAttachPage extends State<PresAttach> {
   bool locationExist = false;
   List pharmacies = [];
   List pharmaciesLocation = [];
-  var counter = 0;
   var country;
   var locality;
   var subLocality;
   var street;
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +53,14 @@ class _PresAttachPage extends State<PresAttach> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Stack(children: [
               //Header
               Container(
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              //Controls app logo and page title
+              ///App logo and page title
               Container(
                   child: SafeArea(
                       child: Column(
@@ -68,19 +69,16 @@ class _PresAttachPage extends State<PresAttach> {
                           children: [
                             Row(
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  Align(
+                                    alignment: Alignment.topLeft,
                                     child: Image.asset('assets/logoheader.png',
                                       fit: BoxFit.contain,
                                       width: 110,
                                       height: 80,
                                     ),
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
-                                    //child: Text('Orders', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 27, color: Colors.white70, fontWeight: FontWeight.bold),),
-                                  ),
                                 ]),
+                            ///Show upload prescription button if there is prescribed medicine
                             Padding(
                               padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 0),
                               child: Column(
@@ -165,12 +163,15 @@ class _PresAttachPage extends State<PresAttach> {
                                     },
                                   )]) : Container(),
                                   SizedBox(height: 10,),
+
+                                  ///Show order summary
                                   Text('Order summary:  ', style: TextStyle(
                                     fontFamily: 'Lato',
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
                                   )),
                                   SizedBox(height: 10,),
+                                  ///Show selected location
                                   Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -205,7 +206,8 @@ class _PresAttachPage extends State<PresAttach> {
                                                     );
                                                     } else {
                                                       return  ListView.builder(
-                                                      shrinkWrap: true,
+                                                          physics: ClampingScrollPhysics(),
+                                                          shrinkWrap: true,
                                                       scrollDirection: Axis.vertical,
                                                       itemCount: 1,
                                                       itemBuilder: (context, index) {
@@ -245,6 +247,7 @@ class _PresAttachPage extends State<PresAttach> {
                                           }),
                                     ]),
                                   SizedBox(height: 20,),
+                                  ///Show total price
                                   Row(
                                     children: [
                                       Text('Total price:  ', style: TextStyle(
@@ -275,6 +278,7 @@ class _PresAttachPage extends State<PresAttach> {
                               ),
                             ),
 
+                            ///Show order items
                             SingleChildScrollView(
                                 child: Align(
                                     alignment: Alignment.bottomCenter,
@@ -311,8 +315,8 @@ class _PresAttachPage extends State<PresAttach> {
                                                           child: Text("No Data..."),
                                                         );
                                                       } else {
-                                                        //If cartNotEmpty true then display medications
                                                         return ListView.builder(
+                                                            physics: ClampingScrollPhysics(),
                                                             scrollDirection: Axis.vertical,
                                                             itemCount: snapshot.data!.length,
                                                             itemBuilder: (context, index) {
@@ -463,6 +467,7 @@ class _PresAttachPage extends State<PresAttach> {
               child: IconButton(
                   onPressed:
                   isLoading || pickedFile == null
+                  ///If order contains prescribed medicine then ask for prescription
                       ? widget.presRequired ? () {
                     showDialog(
                       context: context,
@@ -528,7 +533,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. You can view the order in orders page.",
+                              "Thank you for your order.\nCheck order in orders page for more information.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -610,7 +615,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Your order has been submited. You can view the order in orders page.",
+                              "Thank you for your order.\nCheck order in orders page for more information.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -699,6 +704,7 @@ class _PresAttachPage extends State<PresAttach> {
                 ))));
   }
 
+  ///Empty the cart after submitting the order
   void emptyTheCart() async {
     var medInCart;
     //Query customer cart
@@ -715,7 +721,7 @@ class _PresAttachPage extends State<PresAttach> {
       }
     }
   }
-  //Get customer medications from cart table + check existence of location
+  ///Get customer medications from cart table + check existence of location to know if it should be saved as previous location or not
   Future<List<ParseObject>> getCustomerCart() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
@@ -731,10 +737,7 @@ class _PresAttachPage extends State<PresAttach> {
     final apiResponse2 = await savedLocations.query();
 
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
-    parseQuery.whereNear(
-        'Location',
-        ParseGeoPoint(latitude: widget.lat, longitude: widget.lng)
-    );
+
     final apiResponse3 = await parseQuery.query();
 
     if (apiResponse3.success && apiResponse3.results != null) {
@@ -747,11 +750,15 @@ class _PresAttachPage extends State<PresAttach> {
             'pharmacyLocation': object.get('Location')
           };
 
+          ///contain will not be empty if the pharmacy already exist in the array so no need to add it again
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
-          if (contain.isEmpty && counter<5) {
-            counter++;
-            pharmacies.add(pharmacy);
-            pharmaciesLocation.add(pharmacyLocation);
+          if (contain.isEmpty) {
+            ///Send order only to accepted pharmacies
+            if(object.get('JoinRequest') == 'accepted'){
+              pharmacies.add(pharmacy);
+              pharmaciesLocation.add(pharmacyLocation);
+            }
+
           }
         }
       }
@@ -760,8 +767,8 @@ class _PresAttachPage extends State<PresAttach> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           object = o as ParseObject;
-          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'] == widget.lat){
-            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'] == widget.lng){
+          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'].toStringAsFixed(5) == widget.lat.toStringAsFixed(5)){
+            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'].toStringAsFixed(5) == widget.lng.toStringAsFixed(5)){
               locationExist = true;
             }
           }
@@ -773,7 +780,7 @@ class _PresAttachPage extends State<PresAttach> {
     }
   }
 
-  //Get customer's medication information from Medications table
+  ///Get customer's medication information from Medications table
   Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -786,16 +793,20 @@ class _PresAttachPage extends State<PresAttach> {
       return [];
     }
   }
-  //Calculate distance between customer and pharmacy
-  double calculateDistance(lat1, lon1, lat2, lon2){
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 - c((lat2 - lat1) * p)/2 +
-        c(lat1 * p) * c(lat2 * p) *
-            (1 - c((lon2 - lon1) * p))/2;
-    return 12742 * asin(sqrt(a));
+  ///Calculate distance between customer and pharmacy
+  calculateDistance(lat1, lon1, lat2, lon2){
+    final Distance distance = new Distance();
+
+    //calculate distance in meter for better accuracy
+    final distanceMeter = distance.as(LengthUnit.Meter,
+        new LatLng(lat1,lon1),new LatLng(lat2,lon2));
+
+    //Convert distance to kilometers
+    var distanceKM = distanceMeter/1000;
+    return distanceKM;
   }
 
+  ///Convert coordinates to address
   Future<Placemark> getUserLocation() async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         widget.lat, widget.lng);

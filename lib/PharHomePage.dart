@@ -7,6 +7,7 @@ import 'package:untitled/PharmacyNew.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyOld.dart';
 import 'PharmacyLogin.dart';
+import 'PharmacySettings.dart';
 
 
 class PharHomePage extends StatefulWidget {
@@ -16,7 +17,7 @@ class PharHomePage extends StatefulWidget {
 }
 
 class PharmacyHome extends State<PharHomePage> {
-
+  int _selectedIndex = 0;
   var pharmacyId;
 
   @override
@@ -31,7 +32,7 @@ class PharmacyHome extends State<PharHomePage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo and page title
+            ///App logo and page title
             Container(
                 child: SafeArea(
                     child: Column(
@@ -39,17 +40,16 @@ class PharmacyHome extends State<PharHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                Align(
+                                  alignment: Alignment.topLeft,
                                   child: Image.asset('assets/logoheader.png',
                                     fit: BoxFit.contain,
                                     width: 110,
                                     height: 80,
                                   ),
                                 ),
+                                Spacer(),
                                 Container(
                                     child:  IconButton(
                                       onPressed: (){
@@ -175,7 +175,7 @@ class PharmacyHome extends State<PharHomePage> {
                                 }
                               }),
                           SizedBox(height: 35,),
-                          //Categories navigation buttons
+                          ///Categories navigation buttons
                           Center(child: Column(
                             children: [
                               GestureDetector(
@@ -196,8 +196,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Align(
-                                          alignment: Alignment.bottomLeft,
+                                        child: Center(
                                             child: Column(
                                               children: [
                                                 Image.asset('assets/thumbnail_iconNew.png',
@@ -239,8 +238,7 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Align(
-                                          alignment: Alignment.bottomLeft,
+                                        child: Center(
                                           child: Column(
                                             children: [
                                               Image.asset('assets/thumbnail_iconOld.png',
@@ -267,15 +265,42 @@ class PharmacyHome extends State<PharHomePage> {
                           )]))),
             ])),
       //Bottom navigation bar
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+              }
+            }),
+          )),
     );}
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Pharmacist table
+  ///Function to get current user from Pharmacist table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
@@ -288,7 +313,7 @@ class PharmacyHome extends State<PharHomePage> {
     }
   }
 
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -316,7 +341,7 @@ class PharmacyHome extends State<PharHomePage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PharmacyLogin()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

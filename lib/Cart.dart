@@ -8,9 +8,8 @@ import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'PresAttach.dart';
 import 'Settings.dart';
-import 'Location.dart';
+
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -24,11 +23,23 @@ class Cart extends State<CartPage> {
   int _selectedIndex = 1;
   String searchString = "";
   //We will consider the cart empty
+  //Check if cart empty ot not, if its empty 'cartNotEmpty == false' it will display a message otherwise will display items
   bool cartNotEmpty = false;
+  //to show continue button
+  bool full = false;
   int cartItemNum = 0;
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
+  int numOfItems = 0;
+
+  ///To change value of variable 'full'
+  @override
+  void initState() {
+    super.initState();
+    checkEmptiness();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -41,7 +52,7 @@ class Cart extends State<CartPage> {
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              //Controls app logo
+              ///App logo
               Container(
                   child: SafeArea(
                       child: Column(
@@ -49,10 +60,9 @@ class Cart extends State<CartPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,80, 0),
+                                  Align(
+                                    alignment: Alignment.topLeft,
                                     child: Image.asset(
                                       'assets/logoheader.png',
                                       fit: BoxFit.contain,
@@ -62,7 +72,7 @@ class Cart extends State<CartPage> {
                                   ),
                                   //Controls Cart page title
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10,100, 0),
+                                    margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
                                     child: Text(
                                       'Cart',
                                       textAlign: TextAlign.center,
@@ -73,6 +83,7 @@ class Cart extends State<CartPage> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
+                                  Spacer(),
                                   Container(
                                       child:  IconButton(
                                         onPressed: (){
@@ -122,7 +133,7 @@ class Cart extends State<CartPage> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 10),
-                                      height: 620,
+                                      height: 550,
                                       width: size.width,
                                       child: Column(children: [
                                         Expanded(
@@ -152,7 +163,7 @@ class Cart extends State<CartPage> {
                                                           child: Text("No Data..."),
                                                         );
                                                       } else {
-                                                        //If cartNotEmpty true then display medications
+                                                        ///If cartNotEmpty true then display medications
                                                         return cartNotEmpty
                                                             ? ListView.builder(
                                                             scrollDirection: Axis.vertical,
@@ -258,7 +269,7 @@ class Cart extends State<CartPage> {
                                                                                             context: context,
                                                                                             builder: (BuildContext context) {
                                                                                               return AlertDialog(
-                                                                                                title: Text("Are you sure you wish to delete this item?",
+                                                                                                title: Text("Are you sure you want to delete this item?",
                                                                                                     style: TextStyle(
                                                                                                       fontFamily: 'Lato',
                                                                                                       fontSize: 20,
@@ -266,11 +277,11 @@ class Cart extends State<CartPage> {
                                                                                                 actions: <Widget>[
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(true),
-                                                                                                    child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(false),
-                                                                                                    child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                 ],
                                                                                               );
@@ -303,7 +314,9 @@ class Cart extends State<CartPage> {
                                                                                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
                                                                                               child: Row(
                                                                                                 children: <Widget>[
-                                                                                                  Image.network(image!.url!, height: 100, width: 70,fit: BoxFit.fill,),
+                                                                                                  (image !=null)?
+                                                                                                  Image.network(image!.url!, height: 100, width: 70,fit: BoxFit.fill,)
+                                                                                                      :Image.asset('assets/listIcon.png', height: 100, width: 70,),
                                                                                                   Expanded(
                                                                                                     child: Container(
                                                                                                       padding: const EdgeInsets.all(8.0),
@@ -349,6 +362,7 @@ class Cart extends State<CartPage> {
                                                                                                                                 setState(() {
                                                                                                                                   //Modify the counter
                                                                                                                                   if (counter > 1) {
+                                                                                                                                    numOfItems++;
                                                                                                                                     counter--;
                                                                                                                                   }
                                                                                                                                 });
@@ -373,6 +387,7 @@ class Cart extends State<CartPage> {
                                                                                                                                 //Send medication id. customer id and the counter after modification
                                                                                                                                 increment(medId, widget.customerId, counter! ,Publicprice);
                                                                                                                                 setState(() {
+                                                                                                                                  numOfItems++;
                                                                                                                                   counter++;
                                                                                                                                 });
                                                                                                                               },
@@ -402,7 +417,7 @@ class Cart extends State<CartPage> {
                                                                     }
                                                                   });
                                                             })
-                                                        //If cartnotEmpty is false; cart is empty show this message
+                                                        ///If 'cartnotEmpty' is false; then cart is empty show this message
                                                             : Container(
                                                             child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -486,12 +501,14 @@ class Cart extends State<CartPage> {
             ])),
         //Button continue
         persistentFooterButtons: [
+          full?
           Text('Continue',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
-              )),
+              )):Container(),
+          full?
           CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
@@ -503,7 +520,7 @@ class Cart extends State<CartPage> {
                     Icons.arrow_forward_ios_outlined,
                     color: Colors.white,
                     size: 24.0,
-                  ))),
+                  ))):Container()
         ],
         //Bottom navigation bar
         bottomNavigationBar: Container(
@@ -522,7 +539,8 @@ class Cart extends State<CartPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30),
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -563,7 +581,7 @@ class Cart extends State<CartPage> {
                 ))));
   }
 
-  //Get customer medications from cart table
+  ///Get customer medications from cart table
   Future<List<ParseObject>> getCustomerCart() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
@@ -583,7 +601,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Get customer's medication information from Medications table
+  ///Get customer's medication information from Medications table
   Future<List<ParseObject>> getCustomerCartMed(medIdCart) async {
     final QueryBuilder<ParseObject> customerCartMed =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -597,7 +615,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Delete medication from cart function
+  ///Delete medication from cart function
   //Quantity will be used in next sprint
   Future<bool> deleteCartMed(medId, Quantity, Publicprice, legalStatus) async {
     //Query the medication from customers' cart
@@ -618,7 +636,6 @@ class Cart extends State<CartPage> {
           }
           else{
             numOfPres--;
-            print(numOfPres);
           }
         }
         //Delete medication
@@ -631,7 +648,7 @@ class Cart extends State<CartPage> {
     return false;
   }
 
-  //Increment medication quantity
+  ///Increment medication quantity
   Future<void> increment(objectId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart
@@ -654,7 +671,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  //Decrement medication quantity
+  ///Decrement medication quantity
   Future<void> decrement(medId, customerId, Quantity, Publicprice ) async {
     var medInCart;
     //Query the medication from customers' cart
@@ -713,7 +730,29 @@ class Cart extends State<CartPage> {
       }
     }
   }
-  void showError(String errorMessage) {
+
+  ///Get if cart empty or not
+  Future<void> checkEmptiness() async {
+    //Query customer cart
+    final QueryBuilder<ParseObject> customerCart =
+    QueryBuilder<ParseObject>(ParseObject('Cart'));
+    customerCart.whereEqualTo('customer',
+        (ParseObject('Customer')..objectId = widget.customerId).toPointer());
+    final apiResponse = await customerCart.query();
+
+    if (apiResponse.success && apiResponse.results != null) {
+      //If query have objects then set true
+      full = true;
+      numOfItems = apiResponse.count;
+      setState(() {});
+    } else {
+      //If query have no object then set false
+      full = false;
+      numOfItems = 0;
+    }
+  }
+
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -741,7 +780,7 @@ class Cart extends State<CartPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

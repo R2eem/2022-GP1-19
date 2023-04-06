@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -29,14 +30,14 @@ class MedDetails extends State<medDetailsPage> {
         body: SingleChildScrollView(
             child: Stack(
                 children: [
-                  //Controls app logo
+                  ///App logo
                   Container(
                       child: SafeArea(
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                //Controls medication details page display
+                                ///Medication details page display
                                 Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
@@ -72,6 +73,7 @@ class MedDetails extends State<medDetailsPage> {
                                                           );
                                                         } else {
                                                           return ListView.builder(
+                                                              physics: ClampingScrollPhysics(),
                                                               padding: EdgeInsets.only(top: 10.0),
                                                               scrollDirection: Axis.vertical,
                                                               itemCount: 1,
@@ -90,11 +92,12 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                final LegalStatus = medDetails.get("LegalStatus")!;
                                                                 ParseFileBase? image;
                                                                 if(medDetails.get<ParseFileBase>('Image') != null){
                                                                   image = medDetails.get<ParseFileBase>('Image')!;
                                                                 }
-                                                                //Display medication information
+                                                                ///Display medication information
                                                                 return  Container(
                                                                         child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,6 +161,14 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                               fontWeight: FontWeight.w600
                                                                                                           ),
                                                                                                         ),
+                                                                                                        SizedBox(height: 10,),
+                                                                                                        (LegalStatus == 'Prescription')?
+                                                                                                        Text('Requires prescription',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: 'Lato',
+                                                                                                              fontSize: 14,
+                                                                                                              color: Colors.red),):
+                                                                                                        SizedBox(width: 0,),
                                                                                                         SizedBox(height: 10,),
                                                                                                         Row(
                                                                                                             children: [
@@ -326,7 +337,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                                     child: Text.rich(
                                                                                                                       TextSpan(
                                                                                                                         children: [
-                                                                                                                          TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                                          TextSpan(text: "ADD TO CART ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                                                                                                                           WidgetSpan(
                                                                                                                               child: Icon(
                                                                                                                                 Icons.add_shopping_cart_rounded,
@@ -358,7 +369,8 @@ class MedDetails extends State<medDetailsPage> {
                                                     }
                                                   })),
                                         ])))]))),
-                  //Header
+                  ///Header
+                  ///Header is bellow because all of the code is wrapped in Stack which puts widget above another and we need header to be on top
                   Container(
                     height: 150,
                     child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
@@ -393,8 +405,10 @@ class MedDetails extends State<medDetailsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
@@ -418,7 +432,7 @@ class MedDetails extends State<medDetailsPage> {
                 )))
     );
   }
-  //Function to get medication
+  ///Function to get medication
   Future<ParseObject> getMedDetails() async {
     var object;
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -434,7 +448,7 @@ class MedDetails extends State<medDetailsPage> {
     return object;
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;

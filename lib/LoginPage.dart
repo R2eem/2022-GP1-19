@@ -38,7 +38,7 @@ class Login extends State<LoginPage> {
                     height: _headerHeight,
                     child: HeaderWidget(_headerHeight, false, Icons.login_rounded), //let's create a common header widget
                   ),
-                  //Controls app logo and title
+                  ///App logo and title
                   SafeArea(
                       child: Column(
                           children: [
@@ -68,10 +68,9 @@ class Login extends State<LoginPage> {
                                     //Form
                                     Form(
                                       key: _formKey,
-                                      //child: SingleChildScrollView(
                                       child: Column(
                                         children: <Widget>[
-                                          //email
+                                          ///email
                                           Container(
                                             child:TextFormField(
                                               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -90,7 +89,7 @@ class Login extends State<LoginPage> {
                                           SizedBox(
                                             height: 30,
                                           ),
-                                          //password
+                                          ///password
                                           Container(
                                             child:TextFormField(
                                               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -119,11 +118,7 @@ class Login extends State<LoginPage> {
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                              ),),
+                                               ),),
                                             decoration: BoxDecoration(boxShadow: [
                                               BoxShadow(
                                                 color: Colors.black.withOpacity(0.1),
@@ -134,7 +129,7 @@ class Login extends State<LoginPage> {
                                           SizedBox(
                                             height: 15,
                                           ),
-                                          //Navigation to forgot password page
+                                          ///Navigation to forgot password page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(10,0,10,20),
                                             alignment: Alignment.topRight,
@@ -147,7 +142,7 @@ class Login extends State<LoginPage> {
                                             ),
                                           ),
 
-                                          //Login button
+                                          ///Login button
                                           Container(
                                             decoration: ThemeHelper().buttonBoxDecoration(context),
                                             child: ElevatedButton(
@@ -165,10 +160,9 @@ class Login extends State<LoginPage> {
                                                 }
                                             ),
                                           ),
-                                          //Navigation to signup page
+                                          ///Navigation to signup page
                                           Container(
                                             margin: EdgeInsets.fromLTRB(10,20,10,20),
-                                            //child: Text('Don\'t have an account? Create'),
                                             child: Text.rich(
                                                 TextSpan(
                                                     children: [
@@ -194,7 +188,7 @@ class Login extends State<LoginPage> {
         ));
   }
 
-  //Show error message function
+  ///Show error message function
   void showError(String errorMessage) {
     if(errorMessage.compareTo('Invalid username/password.')==0){
       errorMessage = 'Invalid email or password. Please try again.';
@@ -220,7 +214,7 @@ class Login extends State<LoginPage> {
     );
   }
 
-  //User log in function
+  ///User log in function
   void doUserLogin() async {
     var object;
     var id;
@@ -228,19 +222,19 @@ class Login extends State<LoginPage> {
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    //Check if user is customer
     QueryBuilder<ParseObject> queryCustomer1 =
     QueryBuilder<ParseUser>(ParseUser.forQuery());
     queryCustomer1.whereEqualTo('email', email);
     final ParseResponse apiResponse1 = await queryCustomer1.query();
 
-    //If user exist search for type otherwise invalid inputs
+    ///If user exist search for type otherwise invalid inputs
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         object = o as ParseObject;
         id = object.get('objectId');
       }
     }
+    ///If account not signed up in Tiryaq
     else {
       showError('Invalid username/password.');
     }
@@ -263,16 +257,21 @@ class Login extends State<LoginPage> {
 
         var response = await user.login();
 
+        ///If credentials correct login
         if (response.success) {
           setState(() {
             isLoggedIn = true;
           });
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => CategoryPage()));
-        } else {
+
+        }
+        ///If credentials not correct show messaage
+        else{
           showError(response.error!.message);
         }
       }
+      ///Account not customer
       else {
         showError('Invalid username/password.');
       }

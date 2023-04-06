@@ -11,6 +11,8 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
 import 'package:native_notify/native_notify.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -24,6 +26,7 @@ class Category extends State<CategoryPage> {
   bool searchNotEmpty = true;
   bool alwaysTrue = true;
   bool noMed = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +111,7 @@ class Category extends State<CategoryPage> {
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
               child: SafeArea(
                   child: Column(
@@ -116,11 +119,9 @@ class Category extends State<CategoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      Align(
+                        alignment: Alignment.topLeft,
                         child: Image.asset(
                           'assets/logoheader.png',
                           fit: BoxFit.contain,
@@ -128,6 +129,7 @@ class Category extends State<CategoryPage> {
                           height: 80,
                         ),
                       ),
+                      Spacer(),
                       Container(
                           child: IconButton(
                         onPressed: () {
@@ -182,9 +184,9 @@ class Category extends State<CategoryPage> {
                       ))
                     ]),
                 SizedBox(
-                  height: 55,
+                  height: 25,
                 ),
-                //Controls category page display
+                ///Category page display
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -193,11 +195,10 @@ class Category extends State<CategoryPage> {
                       height: size.height - 150,
                       width: size.width,
                       child: Column(children: [
-                        //Search bar
+                        ///Search bar
                         Material(
                             elevation: 4,
                             shadowColor: Colors.grey,
-                            borderRadius: BorderRadius.circular(30),
                             child: TextField(
                               //Whenever value in text field changes set state
                               onChanged: (value) {
@@ -206,9 +207,9 @@ class Category extends State<CategoryPage> {
                                 });
                               },
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 19),
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                               decoration: InputDecoration(
-                                filled: true,
+                                filled: false,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -219,6 +220,43 @@ class Category extends State<CategoryPage> {
                                 prefixIconColor: Colors.pink[100],
                               ),
                             )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        ImageSlideshow(
+                          // Width of the [ImageSlideshow].
+                          width: double.infinity,
+                          // Height of the [ImageSlideshow].
+                          height: 150,
+                          // The page to show when first creating the [ImageSlideshow].
+                          initialPage: 0,
+                          // The color to paint the indicator.
+                          indicatorColor: Colors.purple,
+                          // The color to paint behind th indicator.
+                          indicatorBackgroundColor: Colors.grey,
+                          // The widgets to display in the [ImageSlideshow].
+                          children: [
+                            Image.asset(
+                              'assets/Slide1.png',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/Slide2.png',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/Slide3.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                          // Called whenever the page in the center of the viewport changes.
+                          onPageChanged: (value) {
+                          },
+                          // Auto scroll interval.
+                          autoPlayInterval: 3000,
+                          // Loops back to first slide.
+                          isLoop: true,
+                        ),
                         SizedBox(
                           height: 30,
                         ),
@@ -291,7 +329,64 @@ class Category extends State<CategoryPage> {
                         SizedBox(
                           height: 15,
                         ),
-                        //Medications list diplay
+                        FutureBuilder<List<ParseObject>>(
+                              future: getMedication(searchString),
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return Center(
+                                    );
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    }
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    } else {
+                                      return Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children:[
+                                            Text(
+                                              'Results: ${snapshot.data!.length}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontFamily: "Lato",
+                                                  fontSize: 17,
+                                                  fontWeight:
+                                                  FontWeight.w700),
+                                            ),
+                                            ///If the no medication matches the search string then display no medication message
+                                            (snapshot.data!.length==0)?
+                                            Container(
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 60,
+                                                      ),
+                                                      Text(
+                                                        "Sorry, No results match your search.",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                    ])):Container(),
+                                          ]);
+                                    }
+                                }
+                              }),
+                        ///Medications list display
                         Expanded(
                             //Get medications
                             child: FutureBuilder<List<ParseObject>>(
@@ -320,9 +415,9 @@ class Category extends State<CategoryPage> {
                                         return GridView.builder(
                                             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                                                 maxCrossAxisExtent: 300,
-                                                childAspectRatio: 1/1.5,),
+                                                childAspectRatio: 1/1.8,),
                                             padding: EdgeInsets.only(
-                                                top: 10.0, bottom: 20.0),
+                                                top: 10.0, bottom: 70.0),
                                             scrollDirection: Axis.vertical,
                                             itemCount: snapshot.data!.length,
                                             itemBuilder: (context, index) {
@@ -339,13 +434,13 @@ class Category extends State<CategoryPage> {
                                                       'ScientificName')!;
                                               final Publicprice = medGet
                                                   .get<num>('Publicprice')!;
+                                              final LegalStatus = medGet.get("LegalStatus")!;
                                               ParseFileBase? image;
                                               if (medGet.get<ParseFileBase>('Image') != null) {
                                                 image = medGet.get<ParseFileBase>('Image')!;
                                               }
-                                              //Display medication that matches the search string if exist
-                                              return  (image == null)
-                                                      ? GestureDetector(
+                                              ///Display medication that matches the search string if exist
+                                              return GestureDetector(
                                                           //Navigate to medication details page
                                                           onTap: () => Navigator.of(
                                                                   context)
@@ -362,10 +457,17 @@ class Category extends State<CategoryPage> {
                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                   children: [
-                                                                Image
+                                                                    (image == null)?
+                                                                    Image
                                                                     .asset(
                                                                   'assets/listIcon.png', height: 100, width: 70,
-                                                                ),
+                                                                ):Image
+                                                                        .network(
+                                                                      image!.url!,
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      height: 120, width: 90,
+                                                                    ),
                                                                Text(
                                                                     TradeName,
                                                                  textAlign: TextAlign.center,
@@ -403,19 +505,27 @@ class Category extends State<CategoryPage> {
                                                                       fontStyle:
                                                                       FontStyle.italic),
                                                                 ),
+                                                                    (LegalStatus == 'Prescription')?
+                                                                    Text('Requires prescription',
+                                                                      style: TextStyle(
+                                                                          fontFamily: 'Lato',
+                                                                          fontSize: 14,
+                                                                          color: Colors.red),):
+                                                                    SizedBox(width: 0,),
                                                                     Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                                         children:[
                                                                           Ink(
                                                                         decoration:
                                                                             ShapeDecoration.fromBoxDecoration(BoxDecoration(
                                                                           color:
-                                                                              HexColor('#fad2fc'),
+                                                                          HexColor('#c7a1d1').withOpacity(0.5),
                                                                           borderRadius:
-                                                                              BorderRadius.circular(15),
+                                                                              BorderRadius.circular(5),
                                                                         )),
-                                                                        //Add to cart button
+                                                                            width: size.width/3,
+                                                                            height: size.height/22,
+                                                                        ///Add to cart button
                                                                         child: IconButton(
                                                                             onPressed: () async {
                                                                               if (await addToCart(medId, customerId)) {
@@ -434,145 +544,14 @@ class Category extends State<CategoryPage> {
                                                                               size: 20.0,
                                                                             )),
                                                                       ),]),
+                                                                    SizedBox(height: 5,)
 
-
-                                                              ])))
-                                                      : GestureDetector(
-                                                          //Navigate to medication details page
-                                                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, customerId))),
-                                                          //Medication card information
-                                                          child: Card(
-                                                              elevation: 3,
-                                                              margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                                                              color: Colors.white,
-                                                              child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                              Image
-                                                                  .network(
-                                                              image!.url!,
-                                                                fit: BoxFit
-                                                                    .fill,
-                                                                height: 120, width: 90,
-                                                              ),
-                                                                 Text(
-                                                                    TradeName,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            "Lato",
-                                                                        fontSize:
-                                                                            17,
-                                                                        fontWeight:
-                                                                            FontWeight.w700),
-                                                                  ),
-
-                                                                      Text(
-                                                                    '$ScientificName',
-                                                                        textAlign: TextAlign.center,
-                                                                        style: TextStyle(
-                                                                        fontFamily:
-                                                                            "Lato",
-                                                                        fontSize:
-                                                                            14,
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontStyle:
-                                                                            FontStyle.italic),
-                                                                  ),
-                                                                Text(
-                                                                  '$Publicprice SAR',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                      "Lato",
-                                                                      fontSize:
-                                                                      14,
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontStyle:
-                                                                      FontStyle.italic),
-                                                                ),
-                                                              Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children:[
-                                                                    Ink(
-                                                                        decoration:
-                                                                            ShapeDecoration.fromBoxDecoration(BoxDecoration(
-                                                                          color:
-                                                                              HexColor('#fad2fc'),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(15),
-                                                                        )),
-                                                                        //Add to cart button
-                                                                        child: IconButton(
-                                                                            onPressed: () async {
-                                                                              if (await addToCart(medId, customerId)) {
-                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                                  content: Text(
-                                                                                    "$TradeName added to your cart",
-                                                                                    style: TextStyle(fontSize: 20),
-                                                                                  ),
-                                                                                  duration: Duration(milliseconds: 3000),
-                                                                                ));
-                                                                              }
-                                                                              ;
-                                                                            },
-                                                                            icon: const Icon(
-                                                                              Icons.add_shopping_cart_rounded,
-                                                                              color: Colors.black,
-                                                                              size: 20.0,
-                                                                            )),
-                                                                      ),]),
 
                                                               ])));
                                             });
                                       }
                                   }
                                 })),
-                        //If the medication doesn't matches the search string then don't display
-                        /*Container(
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Sorry we could't find any match,",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                  Text(
-                                    "try another search or continue shopping through the categories.",
-                                    style: TextStyle(
-                                        fontFamily:
-                                        "Lato",
-                                        fontSize:
-                                        20,
-                                        fontWeight:
-                                        FontWeight
-                                            .w700),
-                                    textAlign:
-                                    TextAlign
-                                        .center,
-                                  ),
-                                ])),*/
-
-                        SizedBox(
-                          height: 80,
-                        )
                       ]),
                     ))
               ]))),
@@ -632,11 +611,12 @@ class Category extends State<CategoryPage> {
                 ))));
   }
 
-  //Function to get medications
+  ///Function to get medications
   Future<List<ParseObject>> getMedication(searchString) async {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryMedication.setLimit(300);
+    queryMedication.whereEqualTo('Deleted', false);
     queryMedication.orderByAscending('TradeName');
     queryMedication.whereStartsWith('TradeName', searchString);
     final ParseResponse apiResponse = await queryMedication.query();
@@ -647,13 +627,13 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
         QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -666,7 +646,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(medId, customerId) async {
     bool exist = false;
     var medInCart;
@@ -706,7 +686,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -742,7 +722,7 @@ class Category extends State<CategoryPage> {
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

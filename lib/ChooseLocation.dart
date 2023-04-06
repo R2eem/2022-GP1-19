@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/PresAttach.dart';
 import 'package:geocoding/geocoding.dart';
+import 'LoginPage.dart';
 
 
 
@@ -40,7 +39,7 @@ class Locations extends State<ChooseLocation> {
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
             child: SafeArea(
               child: Column(
@@ -144,6 +143,7 @@ class Locations extends State<ChooseLocation> {
                                                                 return  ListView.builder(
                                                                     shrinkWrap: true,
                                                                     scrollDirection: Axis.vertical,
+                                                                    physics: ClampingScrollPhysics(),
                                                                     itemCount: 1,
                                                                     itemBuilder: (context, index) {
                                                                       final address = snapshot.data!;
@@ -212,7 +212,7 @@ class Locations extends State<ChooseLocation> {
 
 
 
-                                              //If LocationNotEmpty is false; Location is empty show this message
+                                              ///If 'LocationNotEmpty' is false; Location is empty show this message
                                                   : Container(
                                                   child: Column(
                                                       crossAxisAlignment:
@@ -250,7 +250,7 @@ class Locations extends State<ChooseLocation> {
   }
 
 
-  //Get customer's locations  from Locations table
+  ///Get customer's locations  from Locations table
   Future<List<ParseObject>> getSavedLocations() async {
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
