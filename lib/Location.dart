@@ -37,40 +37,6 @@ class _LocationPage extends State<Locationpage> {
 
   Set<Marker> markers = {};
 
-  ///To check user block status
-  @override
-  void initState() {
-    super.initState();
-    checkBlock();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('objectId', widget.customerId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
-  }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showErrorLogout(response.error!.message);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,25 +160,5 @@ class _LocationPage extends State<Locationpage> {
 
 
     return position;
-  }
-  ///Show error message function
-  void showErrorLogout(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

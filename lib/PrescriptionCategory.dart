@@ -6,7 +6,6 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Cart.dart';
-import 'LoginPage.dart';
 import 'Settings.dart';
 import 'medDetails.dart';
 
@@ -27,39 +26,6 @@ class Prescription extends State<PrescriptionCategory>
   int _selectedTab = 0;
   bool noMed = true;
 
-  ///To check user block status
-  @override
-  void initState() {
-    super.initState();
-    checkBlock();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('objectId', widget.customerId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
-  }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showErrorLogout(response.error!.message);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

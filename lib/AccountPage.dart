@@ -6,7 +6,6 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Cart.dart';
-import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'common/theme_helper.dart';
@@ -26,40 +25,6 @@ class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  ///To check user block status
-  @override
-  void initState() {
-    super.initState();
-    checkBlock();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('objectId', widget.customerId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
-  }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showErrorLogout(response.error!.message);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -464,26 +429,6 @@ class _AccountPage extends State<AccountPage>{
           actions: <Widget>[
             new TextButton(
               child: const Text("Ok",style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-  ///Show error message function
-  void showErrorLogout(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Log out failed!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,color: Colors.red)),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            new TextButton(
-              child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

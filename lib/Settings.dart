@@ -21,28 +21,6 @@ class SettingsPage extends StatefulWidget {
 class Settings extends State<SettingsPage> {
   int _selectedIndex = 3;
 
-  ///To check user block status
-  @override
-  void initState() {
-    super.initState();
-    checkBlock();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('objectId', widget.customerId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
 

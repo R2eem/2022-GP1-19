@@ -307,12 +307,6 @@ class PharmacyHome extends State<PharHomePage> {
     queryCustomers.whereContains('user', userId);
     final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
-      ///If pharmacy blocked then force logout
-      for (var pharmacy in apiResponse.results!) {
-        if(pharmacy.get('Block')){
-          doUserLogout();
-        }
-      }
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];

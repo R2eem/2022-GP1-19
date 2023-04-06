@@ -640,12 +640,6 @@ class Category extends State<CategoryPage> {
     queryCustomers.whereContains('user', userId);
     final ParseResponse apiResponse = await queryCustomers.query();
     if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];

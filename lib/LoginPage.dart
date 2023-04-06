@@ -277,16 +277,4 @@ class Login extends State<LoginPage> {
       }
     }
   }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showError(response.error!.message);
-    }
-  }
 }

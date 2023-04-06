@@ -26,27 +26,10 @@ class PharmacyNew extends State<PharmacyNewO>
   int _selectedIndex = 0;
 
   ///To check order status before displaying
-  ///To check user block status
   @override
   void initState() {
     super.initState();
-    checkBlock();
     checkOrders();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
-    queryCustomers.whereContains('objectId', widget.pharmacyId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If pharmacy blocked then force logout
-      for (var pharmacy in apiResponse.results!) {
-        if(pharmacy.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
   }
 
   @override

@@ -46,28 +46,6 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   String time = '';
   int _selectedIndex = 0;
 
-  ///To check order status before displaying
-  ///To check user block status
-  @override
-  void initState() {
-    super.initState();
-    checkBlock();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
-    queryCustomers.whereContains('objectId', widget.pharmacyId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If pharmacy blocked then force logout
-      for (var pharmacy in apiResponse.results!) {
-        if(pharmacy.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -1265,7 +1243,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     return totalPrice.toStringAsFixed(2);
   }
 
-  /// function to send if the order is accepted or declined to the customer
+  ///Function to send if the order is accepted or declined to the customer
   Future<void> SendToCustomer(orderStatus,pharmacyId ,note) async {
     //Store customer medications in list
     for (int i = 0; i < medList.length; i++) {

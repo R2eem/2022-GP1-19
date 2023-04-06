@@ -34,27 +34,10 @@ class Cart extends State<CartPage> {
   int numOfItems = 0;
 
   ///To change value of variable 'full'
-  ///To check user block status
   @override
   void initState() {
     super.initState();
-    checkBlock();
     checkEmptiness();
-  }
-
-  Future<void> checkBlock() async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('objectId', widget.customerId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      ///If customer blocked then force logout
-      for (var customer in apiResponse.results!) {
-        if(customer.get('Block')){
-          doUserLogout();
-        }
-      }
-    }
   }
 
   @override
