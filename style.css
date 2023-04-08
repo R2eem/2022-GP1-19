@@ -975,3 +975,7 @@ main .orders i{
 .caption{
     font-size: medium;
 }
+
+button{
+    cursor: pointer;
+}

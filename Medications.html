@@ -188,8 +188,10 @@ for(let i=0; i<results.length;i++){
     count = count+1;
     
 } 
+document.getElementById('results0').innerHTML = "";
   //display number of results
   document.getElementById('Medresults').innerHTML = "Results: "+count;
+  
   //change (All) filter to active color
   changeStyle('btn1');
  }     
@@ -222,6 +224,7 @@ for(let i=0; i<results.length;i++){
        count = count+1;
        }
     }
+    document.getElementById('results0').innerHTML = "";
      //display number of results
      document.getElementById('Medresults').innerHTML = "Results: "+count;
 }       
@@ -380,50 +383,53 @@ if(confirm(text)==true){
 <body>
     <div class="container">
         <aside class="aside">
-        <div class="top">
-            <div class="logo">
-                <img src="./images/logo.png">
-                <h2>Tiryaq</h2>
+            <div class="top">
+                <div class="logo">
+                    <img src="./images/logo.png">
+                    <h2>Tiryaq</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                     </div>
             </div>
-            <div class="close" id="close-btn">
-                <i class="fa fa-times" aria-hidden="true"></i>
-                 </div>
-        </div>
-        <div class="sidebar">
-            <a href="index.html" >
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                <h3>Dashboard</h3>
-            </a>
-            <a href="Medications.html" class="active">
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
-            <a href="ViewCustomers.html">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                <h3>Customers</h3>
-            </a>
-            <a href="Pharmacies_page.html">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-            <a href="customerOrders.html" >
-                <i class="fa fa-list-alt" aria-hidden="true"></i>
-                <h3>Orders</h3>
-            </a>
-            <a href="Pharmacies_Join_Request_Page.html">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requests</h3>
-            </a>
-            <a href="AddMedication.html">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <h3>Add Medications</h3>
-            </a>
-            <a href="" onclick="doUserLogOut(); return false">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                <h3>Log out</h3>
-            </a>
-        </div>
-        </aside>
+            <div class="sidebar">
+                <a href="index.html">
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="ViewCustomers.html">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>Customers</h3>
+                </a>
+                <a href="customerOrders.html" >
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
+                </a>
+                <a href="Medications.html" class="active">
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+            
+                <a href="Pharmacies_page.html">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+              
+                <a href="Pharmacies_Join_Request_Page.html">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <h3>Join requests</h3>
+                </a>
+              
+                <a href="" onclick="doUserLogOut(); return false">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <h3>Log out</h3>
+                </a>
+            </div>
+            </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
 
