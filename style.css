@@ -24,16 +24,7 @@
 
     --box-shadow: 0 2rem 3rem var(--color-info-light);
 }
-/*====================== DARK THEME VARIABLES =========================*/
-.dark-theme-variables{
-    --color-background:#181a1e;
-    --color-white:#202528;
-    --color-dark:#edeffd;
-    --color-dark-variant:#a3bdcc;
-    --color-light: rgba(0,0,0,0.4);
-    --box-shadow: 0 2rem 3rem var(--color-light);
-}
-
+/*====================== GENRAL CSS FOR INDEX PAGE =========================*/
 
 *{
     margin: 0;
@@ -104,15 +95,10 @@ small{
     font-size: 0.75rem;
 }
 
-.profile-photo{
-    width: 2.8rem;
-    height: 2.8rem;
-    border-radius: 50%;
-    overflow: hidden;
-}
 
 .text-muted{
     color: var(--color-info-dark);
+    font-size: 1rem;
 }
 
 p{
@@ -208,7 +194,6 @@ aside .sidebar a i {
 }
 
 
-
 aside .sidebar a.active{
     background: var(--color-light);
     color: var(--color-primary);
@@ -223,7 +208,6 @@ aside .sidebar a.active:before{
 }
 
 aside .sidebar a.active i{
-    color: var(--color-primary);
     margin-left: calc(1rem - 3px);
 }
 
@@ -237,7 +221,7 @@ aside .sidebar a:hover i{
 
 aside .sidebar .message-count{
     background: var(--color-danger);
-    color: var(--color-white);
+    color: white;
     padding: 2px 10px;
     font-size: 11px;
     border-radius: var(--border-radius-1);
@@ -254,6 +238,7 @@ main .date{
     border-radius: var(--border-radius-1);
     margin-top: 1rem;
     padding: 0.5rem 1.6rem;
+    font-size: 1.2rem;
 }
 
 main .date input[type='date']{
@@ -273,7 +258,7 @@ main .insights > div{
     border-radius: var(--card-border-radius);
     margin-top: 1rem;
     box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
+    
 }
 
 main .insights > div:hover {
@@ -282,10 +267,10 @@ main .insights > div:hover {
 
 main .insights > div i{
     background: var(--color-primary);
-    padding: 0.5rem;
+    padding: 0.7rem;
     border-radius: 50%;
     color: var(--color-white);
-    font-size: 2rem;
+    font-size: 3rem;
 }
 main .insights > div.pharmacies i{
 background: #AC60A7;
@@ -304,66 +289,37 @@ main .insights > div .middile{
 
 main .insights h3{
     margin: 1rem 0 0.6rem;
-    font-size: 1rem;
+    font-size: 1.5rem;
+}
+
+
+main .insights h1{
+    margin: 1rem 0 0.6rem;
+    font-size: 2.5rem;
 }
 
 main .insights small{
     margin-top: 1.6rem; 
     display: block;  
 }
-/*=============== RECENT ORDERS ==============================*/
 
-main .recent-orders{
-    margin-top: 2rem; 
-}
-
-main .recent-orders h2{
-    margin-bottom: 0.8rem;
+#adminName{
+    font-size: 1.5rem;
 }
 
-main .recent-orders table{
-    background: var(--color-white);
-    width: 100%;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-    text-align: center;
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
+/*---------------- LEFT ----------------------*/
+
+.left .top .profile{
+   display: flex; 
+   gap: 2rem;
+   text-align: right;
 }
 
-#OrdersTable{
-    background: var(--color-white);
-    width: 150%;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-    text-align: center;
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
-}
-
-main .recent-orders table:hover{
-    box-shadow: none;
-}
-main table thead th{
-    border-bottom: 2px solid var(--color-light);
-}
-main table tbody td{
-    height: 2.8rem;
-    border-bottom: 2px solid var(--color-light);
-    color: var(--color-dark-variant);
-}
-
-main table tbody tr:last-child td{
-    border: none;
-}
-
-main .recent-orders a{
-    text-align: center;
-    display: block;
-    margin: 1rem auto;
-    color: var(--color-primary);
-}
-
+.left .top .profile #adminName2{
+    display: flex; 
+    gap: 2rem;
+    text-align: right;
+ }
 /*---------------- RIGHT ----------------------*/
 
 .right{
@@ -374,6 +330,7 @@ main .recent-orders a{
     display: flex;
     justify-content: end;
     gap: 2rem;
+
     
 }
 
@@ -381,119 +338,6 @@ main .recent-orders a{
     display: none;
 }
 
-.right .theme-toggler{
-    background: var(--color-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 1.6rem;
-    width: 4.2rem;
-    cursor: pointer;
-    border-radius: var(--border-radius-1);
-}
-
-.right .theme-toggler i{
-    font-size: 1.2rem;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.right .theme-toggler i.active{
-    background: var(--color-primary);
-    color: white;
-    border-radius: var(--border-radius-1);
-}
-
-.right .top .profile{
-    display: flex;
-    gap: 2rem;
-    text-align: right;
-}
-
-/*================= RECENT UPDATES =================*/
-
-.right .recent-updates{
-    margin-top: 1rem;
-}
-
-.right .recent-updates h2{
-    margin-bottom: 0.8rem;
-}
-
-.right .recent-updates .updates {
-    background: var(--color-white);
-    padding: var(--card-padding);
-    border-radius: var(--card-border-radius);
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
-}
-
-.right .recent-updates .updates:hover{
-    box-shadow: none;
-}
-
-.right .recent-updates .updates .update{
-    display: grid;
-    grid-template-columns: 2.6rem auto;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-/*============================ PROGRESS ANALYTICS ===================================*/
-.right .sales-analytics{
-    margin-top: 2rem;
-}
-
-.right .sales-analytics h2{
-    margin-bottom: 0.8rem;
-}
-
-.right .sales-analytics .item{
-background: white;
-display: flex;
-align-items: center;
-gap: 1rem;
-margin-bottom: 0.7rem;
-padding: 1.4rem var(--card-padding);
-border-radius: var(--border-radius-3);
-box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
-}
-
-.right .sales-analytics .item:hover{
-    box-shadow: none;
-}
-
-.right .sales-analytics .item .right{
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin: 0;
-    width: 100%;
-}
-
-.right .sales-analytics .item .icon{
-    padding: 0.6rem;
-    color: var(--color-white);
-    border-radius: 50%;
-    background: var(--color-primary);
-    display: flex;
-}
-
-.right .sales-analytics .item.collicted .icon{
-    background:var(--color-success);
-}
-
-.right .sales-analytics .item.Canceled .icon{
-    background: var(--color-danger);
-}
-
-.right .sales-analytics .item.customers h5{
-    color: #E397DE;
-}
 
 .medList {
     text-align: left;
@@ -507,9 +351,6 @@ td {
     padding: 10px 0;
 }
 
-/*============================== MEDIA QUERIES ==========================
-for tablet and mobile
-*/
 	
 /*============================== MEDIA QUERIES ========================== for tablet and small labtops */
 @media screen and (max-width: 1200px){
@@ -530,28 +371,13 @@ for tablet and mobile
 	aside .sidebar a{
 	width: 5.6rem;
 	}
-	
-	aside .sidebar a:last-child{
-	position: relative;
-	margin-top: 1.8rem; 
-	}
+
 	
 	main .insights{
 	grid-template-columns: 1fr;
 	gap: 0;
 	}
 	
-	main .recent-orders{
-	width: 94%;
-	position:absolute;
-	left: 50%;
-	transform:translateX(-50%);
-	margin: 2rem 0 0 8.8rem;
-	}
-	
-	main .recent-orders table{
-	width: 83vw;
-	}
 	main table thead tr th:last-child,
 	main table thead tr th:first-child{
 	display: none;
@@ -563,7 +389,7 @@ for tablet and mobile
 	} 
 	}
 	
-	/*============================== MEDIA QUERIES ========================== for mobile*/
+	/*============================== MEDIA QUERIES ========================== for small tablet and mobile */
 	
 	@media screen and (max-width: 768px) {
 	.container{
@@ -608,11 +434,6 @@ for tablet and mobile
 	height: 3.4rem;
 	}
 	
-	aside .sidebar a:last-child{
-	position: absolute;
-	bottom: 5rem; 
-	}
-	
 	aside .close{
 	display: inline-block;
 	cursor: pointer; 
@@ -621,17 +442,6 @@ for tablet and mobile
 	main{
 	margin-top: 8rem;
 	padding: 0 1rem;
-	}
-	
-	main .recent-orders{
-	position: relative;
-	margin: 3rem 0 0 0 ;
-	width: 100%;
-	}
-	
-	main .recent-orders table{
-	width: 100%;
-	margin: 0;
 	}
 	
 	.right{
@@ -652,14 +462,22 @@ for tablet and mobile
 	z-index: 2;
 	box-shadow: 0 1rem 1rem var(--color-light);
 	}
+
+    .left .top{
+        position: fixed;
+        top: 0;
+        left: 0;
+        align-items: center;
+        padding: 0 0.8rem;
+        height: 4.6rem;
+        background: var(--color-white);
+        width: 100%;
+        margin: 0;
+        z-index: 2;
+        box-shadow: 0 1rem 1rem var(--color-light);
+        }
 	
-	.right .top .theme-toggler{
-	width: 4.4rem;
-	position: absolute;
-	left: 66%;
-	}
-	
-	.right .profile .info{
+	.left .profile .info{
 	display: none;
 	}
 	
@@ -672,10 +490,20 @@ for tablet and mobile
 	left: 1rem;
 	}
 	
-	.right .top button span{
+	.right .top button i{
 	font-size: 2rem;
 	
 	}
+    main table thead tr th:last-child,
+	main table thead tr th:first-child{
+	display: none;
+	}
+    
+    main table tbody tr td:last-child,
+	main table tbody tr td:first-child{
+	display: none;
+	} 
+	
 	}
 	
 /*=============== Display Medications ==============================*/
@@ -776,16 +604,26 @@ main .addDiv input {
 
   #addInput{
   color: white;
-    background-color: rgb(204, 0, 204);
+    background-color:  rgb(184, 129, 183);
     width:35%;
-    margin-left: 30% ;
+    margin-left: 35% ;
     margin-right:auto;
-    
-  }
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 4px #b4b4b4;
+    }
+  
+#addInput:hover {background-color: rgb(151, 106, 151)}
+
+#addInput:active {
+      background-color:  rgb(151, 106, 151);
+      box-shadow: 0 5px #767676;
+      transform: translateY(4px);
+    }
 
   #updateInput{
     color: white;
-      background-color: rgb(204, 0, 204);
+      background-color: rgb(184, 129, 183);
       padding: 5px;
       width:15%;
       float: right;
@@ -793,19 +631,37 @@ main .addDiv input {
       border-radius: 12px;
       font-size: 16px;
       margin-right: 20px;
-     
-      
-    }
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 4px #b4b4b4;
+      }
+    
+  #updateInput:hover {background-color: rgb(151, 106, 151)}
+  
+  #updateInput:active {
+        background-color:  rgb(151, 106, 151);
+        box-shadow: 0 5px #767676;
+        transform: translateY(4px);
+      }
 
  #updateInput2{
    color: white;
-    background-color: rgb(204, 0, 204);
+    background-color: rgb(184, 129, 183);
     width:35%;
-    margin-left: 30% ;
+    margin-left: 35% ;
     margin-right:auto;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 4px #b4b4b4;
     }
   
+#updateInput2:hover {background-color: rgb(151, 106, 151)}
 
+#updateInput2:active {
+      background-color:  rgb(151, 106, 151);
+      box-shadow: 0 5px #767676;
+      transform: translateY(4px);
+    }
   
   
   #PharmaceuticalForm {
@@ -912,13 +768,13 @@ main .customer i{
 }
 
 
-/*=============== Display Declined Pharmacies  ==============================*/
+/*=============== Display Pharmacies  ==============================*/
 
-main .med2{
+main .pharmacies{
     margin-top: 2rem; 
 }
 
-main .med2 table{
+main .pharmacies table{
     background: var(--color-white);
     width: 100%;
     border-radius: var(--card-border-radius);
@@ -932,11 +788,11 @@ main .med2 table{
     
 }
 
-main .med2 table:hover{
+main .pharmacies table:hover{
     box-shadow: none;
 }
 
-main .med2 a{
+main .pharmacies a{
     text-align: center;
     display: block;
     margin: 1rem auto;
@@ -944,7 +800,7 @@ main .med2 a{
 }
 
 
-main .med2 i{
+main .pharmacies i{
     font-size: 20px;
     color: gray;
     background-color: white;
@@ -959,104 +815,55 @@ main .med2 i{
 .caption{
     font-size: medium;
 }
-/*=============== change the progress bar width  ==============================*/
 
-.progress-cusotmer{
-    background-color: lightgray;
-    border-radius: 20px;
-    height: 20px;
-    width: 300px;
+/*=============== Display customers orders  ==============================*/
+
+main .orders{
+    margin-top: 2rem; 
 }
 
-.progress-done-Cusotmer{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: repeating-linear-gradient(
-        to left,
-        #c56fbf,
-        #e3a0e0,
-        #f5d4f5
-    );
-    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
-    border-radius: 20px;
-    color:#fff;
-    height: 100%;
-    width: 0;
-    transition: 1s ease 0.3s;
+main .orders table{
+    background: var(--color-white);
+    width: 100%;
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 300ms ease;
+    margin-left: 10%;
+    margin-right: auto;
+    border-spacing:15px;
+    
 }
 
-.progress-pharmacies{
-    background-color: lightgray;
-    border-radius: 20px;
-    height: 20px;
-    width: 300px;
+main .orders table:hover{
+    box-shadow: none;
 }
 
-.progress-done-pharmacies{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: repeating-linear-gradient(
-        to left,
-        #c56fbf,
-        #e3a0e0,
-        #f5d4f5
-    );
-    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
-    border-radius: 20px;
-    color:#fff;
-    height: 100%;
-    width: 0;
-    transition: 1s ease 0.3s;
+main .orders a{
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+    color: var(--color-primary);
 }
 
-.progress-orders{
-    background-color: lightgray;
-    border-radius: 20px;
-    height: 20px;
-    width: 300px;
+
+main .orders i{
+    font-size: 20px;
+    color: gray;
+    background-color: white;
 }
 
-.progress-done-orders{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: repeating-linear-gradient(
-        to left,
-        #c56fbf,
-        #e3a0e0,
-        #f5d4f5
-    );
-    box-shadow: 0 5px 5px -6px #c56fbf, 0 3px 7px #e3a0e0 ;
-    border-radius: 20px;
-    color:#fff;
-    height: 100%;
-    width: 0;
-    transition: 1s ease 0.3s;
+
+#hDiv{
+    color: black;
+    font-size: large;
 }
 
-.progress{
-    background-color: lightgray;
-    border-radius: 20px;
-    height: 20px;
-    width: 300px;
+.caption{
+    font-size: medium;
 }
 
-.progress-done{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: repeating-linear-gradient(
-        to left,
-        #0546e0,
-        #1120f9af,
-        #4892f9
-    );
-    box-shadow: 0 5px 5px -6px #0546e0, 0 3px 7px #1120f9af ;
-    border-radius: 20px;
-    color:#fff;
-    height: 100%;
-    width: 0;
-    transition: 1s ease 0.3s;
+button{
+    cursor: pointer;
 }

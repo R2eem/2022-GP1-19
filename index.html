@@ -43,51 +43,6 @@ async function doUserLogOut () {
       }}
 }
 
-//Total number of pharmacies
-async function totalPharmacies(){
-    var count =0;
-    const query = new Parse.Query("Pharmacist");
-
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var pharmacies = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalPharmacies').innerHTML = count;
-}
-
-totalPharmacies();
-
-//Total number of customers
-async function totalCustomers(){
-    var count =0;
-    const query = new Parse.Query("Customer");
-
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var customers = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalCustomers').innerHTML = count;
-}
-
-totalCustomers();
-
-//Total number of orders
-async function totalOrders(){
-    var count =0;
-    const query = new Parse.Query("Orders");
-
-    const results = await query.find();
-    for (let i = 0; i < results.length; i++) {
-        var orders = results[i];
-        count = count+1;
-    }
-    document.getElementById('TotalOrders').innerHTML = count;
-}
-
-totalOrders();
-
 ///Admin name
 async function AdminInfo(){
     
@@ -111,56 +66,59 @@ async function AdminInfo(){
 }
 
  AdminInfo();
+
+
     </script>
     <div class="container">
         <aside class="aside">
-        <div class="top">
-            <div class="logo">
-                <img src="./images/logo.png">
-                <h2>Tiryaq</h2>
+            <div class="top">
+                <div class="logo">
+                    <img src="./images/logo.png">
+                    <h2>Tiryaq</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                     </div>
             </div>
-            <div class="close" id="close-btn">
-                <i class="fa fa-times" aria-hidden="true"></i>
-                 </div>
-        </div>
-        <div class="sidebar">
-            <a href="index.html" class="active">
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                <h3>Dashboard</h3>
-            </a>
-            <a href="ViewCustomers.html">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                <h3>Customers</h3>
-            </a>
-            <a href="customerOrders.html" >
-                <i class="fa fa-list-alt" aria-hidden="true"></i>
-                <h3>Orders</h3>
-            </a>
-            <a href="Medications.html" >
-                <i class="fa fa-medkit" aria-hidden="true"></i>
-                <h3>Medications</h3>
-            </a>
-            <a href="AddMedication.html">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <h3>Add Medications</h3>
-            </a>
-        
-            <a href="Pharmacies_page.html">
-                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                <h3>Pharmacies</h3>
-            </a>
-          
-            <a href="Pharmacies_Join_Request_Page.html">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <h3>Join requests</h3>
-            </a>
-          
-            <a href="" onclick="doUserLogOut(); return false">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                <h3>Log out</h3>
-            </a>
-        </div>
-        </aside>
+            <div class="sidebar">
+                <a href="index.html" class="active">
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="ViewCustomers.html">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>Customers</h3>
+                </a>
+                <a href="customerOrders.html" >
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <h3>Orders</h3>
+                </a>
+                <a href="Medications.html" >
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                    <h3>Medications</h3>
+                </a>
+                <a href="AddMedication.html">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>Add Medications</h3>
+                </a>
+            
+                <a href="Pharmacies_page.html">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3>Pharmacies</h3>
+                </a>
+              
+                <a href="Pharmacies_Join_Request_Page.html">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <h3>Join requests</h3>
+                    <i class="message-count" id="NumOfJoinReq"></i>
+                </a>
+              
+                <a href="" onclick="doUserLogOut(); return false">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <h3>Log out</h3>
+                </a>
+            </div>
+            </aside>
         <!----------------------------------END OF ASIDE-------------->
         <main>
             <h1>Admin Dashboard</h1>
@@ -169,25 +127,15 @@ async function AdminInfo(){
         <div class="left">
             <!---------------TOP -->
             <div class="top">
-                <!-- <button  class="o" id="menu-btn">
-                    <i class="fa fa-bars" aria-hidden="true"></i>
-                </button> -->
-                <!-- <div class="theme-toggler">
-                    <i class="fa fa-sun-o active"aria-hidden="true"></i>
-                    <i class="fa fa-moon-o" aria-hidden="true"></i>
-                </div> -->
                 <div class="profile">
                     <div class="info">
                         <p id="adminName"></p>
-                        <small class="text-muted">Admin</small>
-                    </div>
-                    <!-- <div class="profile-photo">
-                        <img src="./images/profile.jpg">
-                    </div> -->
-                </div>
+                        <small class="text-muted" id="adminName2">Admin</small>
             </div>
             </div></br>
-            <!---------------END TOP -->
+            </div>
+        </div>
+            <!---------------END TOP & Left -->
             <div class="date" id="date">
                 <script>
                      const dateNow = new Date();
@@ -205,7 +153,7 @@ async function AdminInfo(){
                 <i class="fa fa-users" aria-hidden="true"></i> 
                 <div class="middile">
                     <div class="left">
-                        <h3>Total customers</h3>
+                        <h3 id="TotalCustomerText">Total customers</h3>
                         <h1 id="TotalCustomers"></h1>
                     </div>
                 </div> 
@@ -216,7 +164,7 @@ async function AdminInfo(){
                     <i class="fa fa-plus-square" aria-hidden="true"></i> 
                     <div class="middile">
                         <div class="left">
-                            <h3>Total pharmacies</h3>
+                            <h3 id="TotalPharmaciesText">Total pharmacies</h3>
                             <h1 id="TotalPharmacies"></h1>
                         </div>
                     </div> 
@@ -227,7 +175,7 @@ async function AdminInfo(){
                         <i class="fa fa-list-alt" aria-hidden="true"></i>
                         <div class="middile">
                             <div class="left">
-                                <h3>Total orders</h3>
+                                <h3 id="TotalOrdersText">Total orders</h3>
                                 <h1 id="TotalOrders"></h1>
                             </div>
                         </div> 
@@ -236,9 +184,19 @@ async function AdminInfo(){
                         <!--------------END OF ORDERS----------->   
                          
             </div>
+            <script src="dashboardPanle.js"></script>
+            <script src="index.js"></script>
             <!---------------------------END OF insights ----------------------------> 
         </main>
         <!------------------------- END OF MAIN ------------------>
+        <div class="right">
+            <div class="top">
+                <button onclick="menuFunction()" class="o" id="menu-btn">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+               
+            </div>
+            </div>
     </div>  
 </body>
 </html>

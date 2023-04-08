@@ -14,12 +14,89 @@
     src="https://npmcdn.com/parse/dist/parse.min.js"
   ></script>
   <style>
-    #Ordersresults {
+#btn1 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  margin-left: -6rem;
+}
+
+#btn2 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+
+#btn3 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+
+#btn4 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+#btn5 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+#btn6 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+#btn7 {
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+}
+
+
+#OrdersFilter button:hover{
+   color: rgb(168, 42, 168);
+}
+
+
+#OrdersFilter{
+    margin-left: 35%;
+    margin-right: auto;
+}
+#OrdersResults {
     margin-left: 15%;
     margin-right: auto;
     }
 
-    #results0{
+#results0{
     margin-left: 45%;
     margin-right: auto;
     }
@@ -68,6 +145,7 @@
                 <a href="Pharmacies_Join_Request_Page.html">
                     <i class="fa fa-envelope" aria-hidden="true"></i>
                     <h3>Join requests</h3>
+                    <i class="message-count" id="NumOfJoinReq"></i>
                 </a>
             
                 <a href="" onclick="doUserLogOut(); return false">
@@ -80,11 +158,22 @@
         <main>
             <h1>Orders</h1>
             <p id="demo"></p>
-            <p id="Ordersresults"></p>
+            <br> <br> 
+            <div id="OrdersFilter">
+                <button id="btn1" onclick=" DisplayFilterOrders('All');changeStyle('btn1')">All</button>
+                <button id="btn2" onclick=" DisplayFilterOrders('UnderProcessing');changeStyle('btn2')">Under Processing</button>
+                <button id="btn3" onclick=" DisplayFilterOrders('Cancelled');changeStyle('btn3')">Cancelled</button>
+                <button id="btn4" onclick=" DisplayFilterOrders('Declined');changeStyle('btn4')">Declined</button>
+                <button id="btn5" onclick=" DisplayFilterOrders('UnderPreparation');changeStyle('btn5')">Under Preparation</button>
+                <button id="btn6" onclick=" DisplayFilterOrders('ReadyForPickUp');changeStyle('btn6')">Ready For PickUp</button>
+                <button id="btn7" onclick=" DisplayFilterOrders('Collected');changeStyle('btn7')">Collected</button>
+                  
+            </div>
+            <p id="OrdersResults"></p>
 
             <!---------------------------RECENT ORDERS----------------------------> 
-            <div class="med">
-                <table id="MedTable">
+            <div class="orders">
+                <table id="ordersTable">
                     <thead>
                         <tr>
                             <th>Customer name</th>
@@ -101,11 +190,26 @@
                 </table>
             </div>
      <!--------------------------- END OF RECENT ORDERS----------------------------> 
+     <br><br><br>
+     <p id="results0"></p>
+     
+     <script src="dashboardPanle.js"></script>
+     <script src="index.js"></script>
+
+     <div class="right">
+        <div class="top">
+            <button onclick="menuFunction()" class="o" id="menu-btn">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+           
+        </div>
+        </div>
 </main>
 <!------------------------- END OF MAIN ------------------>
     </div>
 </div>
 </div>  
+
 </body>
                              
                             <script>
@@ -124,18 +228,16 @@
                             sessionCheck();
 
                              async function retrieveOrders() {
+                                var count =0;
                                 ///Query orders
-                                let query1 = new Parse.Query("Orders");
-                                let results = await query1.find();
+                                let query = new Parse.Query("Orders");
+                                let results = await query.find();
 
-                                document.getElementById('Ordersresults').innerHTML = "Results: "+results.length;
-
-                                 
                                 for (i=0; i<results.length; i++){
                                     
                                     var order = results[i]
                                     
-                                       //Dosplay order information
+                                       //Display order information
                                        document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
                                        //Query customer information
                                        customerId = order.get("Customer_id").id
@@ -152,12 +254,335 @@
                                        document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
                                        document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
                                        document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>';
-
+                                       count=count+1;
+                                       
                                 }
-                            }
+                                    //display number of results
+                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                    if(count == 0) {
+
+                                    document.getElementById('results0').innerHTML = "There are no orders yet";
+
+                                     } 
+                                     //change (All) filter to active color
+                                     changeStyle('btn1'); 
+                                     
+                                  }
+
                              retrieveOrders();
 
-                             //User log out
+                            //change style of the filter when clicked
+                             async function changeStyle(btn){
+
+                            //change the other filters to white
+                            document.getElementById('btn1').style.backgroundColor = '#f1f1f1';
+                            document.getElementById('btn2').style.backgroundColor = '#f1f1f1';
+                            document.getElementById('btn3').style.backgroundColor ='#f1f1f1';
+                            document.getElementById('btn4').style.backgroundColor = '#f1f1f1';
+                            document.getElementById('btn5').style.backgroundColor = '#f1f1f1';
+                            document.getElementById('btn6').style.backgroundColor ='#f1f1f1';
+                            document.getElementById('btn7').style.backgroundColor ='#f1f1f1';
+
+                            //change the selected filter to active color
+                            document.getElementById(btn).style.backgroundColor = 'rgb(204, 148, 203)';
+
+                              }
+                            // Filter the Orders based on Order status 
+                            async function DisplayFilterOrders(OrderStatus) {
+                                document.getElementById('OrdersResults').innerHTML = "Results: "+"";
+
+                                var count =0;
+
+                                //retrieve the list of orders
+                                const query1 = new Parse.Query("Orders");
+                                query1.equalTo("OrderStatus","Under processing");
+
+                                const query2 = new Parse.Query("Orders");
+                                query2.equalTo("OrderStatus","Cancelled");
+
+                                
+
+                                const query3 = new Parse.Query("Orders");
+                                query3.equalTo("OrderStatus","Declined");
+
+                                const query4 = new Parse.Query("Orders");
+                                query4.equalTo("OrderStatus","Under preparation");
+
+                                const query5 = new Parse.Query("Orders");
+                                query5.equalTo("OrderStatus","Ready for pick up");
+
+                                const query6 = new Parse.Query("Orders");
+                                query6.equalTo("OrderStatus","Collected");
+
+                                let query = Parse.Query.or(query1,query2,query3,query4,query5,query6);
+                                query.descending("createdAt");
+                                const results = await query.find();
+                                
+
+                                //clear the table of orders
+                               document.getElementById('orderTableBody').innerHTML = "";
+                               
+
+                            //display the orders in table if selected is all
+                            if(OrderStatus == 'All'){
+                            document.getElementById('results0').innerHTML = "";
+                            for(let i=0; i<results.length;i++){ 
+                   
+                                    var order = results[i]
+                                    
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1; 
+                                      
+                                     }
+                                     
+                                     //display number of results
+                                    document.getElementById('OrdersResults').innerHTML = "Results: "+count;
+                                    
+                                    if(count == 0) {
+
+                                    document.getElementById('results0').innerHTML = "There are no orders yet";
+
+} 
+                                    //change (all) filter to active color
+                                    changeStyle('btn1');
+                                    }
+ 
+
+                                   if(OrderStatus == "UnderProcessing"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Under processing" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1;
+                         
+                                      }  
+                                                      
+                                    }
+                                     //display number of results
+                                     document.getElementById('OrdersResults').innerHTML = "Results: "+count;   
+                                     document.getElementById('results0').innerHTML = "";
+                                     if(count == 0) {
+
+                                     document.getElementById('results0').innerHTML = "There are no under processing orders yet";
+
+                                    } 
+ 
+                                   } 
+
+
+                                   if(OrderStatus == "Cancelled"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Cancelled" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1;  
+                                    
+                                   }
+                                   
+                                }
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                   document.getElementById('results0').innerHTML = "";
+                                   if(count == 0) {
+
+                                    document.getElementById('results0').innerHTML = "There are no cancelled orders yet";
+
+                                    } 
+  
+                                   } 
+
+
+                                   if(OrderStatus == "Declined"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Declined" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1;
+                                        
+                                   }
+                                   
+                                }   
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                   document.getElementById('results0').innerHTML = "";
+                                   if(count == 0) {
+
+                                  document.getElementById('results0').innerHTML = "There are no declined orders yet";
+
+}   
+                                   } 
+
+
+                                   if(OrderStatus == "UnderPreparation"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Under preparation" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1;
+                                    
+                                   }
+                                   
+                                }  
+                                
+                                   //display number of results
+                                   document.getElementById('OrdersResults').innerHTML = "Results: "+count; 
+                                   document.getElementById('results0').innerHTML = "";
+                                   if(count == 0) {
+
+                                   document.getElementById('results0').innerHTML = "There are no under preparation orders yet";
+
+}   
+                                   }
+
+
+                                   if(OrderStatus == "ReadyForPickUp"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Ready for pick up" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1;
+                                    
+                                   }
+                                   
+                                }   
+                                  //display number of results
+                                  document.getElementById('OrdersResults').innerHTML = "Results: "+count;  
+                                  document.getElementById('results0').innerHTML = "";
+                                  if(count == 0) {
+
+                                   document.getElementById('results0').innerHTML = "There are no ready for pick up orders yet";
+
+}    
+                                   }
+
+
+                                   if(OrderStatus == "Collected"){
+                                   //display the orders in table based on selected filter
+                                   for(let i=0; i<results.length;i++){  
+                                   var order = results[i];
+                                   if (order.get("OrderStatus") == "Collected" ){
+                                    //Display order information
+                                    document.getElementById('orderTableBody').innerHTML += "<tr id="+i+"></tr>"
+                                    //Query customer information
+                                    customerId = order.get("Customer_id").id
+                                    let customerquery = new Parse.Query('Customer')
+                                    customerquery.equalTo("objectId",customerId)
+                                    let Result = await customerquery.find();
+                                    var customerinfo = Result[0]
+                                    document.getElementById(i).innerHTML = "<td>"+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.id+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("createdAt")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("OrderStatus")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("Address")+"</td>"
+                                    document.getElementById(i).innerHTML += "<td>"+order.get("TotalPrice")+" SAR</td>"
+                                    document.getElementById(i).innerHTML += "<td class="+"primary"+'><a href="OrderDetails.html?id='+order.id+'&orderDate='+order.get("createdAt")+'&orderStatus='+order.get("OrderStatus")+'&customerLocation='+order.get("Address")+'&totalPrice='+order.get("TotalPrice")+'&customerName='+customerinfo.get("Firstname")+" "+customerinfo.get("Lastname")+'&customerPhonenumber='+customerinfo.get("Phonenumber")+'&customerEmail='+customerinfo.get("Email")+' ">Details</a></td>'
+                                    count = count+1; 
+                                     
+                                   }
+                                  
+                                }  
+                                //display number of results
+                                document.getElementById('OrdersResults').innerHTML = "Results: "+count;   
+                                document.getElementById('results0').innerHTML = "";
+                                if(count == 0) {
+
+                                 document.getElementById('results0').innerHTML = "There are no collected orders yet";
+
+}     
+                                   }
+
+                                 }
+
+                                 //User log out
                              async function doUserLogOut () { 
                                 if(confirm('Are you sure you want to log out?')){
                                 try {

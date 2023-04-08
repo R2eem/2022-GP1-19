@@ -61,6 +61,7 @@
           <a href="Pharmacies_page.html">
               <i class="fa fa-plus-square" aria-hidden="true"></i>
               <h3>Pharmacies</h3>
+              <i class="message-count" id="NumOfJoinReq"></i>
           </a>
         
           <a href="Pharmacies_Join_Request_Page.html">
@@ -549,7 +550,7 @@
 
                   </br>
                     <div class="inputbox">
-                      <input id="updateInput2" type="submit" name="submit" value="Update">
+                      <input id="updateInput2" type="submit" name="submit" value="Save">
                     </div>  
                     <div class="inputbox">
                       <input  id="updateInput2" type=button onclick=NavigateToMedications() name="submit" value="Cancel">
@@ -558,8 +559,19 @@
                 </form>
             </div>
              <!--------------------------- END OF Add Medication Form----------------------------> 
+             <script src="dashboardPanle.js"></script>
+             <script src="index.js"></script>
+             
         </main>
         <!------------------------- END OF MAIN ------------------>
+        <div class="right">
+          <div class="top">
+              <button onclick="menuFunction()" class="o" id="menu-btn">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+              </button>
+             
+          </div>
+          </div>
 
             </div>
         </div>
