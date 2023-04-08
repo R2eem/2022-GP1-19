@@ -25,7 +25,7 @@
     margin-right: auto;
 }
 
-#Customerresults {
+#Customersresults {
     margin-left: 15%;
     margin-right: auto;
 }
@@ -34,6 +34,8 @@
     margin-left: 45%;
     margin-right: auto;
 }
+
+
 </style>
        <script>
 
@@ -76,14 +78,7 @@ async function DisplayCustomers() {
        document.getElementById(i).innerHTML += "<td>"+customers.get("Lastname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Phonenumber")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customers.get("Email")+"</td>";
-       //document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
-       //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       if(customers.get('Block')==false){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Block</button></td>';
-       }
-       else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customers.id+'","'+CustomerName+'","'+CustomerEmail+'")>Unblock</button></td>';
-       }    
+       
            document.getElementById(i).innerHTML += '<td id="'+customers.id+'"></td>';
         count = count+1;
 }    
@@ -93,62 +88,13 @@ document.getElementById('Customersresults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no customers";
+document.getElementById('results0').innerHTML = "There are no registered customers yet";
 }       
         }
 
 
  DisplayCustomers(); 
 
-
- //Block
- async function Block(CustomerId ,CustomerName,CustomerEmail){
-    if(confirm("Are you sure you want to block customer "+CustomerName+"?")){
-    const query = new Parse.Object("Customer");
-    query.set("objectId",CustomerId)
-    query.set("Block",true)
-    try{
-            //Save the Object
-            let result = await query.save();
-            alert("Customer "+CustomerName+' has been blocked');
-            sendEmail(CustomerName,CustomerEmail,CustomerId);
-        }catch(error){
-            alert(error)
-            alert('Failed to block customer ' +CustomerName);
-        }
-    }
-}
-
-//Unblock
-async function Unblock(CustomerId ,CustomerName,CustomerEmail){
-    if(confirm("Are you sure you want to Unblock customer "+CustomerName+"?")){
-    const query = new Parse.Object("Customer");
-    query.set("objectId",CustomerId)
-    query.set("Block",false)
-    try{
-            //Save the Object
-            let result = await query.save();
-            alert("Customer "+CustomerName+' has been Unblocked');
-            sendEmail(CustomerName,CustomerEmail,CustomerId);
-        }catch(error){
-            alert(error)
-            alert('Failed to Unblock customer ' +CustomerName);
-        }
-    }
-}
-
-
-function sendEmail(CustomerName,CustomerEmail,CustomerId){
-    if(confirm("You need to send email to customer "+CustomerName)){
-
-        window.location.href='mailto:'+CustomerEmail+'?subject=Important notification from Tiryaq application regarding your account.&body=Dear '+CustomerName+', We apologize to inform you that your account has been [blocked, unblocked] on date [day/month/year], because of [reason].'+
-
-        ' For more inquiries, please contact the following email: tiryaqapp@gmail.com'+
-
-        ' thank you,'+
-        ' Tiryaq team';    
-}
-}
 
 
 //search customers
@@ -184,14 +130,7 @@ if (customer.get("Phonenumber").startsWith(searchString)||
        document.getElementById(i).innerHTML += "<td>"+customer.get("Lastname")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customer.get("Phonenumber")+"</td>";
        document.getElementById(i).innerHTML += "<td>"+customer.get("Email")+"</td>";
-      // document.getElementById(i).innerHTML += "<td>"+customerEmail.get("username")+"</td>"
-       //document.getElementById(i).innerHTML += '<td><button onclick= BlockCustomer("'+CustomerId+'")><i'+" class="+'"fa fa-ban"'+" aria-hidden="+'"true"'+" ></i></button></td>";
-       if(customer.get('Block')==false){
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Block("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Block</button></td>';
-       }
-       else {
-        document.getElementById(i).innerHTML += '<td><button class="primary"  onclick= Unblock("'+customer.id+'","'+customerName+'","'+customerEmail+'")>Unblock</button></td>';
-       }    
+         
            document.getElementById(i).innerHTML += '<td id="'+customer.id+'"></td>';
         count = count+1;
 }    
@@ -202,7 +141,7 @@ document.getElementById('Customersresults').innerHTML = "Results: "+count;
 
 if(count == 0) {
 
-document.getElementById('results0').innerHTML = "Sorry there is no customer matche to your search";
+document.getElementById('results0').innerHTML = "Sorry, No results match your search";
 }
 }
 
@@ -273,12 +212,19 @@ async function doUserLogOut () {
         <main>
             <h1 id="hDivv"> </h1>
             <h1>Customers</h1>
+            
             <br>
 
-            <input id="search" type="text" placeholder="Search by customer name or phonenumber or email  .." onkeyup="searchCustomers()" />
+            <input id="search" type="text" placeholder="Search by customer name or phonenumber or email.." onkeyup="searchCustomers()" />
 
             <br> <br> 
+            
             <p id="Customersresults"></p>
+
+            
+
+        
+         
 
             <!---------------------------Display Customers----------------------------> 
             <div class="customer">
@@ -290,8 +236,7 @@ async function doUserLogOut () {
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Phone number</th>
-                            <th>Email</th>  
-                            <th>Block</th>                          
+                            <th>Email</th>                            
                         </tr>
                     </thead>
                     <tbody id="CustomerTableBody">

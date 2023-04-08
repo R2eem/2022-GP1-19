@@ -174,7 +174,7 @@ section .color:nth-child(3){
     border-bottom: 1px solid rgba(255,255,255,0.2);
     font-size: 16px;
     letter-spacing: 1px;
-    color: #fff;
+    color: rgb(0, 0, 0);
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
@@ -202,3 +202,16 @@ section .color:nth-child(3){
 
 }
 
+#submit:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.20),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#submit:active {
+    transform: translateY(4px);
+}
+
+#email::placeholder{
+	color: grey;
+}
+#password::placeholder{
+	color: grey;
+}

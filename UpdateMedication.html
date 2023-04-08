@@ -124,7 +124,7 @@
                       <p id="PackageTypeP" style="color: red;"></p>
                     </div>
 
-                    <div >
+                    <div class="custom-select">
                     <label for="PharmaceuticalForm">Pharmaceutical Form:</label>
                     <br>
                     <select name="PharmaceuticalForm" id="PharmaceuticalForm">
@@ -148,7 +148,7 @@
                     <p id="PharmaceuticalFormP" style="color: red;"></p>
                     </div>
                     
-                    <div id = 'other'>
+                    <div id = 'other' class="inputbox">
 
                     </div>
                     <script>
@@ -187,7 +187,7 @@
                     </div>
 
 
-                    <div >
+                    <div class="custom-select">
                       <label for="MarketingCompany">Marketing Company</label>
                       <br>
                       <select name="MarketingCompany" id="MarketingCompany">
@@ -265,7 +265,7 @@
                       <p id="MarketingCompanyP" style="color: red;"></p>
                       </div>
                       
-                      <div id = 'other2'>
+                      <div id = 'other2' class="inputbox">
   
                       </div>
                       <script>
@@ -411,7 +411,7 @@
                         <option value="Kyrgyzstan">Kyrgyzstan</option>
                         <option value="Lao">Lao People's Democratic Republic</option>
                         <option value="Latvia">Latvia</option>
-                        <option value="Lebanon" selected>Lebanon</option>
+                        <option value="Lebanon">Lebanon</option>
                         <option value="Lesotho">Lesotho</option>
                         <option value="Liberia">Liberia</option>
                         <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
@@ -549,10 +549,10 @@
 
                   </br>
                     <div class="inputbox">
-                      <input id="updateInput2" type="submit" name="submit" value="Update">
+                      <input id="updateInput2" type="submit" name="submit" value="Save">
                     </div>  
                     <div class="inputbox">
-                      <input id="updateInput2"  type=button onclick=NavigateToMedications("'+Medid+'") name="submit" value="Cancel">
+                      <input  id="updateInput2" type=button onclick=NavigateToMedications() name="submit" value="Cancel">
                     </div>  
                 </div>
                 </form>
@@ -769,53 +769,51 @@ async function validate(){
     && LegalStatus != '' && MarketingCompany !=''  && MarketingCountry != '')
     {
 
-         if (TradeName.length>50) {document.getElementById('TradeNameP').innerHTML = "should be less than 50 characters" ;}
+         if (TradeName.length>50) {document.getElementById('TradeNameP').innerHTML = "trade name should be less than 50 characters" ;}
            else {document.getElementById('TradeNameP').innerHTML = ""}
 
-         if (ScientificName.length>50) { document.getElementById('ScientificNameP').innerHTML = "should be less than 50 characters" ;}
+         if (ScientificName.length>50) { document.getElementById('ScientificNameP').innerHTML = "scientific name should be less than 50 characters" ;}
            else {document.getElementById('ScientificNameP').innerHTML = ""}
 
 
          //check if the strength is number first then check the limit
          if(isNaN(Strength)){document.getElementById('StrengthP').innerHTML = "strength should be a number"}
            else{
-               if (Strength>10000) { document.getElementById('StrengthP').innerHTML = "should be less than 10000" ;}
+               if (Strength>10000) { document.getElementById('StrengthP').innerHTML = "strength should be less than 10000" ;}
             else {document.getElementById('StrengthP').innerHTML = ""}
                }
 
-        if (StrengthUnit.length>50) { document.getElementById('StrengthUnitP').innerHTML = "should be less than 50 characters" ;}
+        if (StrengthUnit.length>50) { document.getElementById('StrengthUnitP').innerHTML = "strength unit should be less than 50 characters" ;}
             else {document.getElementById('StrengthUnitP').innerHTML = ""}
 
         //check if the price is number first then check the limit
         if(isNaN(Price)){document.getElementById('PriceP').innerHTML = "price should be a number"}
            else{
-              if (Price>100000) { document.getElementById('PriceP').innerHTML = "should be less than 100000" ;}
+              if (Price>100000) { document.getElementById('PriceP').innerHTML = "price should be less than 100000" ;}
               else {document.getElementById('PriceP').innerHTML = ""}
                }
 
-        if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "should be less than 50 characters" ;}
+        if (PackageType.length>50) { document.getElementById('PackageTypeP').innerHTML = "package type should be less than 50 characters" ;}
            else {document.getElementById('PackageTypeP').innerHTML = ""}
 
         if (document.getElementById('PharmaceuticalForm').value == "Other") {
              if(document.getElementById('getOther').value.length>50){
-              document.getElementById('otherP').innerHTML = "should be less than 50 characters";
+              document.getElementById('otherP').innerHTML = "pharmaceutical form should be less than 50 characters";
              }
              else {document.getElementById('otherP').innerHTML = ""}
         }
 
-        if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "should be less than 50 characters" ;}
+        if (UsageMethod.length>50) { document.getElementById('UsageMethodP').innerHTML = "usage method should be less than 50 characters" ;}
            else {document.getElementById('UsageMethodP').innerHTML = ""}
   
 
         if (document.getElementById('MarketingCompany').value == "Other") {
              if(document.getElementById('getOther2').value.length>50){
-              document.getElementById('otherP2').innerHTML = "should be less than 50 characters";
+              document.getElementById('otherP2').innerHTML = "marketing company should be less than 50 characters";
              }
              else {document.getElementById('otherP2').innerHTML = ""}
         }
 
-        if (MarketingCountry.length>50) { document.getElementById('MarketingCountryP').innerHTML = "should be less than 50 characters" ;}
-           else {document.getElementById('MarketingCountryP').innerHTML = ""}
 
 
            if(MedicationImage != null){
@@ -829,11 +827,11 @@ async function validate(){
               else{document.getElementById('imageP').innerHTML = "";}
             }
           }    
+
         if(MedicationImage != null){
           if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-             && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
-              UsageMethod.length<=50 && MarketingCompany != "None"
-              && MarketingCountry.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
+             && Price<=100000 && PackageType.length<=50  && 
+              UsageMethod.length<=50 && AllowedExtension.indexOf(type)>-1 && MedicationImage.size<=maxSize)
               {
                 //If both are option 'OTHER'
                 if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50
@@ -856,9 +854,9 @@ async function validate(){
               }}
               else{
                 if(TradeName.length<=50 && ScientificName.length<=50 && Strength<=10000 && StrengthUnit.length<=50
-             && Price<=100000 && PackageType.length<=50 && PharmaceuticalForm != "None" && LegalStatus != "None" && 
-              UsageMethod.length<=50 && MarketingCompany != "None"
-              && MarketingCountry.length<=50)
+             && Price<=100000 && PackageType.length<=50 &&  
+              UsageMethod.length<=50 
+              )
               {
                 //If both are option 'OTHER'
                 if(PharmaceuticalForm == 'Other' && document.getElementById('getOther').value.length<=50
