@@ -3,7 +3,6 @@ Parse.initialize("0RlD4YgWV75gUlCXVcHr33pzfYN3ilb1qrFWyUy5",
 "kJ7mcY3FfZ35jn4unoEATfZCbQQBVz3LvPJKTLCW"); 
 Parse.serverURL = "https://parseapi.back4app.com/";
 
-
 //to reach the elements 
 const progress_customer = document.querySelector(".progress-done-Cusotmer");
 const progress_pharmacies = document.querySelector(".progress-done-pharmacies");
