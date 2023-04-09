@@ -376,7 +376,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                             itemCount: snapshot.data!.length,
                                                                             itemBuilder: (context, index1) {
                                                                               final pharmDetails = snapshot.data![index1];
-                                                                              final pharmacyId = pharmDetails.get('PharmacyId').objectId;
+                                                                              final pharmacyId = pharmDetails.get('PharmacistId').objectId;
                                                                               var OrderStatus2 = pharmDetails.get('OrderStatus')!;
                                                                               var Distance = pharmDetails.get('Distance')!;
                                                                               Distance = num.parse(Distance.toStringAsFixed(2));
@@ -1124,7 +1124,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                     Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                                                                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                       content: Text(
-                                                                                        "Order number $OrderId has been deleted",
+                                                                                        "Order number $OrderId has been cancelled",
                                                                                         style: TextStyle(fontSize: 20),
                                                                                       ),
                                                                                       duration: Duration(milliseconds: 3000),

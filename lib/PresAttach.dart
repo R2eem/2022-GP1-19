@@ -520,7 +520,7 @@ class _PresAttachPage extends State<PresAttach> {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
                           ..objectId = orderInfo.objectId).toPointer())
-                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                        ..set('PharmacistId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
                         ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 
@@ -603,7 +603,7 @@ class _PresAttachPage extends State<PresAttach> {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
                           ..objectId = orderInfo.objectId).toPointer())
-                        ..set('PharmacyId', (ParseObject('Pharmacist')
+                        ..set('PharmacistId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
                         ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 

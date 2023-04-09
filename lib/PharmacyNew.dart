@@ -397,6 +397,12 @@ class PharmacyNew extends State<PharmacyNewO>
           ..objectId = orderId).toPointer());
         final parseQueryResponse = await parseQuery.query();
 
+        ///If no registered pharmacies, then decline order immediately
+        if(parseQueryResponse.results == null ){
+          var o = order..set('OrderStatus', 'Declined');
+          o.save();
+          break;
+        }
 
         ///Check if all pharmacies declined the order
         for (var pharmaciesList in parseQueryResponse.results!) {
@@ -481,25 +487,25 @@ class PharmacyNew extends State<PharmacyNewO>
   Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
     final QueryBuilder<ParseObject> queryNewOrders1 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders1.whereEqualTo('PharmacyId',
+    queryNewOrders1.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryNewOrders1.whereEqualTo('OrderStatus', 'New');
 
     final QueryBuilder<ParseObject> queryNewOrders2 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders2.whereEqualTo('PharmacyId',
+    queryNewOrders2.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryNewOrders2.whereEqualTo('OrderStatus', 'Accepted');
 
     final QueryBuilder<ParseObject> queryNewOrders3 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders3.whereEqualTo('PharmacyId',
+    queryNewOrders3.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryNewOrders3.whereEqualTo('OrderStatus', 'Under preparation');
 
     final QueryBuilder<ParseObject> queryNewOrders4 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryNewOrders4.whereEqualTo('PharmacyId',
+    queryNewOrders4.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryNewOrders4.whereEqualTo('OrderStatus', 'Ready for pick up');
 

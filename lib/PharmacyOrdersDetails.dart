@@ -1261,7 +1261,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     var object;
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    parseQuery.whereEqualTo('PharmacyId',
+    parseQuery.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId =pharmacyId).toPointer());
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = widget.orderId).toPointer());
 
@@ -1293,7 +1293,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   Future<ParseObject> getNote() async {
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    parseQuery.whereEqualTo('PharmacyId', (ParseObject('Pharmacist')..objectId =widget.pharmacyId).toPointer());
+    parseQuery.whereEqualTo('PharmacistId', (ParseObject('Pharmacist')..objectId =widget.pharmacyId).toPointer());
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = widget.orderId).toPointer());
 
     final apiResponse = await parseQuery.query();
@@ -1327,7 +1327,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId')
+        if (pharmacy.get('PharmacistId')
             .objectId == widget.pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Ready for pick up');
           final ParseResponse parseResponse = await update.save();
@@ -1366,7 +1366,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
         if (pharmacy
-            .get('PharmacyId')
+            .get('PharmacistId')
             .objectId == widget.pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Collected');
           final ParseResponse parseResponse = await update.save();

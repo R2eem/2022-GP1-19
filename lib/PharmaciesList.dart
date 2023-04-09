@@ -106,7 +106,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 final pharmDetails = snapshot
                                                     .data![index];
                                                 final pharmacyId = pharmDetails
-                                                    .get('PharmacyId')
+                                                    .get('PharmacistId')
                                                     .objectId;
                                                 var Distance = pharmDetails
                                                     .get('Distance')!;
@@ -665,7 +665,7 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
+        if (pharmacy.get('PharmacistId').objectId == pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Under preparation');
           final ParseResponse parseResponse = await update.save();
         }
