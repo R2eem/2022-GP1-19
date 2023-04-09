@@ -243,29 +243,6 @@ class Signup extends State<PharmacySignUp> {
                                                 filled: true,
                                                 contentPadding: EdgeInsets
                                                     .fromLTRB(20, 10, 20, 10),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey)),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .shade400)),
-                                                errorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
                                               ),
                                               validator: MultiValidator([
                                                 RequiredValidator(
@@ -321,29 +298,6 @@ class Signup extends State<PharmacySignUp> {
                                                 filled: true,
                                                 contentPadding: EdgeInsets
                                                     .fromLTRB(20, 10, 20, 10),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey)),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .shade400)),
-                                                errorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
                                               ),),
                                             decoration: BoxDecoration(
                                                 boxShadow: [
@@ -538,29 +492,6 @@ class Signup extends State<PharmacySignUp> {
                                                 filled: true,
                                                 contentPadding: EdgeInsets
                                                     .fromLTRB(20, 10, 20, 10),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey)),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .shade400)),
-                                                errorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius
-                                                        .circular(100.0),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 2.0)),
                                               ),),
                                             decoration: BoxDecoration(
                                                 boxShadow: [
@@ -776,7 +707,8 @@ class Signup extends State<PharmacySignUp> {
             ..set('user', user)
             ..set('JoinRequest', "UnderProcessing")
             ..set('Location',ParseGeoPoint(latitude: widget.lat, longitude: widget.long))
-            ..set('Address', '$street, $subLocality, $locality, $country');
+            ..set('Address', '$street, $subLocality, $locality, $country')
+            ..set('Email', email);
           await createPharmacist.save();
 
           showSuccess();

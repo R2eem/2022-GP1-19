@@ -13,18 +13,18 @@ import 'package:untitled/CategoryPage.dart';
 
 
 class AccountPage extends StatefulWidget{
-
+  //Get customer id as a parameter
+  final String customerId;
+  const AccountPage(this.customerId);
   @override
-  State<StatefulWidget> createState() {
-    return _AccountPage();
-  }
+  _AccountPage createState() => _AccountPage();
 }
+
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var customerId;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +39,14 @@ class _AccountPage extends State<AccountPage>{
                 ),
                 //Back button
                 Container(
-                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 30, 370, 0),
+                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 60, 370, 0),
                     iconSize: 40,
                     color: Colors.white,
                     onPressed: () {
                       Navigator.of(context).pop();
                     }, icon: Icon(Icons.keyboard_arrow_left),),
                 ),
-                //Controls the profile icon
+                ///Profile icon
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
@@ -66,7 +66,7 @@ class _AccountPage extends State<AccountPage>{
                           child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),//control the profile icon
                         ),
                         SizedBox(height: 40,),
-                        //Current user account information
+                        ///Current user account information
                         Form(
                           key: _formKey,
                           child: Column(
@@ -132,7 +132,6 @@ class _AccountPage extends State<AccountPage>{
                                                               //Get Parse Object Values
                                                               //Get user information from Customer table
                                                               final user = snapshot.data![index];
-                                                              customerId = user.get<String>('objectId')!;
                                                               final Firstname = user.get<String>('Firstname')!;
                                                               final Lastname = user.get<String>('Lastname')!;
                                                               final Phonenumber = user.get<String>('Phonenumber')!;
@@ -154,15 +153,11 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: '',
+                                                                        labelText: 'First name',
                                                                         hintText: 'Firstname',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
@@ -186,15 +181,11 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: '',
+                                                                        labelText: 'Last name',
                                                                         hintText: 'Lastname',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -234,10 +225,6 @@ class _AccountPage extends State<AccountPage>{
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -251,7 +238,11 @@ class _AccountPage extends State<AccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.emailAddress,
                                                                     controller: controllerEmail,
-                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
+                                                                    decoration: InputDecoration(
+                                                                      labelText: 'Email',
+                                                                      fillColor: Colors.white,
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
@@ -271,16 +262,16 @@ class _AccountPage extends State<AccountPage>{
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
-                                                                            updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
+                                                                            updateInfo(userId,widget.customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
@@ -330,10 +321,10 @@ class _AccountPage extends State<AccountPage>{
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                      icon: Icons.shopping_cart, iconActiveColor: Colors.purple.shade200, iconSize: 30,
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                         icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -345,18 +336,18 @@ class _AccountPage extends State<AccountPage>{
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))
     );
   }
 
-  //Function to update user information
+  ///Function to update user information
   Future<void> updateInfo(userId, CustomerId, editFirstname, editLastname, editPhonenumber) async {
     var object;
     //Query the user from Customer table using CustomerId
@@ -375,7 +366,7 @@ class _AccountPage extends State<AccountPage>{
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
       ..set('Phonenumber', '0$editPhonenumber')
-      //userId should be pointer since its a foreign key
+    //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();
@@ -389,13 +380,13 @@ class _AccountPage extends State<AccountPage>{
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
     QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -407,7 +398,8 @@ class _AccountPage extends State<AccountPage>{
       return [];
     }
   }
-  //Function called when update is successful
+
+  ///Function called when update is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess() {
     showDialog(
@@ -416,7 +408,7 @@ class _AccountPage extends State<AccountPage>{
           bool manuallyClosed = false;
           Future.delayed(Duration(seconds: 3)).then((_) {
             if (!manuallyClosed) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
             }
           });
           return AlertDialog(
@@ -425,7 +417,7 @@ class _AccountPage extends State<AccountPage>{
         });
   }
 
-  //Function called when update is not successful
+  ///Function called when update is not successful
   //Show Alertdialog and wait for user interaction
   void showError(String errorMessage) {
     showDialog(

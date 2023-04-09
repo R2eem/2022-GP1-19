@@ -31,7 +31,7 @@ class Forgot extends State<ForgotPassword> {
                   height: _headerHeight,
                   child: HeaderWidget(_headerHeight, false,Icons.password_rounded),
                 ),
-                //Controls app logo, back button and title
+                ///App logo, back button and title
                 SafeArea(
                   child: Column(
                       children: [

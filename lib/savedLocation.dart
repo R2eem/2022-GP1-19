@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Settings.dart';
@@ -23,13 +23,9 @@ class SavedLocationPage extends StatefulWidget {
 
 class Locations extends State<SavedLocationPage> {
   int _selectedIndex = 3;
-  var customerId;
   bool LocationPageNotEmpty = false;
   int NoOfLocation = 0;
   String loc ="";
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,7 @@ class Locations extends State<SavedLocationPage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo
+            ///App logo
             Container(
               child: SafeArea(
                 child: Column(
@@ -51,26 +47,13 @@ class Locations extends State<SavedLocationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        Align(
+                          alignment: Alignment.topLeft,
                           child: Image.asset(
                             'assets/logoheader.png',
                             fit: BoxFit.contain,
                             width: 110,
                             height: 80,
-                          ),
-                        ),
-                        //Controls location page title
-                        Container(
-                          margin: EdgeInsets.fromLTRB(30, 13, 0, 0),
-                          child: Text(
-                            'My Locations',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 27,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ]),
@@ -88,8 +71,7 @@ class Locations extends State<SavedLocationPage> {
                               child: Column(children: [
                                 Expanded(
                                     child: FutureBuilder<List<ParseObject>>(
-                                        future:
-                                        getSavedLocations(), //Will change LocationNotEmpty value
+                                        future: getSavedLocations(), //Will change LocationPageNotEmpty value
                                         builder: (context, snapshot) {
                                           switch (snapshot.connectionState) {
                                             case ConnectionState.none:
@@ -104,7 +86,7 @@ class Locations extends State<SavedLocationPage> {
                                             default:
                                               if (snapshot.hasError) {
                                                 return Center(
-                                                  child: Text("Error3..."),
+                                                  child: Text('${snapshot.error}'),
                                                 );
                                               }
                                               if (!snapshot.hasData) {
@@ -114,12 +96,9 @@ class Locations extends State<SavedLocationPage> {
                                               } else {
                                                 return LocationPageNotEmpty
                                                     ? ListView.builder(
-                                                    scrollDirection:
-                                                    Axis.vertical,
-                                                    itemCount:
-                                                    snapshot.data!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                    scrollDirection: Axis.vertical,
+                                                    itemCount: snapshot.data!.length,
+                                                    itemBuilder: (context, index) {
                                                       //Get Parse Object Values
                                                       //Get customer locations from Locations table
                                                       NoOfLocation = snapshot.data!.length; //Save number of Locations
@@ -156,6 +135,7 @@ class Locations extends State<SavedLocationPage> {
                                                                   return  ListView.builder(
                                                                       shrinkWrap: true,
                                                                       scrollDirection: Axis.vertical,
+                                                                      physics: ClampingScrollPhysics(),
                                                                       itemCount: 1,
                                                                       itemBuilder: (context, index) {
                                                                         final address = snapshot.data!;
@@ -164,111 +144,113 @@ class Locations extends State<SavedLocationPage> {
                                                                         final subLocality = address.subLocality;
                                                                         final street = address.street;
                                                                         return StatefulBuilder(
-                                                        builder: (BuildContext context, StateSetter setState) =>
-                                                        //Delete Locations from Location table
-                                                        Dismissible(
-                                                          key: UniqueKey(),
-                                                          background: Container(
-                                                              alignment: Alignment.centerRight,
-                                                              padding: EdgeInsets.symmetric(horizontal: 30),
-                                                              margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                              decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                              child: Icon(
-                                                                Icons.delete_outline,
-                                                                size: 40,
-                                                                semanticLabel: 'Delete',
-                                                                color: Colors.red,
-                                                              )),
-                                                          direction: DismissDirection.endToStart,
-                                                          confirmDismiss: (DismissDirection direction) async {
-                                                            //Deletion confirmation dialog
-                                                            return await showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext context) {
-                                                                return AlertDialog(
-                                                                  title: Text("Are you sure you wish to delete this Location?",
-                                                                      style: TextStyle(
-                                                                        fontFamily: 'Lato',
-                                                                        fontSize: 20,
-                                                                      )),
-                                                                  actions: <Widget>[
-                                                                    TextButton(
-                                                                      onPressed: () => Navigator.of(context).pop(true),
-                                                                      child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                    ),
-                                                                    TextButton(
-                                                                      onPressed: () => Navigator.of(context).pop(false),
-                                                                      child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          //If deletion confirmed call delete function
-                                                          onDismissed: (direction) async {
-                                                            //Send location id
-                                                            if (await deleteCartMed(LocID)) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                content: Text(
-                                                                  "the Location is deleted",
-                                                                  style: TextStyle(fontSize: 20),
-                                                                ),
-                                                                duration: Duration(milliseconds: 3000),
-                                                              ));
-                                                            }
-                                                            //If no location left in location page reload page to show empty message
-                                                            if (NoOfLocation == 0) {
-                                                              Navigator.push(context, MaterialPageRoute(builder: (context) => SavedLocationPage(widget.customerId)));
-                                                            }
-                                                          },
+                                                                          builder: (BuildContext context, StateSetter setState) =>
+                                                                          //Delete Locations from Location table
+                                                                          Dismissible(
+                                                                            key: UniqueKey(),
+                                                                            background: Container(
+                                                                                alignment: Alignment.centerRight,
+                                                                                padding: EdgeInsets.symmetric(horizontal: 30),
+                                                                                margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                child: Icon(
+                                                                                  Icons.delete_outline,
+                                                                                  size: 40,
+                                                                                  semanticLabel: 'Delete',
+                                                                                  color: Colors.red,
+                                                                                )),
+                                                                            direction: DismissDirection.endToStart,
+                                                                            confirmDismiss: (DismissDirection direction) async {
+                                                                              //Deletion confirmation dialog
+                                                                              return await showDialog(
+                                                                                context: context,
+                                                                                builder: (BuildContext context) {
+                                                                                  return AlertDialog(
+                                                                                    title: Text("Are you sure you want to delete this Location?",
+                                                                                        style: TextStyle(
+                                                                                          fontFamily: 'Lato',
+                                                                                          fontSize: 20,
+                                                                                        )),
+                                                                                    actions: <Widget>[
+                                                                                      TextButton(
+                                                                                        onPressed: () => Navigator.of(context).pop(true),
+                                                                                        child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                      ),
+                                                                                      TextButton(
+                                                                                        onPressed: () => Navigator.of(context).pop(false),
+                                                                                        child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                      ),
+                                                                                    ],
+                                                                                  );
+                                                                                },
+                                                                              );
+                                                                            },
+                                                                            //If deletion confirmed call delete function
+                                                                            onDismissed: (direction) async {
+                                                                              //Send location id
+                                                                              if (await deleteLocation(LocID)) {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  content: Text(
+                                                                                    "Location is deleted",
+                                                                                    style: TextStyle(fontSize: 20),
+                                                                                  ),
+                                                                                  duration: Duration(milliseconds: 3000),
+                                                                                ));
+                                                                              }
+                                                                              //If no location left in location page reload page to show empty message
+                                                                              if (NoOfLocation == 0) {
+                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => SavedLocationPage(widget.customerId)));
+                                                                              }
+                                                                            },
 
-                                                          child:Stack( //display Locations cards
-                                                            children: <Widget>[
-                                                              Container(
-                                                                margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                child: Row(
-                                                                  children: <Widget>[
-                                                                    Expanded(
-                                                                      child: Container(
-                                                                        padding: const EdgeInsets.all(8.0),
-                                                                        child: Column(
-                                                                          mainAxisSize: MainAxisSize.max,
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: <Widget>[
-                                                                            Container(
-                                                                              padding: EdgeInsets.only(right: 8, top: 4),
-                                                                              child: Text(
-
-
-                                                                                "Country: $country\nStreet: $street",
-
-                                                                                maxLines: 2,
-                                                                                softWrap: true,
-                                                                                style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(height: 6),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      flex: 100,
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),),);
+                                                                            child:Stack( //display Locations cards
+                                                                              children: <Widget>[
+                                                                                Container(
+                                                                                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                  child: Row(
+                                                                                    children: <Widget>[
+                                                                                      Expanded(
+                                                                                        child: Container(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Column(
+                                                                                            mainAxisSize: MainAxisSize.max,
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: <Widget>[
+                                                                                              Container(
+                                                                                                padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                child: Text(
+                                                                                                  "Street: $street\nSublocality: $subLocality",
+                                                                                                  maxLines: 2,
+                                                                                                  softWrap: true,
+                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                child: Text(
+                                                                                                  "Locality: $locality\nCountry: $country",
+                                                                                                  maxLines: 2,
+                                                                                                  softWrap: true,
+                                                                                                  style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
+                                                                                                ),
+                                                                                              ),
+                                                                                              SizedBox(height: 6),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        flex: 100,
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),),);
                                                                       });
                                                                 }
                                                             }}
                                                       );
                                                     } )
-
-
-
-
                                                 //If LocationNotEmpty is false; Location is empty show this message
                                                     : Container(
                                                     child: Column(
@@ -314,10 +296,12 @@ class Locations extends State<SavedLocationPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                      icon: Icons.shopping_cart,
+                      iconActiveColor: Colors.purple.shade200,
+                      iconSize: 30,
                     ),
                     GButton(
-                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                         icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -329,11 +313,11 @@ class Locations extends State<SavedLocationPage> {
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
                     }
                   }),
                 )))
@@ -341,27 +325,7 @@ class Locations extends State<SavedLocationPage> {
 
   }
 
-  //Function to get current logged in user
-  Future<ParseUser?> getUser() async {
-    var currentUser = await ParseUser.currentUser() as ParseUser?;
-    return currentUser;
-  }
-
-  //Function to get current user from Customer table
-  Future<List> currentuser(userId) async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('user', userId);
-    final ParseResponse apiResponse = await queryCustomers.query();
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
-    }
-  }
-
-
-  //Get customer's locations  from Locations table
+  ///Get customer's locations  from Locations table
   Future<List<ParseObject>> getSavedLocations() async {
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
@@ -383,11 +347,8 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
-
-
-
-  //Delete location from locations table
-  Future<bool> deleteCartMed(LocID) async {
+  ///Delete location from locations table
+  Future<bool> deleteLocation(LocID) async {
     //Query the location from locations table
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
@@ -408,15 +369,11 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
+  ///Convert coordinates to address
   Future<Placemark> getUserLocation(currentPostion) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         currentPostion['latitude'], currentPostion['longitude']);
-    print("jajaj2");
     Placemark place = placemarks[0];
-    print("jajaj3");
     return place;
   }
-
-
 }
-
