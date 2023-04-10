@@ -3,12 +3,16 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
 import 'package:untitled/medDetails.dart';
+import 'LoginPage.dart';
 import 'NonPrescriptionCategory.dart';
 import 'Orders.dart';
 import 'PrescriptionCategory.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
+import 'package:native_notify/native_notify.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -19,6 +23,11 @@ class Category extends State<CategoryPage> {
   int _selectedIndex = 0;
   String searchString = "";
   var customerId;
+  bool searchNotEmpty = true;
+  bool alwaysTrue = true;
+  bool noMed = true;
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -87,6 +96,8 @@ class Category extends State<CategoryPage> {
                                         final user = snapshot.data![index];
                                         customerId =
                                             user.get<String>('objectId')!;
+                                        NativeNotify.registerIndieID(
+                                            customerId);
                                         return Container();
                                       });
                                 }
@@ -100,39 +111,94 @@ class Category extends State<CategoryPage> {
             height: 150,
             child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
           ),
-          //Controls app logo
+          ///App logo
           Container(
               child: SafeArea(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Image.asset(
-                    'assets/logoheader.png',
-                    fit: BoxFit.contain,
-                    width: 110,
-                    height: 80,
-                  ),
-                ),
+                Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Image.asset(
+                          'assets/logoheader.png',
+                          fit: BoxFit.contain,
+                          width: 110,
+                          height: 80,
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                          child: IconButton(
+                        onPressed: () {
+                          Widget cancelButton = TextButton(
+                            child: Text("Yes",
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                            onPressed: () {
+                              doUserLogout();
+                            },
+                          );
+                          Widget continueButton = TextButton(
+                            child: Text("No",
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                          // set up the AlertDialog
+                          AlertDialog alert = AlertDialog(
+                            title: Text("Are you sure you want to log out?",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 20,
+                                )),
+                            content: Text(""),
+                            actions: [
+                              cancelButton,
+                              continueButton,
+                            ],
+                          );
+                          // show the dialog
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.logout_outlined,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ))
+                    ]),
                 SizedBox(
-                  height: 55,
+                  height: 25,
                 ),
-                //Controls category page display
+                ///Category page display
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
-                      height: 620,
+                      height: size.height - 150,
                       width: size.width,
                       child: Column(children: [
-                        //Search bar
+                        ///Search bar
                         Material(
                             elevation: 4,
                             shadowColor: Colors.grey,
-                            borderRadius: BorderRadius.circular(30),
                             child: TextField(
                               //Whenever value in text field changes set state
                               onChanged: (value) {
@@ -141,9 +207,9 @@ class Category extends State<CategoryPage> {
                                 });
                               },
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 19),
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                               decoration: InputDecoration(
-                                filled: true,
+                                filled: false,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -154,6 +220,43 @@ class Category extends State<CategoryPage> {
                                 prefixIconColor: Colors.pink[100],
                               ),
                             )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        ImageSlideshow(
+                          // Width of the [ImageSlideshow].
+                          width: double.infinity,
+                          // Height of the [ImageSlideshow].
+                          height: 150,
+                          // The page to show when first creating the [ImageSlideshow].
+                          initialPage: 0,
+                          // The color to paint the indicator.
+                          indicatorColor: Colors.purple,
+                          // The color to paint behind th indicator.
+                          indicatorBackgroundColor: Colors.grey,
+                          // The widgets to display in the [ImageSlideshow].
+                          children: [
+                            Image.asset(
+                              'assets/Slide1.png',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/Slide2.png',
+                              fit: BoxFit.cover,
+                            ),
+                            Image.asset(
+                              'assets/Slide3.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                          // Called whenever the page in the center of the viewport changes.
+                          onPageChanged: (value) {
+                          },
+                          // Auto scroll interval.
+                          autoPlayInterval: 3000,
+                          // Loops back to first slide.
+                          isLoop: true,
+                        ),
                         SizedBox(
                           height: 30,
                         ),
@@ -226,11 +329,68 @@ class Category extends State<CategoryPage> {
                         SizedBox(
                           height: 15,
                         ),
-                        //Medications list diplay
+                        FutureBuilder<List<ParseObject>>(
+                              future: getMedication(searchString),
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return Center(
+                                    );
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    }
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text(""),
+                                      );
+                                    } else {
+                                      return Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children:[
+                                            Text(
+                                              'Results: ${snapshot.data!.length}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontFamily: "Lato",
+                                                  fontSize: 17,
+                                                  fontWeight:
+                                                  FontWeight.w700),
+                                            ),
+                                            ///If the no medication matches the search string then display no medication message
+                                            (snapshot.data!.length==0)?
+                                            Container(
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 60,
+                                                      ),
+                                                      Text(
+                                                        "Sorry, No results match your search.",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                            "Lato",
+                                                            fontSize:
+                                                            20,),
+                                                        textAlign:
+                                                        TextAlign
+                                                            .center,
+                                                      ),
+                                                    ])):Container(),
+                                          ]);
+                                    }
+                                }
+                              }),
+                        ///Medications list display
                         Expanded(
                             //Get medications
                             child: FutureBuilder<List<ParseObject>>(
-                                future: getMedication(),
+                                future: getMedication(searchString),
                                 builder: (context, snapshot) {
                                   switch (snapshot.connectionState) {
                                     case ConnectionState.none:
@@ -252,9 +412,12 @@ class Category extends State<CategoryPage> {
                                           child: Text("No Data..."),
                                         );
                                       } else {
-                                        return ListView.builder(
+                                        return GridView.builder(
+                                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                maxCrossAxisExtent: 300,
+                                                childAspectRatio: 1/1.8,),
                                             padding: EdgeInsets.only(
-                                                top: 10.0, bottom: 20.0),
+                                                top: 10.0, bottom: 70.0),
                                             scrollDirection: Axis.vertical,
                                             itemCount: snapshot.data!.length,
                                             itemBuilder: (context, index) {
@@ -271,113 +434,124 @@ class Category extends State<CategoryPage> {
                                                       'ScientificName')!;
                                               final Publicprice = medGet
                                                   .get<num>('Publicprice')!;
-                                              //Display medication that matches the search string if exist
-                                              return TradeName.toLowerCase()
-                                                          .startsWith(searchString
-                                                              .toLowerCase()) ||
-                                                      ScientificName.toLowerCase()
-                                                          .startsWith(searchString
-                                                              .toLowerCase())
-                                                  ? GestureDetector(
-                                                      //Navigate to medication details page
-                                                      onTap: () => Navigator.of(context)
-                                                          .push(MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  medDetailsPage(
-                                                                      medId!,
-                                                                      customerId))),
-                                                      //Medication card information
-                                                      child: Card(
-                                                          elevation: 3,
-                                                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                                                          color: Colors.white,
-                                                          child: Column(children: [
-                                                            ListTile(
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
-                                                                          8.0,
-                                                                          10.0,
-                                                                          8.0,
-                                                                          10.0),
-                                                              title: Text(
-                                                                TradeName,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Lato",
-                                                                    fontSize:
-                                                                        22,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w700),
-                                                              ),
-                                                              subtitle: Text(
-                                                                '$ScientificName , $Publicprice SAR',
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Lato",
-                                                                    fontSize:
-                                                                        19,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontStyle:
-                                                                        FontStyle
-                                                                            .italic),
-                                                              ),
-                                                              leading:
-                                                                  Image.asset(
-                                                                'assets/listIcon.png',
-                                                              ),
-                                                              trailing: Row(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  Ink(
-                                                                    decoration:
-                                                                        ShapeDecoration.fromBoxDecoration(
-                                                                            BoxDecoration(
-                                                                      color: HexColor(
-                                                                          '#fad2fc'),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              15),
-                                                                    )),
-                                                                    //Add to cart button
-                                                                    child: IconButton(
-                                                                        onPressed: () async {
-                                                                          if (await addToCart(
-                                                                              medId,
-                                                                              customerId)) {
-                                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                              content: Text(
-                                                                                "$TradeName added to your cart",
-                                                                                style: TextStyle(fontSize: 20),
-                                                                              ),
-                                                                              duration: Duration(milliseconds: 3000),
-                                                                            ));
-                                                                          }
-                                                                          ;
-                                                                        },
-                                                                        icon: const Icon(
-                                                                          Icons
-                                                                              .add_shopping_cart_rounded,
-                                                                          color:
-                                                                              Colors.black,
-                                                                          size:
-                                                                              25.0,
-                                                                        )),
+                                              final LegalStatus = medGet.get("LegalStatus")!;
+                                              ParseFileBase? image;
+                                              if (medGet.get<ParseFileBase>('Image') != null) {
+                                                image = medGet.get<ParseFileBase>('Image')!;
+                                              }
+                                              ///Display medication that matches the search string if exist
+                                              return GestureDetector(
+                                                          //Navigate to medication details page
+                                                          onTap: () => Navigator.of(
+                                                                  context)
+                                                              .push(MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      medDetailsPage(
+                                                                          medId!, customerId))),
+                                                          //Medication card information
+                                                          child: Card(
+                                                              elevation: 3,
+                                                              margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                                                              color: Colors.white,
+                                                              child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    (image == null)?
+                                                                    Image
+                                                                    .asset(
+                                                                  'assets/listIcon.png', height: 100, width: 70,
+                                                                ):Image
+                                                                        .network(
+                                                                      image!.url!,
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      height: 120, width: 90,
+                                                                    ),
+                                                               Text(
+                                                                    TradeName,
+                                                                 textAlign: TextAlign.center,
+                                                                 style: TextStyle(
+                                                                        fontFamily:
+                                                                            "Lato",
+                                                                        fontSize:
+                                                                            17,
+                                                                        fontWeight:
+                                                                            FontWeight.w700),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ])))
-                                                  //If the medication doesn't matches the search string then don't display
-                                                  : Container();
+                                                                    Text(
+                                                                    '$ScientificName',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        fontFamily:
+                                                                            "Lato",
+                                                                        fontSize:
+                                                                            14,
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontStyle:
+                                                                            FontStyle.italic),
+                                                                  ),
+                                                                Text(
+                                                                  '$Publicprice SAR',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                      "Lato",
+                                                                      fontSize:
+                                                                      14,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontStyle:
+                                                                      FontStyle.italic),
+                                                                ),
+                                                                    (LegalStatus == 'Prescription')?
+                                                                    Text('Requires prescription',
+                                                                      style: TextStyle(
+                                                                          fontFamily: 'Lato',
+                                                                          fontSize: 14,
+                                                                          color: Colors.red),):
+                                                                    SizedBox(width: 0,),
+                                                                    Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children:[
+                                                                          Ink(
+                                                                        decoration:
+                                                                            ShapeDecoration.fromBoxDecoration(BoxDecoration(
+                                                                          color:
+                                                                          HexColor('#c7a1d1').withOpacity(0.5),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5),
+                                                                        )),
+                                                                            width: size.width/3,
+                                                                            height: size.height/22,
+                                                                        ///Add to cart button
+                                                                        child: IconButton(
+                                                                            onPressed: () async {
+                                                                              if (await addToCart(medId, customerId)) {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  content: Text(
+                                                                                    "$TradeName added to your cart",
+                                                                                    style: TextStyle(fontSize: 20),
+                                                                                  ),
+                                                                                  duration: Duration(milliseconds: 3000),
+                                                                                ));
+                                                                              };
+                                                                            },
+                                                                            icon: const Icon(
+                                                                              Icons.add_shopping_cart_rounded,
+                                                                              color: Colors.black,
+                                                                              size: 20.0,
+                                                                            )),
+                                                                      ),]),
+                                                                    SizedBox(height: 5,)
+
+
+                                                              ])));
                                             });
                                       }
                                   }
-                                }))
+                                })),
                       ]),
                     ))
               ]))),
@@ -401,7 +575,7 @@ class Category extends State<CategoryPage> {
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
-                        icon: Icons.shopping_bag,
+                        icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
                         iconSize: 30),
                     GButton(
@@ -437,12 +611,14 @@ class Category extends State<CategoryPage> {
                 ))));
   }
 
-  //Function to get medications
-  Future<List<ParseObject>> getMedication() async {
+  ///Function to get medications
+  Future<List<ParseObject>> getMedication(searchString) async {
     QueryBuilder<ParseObject> queryMedication =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
-    queryMedication.setLimit(200); //We have 200 medication
-    queryMedication.orderByAscending('TradeName'); //Order medications
+    queryMedication.setLimit(300);
+    queryMedication.whereEqualTo('Deleted', false);
+    queryMedication.orderByAscending('TradeName');
+    queryMedication.whereStartsWith('TradeName', searchString);
     final ParseResponse apiResponse = await queryMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
@@ -451,13 +627,13 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function to get current logged in user
+  ///Function to get current logged in user
   Future<ParseUser?> getUser() async {
     var currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser;
   }
 
-  //Function to get current user from Customer table
+  ///Function to get current user from Customer table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryCustomers =
         QueryBuilder<ParseObject>(ParseObject('Customer'));
@@ -470,7 +646,7 @@ class Category extends State<CategoryPage> {
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(medId, customerId) async {
     bool exist = false;
     var medInCart;
@@ -507,6 +683,46 @@ class Category extends State<CategoryPage> {
       var incrementQuantity = medInCart..set('Quantity', ++quantity);
       await incrementQuantity.save();
       return true;
+    }
+  }
+
+  void showErrorLogout(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log out failed!",
+              style: TextStyle(
+                  fontFamily: 'Lato', fontSize: 20, color: Colors.red)),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("Ok",
+                  style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void doUserLogout() async {
+    final user = await ParseUser.currentUser() as ParseUser;
+    var response = await user.logout();
+    if (response.success) {
+      setState(() {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    } else {
+      showErrorLogout(response.error!.message);
     }
   }
 }

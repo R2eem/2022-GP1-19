@@ -1,30 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/PharmacySettings.dart';
 import 'package:untitled/widgets/header_widget.dart';
-import 'Cart.dart';
-import 'Orders.dart';
-import 'Settings.dart';
+import 'PharHomePage.dart';
+import 'PharmacyLogin.dart';
 import 'common/theme_helper.dart';
-import 'package:untitled/CategoryPage.dart';
 
 
-class AccountPage extends StatefulWidget{
-  //Get customer id as a parameter
-  final String customerId;
-  const AccountPage(this.customerId);
+class PharmacyAccountPage extends StatefulWidget{
+
   @override
-  _AccountPage createState() => _AccountPage();
+  State<StatefulWidget> createState() {
+    return _PharmacyAccountPage();
+  }
 }
 
-
-class _AccountPage extends State<AccountPage>{
-  int _selectedIndex = 3;
+class _PharmacyAccountPage extends State<PharmacyAccountPage>{
+  int _selectedIndex = 1;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var pharmacyId;
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,33 +131,36 @@ class _AccountPage extends State<AccountPage>{
                                                               //Get Parse Object Values
                                                               //Get user information from Customer table
                                                               final user = snapshot.data![index];
-                                                              final Firstname = user.get<String>('Firstname')!;
-                                                              final Lastname = user.get<String>('Lastname')!;
-                                                              final Phonenumber = user.get<String>('Phonenumber')!;
-                                                              final controllerFirstname = TextEditingController(text: Firstname);
-                                                              final controllerLasttname = TextEditingController(text: Lastname);
+                                                              pharmacyId = user.get<String>('objectId')!;
+                                                              final PharmacyName = user.get<String>('PharmacyName')!;
+                                                              final Phonenumber = user.get<String>('PhoneNumber')!;
+                                                              final ComRegNum = user.get('CommercialRegister')!;
+                                                              final Address = user.get('Address')!;
+                                                              final controllerPharmacyName = TextEditingController(text: PharmacyName);
                                                               final controllerEmail = TextEditingController(text: email);
+                                                              final controllerComRegNum = TextEditingController(text: ComRegNum);
+                                                              final controllerAddress = TextEditingController(text: Address);
                                                               final controllerPhoneNumber = TextEditingController(text: Phonenumber.substring(1,));
                                                               //Display information
                                                               return Column( children: [
-                                                                //Firstname
+                                                                //phramacyName
                                                                 Container(
                                                                   child: TextFormField(
                                                                     autovalidateMode:
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.text,
-                                                                    controller: controllerFirstname,
+                                                                    controller: controllerPharmacyName,
                                                                     validator: MultiValidator([
                                                                       RequiredValidator(
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: 'First name',
-                                                                        hintText: 'Firstname',
+                                                                        labelText: 'Pharmacy name',
+                                                                        hintText: 'PharmacyName',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                         suffixIcon: Icon(Icons.edit) ) ,
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
                                                                     BoxShadow(
@@ -169,24 +171,15 @@ class _AccountPage extends State<AccountPage>{
                                                                   ]),
                                                                 ),
                                                                 SizedBox(height: 25.0),
-                                                                //Lastname
+                                                                //Commercial number
                                                                 Container(
                                                                   child: TextFormField(
+                                                                    readOnly: true,
                                                                     autovalidateMode:
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.text,
-                                                                    controller: controllerLasttname,
-                                                                    validator: MultiValidator([
-                                                                      RequiredValidator(
-                                                                          errorText: 'this field is required'),
-                                                                    ]),
-                                                                    decoration: InputDecoration(
-                                                                        labelText: 'Last name',
-                                                                        hintText: 'Lastname',
-                                                                        fillColor: Colors.white,
-                                                                        filled: true,
-                                                                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                         suffixIcon: Icon(Icons.edit) ) ,
+                                                                    controller: controllerComRegNum,
+                                                                    decoration: ThemeHelper().textInputDecoration('Commercial register number',"Commercial register number") ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
@@ -238,12 +231,22 @@ class _AccountPage extends State<AccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.emailAddress,
                                                                     controller: controllerEmail,
-                                                              decoration: InputDecoration(
-                                                              labelText: 'Email',
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),) ,
-                                                              ),
+                                                                    decoration: ThemeHelper().textInputDecoration('Email',"Email") ,
+                                                                  ),
+                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                                                                ),
+                                                                SizedBox(height: 25.0),
+                                                                //Address
+                                                                Container(
+                                                                  child: TextFormField(
+                                                                    readOnly: true,
+                                                                    autovalidateMode:
+                                                                    AutovalidateMode.onUserInteraction,
+                                                                    keyboardType: TextInputType.text,
+                                                                    controller: controllerAddress,
+                                                                    maxLines:3,
+                                                                    decoration: ThemeHelper().textInputDecoration('Address',"Address") ,
+                                                                  ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
                                                                 SizedBox(height: 35.0),
@@ -266,7 +269,7 @@ class _AccountPage extends State<AccountPage>{
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
-                                                                            updateInfo(userId,widget.customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
+                                                                            updateInfo(userId,pharmacyId,controllerPharmacyName.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
@@ -277,7 +280,7 @@ class _AccountPage extends State<AccountPage>{
                                                                           },
                                                                         );
                                                                         AlertDialog alert = AlertDialog(
-                                                                          title:  Text("Are you sure you want to update your account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
+                                                                          title:  Text("Are you sure you want to update pharmacy account information?", style: TextStyle(fontFamily: 'Lato', fontSize: 20,),),
                                                                           content: Text(""),
                                                                           actions: [
                                                                             continueButton,
@@ -308,51 +311,42 @@ class _AccountPage extends State<AccountPage>{
               ]),
         ),
         //Bottom navigation bar
-        bottomNavigationBar: Container(
-            color: Colors.white,
-            child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                child: GNav(
-                  gap: 8,
-                  padding: const EdgeInsets.all(10),
-                  tabs: [
-                    GButton(
-                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.shopping_cart, iconActiveColor: Colors.purple.shade200, iconSize: 30,
-                    ),
-                    GButton(
-                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                  ],
-                  selectedIndex: _selectedIndex,
-                  onTabChange: (index) => setState(() {
-                    _selectedIndex = index;
-                    if (_selectedIndex == 0) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                    } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
-                    } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
-                    } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
-                    }
-                  }),
-                )))
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+              }
+            }),
+          )),
     );
   }
 
   ///Function to update user information
-  Future<void> updateInfo(userId, CustomerId, editFirstname, editLastname, editPhonenumber) async {
+  Future<void> updateInfo(userId, PharmacyId, PharmacyName, editPhonenumber) async {
     var object;
-    //Query the user from Customer table using CustomerId
-    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Customer'));
-    parseQuery.whereEqualTo('objectId', CustomerId);
+    //Query the user from Pharmacy table using PharmacyId
+    final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    parseQuery.whereEqualTo('objectId', PharmacyId);
 
     //Get as a single object
     final apiResponse = await parseQuery.query();
@@ -361,12 +355,11 @@ class _AccountPage extends State<AccountPage>{
         object = o as ParseObject;
       }
     }
-    //Update the information in Customer table
+    //Update the information in pharmacist table
     var todo = object
-      ..set('Firstname', editFirstname)
-      ..set('Lastname', editLastname)
-      ..set('Phonenumber', '0$editPhonenumber')
-      //userId should be pointer since its a foreign key
+      ..set('PharmacyName', PharmacyName)
+      ..set('PhoneNumber', '0$editPhonenumber')
+    //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();
@@ -386,19 +379,18 @@ class _AccountPage extends State<AccountPage>{
     return currentUser;
   }
 
-  ///Function to get current user from Customer table
+  ///Function to get current user from pharmacist table
   Future<List> currentuser(userId) async {
-    QueryBuilder<ParseObject> queryCustomers =
-    QueryBuilder<ParseObject>(ParseObject('Customer'));
-    queryCustomers.whereContains('user', userId);
-    final ParseResponse apiResponse = await queryCustomers.query();
+    QueryBuilder<ParseObject> queryPharmacies =
+    QueryBuilder<ParseObject>(ParseObject('Pharmacist'));
+    queryPharmacies.whereContains('user', userId);
+    final ParseResponse apiResponse = await queryPharmacies.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;
     } else {
       return [];
     }
   }
-
   ///Function called when update is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess() {
@@ -408,7 +400,7 @@ class _AccountPage extends State<AccountPage>{
           bool manuallyClosed = false;
           Future.delayed(Duration(seconds: 3)).then((_) {
             if (!manuallyClosed) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
             }
           });
           return AlertDialog(

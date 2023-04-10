@@ -5,6 +5,7 @@ import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/CategoryPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Cart.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'medDetails.dart';
@@ -40,7 +41,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                 height: 150,
                 child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
               ),
-              //Controls app logo and page title
+              ///App logo and page title
               Container(
               child: SafeArea(
                 child: Column(
@@ -48,8 +49,8 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [Row(
                         children:[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          Align(
+                            alignment: Alignment.topLeft,
                             child: Image.asset('assets/logoheader.png',
                               fit: BoxFit.contain,
                               width: 110,
@@ -58,23 +59,22 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
-                            child: Text('Non-Prescription' + '\n' +'Medications', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                            child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
                           ),]),
-              SizedBox(height: 55,),
-              //Controls Non-prescription category page display
+              SizedBox(height: 25,),
+              ///Controls Non-prescription category page display
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
-                    height: 667,
+                    height: size.height - 180,
                     width: size.width,
                     child: Column(children: [
-                      //Search bar
+                      ///Search bar
                       Material(
                         elevation: 4,
                         shadowColor: Colors.grey,
-                        borderRadius: BorderRadius.circular(30),
                         child: TextField(
                           //Whenever value in text field changes set state
                         onChanged: (value) {
@@ -83,9 +83,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             });
                           },
                           style:
-                          TextStyle(color: Colors.grey, fontSize: 19),
+                          TextStyle(color: Colors.grey, fontSize: 15),
                           decoration: InputDecoration(
-                            filled: true,
+                            filled: false,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -99,7 +99,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     SizedBox(
                       height: 20,
                     ),
-                    //Filter tabs
+                    ///Filter tabs
                     TabBar(onTap: (index){ //
                           setState(() {
                             _selectedTab = index;
@@ -128,9 +128,9 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                             if(_selectedTab == 11)
                               packageType = 'Tablet';
                           },);},
-                        isScrollable: true,//if thr tabs are alot we can scroll them
+                        isScrollable: true,//if tabs are a lot we can scroll them
                         controller: _tabController,
-                        labelColor: Colors.grey[900],// the tab is clicked on now color
+                        labelColor: Colors.grey[900],// the color of active tab
                         unselectedLabelColor: Colors.grey,
                         tabs: [
                           Tab(icon: Text('All', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
@@ -147,10 +147,67 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                           Tab(icon: Text('Tablet', style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.w700, fontSize: 17),),),
                         ]),
                     SizedBox(height: 20,),
+                    FutureBuilder<List<ParseObject>>(
+                            future: getNonPresMedication(searchString),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                  return Center(
+                                  );
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text(""),
+                                    );
+                                  }
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: Text(""),
+                                    );
+                                  } else {
+                                    return Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children:[
+                                          Text(
+                                            'Results: ${snapshot.data!.length}',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                fontFamily: "Lato",
+                                                fontSize: 17,
+                                                fontWeight:
+                                                FontWeight.w700),
+                                          ),
+                                          ///If the no medication matches the search string then display no medication message
+                                          (snapshot.data!.length==0)?
+                                          Container(
+                                              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                  //mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 60,
+                                                    ),
+                                                    Text(
+                                                      "Sorry, No results match your search.",
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                          "Lato",
+                                                          fontSize:
+                                                          20,),
+                                                      textAlign:
+                                                      TextAlign
+                                                          .center,
+                                                    ),
+                                                  ])):Container(),
+                                        ]);
+                                  }
+                              }
+                            }),
                     Expanded(
-                      //Get Non-prescription medications
+                      ///Get Non-prescription medications
                       child: FutureBuilder<List<ParseObject>>(
-                            future: getNonPresMedication(),
+                            future: getNonPresMedication(searchString),
                             builder: (context, snapshot) {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.none:
@@ -172,7 +229,10 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                       child: Text("No Data..."),
                                     );
                                   } else {
-                                    return ListView.builder(
+                                    return GridView.builder(
+                                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 300,
+                                            childAspectRatio: 1/1.8,),
                                         padding: EdgeInsets.only(top: 10.0,bottom: 70.0),
                                         scrollDirection: Axis.vertical,
                                         itemCount: snapshot.data!.length,
@@ -185,60 +245,107 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                                           final ScientificName = medGet.get<String>('ScientificName')!;
                                           final Publicprice = medGet.get<num>('Publicprice')!;
                                           final ProductForm = medGet.get<String>('PharmaceuticalForm')!;
-                                          //Display medication that matches the search string if exist and matches the filter
-                                          return ((TradeName.toLowerCase().startsWith(searchString.toLowerCase()) || ScientificName.toLowerCase().startsWith(searchString.toLowerCase()))&& ProductForm.toLowerCase().contains(packageType.toLowerCase()))
-                                              ?  GestureDetector(
+                                          ParseFileBase? image;
+                                          if (medGet.get<ParseFileBase>('Image') != null) {
+                                            image = medGet.get<ParseFileBase>('Image')!;
+                                          }
+
+                                          ///Display medication that matches the search string if exist and matches the filter
+                                          ///Display image of medication if exist
+                                          return GestureDetector(
                                               //Navigate to medication details page
                                               onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => medDetailsPage(medId!, widget.customerId))),
                                               //Medication card information
                                               child: Card(
                                                   elevation: 3,
-                                                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                                  margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                                                   color: Colors.white,
                                                   child: Column(
-                                                      children:[
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-                                                          title: Text(TradeName,style: TextStyle(
-                                                              fontFamily: "Lato",
-                                                              fontSize: 22,
-                                                              fontWeight: FontWeight.w700),),
-                                                          subtitle: Text('$ScientificName , $Publicprice SAR',style: TextStyle(
-                                                              fontFamily: "Lato",
-                                                              fontSize: 19,
-                                                              color: Colors.black,
-                                                              fontStyle: FontStyle.italic),),
-                                                          leading: Image.asset('assets/listIcon.png',),
-                                                          trailing: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                              children: [
-                                                                Ink(
-                                                                  decoration: ShapeDecoration.fromBoxDecoration(
-                                                                      BoxDecoration(
-                                                                        color: HexColor('#fad2fc'),
-                                                                        borderRadius: BorderRadius.circular(15),
-                                                                      )),
-                                                                  //Add to cart button
-                                                                  child: IconButton(
-                                                                      onPressed: () async {
-                                                                        if(await addToCart(medId, widget.customerId)) {
-                                                                          ScaffoldMessenger.of(context).showSnackBar(
-                                                                              SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
-                                                                                duration: Duration(milliseconds: 3000),
-                                                                              ));
-                                                                        };
-                                                                      },
-                                                                      icon: const Icon(
-                                                                        Icons.add_shopping_cart_rounded,
-                                                                        color: Colors.black,
-                                                                        size: 25.0,)),
-                                                                ),
-                                                              ]
-                                                          ),
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        (image == null)
+                                                            ?  Image
+                                                            .asset(
+                                                          'assets/listIcon.png', height: 100, width: 70,
+                                                        ):Image
+                                                            .network(
+                                                          image!.url!,
+                                                          fit: BoxFit
+                                                              .fill,
+                                                          height: 120, width: 90,
                                                         ),
-                                                      ] )))
-                                               //If the medication doesn't matches the search string then don't display
-                                              :Container();
+                                                        Text(
+                                                          TradeName,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                              "Lato",
+                                                              fontSize:
+                                                              17,
+                                                              fontWeight:
+                                                              FontWeight.w700),
+                                                        ),
+                                                        Text(
+                                                          '$ScientificName',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                              "Lato",
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .black,
+                                                              fontStyle:
+                                                              FontStyle.italic),
+                                                        ),
+                                                        Text(
+                                                          '$Publicprice SAR',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                              "Lato",
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .black,
+                                                              fontStyle:
+                                                              FontStyle.italic),
+                                                        ),
+                                                        Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children:[
+                                                              Ink(
+                                                                decoration:
+                                                                ShapeDecoration.fromBoxDecoration(BoxDecoration(
+                                                                  color:
+                                                                  HexColor('#c7a1d1').withOpacity(0.5),
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(5),
+                                                                )),
+                                                                width: size.width/3,
+                                                                height: size.height/22,
+                                                                //Add to cart button
+                                                                child: IconButton(
+                                                                    onPressed: () async {
+                                                                      if (await addToCart(medId, widget.customerId)) {
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          content: Text(
+                                                                            "$TradeName added to your cart",
+                                                                            style: TextStyle(fontSize: 20),
+                                                                          ),
+                                                                          duration: Duration(milliseconds: 3000),
+                                                                        ));
+                                                                      };
+                                                                    },
+                                                                    icon: const Icon(
+                                                                      Icons.add_shopping_cart_rounded,
+                                                                      color: Colors.black,
+                                                                      size: 20.0,
+                                                                    )),
+                                                              ),]),
+                                                        SizedBox(height: 5,)
+                                                      ])));
                                         });
                                   }
                               }
@@ -261,10 +368,12 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                       icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                      icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                        ),
                     GButton(
-                      icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                       icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -287,12 +396,17 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     );
   }
 
-  //Function to get Non-prescription medications
-  Future<List<ParseObject>> getNonPresMedication() async {
+  ///Function to get Non-prescription medications
+  Future<List<ParseObject>> getNonPresMedication(searchString) async {
     QueryBuilder<ParseObject> queryNonPresMedication =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
     queryNonPresMedication.whereContains('LegalStatus', 'OTC');
+    queryNonPresMedication.setLimit(200);
+    queryNonPresMedication.whereEqualTo('Deleted', false);
     queryNonPresMedication.orderByAscending('TradeName');
+    queryNonPresMedication.whereStartsWith('TradeName', searchString);
+    queryNonPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
+//Order medications
     final ParseResponse apiResponse = await queryNonPresMedication.query();
 
     if (apiResponse.success && apiResponse.results != null) {
@@ -302,7 +416,7 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
     }
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;

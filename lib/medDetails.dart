@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -29,40 +30,21 @@ class MedDetails extends State<medDetailsPage> {
         body: SingleChildScrollView(
             child: Stack(
                 children: [
-                  //Header
-                  Container(
-                    height: 150,
-                    child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
-                  ),
-                  //Controls app logo
+                  ///App logo
                   Container(
                       child: SafeArea(
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                    children:[
-                                      Container(
-                                        child: IconButton(padding: EdgeInsets.fromLTRB(0, 10, 370, 0),
-                                          iconSize: 40,
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          }, icon: Icon(Icons.keyboard_arrow_left),),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
-                                        child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
-                                      ),
-                                    ]),SizedBox(height: 55,),
-                                //Controls medication details page display
+                                ///Medication details page display
                                 Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
+                                      color: Colors.white,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
-                                        height: 620,
+                                        height: size.height,
                                         width: size.width,
                                         child: Column(children: [
                                           Expanded(
@@ -91,6 +73,7 @@ class MedDetails extends State<medDetailsPage> {
                                                           );
                                                         } else {
                                                           return ListView.builder(
+                                                              physics: ClampingScrollPhysics(),
                                                               padding: EdgeInsets.only(top: 10.0),
                                                               scrollDirection: Axis.vertical,
                                                               itemCount: 1,
@@ -109,9 +92,13 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
-                                                                //Display medication information
-                                                                return SingleChildScrollView(
-                                                                    child: Container(
+                                                                final LegalStatus = medDetails.get("LegalStatus")!;
+                                                                ParseFileBase? image;
+                                                                if(medDetails.get<ParseFileBase>('Image') != null){
+                                                                  image = medDetails.get<ParseFileBase>('Image')!;
+                                                                }
+                                                                ///Display medication information
+                                                                return  Container(
                                                                         child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                             mainAxisSize: MainAxisSize.min,
@@ -126,8 +113,15 @@ class MedDetails extends State<medDetailsPage> {
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                                             children: [
                                                                                               SizedBox(
-                                                                                                height: 30.0,
+                                                                                                height: size.height/10,
                                                                                               ),
+                                                                                              (image!=null)?
+                                                                                              Image.network(
+                                                                                                image!.url!,
+                                                                                                width: size.width,
+                                                                                                height: size.height/4,
+                                                                                                fit: BoxFit.contain,
+                                                                                              ):Container(),
                                                                                               Container(
                                                                                                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                                                                                                   child: Column(
@@ -168,11 +162,19 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                           ),
                                                                                                         ),
                                                                                                         SizedBox(height: 10,),
+                                                                                                        (LegalStatus == 'Prescription')?
+                                                                                                        Text('Requires prescription',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: 'Lato',
+                                                                                                              fontSize: 14,
+                                                                                                              color: Colors.red),):
+                                                                                                        SizedBox(width: 0,),
+                                                                                                        SizedBox(height: 10,),
                                                                                                         Row(
                                                                                                             children: [
                                                                                                               Container(
                                                                                                                   margin: EdgeInsets.only(),
-                                                                                                                  width: 345.0,
+                                                                                                                  width: 300.0,
                                                                                                                   decoration: BoxDecoration(
                                                                                                                     borderRadius:
                                                                                                                     BorderRadius.circular(8.0),
@@ -323,49 +325,71 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                             ]),
                                                                                                         SizedBox(height: 50,),
                                                                                                         //Add to cart button
-                                                                                                        Padding(
-                                                                                                          padding: const EdgeInsets.only(left: 60.0, ), //The distance you want
-                                                                                                          child:Container(
-                                                                                                            decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                                                            child: ElevatedButton(
-                                                                                                              style: ThemeHelper().buttonStyle(),
-                                                                                                              child: Padding(
-                                                                                                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                                                                                                  child: Text.rich(
-                                                                                                                    TextSpan(
-                                                                                                                      children: [
-                                                                                                                        TextSpan(text: "Add to cart ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                                                                                                                        WidgetSpan(
-                                                                                                                            child: Icon(
-                                                                                                                              Icons.add_shopping_cart_rounded,
-                                                                                                                              color: Colors.white,
-                                                                                                                              size: 25.0,)),
-                                                                                                                      ],
-                                                                                                                    ),
-                                                                                                                  )),
+                                                                                                        Center(
+                                                                                                          child:Align(
+                                                                                                            alignment: FractionalOffset.bottomCenter,
+                                                                                                            child: Container(
+                                                                                                              decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                                              child: ElevatedButton(
+                                                                                                                style: ThemeHelper().buttonStyle(),
+                                                                                                                child: Padding(
+                                                                                                                    padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                                                                                                    child: Text.rich(
+                                                                                                                      TextSpan(
+                                                                                                                        children: [
+                                                                                                                          TextSpan(text: "ADD TO CART ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                                          WidgetSpan(
+                                                                                                                              child: Icon(
+                                                                                                                                Icons.add_shopping_cart_rounded,
+                                                                                                                                color: Colors.white,
+                                                                                                                                size: 25.0,)),
+                                                                                                                        ],
+                                                                                                                      ),
+                                                                                                                    )),
 
-                                                                                                              onPressed: () async {
-                                                                                                                if(await addToCart(medId, widget.customerId)) {
-                                                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                                                      SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
-                                                                                                                        duration: Duration(milliseconds: 3000),
-                                                                                                                      ));
-                                                                                                                };
-                                                                                                              },
+                                                                                                                onPressed: () async {
+                                                                                                                  if(await addToCart(medId, widget.customerId)) {
+                                                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                                        SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                                                          duration: Duration(milliseconds: 3000),
+                                                                                                                        ));
+                                                                                                                  };
+                                                                                                                },
+                                                                                                              ),
                                                                                                             ),
                                                                                                           ),
                                                                                                         ),
                                                                                                         SizedBox(height: 10,)  ]))]))
                                                                                   ])
                                                                             ])
-                                                                    )
-                                                                );
+                                                                    );
                                                               }
                                                           );
                                                         }
                                                     }
-                                                  }))
-                                        ])))])))])
+                                                  })),
+                                        ])))]))),
+                  ///Header
+                  ///Header is bellow because all of the code is wrapped in Stack which puts widget above another and we need header to be on top
+                  Container(
+                    height: 150,
+                    child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+                  ),
+                  Row(
+                      children:[
+                        Container(
+                          child: IconButton(padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }, icon: Icon(Icons.keyboard_arrow_left),),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
+                          child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
+                        ),
+                      ]),])
         ),
         //Bottom navigation bar
         bottomNavigationBar: Container(
@@ -381,10 +405,12 @@ class MedDetails extends State<medDetailsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                       ),
                     GButton(
-                        icon: Icons.shopping_bag,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                         icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -406,7 +432,7 @@ class MedDetails extends State<medDetailsPage> {
                 )))
     );
   }
-  //Function to get medication
+  ///Function to get medication
   Future<ParseObject> getMedDetails() async {
     var object;
     final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(ParseObject('Medications'));
@@ -422,7 +448,7 @@ class MedDetails extends State<medDetailsPage> {
     return object;
   }
 
-  //Function add medication to cart
+  ///Function add medication to cart
   Future<bool> addToCart(objectId, customerId) async{
     bool exist = false;
     var medInCart;
