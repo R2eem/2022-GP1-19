@@ -385,7 +385,7 @@ class Locations extends State<SavedLocationPage> {
   // }
 
 
-  //Get customer's medication information from Medications table
+  //Get customer's locations from locations table
   Future<List<ParseObject>> getSavedLocations(customerId) async {
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));

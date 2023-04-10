@@ -220,22 +220,75 @@ class Login extends State<LoginPage> {
     );
   }
 
-  //User log in function
+  ///User log in function
   void doUserLogin() async {
+    var object;
+    var id;
+    var type;
+    bool block = false;
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
-    final user = ParseUser(email, password, null);
+    QueryBuilder<ParseObject> queryCustomer1 =
+    QueryBuilder<ParseUser>(ParseUser.forQuery());
+    queryCustomer1.whereEqualTo('email', email);
+    final ParseResponse apiResponse1 = await queryCustomer1.query();
 
-    var response = await user.login();
+    ///If user exist search for type otherwise invalid inputs
+    if (apiResponse1.success && apiResponse1.results != null) {
+      for (var o in apiResponse1.results!) {
+        object = o as ParseObject;
+        id = object.get('objectId');
+      }
+    }
+    ///If account not signed up in Tiryaq
+    else {
+      showError('Invalid username/password.');
+    }
 
-    if (response.success) {
-      setState(() {
-        isLoggedIn = true;
-      });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-    } else {
-      showError(response.error!.message);
+    //If user exist in Customer table then log in successfully
+    if (id != null) {
+      QueryBuilder<ParseObject> queryCustomer2 =
+      QueryBuilder<ParseObject>(ParseObject('Customer'));
+      queryCustomer2.whereEqualTo('user', (ParseUser.forQuery()
+        ..objectId = id).toPointer());
+      final ParseResponse apiResponse2 = await queryCustomer2.query();
+
+      if (apiResponse2.success && apiResponse2.results != null) {
+        for (var o in apiResponse2.results!) {
+          type = 'Customer';
+          block = o.get('Block');
+        }
+      }
+      if (type == 'Customer') {
+        final user = ParseUser(email, password, null);
+
+        var response = await user.login();
+
+        ///If credentials correct and not blocked enter account
+        if (response.success && !block) {
+          setState(() {
+            isLoggedIn = true;
+          });
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CategoryPage()));
+
+          ///If credentials correct and blocked don't enter account
+        } else if(response.success && block){
+          showError('Account blocked, contact Tiryaq admin.');
+        }
+        ///If credentials not correct and blocked don't enter account
+        else{
+          showError(response.error!.message);
+        }
+      }
+      ///Account not customer
+      else {
+        showError('Invalid username/password.');
+      }
     }
   }
+
+
+
 }
