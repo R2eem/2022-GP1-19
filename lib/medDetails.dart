@@ -276,8 +276,6 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                         SizedBox(
                                                                                                           height: 10.0,
                                                                                                         ),
-                                                                                                        Row(
-                                                                                                            children:[
                                                                                                               Text('Marketing company: ',
                                                                                                                 style: TextStyle(
                                                                                                                   fontFamily: 'Lato',
@@ -286,12 +284,8 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                                   height: 1.40,
                                                                                                                 ),
                                                                                                               ),
-                                                                                                              Flexible(
-                                                                                                                child:
                                                                                                                 Text(MarketingCompany,
-                                                                                                                  maxLines: 1,
-                                                                                                                  softWrap: false,
-                                                                                                                  overflow: TextOverflow.fade,
+                                                                                                                  maxLines: 3,
                                                                                                                   style: TextStyle(
                                                                                                                     fontFamily: 'Lato',
                                                                                                                     fontSize: 16.0,
@@ -299,7 +293,7 @@ class MedDetails extends State<medDetailsPage> {
                                                                                                                     height: 1.40,
                                                                                                                     fontStyle: FontStyle.italic,
                                                                                                                   ),
-                                                                                                                ),)]),
+                                                                                                                ),
                                                                                                         SizedBox(
                                                                                                           height: 10.0,
                                                                                                         ),

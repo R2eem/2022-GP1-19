@@ -682,7 +682,7 @@ class Signup extends State<PharmacySignUp> {
 
   ///User signup function
   Future<void> doUserRegistration() async {
-    final email = controllerEmail.text.trim();
+    final email = controllerEmail.text.trim().toLowerCase();
     final password = controllerPassword.text.trim();
     final PharmacyName = controllerPharmacyName.text.trim();
     final ComRegister = controllerCommercialRegister.text.trim();

@@ -809,7 +809,7 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                     color: Colors.grey.shade200,
                                                                                                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                                                       Text(
-                                                                                                        '$quantity X  $medications ',
+                                                                                                        '$quantity X   ',
                                                                                                         style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
                                                                                                       ),
                                                                                                       Text(

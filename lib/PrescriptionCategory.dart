@@ -52,25 +52,15 @@ class Prescription extends State<PrescriptionCategory>
                       children: [
                 Row(children: [
                   Align(
-                    alignment: Alignment.topLeft,
-                    child: Image.asset(
-                      'assets/logoheader.png',
-                      fit: BoxFit.contain,
-                      width: 110,
-                      height: 80,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(40, 13, 0, 0),
-                    child: Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 25,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.bold),
-                    ),
+                      alignment: Alignment.topLeft,
+                      child:Container(
+                        child: IconButton(
+                          iconSize: 40,
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }, icon: Icon(Icons.keyboard_arrow_left),),
+                      )
                   ),
                 ]),
                 SizedBox(

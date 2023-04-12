@@ -219,7 +219,7 @@ class Login extends State<LoginPage> {
     var object;
     var id;
     var type;
-    final email = controllerEmail.text.trim();
+    final email = controllerEmail.text.trim().toLowerCase();
     final password = controllerPassword.text.trim();
 
     QueryBuilder<ParseObject> queryCustomer1 =

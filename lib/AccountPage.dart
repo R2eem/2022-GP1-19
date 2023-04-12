@@ -39,12 +39,24 @@ class _AccountPage extends State<AccountPage>{
                 ),
                 //Back button
                 Container(
-                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 60, 370, 0),
-                    iconSize: 40,
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }, icon: Icon(Icons.keyboard_arrow_left),),
+                    child: SafeArea(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                  alignment: Alignment.topLeft,
+                                  child:Container(
+                                    child: IconButton(
+                                      iconSize: 40,
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        }, icon: Icon(Icons.keyboard_arrow_left),),
+                                  )
+                              )]
+                        )
+                    )
                 ),
                 ///Profile icon
                 Container(
