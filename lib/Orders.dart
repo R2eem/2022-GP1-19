@@ -51,6 +51,12 @@ class Orders extends State<OrdersPage> {
           ..objectId = orderId).toPointer());
         final parseQueryResponse = await parseQuery.query();
 
+        ///If no registered pharmacies, then decline order immediately
+        if(parseQueryResponse.results == null ){
+          var o = order..set('OrderStatus', 'Declined');
+          o.save();
+          break;
+        }
 
         ///Check if any pharmacy accepted the order
         for (var pharmaciesList in parseQueryResponse.results!) {
@@ -482,6 +488,12 @@ class Orders extends State<OrdersPage> {
           ..objectId = orderId).toPointer());
         final parseQueryResponse = await parseQuery.query();
 
+        ///If no registered pharmacies, then decline order immediately
+        if(parseQueryResponse.results == null ){
+          var o = order..set('OrderStatus', 'Declined');
+          o.save();
+          break;
+        }
 
         ///Check if all pharmacies declined the order
         for (var pharmaciesList in parseQueryResponse.results!) {

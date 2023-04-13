@@ -613,12 +613,21 @@ class Category extends State<CategoryPage> {
 
   ///Function to get medications
   Future<List<ParseObject>> getMedication(searchString) async {
-    QueryBuilder<ParseObject> queryMedication =
-        QueryBuilder<ParseObject>(ParseObject('Medications'));
-    queryMedication.setLimit(300);
+    QueryBuilder<ParseObject> queryMedication1 =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryMedication1.whereStartsWith('TradeName', searchString);
+
+    QueryBuilder<ParseObject> queryMedication2 =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryMedication2.whereStartsWith('ScientificName', searchString);
+
+    QueryBuilder<ParseObject> queryMedication = QueryBuilder.or(
+      ParseObject("Medications"),
+      [queryMedication1, queryMedication2],
+    );
+    queryMedication.setLimit(1000);
     queryMedication.whereEqualTo('Deleted', false);
     queryMedication.orderByAscending('TradeName');
-    queryMedication.whereStartsWith('TradeName', searchString);
     final ParseResponse apiResponse = await queryMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;

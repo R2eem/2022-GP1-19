@@ -342,10 +342,10 @@ class Cart extends State<CartPage> {
                                                                                                             child: Row(
                                                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                                               children: <Widget>[
-                                                                                                                Text(
+                                                                                                                Expanded(child: Text(
                                                                                                                   '$Publicprice SAR  x$counter',
                                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-                                                                                                                ),
+                                                                                                                )),
                                                                                                                 //Increment and decrement of medication
                                                                                                                 Padding(
                                                                                                                   padding: const EdgeInsets.all(0.0),

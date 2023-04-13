@@ -50,17 +50,16 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
                     children: [Row(
                         children:[
                           Align(
-                            alignment: Alignment.topLeft,
-                            child: Image.asset('assets/logoheader.png',
-                              fit: BoxFit.contain,
-                              width: 110,
-                              height: 80,
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20, 13, 0, 0),
-                            child: Text('', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Lato',fontSize: 25, color: Colors.white70, fontWeight: FontWeight.bold),),
-                          ),]),
+                              alignment: Alignment.topLeft,
+                              child:Container(
+                                child: IconButton(
+                                  iconSize: 40,
+                                  color: Colors.white,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }, icon: Icon(Icons.keyboard_arrow_left),),
+                              )
+                          )]),
               SizedBox(height: 25,),
               ///Controls Non-prescription category page display
               Align(
@@ -398,14 +397,23 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
 
   ///Function to get Non-prescription medications
   Future<List<ParseObject>> getNonPresMedication(searchString) async {
-    QueryBuilder<ParseObject> queryNonPresMedication =
+    QueryBuilder<ParseObject> queryNonPresMedication1 =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryNonPresMedication1.whereStartsWith('TradeName', searchString);
+
+    QueryBuilder<ParseObject> queryNonPresMedication2 =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryNonPresMedication2.whereStartsWith('ScientificName', searchString);
+
+    QueryBuilder<ParseObject> queryNonPresMedication = QueryBuilder.or(
+      ParseObject("Medications"),
+      [queryNonPresMedication1, queryNonPresMedication2],
+    );
     queryNonPresMedication.whereContains('LegalStatus', 'OTC');
-    queryNonPresMedication.setLimit(200);
+    queryNonPresMedication.setLimit(500);
     queryNonPresMedication.whereEqualTo('Deleted', false);
     queryNonPresMedication.orderByAscending('TradeName');
-    queryNonPresMedication.whereStartsWith('TradeName', searchString);
-    queryNonPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
+    queryNonPresMedication.whereContains('PharmaceuticalForm', packageType);
 //Order medications
     final ParseResponse apiResponse = await queryNonPresMedication.query();
 

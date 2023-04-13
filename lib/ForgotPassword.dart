@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/LoginPage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:untitled/main.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'common/theme_helper.dart';
 
@@ -39,7 +40,7 @@ class Forgot extends State<ForgotPassword> {
                           iconSize: 40,
                           color: Colors.white,
                           onPressed: () {
-                            Navigator.push( context, MaterialPageRoute( builder: (context) => LoginPage()), );
+                            Navigator.push( context, MaterialPageRoute( builder: (context) => HomePage()), );
                           }, icon: Icon(Icons.keyboard_arrow_left),),
                         SizedBox(height: 200,),
                         Row(
@@ -97,6 +98,7 @@ class Forgot extends State<ForgotPassword> {
                                                 fontFamily: 'Lato',
                                                 fontSize: 20,
                                                 color: Colors.white,
+                                                fontWeight: FontWeight.bold
                                               ),
                                             ),
                                           ),
@@ -110,28 +112,6 @@ class Forgot extends State<ForgotPassword> {
                                         ),
                                       ),
                                       SizedBox(height: 15.0),
-                                      //Navigation to login page
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                                text: "Remember your password? ",
-                                                style: TextStyle(fontFamily: 'Lato', fontSize: 17, color: Colors.grey[700])),
-                                            TextSpan(
-                                              text: 'Login',
-                                              recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => LoginPage()),
-                                                  );
-                                                },
-                                              style: TextStyle(fontFamily: 'Lato', fontSize: 17,color: Theme.of(context).accentColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 )

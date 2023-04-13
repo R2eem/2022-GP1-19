@@ -52,25 +52,15 @@ class Prescription extends State<PrescriptionCategory>
                       children: [
                 Row(children: [
                   Align(
-                    alignment: Alignment.topLeft,
-                    child: Image.asset(
-                      'assets/logoheader.png',
-                      fit: BoxFit.contain,
-                      width: 110,
-                      height: 80,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(40, 13, 0, 0),
-                    child: Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 25,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.bold),
-                    ),
+                      alignment: Alignment.topLeft,
+                      child:Container(
+                        child: IconButton(
+                          iconSize: 40,
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }, icon: Icon(Icons.keyboard_arrow_left),),
+                      )
                   ),
                 ]),
                 SizedBox(
@@ -521,14 +511,23 @@ class Prescription extends State<PrescriptionCategory>
 
   ///Function to get prescription medications
   Future<List<ParseObject>> getPresMedication(searchString) async {
-    QueryBuilder<ParseObject> queryPresMedication =
+    QueryBuilder<ParseObject> queryPresMedication1 =
         QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryPresMedication1.whereStartsWith('TradeName', searchString);
+
+    QueryBuilder<ParseObject> queryPresMedication2 =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryPresMedication2.whereStartsWith('ScientificName', searchString);
+
+    QueryBuilder<ParseObject> queryPresMedication = QueryBuilder.or(
+      ParseObject("Medications"),
+      [queryPresMedication1, queryPresMedication2],
+    );
     queryPresMedication.whereContains('LegalStatus', 'Prescription');
-    queryPresMedication.setLimit(200);
+    queryPresMedication.setLimit(500);
     queryPresMedication.whereEqualTo('Deleted', false);
     queryPresMedication.orderByAscending('TradeName');
-    queryPresMedication.whereStartsWith('TradeName', searchString);
-    queryPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
+    queryPresMedication.whereContains('PharmaceuticalForm', packageType);
     final ParseResponse apiResponse = await queryPresMedication.query();
     if (apiResponse.success && apiResponse.results != null) {
       return apiResponse.results as List<ParseObject>;

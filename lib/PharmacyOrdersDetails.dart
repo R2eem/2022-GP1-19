@@ -371,7 +371,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                               fontSize: 17,
                                                                                                               color: Colors.black,
                                                                                                               fontWeight: FontWeight.w600),
-                                                                                                            maxLines: 2,),
+                                                                                                            maxLines: 3,),
                                                                                                           Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
                                                                                                               fontFamily: "Lato",
                                                                                                               fontSize: 15,
@@ -561,22 +561,22 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                                                         children:[
                                                                                                                                                           Row(
-
                                                                                                                                                               children:[
                                                                                                                                                                 Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                                                Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                                                    Expanded(
+                                                                                                                                                        child: Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
                                                                                                                                                                     fontFamily: "Lato",
                                                                                                                                                                     fontSize: 17,
                                                                                                                                                                     color: Colors.black,
                                                                                                                                                                     fontWeight: FontWeight.w600),
-                                                                                                                                                                  maxLines: 2,),
-                                                                                                                                                              ]),
+                                                                                                                                                                  maxLines: 3,),
+                                                                                                                                                    )]),
                                                                                                                                                           Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
                                                                                                                                                               fontFamily: "Lato",
                                                                                                                                                               fontSize: 15,
                                                                                                                                                               color: Colors.black,
                                                                                                                                                               fontWeight: FontWeight.w500),
-                                                                                                                                                            maxLines: 2,)
+                                                                                                                                                            maxLines: 3,)
                                                                                                                                                         ]
                                                                                                                                                     )
                                                                                                                                                 ):Container(),
@@ -645,7 +645,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                 width: 100,
                                                                                 child:Image.network(
                                                                                   prescription!.url!,
-                                                                                  fit: BoxFit.cover,
+                                                                                  fit: BoxFit.fitWidth,
                                                                                 ),
                                                                               ),
                                                                             ),
@@ -1261,7 +1261,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     var object;
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    parseQuery.whereEqualTo('PharmacyId',
+    parseQuery.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId =pharmacyId).toPointer());
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = widget.orderId).toPointer());
 
@@ -1293,7 +1293,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
   Future<ParseObject> getNote() async {
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    parseQuery.whereEqualTo('PharmacyId', (ParseObject('Pharmacist')..objectId =widget.pharmacyId).toPointer());
+    parseQuery.whereEqualTo('PharmacistId', (ParseObject('Pharmacist')..objectId =widget.pharmacyId).toPointer());
     parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')..objectId = widget.orderId).toPointer());
 
     final apiResponse = await parseQuery.query();
@@ -1327,7 +1327,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId')
+        if (pharmacy.get('PharmacistId')
             .objectId == widget.pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Ready for pick up');
           final ParseResponse parseResponse = await update.save();
@@ -1366,7 +1366,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
         if (pharmacy
-            .get('PharmacyId')
+            .get('PharmacistId')
             .objectId == widget.pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Collected');
           final ParseResponse parseResponse = await update.save();

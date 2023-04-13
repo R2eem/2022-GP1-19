@@ -106,7 +106,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 final pharmDetails = snapshot
                                                     .data![index];
                                                 final pharmacyId = pharmDetails
-                                                    .get('PharmacyId')
+                                                    .get('PharmacistId')
                                                     .objectId;
                                                 var Distance = pharmDetails
                                                     .get('Distance')!;
@@ -399,21 +399,25 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                 Row(
                                                                                                                             children:[
                                                                                                                               Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
+                                                                                                                          Expanded(
+                                                                                                                              child:Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 17,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w600),
-                                                                                                                                    maxLines: 2,),
-                                                                                                                                ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
+                                                                                                                                    maxLines: 3,),
+                                                                                                                           )]),
+                                                                                                                  Row(
+                                                                                                                      children:[
+                                                                                                                          Expanded(
+                                                                                                                               child: Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w500),
-                                                                                                                                    maxLines: 2,)
-                                                                                                                              ]
-                                                                                                                          )
+                                                                                                                                    maxLines: 3,)
+                                                                                                                              )])
+                                                                                                                          ])
                                                                                                                       ):Container(),
                                                                                                                     (medicationListStatus[0][i]['isChecked'] == false)?
                                                                                                                   Container(
@@ -665,7 +669,7 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
+        if (pharmacy.get('PharmacistId').objectId == pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Under preparation');
           final ParseResponse parseResponse = await update.save();
         }

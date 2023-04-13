@@ -469,7 +469,7 @@ class Signup extends State<SignupPage> {
 
   ///User signup function
   Future<void> doUserRegistration() async {
-    final email = controllerEmail.text.trim();
+    final email = controllerEmail.text.trim().toLowerCase();
     final password = controllerPassword.text.trim();
     final firstname = controllerFirstname.text.trim();
     final lastname = controllerLasttname.text.trim();

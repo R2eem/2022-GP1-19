@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.grey,
             ),
             home: HomePage(),
+            debugShowCheckedModeBanner: false,
           );
   }
 }

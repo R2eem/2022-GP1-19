@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/Cart.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/ChooseLocation.dart';
-import 'LoginPage.dart';
+import 'Cart.dart';
 import 'PresAttach.dart';
-import 'common/theme_helper.dart';
 
 
 class Locationpage extends StatefulWidget{
@@ -24,6 +24,7 @@ class Locationpage extends StatefulWidget{
 }
 
 class _LocationPage extends State<Locationpage> {
+  GlobalKey _toolTipKey = GlobalKey();
   late GoogleMapController googleMapController;
   //for error message
   bool Lat = false;
@@ -38,7 +39,17 @@ class _LocationPage extends State<Locationpage> {
   Set<Marker> markers = {};
 
   @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      final dynamic tooltip = _toolTipKey.currentState;
+      tooltip.ensureTooltipVisible();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: GoogleMap(
         initialCameraPosition: initialCameraPosition,
@@ -50,7 +61,7 @@ class _LocationPage extends State<Locationpage> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.purple.shade300 ,
+        backgroundColor: Colors.white ,
         onPressed: () async {
           Position position = await _determinePosition();
 
@@ -66,15 +77,93 @@ class _LocationPage extends State<Locationpage> {
           long = position.longitude;
           Lat = true;
           Long = true;
-          // getAddress(lat,long);
         },
-        label: const Text("Current Location",style: TextStyle(fontFamily: 'Lato',
-          fontSize: 17,),),
-        icon: const Icon(Icons.location_history ,),
+        label: Tooltip(
+          key: _toolTipKey,
+          message: 'Get current location',
+          child: Icon(Icons.my_location ,color: Colors.black,),
+          preferBelow: false,
+          triggerMode: TooltipTriggerMode.manual,
+        ),
       ),
 
-      persistentFooterButtons: [
-        CircleAvatar(
+      bottomNavigationBar:
+    SizedBox(
+      height: size.height/6.7,
+      child:
+      Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children:[
+         FutureBuilder<Placemark>(
+             future: getAddress(lat,long),
+             builder: (context, snapshot) {
+               switch (snapshot.connectionState) {
+                 case ConnectionState.none:
+                   case ConnectionState.waiting:
+                     return Center(
+                       child: Container(
+                           width: 200,
+                           height: 5,
+                           child:LinearProgressIndicator()),
+                     );
+                     default:
+                       if (snapshot.hasError) {
+                         return Center(
+                           child: Text(
+                               "Select location"),
+                         );
+                       }
+                       if (!snapshot.hasData) {
+                         return Center(
+                           child: Text(
+                               "No Data..."),
+                         );
+                       } else {
+                         return  ListView.builder(
+                             physics: ClampingScrollPhysics(),
+                             shrinkWrap: true,
+                             scrollDirection: Axis.vertical,
+                             itemCount: 1,
+                             itemBuilder: (context, index) {
+                               final address = snapshot.data!;
+                               var country = address.country;
+                               var locality = address.locality;
+                               var subLocality = address.subLocality;
+                               var street = address.street;
+                               return Stack(
+                                   children: <Widget>[
+                                     Container(
+                                         margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                         padding: EdgeInsets.all(10),
+                                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                         child:Row(
+                                             children: [
+                                               Icon(Icons.location_on),
+                                               Expanded(
+                                                 child:
+                                                 Text(" $street, $subLocality, $locality, $country",style: TextStyle(
+                                                   fontFamily: "Lato",
+                                                   fontSize: 17,
+                                                   color: Colors.black,
+                                                   fontWeight: FontWeight.w600,),
+                                                   maxLines: 2,
+                                                   overflow: TextOverflow.ellipsis,
+                                                 ),
+                                             )],
+                                           ),
+                                         )
+
+                                   ]
+                               );
+                             });
+                       }
+               }
+             }),
+        Row(
+            mainAxisAlignment:MainAxisAlignment.center,
+            children:[
+              SizedBox(width: 8,),
+              CircleAvatar(
             backgroundColor: Colors.purple.shade300,
             child: IconButton(
               onPressed: (){
@@ -83,53 +172,66 @@ class _LocationPage extends State<Locationpage> {
               icon: const Icon(
                 Icons.arrow_back_ios_new_outlined,
                 color: Colors.white,
-                size: 20,
+                size: 24,
               ),
             )),
-        SizedBox(width: 50,),
-        Container(
-            child:
+        Spacer(),
             ElevatedButton.icon(
-              style: ThemeHelper().buttonStyle(),
+              style: ElevatedButton
+                  .styleFrom(
+                backgroundColor: Colors.purple.shade300
+              ),
               onPressed: (){
                 Navigator.push( context, MaterialPageRoute( builder: (context) => ChooseLocation(widget.customerId, widget.totalPrice, widget.presRequired), ));
               },
 
-              icon: Icon(Icons.location_on ,color: Colors.white,), label: Text('Saved Locations', style: TextStyle(fontFamily: 'Lato',fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
-            )),
-
-        SizedBox(width:32,),
-        CircleAvatar(
-            backgroundColor: Colors.purple.shade300,
-            child: IconButton(
-                onPressed:
-                Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
-                );}
-                    :() {showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: Text("Please detect your location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                      actions: <Widget>[
-                        new TextButton(
-                          child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );} ,
-                icon: const Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: Colors.white,
-                  size: 20,
-                ))),
-      ],
-
-    );
+              icon: Icon(Icons.location_on ,color: Colors.white,),
+              label: Text('Saved locations', style:
+            TextStyle(
+                fontFamily: 'Lato',
+                fontSize: 15,
+                fontWeight: FontWeight
+                    .bold,
+                color: Colors
+                    .white),),
+            ),
+          Spacer(),
+          CircleAvatar(
+              backgroundColor: Colors.purple.shade300,
+              child:
+              IconButton(
+                  style: ElevatedButton
+                      .styleFrom(
+                      backgroundColor: Colors.purple.shade300
+                  ),
+                  onPressed:
+                  Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
+                  );}
+                      :() {showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text("Please detect your location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                        actions: <Widget>[
+                          new TextButton(
+                            child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );},
+                  icon: const Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    color: Colors.white,
+                    size: 24,
+                  )            )),
+              SizedBox(width: 8,)
+      ])]),
+    ));
   }
 
   Future<Position> _determinePosition() async {
@@ -160,5 +262,12 @@ class _LocationPage extends State<Locationpage> {
 
 
     return position;
+  }
+  ///Convert coordinates to address
+  Future<Placemark> getAddress(lat, long) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        lat, long);
+    Placemark place = placemarks[0];
+    return place;
   }
 }

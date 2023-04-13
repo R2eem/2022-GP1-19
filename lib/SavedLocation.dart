@@ -46,17 +46,17 @@ class Locations extends State<SavedLocationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Image.asset(
-                            'assets/logoheader.png',
-                            fit: BoxFit.contain,
-                            width: 110,
-                            height: 80,
-                          ),
-                        ),
-                      ]),
+                      //Back button
+                    Align(
+                    alignment: Alignment.topLeft,
+                    child:Container(
+                        child: IconButton(
+                          iconSize: 40,
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }, icon: Icon(Icons.keyboard_arrow_left),),
+                      )),
                       SizedBox(
                         height: 20,
                       ),

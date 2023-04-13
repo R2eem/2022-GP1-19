@@ -175,7 +175,7 @@ class PharmacyOld extends State<PharmacyOldO>
                             child: Column(children: [
                               Expanded(
                                   child: FutureBuilder<List<ParseObject>>(
-                                      future: GetNewOrders(widget.pharmacyId),
+                                      future: GetOldOrders(widget.pharmacyId),
                                       builder: (context, snapshot) {
                                         switch (snapshot.connectionState) {
                                           case ConnectionState.none:
@@ -348,23 +348,23 @@ class PharmacyOld extends State<PharmacyOldO>
 
 
   ///Get pharmacy new orders
-  Future<List<ParseObject>> GetNewOrders(pharmacyId) async{
+  Future<List<ParseObject>> GetOldOrders(pharmacyId) async{
     final QueryBuilder<ParseObject> queryOldOrders1 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryOldOrders1.whereEqualTo('PharmacyId',
+    queryOldOrders1.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryOldOrders1.whereEqualTo('OrderStatus', 'Cancelled');
 
     final QueryBuilder<ParseObject> queryOldOrders2 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryOldOrders2.whereEqualTo('PharmacyId',
+    queryOldOrders2.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryOldOrders2.whereEqualTo('OrderStatus', 'Collected');
 
 
     final QueryBuilder<ParseObject> queryOldOrders3 =
     QueryBuilder<ParseObject>(ParseObject('PharmaciesList'));
-    queryOldOrders3.whereEqualTo('PharmacyId',
+    queryOldOrders3.whereEqualTo('PharmacistId',
         (ParseObject('Pharmacist')..objectId = pharmacyId).toPointer());
     queryOldOrders3.whereEqualTo('OrderStatus', 'Declined');
 
