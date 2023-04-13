@@ -101,7 +101,7 @@ class Login extends State<LoginPage> {
                                               obscureText: !_isVisible,
                                               validator: MultiValidator([
                                                 RequiredValidator(
-                                                    errorText: 'this is required'),
+                                                    errorText: 'this field is required'),
                                               ]),
                                               decoration: InputDecoration(
                                                 suffixIcon: IconButton(
