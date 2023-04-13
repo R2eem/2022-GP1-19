@@ -405,7 +405,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                     fontSize: 17,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w600),
-                                                                                                                                    maxLines: 2,),
+                                                                                                                                    maxLines: 3,),
                                                                                                                            )]),
                                                                                                                   Row(
                                                                                                                       children:[
@@ -415,7 +415,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w500),
-                                                                                                                                    maxLines: 2,)
+                                                                                                                                    maxLines: 3,)
                                                                                                                               )])
                                                                                                                           ])
                                                                                                                       ):Container(),

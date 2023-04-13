@@ -371,7 +371,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                               fontSize: 17,
                                                                                                               color: Colors.black,
                                                                                                               fontWeight: FontWeight.w600),
-                                                                                                            maxLines: 2,),
+                                                                                                            maxLines: 3,),
                                                                                                           Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
                                                                                                               fontFamily: "Lato",
                                                                                                               fontSize: 15,
@@ -561,22 +561,22 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                                                         children:[
                                                                                                                                                           Row(
-
                                                                                                                                                               children:[
                                                                                                                                                                 Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                                                Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                                                    Expanded(
+                                                                                                                                                        child: Text('${medicationsListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
                                                                                                                                                                     fontFamily: "Lato",
                                                                                                                                                                     fontSize: 17,
                                                                                                                                                                     color: Colors.black,
                                                                                                                                                                     fontWeight: FontWeight.w600),
-                                                                                                                                                                  maxLines: 2,),
-                                                                                                                                                              ]),
+                                                                                                                                                                  maxLines: 3,),
+                                                                                                                                                    )]),
                                                                                                                                                           Text('$ProductForm $Strength $StrengthUnit' ,style: TextStyle(
                                                                                                                                                               fontFamily: "Lato",
                                                                                                                                                               fontSize: 15,
                                                                                                                                                               color: Colors.black,
                                                                                                                                                               fontWeight: FontWeight.w500),
-                                                                                                                                                            maxLines: 2,)
+                                                                                                                                                            maxLines: 3,)
                                                                                                                                                         ]
                                                                                                                                                     )
                                                                                                                                                 ):Container(),
@@ -645,7 +645,7 @@ class PharmacyOrdereDetails extends State<PharmacyOrdersDetailsPage> {
                                                                                 width: 100,
                                                                                 child:Image.network(
                                                                                   prescription!.url!,
-                                                                                  fit: BoxFit.cover,
+                                                                                  fit: BoxFit.fitWidth,
                                                                                 ),
                                                                               ),
                                                                             ),

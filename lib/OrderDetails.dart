@@ -809,12 +809,14 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                     color: Colors.grey.shade200,
                                                                                                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                                                       Text(
-                                                                                                        '$quantity X   ',
+                                                                                                        '$quantity X  $medications ',
                                                                                                         style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                                                                                                        maxLines: 3,
                                                                                                       ),
                                                                                                       Text(
                                                                                                         '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                         style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                                                        maxLines: 3,
                                                                                                       )
                                                                                                     ]))
                                                                                               ],
@@ -981,16 +983,17 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                               color: HexColor('#2b872d'),
                                                                                                                               size: 30,
                                                                                                                             ),
-                                                                                                                            Text(
+                                                                                                                    Expanded(
+                                                                                                                        child:Text(
                                                                                                                               '${medicationsList[0][i]['quantity']} x $medications ',
                                                                                                                               style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-                                                                                                                              maxLines: 2,
+                                                                                                                              maxLines: 3,
                                                                                                                             ),
-                                                                                                                          ]),
+                                                                                                                    )]),
                                                                                                                           Text(
                                                                                                                             '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                                             style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
-                                                                                                                            maxLines: 2,
+                                                                                                                            maxLines: 3,
                                                                                                                           )
                                                                                                                         ]))
                                                                                                                     : Container(),
@@ -1006,16 +1009,17 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                                                                               color: HexColor('#bd2717'),
                                                                                                                               size: 30,
                                                                                                                             ),
-                                                                                                                            Text(
+                                                                                                                    Expanded(
+                                                                                                                        child:Text(
                                                                                                                               '${medicationsList[0][i]['quantity']} x $medications ',
                                                                                                                               style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-                                                                                                                              maxLines: 2,
+                                                                                                                              maxLines: 3,
                                                                                                                             ),
-                                                                                                                          ]),
+                                                                                                                    )]),
                                                                                                                           Text(
                                                                                                                             '$ProductForm $Strength $StrengthUnit, $Publicprice SAR',
                                                                                                                             style: TextStyle(fontFamily: "Lato", fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
-                                                                                                                            maxLines: 2,
+                                                                                                                            maxLines: 3,
                                                                                                                           )
                                                                                                                         ]))
                                                                                                                     : Container(),
@@ -1062,14 +1066,12 @@ class OrderDetails extends State<OrderDetailsPage> {
                                                                         FullScreenWidget(
                                                                           child:
                                                                               Container(
-                                                                            height:
-                                                                                100,
-                                                                            width:
-                                                                                100,
+                                                                            height: 100,
+                                                                            width: 100,
                                                                             child:
                                                                                 Image.network(
                                                                               prescription!.url!,
-                                                                              fit: BoxFit.cover,
+                                                                              fit: BoxFit.fitWidth,
                                                                             ),
                                                                           ),
                                                                         ),

@@ -397,14 +397,23 @@ class NonPrescription extends State<NonPrescriptionCategory>with TickerProviderS
 
   ///Function to get Non-prescription medications
   Future<List<ParseObject>> getNonPresMedication(searchString) async {
-    QueryBuilder<ParseObject> queryNonPresMedication =
+    QueryBuilder<ParseObject> queryNonPresMedication1 =
     QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryNonPresMedication1.whereStartsWith('TradeName', searchString);
+
+    QueryBuilder<ParseObject> queryNonPresMedication2 =
+    QueryBuilder<ParseObject>(ParseObject('Medications'));
+    queryNonPresMedication2.whereStartsWith('ScientificName', searchString);
+
+    QueryBuilder<ParseObject> queryNonPresMedication = QueryBuilder.or(
+      ParseObject("Medications"),
+      [queryNonPresMedication1, queryNonPresMedication2],
+    );
     queryNonPresMedication.whereContains('LegalStatus', 'OTC');
-    queryNonPresMedication.setLimit(200);
+    queryNonPresMedication.setLimit(500);
     queryNonPresMedication.whereEqualTo('Deleted', false);
     queryNonPresMedication.orderByAscending('TradeName');
-    queryNonPresMedication.whereStartsWith('TradeName', searchString);
-    queryNonPresMedication.whereStartsWith('PharmaceuticalForm', packageType);
+    queryNonPresMedication.whereContains('PharmaceuticalForm', packageType);
 //Order medications
     final ParseResponse apiResponse = await queryNonPresMedication.query();
 

@@ -111,7 +111,7 @@ class _PresAttachPage extends State<PresAttach> {
                                         child: kIsWeb
                                             ? Image.network(pickedFile!.path)
                                             : Image.file(
-                                            File(pickedFile!.path), fit: BoxFit.cover))
+                                            File(pickedFile!.path), fit: BoxFit.fitWidth))
                                         : Container(
                                       width: 150,
                                       height: 150,
@@ -441,7 +441,9 @@ class _PresAttachPage extends State<PresAttach> {
             ])),
 
         persistentFooterButtons: [
-          CircleAvatar(
+        Row(
+        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+        children:[CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
@@ -455,7 +457,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-          SizedBox(width: 135,),
+          Spacer(),
           Text('Send Order',
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -647,7 +649,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-        ],
+        ])],
 
         //Bottom navigation bar
         bottomNavigationBar: Container(

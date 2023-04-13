@@ -7,6 +7,7 @@ import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platf
 import 'package:geolocator/geolocator.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:untitled/ChooseLocation.dart';
+import 'Cart.dart';
 import 'PresAttach.dart';
 
 
@@ -87,9 +88,12 @@ class _LocationPage extends State<Locationpage> {
       ),
 
       bottomNavigationBar:
-    SizedBox(height: size.height/4,
+    SizedBox(
+      height: size.height/6.7,
       child:
-      Column(children:[
+      Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children:[
          FutureBuilder<Placemark>(
              future: getAddress(lat,long),
              builder: (context, snapshot) {
@@ -155,46 +159,23 @@ class _LocationPage extends State<Locationpage> {
                        }
                }
              }),
-        Container(
-          width: size.width/1.2,
-            child:
-            ElevatedButton(
-              style: ElevatedButton
-                  .styleFrom(
-                backgroundColor: Colors.purple.shade300
+        Row(
+            mainAxisAlignment:MainAxisAlignment.center,
+            children:[
+              SizedBox(width: 8,),
+              CircleAvatar(
+            backgroundColor: Colors.purple.shade300,
+            child: IconButton(
+              onPressed: (){
+                Navigator.push( context, MaterialPageRoute( builder: (context) => CartPage(widget.customerId), ));
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.white,
+                size: 24,
               ),
-              onPressed:
-              Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                  PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
-              );}
-                  :() {showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Text("Please detect your location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
-                    actions: <Widget>[
-                      new TextButton(
-                        child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );},
-              child: Text('Confirm location',  style:
-              TextStyle(
-                  fontFamily: 'Lato',
-                  fontSize: 15,
-                  fontWeight: FontWeight
-                      .bold,
-                  color: Colors
-                      .white),),
             )),
-        Container(
-            width: size.width/1.2,
-            child:
+        Spacer(),
             ElevatedButton.icon(
               style: ElevatedButton
                   .styleFrom(
@@ -213,9 +194,43 @@ class _LocationPage extends State<Locationpage> {
                     .bold,
                 color: Colors
                     .white),),
-            )),
-      ]),
-
+            ),
+          Spacer(),
+          CircleAvatar(
+              backgroundColor: Colors.purple.shade300,
+              child:
+              IconButton(
+                  style: ElevatedButton
+                      .styleFrom(
+                      backgroundColor: Colors.purple.shade300
+                  ),
+                  onPressed:
+                  Long || Lat ? (){Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      PresAttach(widget.customerId, widget.totalPrice, widget.presRequired, lat , long))
+                  );}
+                      :() {showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text("Please detect your location!", style: TextStyle(fontFamily: 'Lato', fontSize: 20,)),
+                        actions: <Widget>[
+                          new TextButton(
+                            child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );},
+                  icon: const Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    color: Colors.white,
+                    size: 24,
+                  )            )),
+              SizedBox(width: 8,)
+      ])]),
     ));
   }
 
