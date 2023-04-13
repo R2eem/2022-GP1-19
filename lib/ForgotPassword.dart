@@ -123,7 +123,7 @@ class Forgot extends State<ForgotPassword> {
 
   //Function to send reset password link
   void doUserResetPassword() async {
-    final ParseUser user = ParseUser(null, null, controllerEmail.text.trim());
+    final ParseUser user = ParseUser(null, null, controllerEmail.text.trim().toLowerCase());
     final ParseResponse parseResponse = await user.requestPasswordReset();
     if (parseResponse.success) {
       showDialog(
