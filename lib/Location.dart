@@ -88,9 +88,8 @@ class _LocationPage extends State<Locationpage> {
       ),
 
       bottomNavigationBar:
-    SizedBox(
-      height: size.height/6.7,
-      child:
+    Wrap(
+        children:[
       Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children:[
@@ -230,8 +229,8 @@ class _LocationPage extends State<Locationpage> {
                     size: 24,
                   )            )),
               SizedBox(width: 8,)
-      ])]),
-    ));
+      ])]),])
+    );
   }
 
   Future<Position> _determinePosition() async {

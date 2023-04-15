@@ -269,7 +269,7 @@ class Cart extends State<CartPage> {
                                                                                             context: context,
                                                                                             builder: (BuildContext context) {
                                                                                               return AlertDialog(
-                                                                                                title: Text("Are you sure you want to delete this item?",
+                                                                                                title: Text("Are you sure you want to delete this medication?",
                                                                                                     style: TextStyle(
                                                                                                       fontFamily: 'Lato',
                                                                                                       fontSize: 20,
