@@ -257,8 +257,8 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                   child: ElevatedButton(
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
-                                                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                                                      child: Text('Save'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     //Show confirmation dialog
                                                                     onPressed: (){

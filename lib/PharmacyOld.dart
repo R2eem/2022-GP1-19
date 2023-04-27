@@ -223,7 +223,7 @@ class PharmacyOld extends State<PharmacyOldO>
                                                     final OrderStatus = newOrder.get('OrderStatus')!;
                                                     final orderCreatedDate = newOrder.get("createdAt").toString();
                                                     final orderdate = orderCreatedDate.substring(0,11);
-                                                    final orderTime = orderCreatedDate.substring(10,19);
+                                                    final orderTime = newOrder.get("createdAt").add(Duration(hours: 3)).toString().substring(10,19);
                                                     if(OrderStatus.contains(filter)){
                                                       noOrder = false;
                                                     }

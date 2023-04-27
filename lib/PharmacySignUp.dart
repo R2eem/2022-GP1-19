@@ -158,6 +158,11 @@ class Signup extends State<PharmacySignUp> {
                                                   .onUserInteraction,
                                               controller: controllerCommercialRegister,
                                               keyboardType: TextInputType.number,
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                              ],
                                               textCapitalization: TextCapitalization
                                                   .none,
                                               autocorrect: false,
@@ -624,7 +629,7 @@ class Signup extends State<PharmacySignUp> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text(
-              'Account was successfully created! Please verify your email before log in!',
+              'Request to create an account was successfully sent! Please verify your email before log in!',
               style: TextStyle(
                 fontFamily: 'Lato', fontSize: 20,)),
           actions: <Widget>[
