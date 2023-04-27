@@ -138,7 +138,7 @@ class Forgot extends State<ForgotPassword> {
                 child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 },
               ),
             ],
