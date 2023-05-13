@@ -17,13 +17,13 @@ Tiryaq app is developed in Android studio using Flutter and Dart language.
 Tiryaq admin dashboard developed in visual studio using HTML and Javascript.
 
 ## Launching instructions
-### app
+### App
 If you want to experience Tiryaq app, you can download Android Studio and flutter plugin then download the code files of main branch and use Pixel 3a emulator, or
 download the APK to run the app.
 
 - The app must run with no sound null safety
 
-### dashboard 
+### Dashboard 
 If you want to experience Tiryaq admin dashboard, you can download the "Admin Dashboard folder" from main branch, or
 open google chrome browser and visit the link https://tiryaq.b4a.app/ to run the dashboard.
 
@@ -31,8 +31,10 @@ open google chrome browser and visit the link https://tiryaq.b4a.app/ to run the
 App:
 
 -Customer
-Email:noura-alfouzan@hotmail.com
-Password: Noura00@
+ 
+ Email: noura-alfouzan@hotmail.com
+
+ Password: Noura00@
 
 -Pharmacy
 Email:lemon@hotmail.com 
