@@ -107,6 +107,7 @@ If you want to experience Tiryaq app, you should download Android Studio and flu
   - Resource: https://pub.dev/packages/google_maps_flutter
 
   - Imports:
+  
                    import 'package:google_maps_flutter/google_maps_flutter.dart';
   
 - *Seventh:*
