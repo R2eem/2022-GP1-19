@@ -24,11 +24,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  //Color _primaryColor = HexColor('#DC54FE');
-  //Color _accentColor = HexColor('#8A02AE');
-  //Color _primaryColor = HexColor('#ffc7fb');
-  //primaryColor: HexColor('#e04ad2'),
-  //Color _accentColor = HexColor('#ad5bf5');
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

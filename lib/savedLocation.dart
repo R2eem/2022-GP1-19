@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Settings.dart';
@@ -27,9 +27,6 @@ class Locations extends State<SavedLocationPage> {
   int NoOfLocation = 0;
   String loc ="";
 
-
-
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -42,7 +39,7 @@ class Locations extends State<SavedLocationPage> {
               height: 150,
               child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-            //Controls app logo
+            ///App logo
             Container(
               child: SafeArea(
                 child: Column(
@@ -50,26 +47,13 @@ class Locations extends State<SavedLocationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        Align(
+                          alignment: Alignment.topLeft,
                           child: Image.asset(
                             'assets/logoheader.png',
                             fit: BoxFit.contain,
                             width: 110,
                             height: 80,
-                          ),
-                        ),
-                        //Controls location page title
-                        Container(
-                          margin: EdgeInsets.fromLTRB(30, 13, 0, 0),
-                          child: Text(
-                            'My Locations',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 27,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ]),
@@ -87,7 +71,7 @@ class Locations extends State<SavedLocationPage> {
                               child: Column(children: [
                                 Expanded(
                                     child: FutureBuilder<List<ParseObject>>(
-                                        future: getSavedLocations(), //Will change LocationNotEmpty value
+                                        future: getSavedLocations(), //Will change LocationPageNotEmpty value
                                         builder: (context, snapshot) {
                                           switch (snapshot.connectionState) {
                                             case ConnectionState.none:
@@ -112,12 +96,9 @@ class Locations extends State<SavedLocationPage> {
                                               } else {
                                                 return LocationPageNotEmpty
                                                     ? ListView.builder(
-                                                    scrollDirection:
-                                                    Axis.vertical,
-                                                    itemCount:
-                                                    snapshot.data!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                    scrollDirection: Axis.vertical,
+                                                    itemCount: snapshot.data!.length,
+                                                    itemBuilder: (context, index) {
                                                       //Get Parse Object Values
                                                       //Get customer locations from Locations table
                                                       NoOfLocation = snapshot.data!.length; //Save number of Locations
@@ -154,6 +135,7 @@ class Locations extends State<SavedLocationPage> {
                                                                   return  ListView.builder(
                                                                       shrinkWrap: true,
                                                                       scrollDirection: Axis.vertical,
+                                                                      physics: ClampingScrollPhysics(),
                                                                       itemCount: 1,
                                                                       itemBuilder: (context, index) {
                                                                         final address = snapshot.data!;
@@ -184,7 +166,7 @@ class Locations extends State<SavedLocationPage> {
                                                                                 context: context,
                                                                                 builder: (BuildContext context) {
                                                                                   return AlertDialog(
-                                                                                    title: Text("Are you sure you wish to delete this Location?",
+                                                                                    title: Text("Are you sure you want to delete this Location?",
                                                                                         style: TextStyle(
                                                                                           fontFamily: 'Lato',
                                                                                           fontSize: 20,
@@ -192,11 +174,11 @@ class Locations extends State<SavedLocationPage> {
                                                                                     actions: <Widget>[
                                                                                       TextButton(
                                                                                         onPressed: () => Navigator.of(context).pop(true),
-                                                                                        child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                        child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                       ),
                                                                                       TextButton(
                                                                                         onPressed: () => Navigator.of(context).pop(false),
-                                                                                        child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                        child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                       ),
                                                                                     ],
                                                                                   );
@@ -209,7 +191,7 @@ class Locations extends State<SavedLocationPage> {
                                                                               if (await deleteLocation(LocID)) {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                                   content: Text(
-                                                                                    "the Location is deleted",
+                                                                                    "Location is deleted",
                                                                                     style: TextStyle(fontSize: 20),
                                                                                   ),
                                                                                   duration: Duration(milliseconds: 3000),
@@ -314,8 +296,10 @@ class Locations extends State<SavedLocationPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                  ),
                     GButton(
                         icon: Icons.receipt_long,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
@@ -341,7 +325,7 @@ class Locations extends State<SavedLocationPage> {
 
   }
 
-  //Get customer's locations  from Locations table
+  ///Get customer's locations  from Locations table
   Future<List<ParseObject>> getSavedLocations() async {
     final QueryBuilder<ParseObject> SavedLocations =
     QueryBuilder<ParseObject>(ParseObject('Locations'));
@@ -363,7 +347,7 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
-  //Delete location from locations table
+  ///Delete location from locations table
   Future<bool> deleteLocation(LocID) async {
     //Query the location from locations table
     final QueryBuilder<ParseObject> parseQuery =
@@ -385,6 +369,7 @@ class Locations extends State<SavedLocationPage> {
   }
 
 
+  ///Convert coordinates to address
   Future<Placemark> getUserLocation(currentPostion) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         currentPostion['latitude'], currentPostion['longitude']);
