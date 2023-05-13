@@ -1,13 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:native_notify/native_notify.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/PharmacyNew.dart';
+import 'package:untitled/PharmacySettings.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharmacyOld.dart';
 import 'PharmacyLogin.dart';
-import 'PharmacySettings.dart';
 
 
 class PharHomePage extends StatefulWidget {
@@ -40,16 +41,17 @@ class PharmacyHome extends State<PharHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
-                                Align(
-                                  alignment: Alignment.topLeft,
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                   child: Image.asset('assets/logoheader.png',
                                     fit: BoxFit.contain,
                                     width: 110,
                                     height: 80,
                                   ),
                                 ),
-                                Spacer(),
                                 Container(
                                     child:  IconButton(
                                       onPressed: (){
@@ -156,11 +158,11 @@ class PharmacyHome extends State<PharHomePage> {
                                                             "$pharmacyName,",
                                                             style: TextStyle(
                                                                 shadows: [
-                                                                Shadow(
-                                                                offset: Offset(2.0, 2.0), //position of shadow
-                                                            blurRadius: 6.0, //blur intensity of shadow
-                                                            color: Colors.black.withOpacity(0.8), //color of shadow with opacity
-                                                          ),],
+                                                                  Shadow(
+                                                                    offset: Offset(2.0, 2.0), //position of shadow
+                                                                    blurRadius: 6.0, //blur intensity of shadow
+                                                                    color: Colors.black.withOpacity(0.8), //color of shadow with opacity
+                                                                  ),],
                                                                 fontFamily: "Lato",
                                                                 fontSize: 35,
                                                                 color: Colors.purple.shade100,
@@ -185,9 +187,9 @@ class PharmacyHome extends State<PharHomePage> {
                                             builder: (context) => PharmacyNewO(pharmacyId)));
                                   },
                                   child: Card(
-                                   elevation: 7,
+                                    elevation: 7,
                                     child: Container(
-                                      padding: EdgeInsets.all(8),
+                                        padding: EdgeInsets.all(8),
                                         width: 300,
                                         height: 200,
                                         decoration: BoxDecoration(
@@ -196,14 +198,15 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Center(
+                                        child: Align(
+                                            alignment: Alignment.bottomLeft,
                                             child: Column(
                                               children: [
                                                 Image.asset('assets/thumbnail_iconNew.png',
                                                   fit: BoxFit.contain,
                                                   width: 150,
                                                   height: 150,
-                                                  ),
+                                                ),
                                                 Text(
                                                   "Active orders",
                                                   style: TextStyle(
@@ -227,7 +230,7 @@ class PharmacyHome extends State<PharHomePage> {
                                             builder: (context) => PharmacyOldO(pharmacyId)));
                                   },
                                   child: Card(
-                                   elevation: 7,
+                                    elevation: 7,
                                     child: Container(
                                         padding: EdgeInsets.all(8),
                                         width: 300,
@@ -238,60 +241,60 @@ class PharmacyHome extends State<PharHomePage> {
                                                   HexColor('#e9c3fa'),
                                                   HexColor('#fac3f5')
                                                 ])),
-                                        child: Center(
-                                          child: Column(
-                                            children: [
-                                              Image.asset('assets/thumbnail_iconOld.png',
-                                                fit: BoxFit.contain,
-                                                width: 150,
-                                                height: 150,),
-                                              Text(
-                                                "Inactive orders",
-                                                style: TextStyle(
-                                                  fontFamily: "Lato",
-                                                  color: HexColor(
-                                                      '#884bbd'),
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight
-                                                      .bold,
+                                        child: Align(
+                                            alignment: Alignment.bottomLeft,
+                                            child: Column(
+                                              children: [
+                                                Image.asset('assets/thumbnail_iconOld.png',
+                                                  fit: BoxFit.contain,
+                                                  width: 150,
+                                                  height: 150,),
+                                                Text(
+                                                  "Inactive orders",
+                                                  style: TextStyle(
+                                                    fontFamily: "Lato",
+                                                    color: HexColor(
+                                                        '#884bbd'),
+                                                    fontSize: 28,
+                                                    fontWeight: FontWeight
+                                                        .bold,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
+                                              ],
+                                            )
                                         )),
                                   )),
                             ],
                           )
                           )]))),
-            ])),
+          ])),
       //Bottom navigation bar
-      bottomNavigationBar:
-      SizedBox( height: 70,
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, size: 30,),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings, size: 30),
-                label: '',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.purple.shade200,
-            unselectedItemColor: Colors.black,
-            selectedFontSize: 0.0,
-            unselectedFontSize: 0.0,
-            onTap: (index) => setState(() {
-              _selectedIndex = index;
-              if (_selectedIndex == 0) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
-              } else if (_selectedIndex == 1) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
-              }
-            }),
-          )),
+        bottomNavigationBar: Container(
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+                    }
+                  }),
+                )))
     );}
 
   ///Function to get current logged in user
@@ -313,7 +316,7 @@ class PharmacyHome extends State<PharHomePage> {
     }
   }
 
-  void showErrorLogout(String errorMessage) {
+  void showError(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -341,7 +344,7 @@ class PharmacyHome extends State<PharHomePage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PharmacyLogin()));
       });
     } else {
-      showErrorLogout(response.error!.message);
+      showError(response.error!.message);
     }
   }
 }

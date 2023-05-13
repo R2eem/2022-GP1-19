@@ -145,7 +145,30 @@ class Login extends State<PharmacyLogin> {
                                                 filled: true,
                                                 contentPadding: EdgeInsets
                                                     .fromLTRB(20, 10, 20, 10),
-                                                ),),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(100.0),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey)),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(100.0),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey
+                                                            .shade400)),
+                                                errorBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(100.0),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.red,
+                                                        width: 2.0)),
+                                                focusedErrorBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(100.0),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.red,
+                                                        width: 2.0)),
+                                              ),),
                                             decoration: BoxDecoration(
                                                 boxShadow: [
                                                   BoxShadow(
@@ -165,7 +188,7 @@ class Login extends State<PharmacyLogin> {
                                             alignment: Alignment.topRight,
                                             child: GestureDetector(
                                               onTap: () {
-                                                 Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
+                                                Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPassword()), );
                                               },
                                               child: Text(
                                                 "Forgot your password?",
@@ -294,7 +317,8 @@ class Login extends State<PharmacyLogin> {
     var pharmacy;
     var id;
     var type;
-    final email = controllerEmail.text.trim().toLowerCase();
+    bool block = false;
+    final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
 
     QueryBuilder<ParseObject> queryPharmacy1 =
@@ -326,6 +350,7 @@ class Login extends State<PharmacyLogin> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           type = 'Pharmacy';
+          block = o.get('Block');
           pharmacy = o;
         }
       }
@@ -334,8 +359,8 @@ class Login extends State<PharmacyLogin> {
 
         var response = await user.login();
 
-        ///If credentials correct login
-        if (response.success) {
+        ///If credentials correct and not blocked enter account
+        if (response.success && !block) {
           setState(() {
             isLoggedIn = true;
           });
@@ -348,8 +373,13 @@ class Login extends State<PharmacyLogin> {
           if ("declined" == pharmacy.get('JoinRequest')) {
             showError("Sorry, Your join request is declined");
           }
+
+          ///If credentials correct and blocked don't enter account
+        } else if (response.success && block) {
+          showError('Account blocked, contact Tiryaq admin.');
         }
-        ///If credentials not correct don't login
+
+        ///If credentials not correct and blocked don't enter account
         else {
           showError(response.error!.message);
         }
@@ -374,6 +404,5 @@ class Login extends State<PharmacyLogin> {
     }
   }
 }
-
 
 

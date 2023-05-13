@@ -21,76 +21,6 @@ class Orders extends State<OrdersPage> {
   int _selectedIndex = 2;
   int orderNum = 1;
   bool currentOrders = true;
-  int numOfItems = 0;
-  DateTime dateForTimer = DateTime.now();
-  var _countdownTime = 0;
-
-
-  //Check orders time
-  Future<void> timer(orderId) async {
-    var orderCreatedAt;
-    var orderStatus;
-    var accepted = false;
-    var extraTime = 0;
-
-    //Query order details
-    final QueryBuilder<ParseObject> order =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    order.whereEqualTo('objectId', orderId);
-
-    final apiResponse = await order.query();
-
-    //Check pharmacy list for the order
-    if (apiResponse.success && apiResponse.results != null) {
-      for (var order in apiResponse.results!) {
-        orderCreatedAt = order.get('createdAt');
-        orderStatus = order.get('OrderStatus');
-        final QueryBuilder<ParseObject> parseQuery = QueryBuilder<ParseObject>(
-            ParseObject('PharmaciesList'));
-        parseQuery.whereEqualTo('OrderId', (ParseObject('Orders')
-          ..objectId = orderId).toPointer());
-        final parseQueryResponse = await parseQuery.query();
-
-        ///If no registered pharmacies, then decline order immediately
-        if(parseQueryResponse.results == null ){
-          var o = order..set('OrderStatus', 'Declined');
-          o.save();
-          break;
-        }
-
-        ///Check if any pharmacy accepted the order
-        for (var pharmaciesList in parseQueryResponse.results!) {
-          if (pharmaciesList.get('OrderStatus') == 'Accepted') {
-            accepted = true;
-          }
-        }
-        if (accepted) {
-          ///Time with extra time if order accepted from pharmacies
-          extraTime = 15;
-          String d3 = (orderCreatedAt.add(Duration(minutes: (30 + extraTime)))).toString();
-          d3 = d3.substring(0, 19);
-          dateForTimer = DateTime.parse(d3);
-        }
-        else {
-          ///Original time 30 minutes
-          String d2 = (orderCreatedAt.add(Duration(minutes: (30)))).toString();
-          d2 = d2.substring(0, 19);
-          dateForTimer = DateTime.parse(d2);
-        }
-      }
-    }
-    _countdownTime = dateForTimer.add(Duration(hours: 3)).millisecondsSinceEpoch;
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, orderId, true, _countdownTime, orderStatus)));
-  }
-
-  ///To check order status before displaying
-  @override
-  void initState() {
-    super.initState();
-    checkOrders();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -111,9 +41,12 @@ class Orders extends State<OrdersPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Image.asset(
                                       'assets/logoheader.png',
                                       fit: BoxFit.contain,
@@ -121,7 +54,6 @@ class Orders extends State<OrdersPage> {
                                       height: 80,
                                     ),
                                   ),
-                                  Spacer(),
                                   Container(
                                       child: IconButton(
                                         onPressed: () {
@@ -184,110 +116,110 @@ class Orders extends State<OrdersPage> {
                                   fontWeight: FontWeight.bold)),),
 
                             SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
+                                scrollDirection: Axis.vertical,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
-                                            child: FutureBuilder<List<ParseObject>>  (
-                                                future: getCustomerCurrentOrders(),
-                                                builder: (context, snapshot) {
-                                                  switch (snapshot
-                                                      .connectionState) {
-                                                    case ConnectionState.none:
-                                                    case ConnectionState
-                                                        .waiting:
-                                                      return Center(
-                                                        child: Container(
-                                                            width: 50,
-                                                            height: 50,
-                                                            child:
-                                                            CircularProgressIndicator()),
-                                                      );
-                                                    default:
-                                                      if (snapshot.hasError) {
-                                                        return Center(
-                                                          child: Text(
-                                                              "Error..."),
-                                                        );
-                                                      }
-                                                      if (!snapshot.hasData) {
-                                                        return Center(
-                                                          child: Text(
-                                                              "No Data..."),
-                                                        );
-                                                      }
-                                                      if(snapshot.data!.length == 0){
-                                                        return Center(
-                                                             child:Column(
-                                                               children:[
-                                                                 Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
-                                                                 Text("You don't have orders now.",style: TextStyle(
-                                                                     fontFamily: "Lato",
-                                                                     fontSize: 18,
-                                                                     color: Colors.black45,
-                                                                     fontWeight: FontWeight.w700),)
-                                                               ]
-                                                             )
-                                                        );
-                                                      }
-                                                        else {
-                                                        return  ListView.builder(
-                                                            physics: ClampingScrollPhysics(),
-                                                            shrinkWrap: true,
-                                                            scrollDirection: Axis.vertical,
-                                                            itemCount: snapshot.data!.length,
-                                                            itemBuilder: (context, index) {
-                                                              final customerCurrentOrders = snapshot.data![index];
-                                                              final OrderId = customerCurrentOrders.get('objectId');
-                                                              final CreatedDate = customerCurrentOrders.get('createdAt')!;
-                                                              final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
+                                child: FutureBuilder<List<ParseObject>> (
+                                    future: getCustomerCurrentOrders(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot
+                                          .connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState
+                                            .waiting:
+                                          return Center(
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child:
+                                                CircularProgressIndicator()),
+                                          );
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text(
+                                                  "Error..."),
+                                            );
+                                          }
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: Text(
+                                                  "No Data..."),
+                                            );
+                                          }
+                                          if(snapshot.data!.length == 0){
+                                            return Center(
+                                                child:Column(
+                                                    children:[
+                                                      Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
+                                                      Text("You don't have orders now.",style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 18,
+                                                          color: Colors.black45,
+                                                          fontWeight: FontWeight.w700),)
+                                                    ]
+                                                )
+                                            );
+                                          }
+                                          else {
+                                            return  ListView.builder(
+                                                physics: ClampingScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: snapshot.data!.length,
+                                                itemBuilder: (context, index) {
+                                                  final customerCurrentOrders = snapshot.data![index];
+                                                  final OrderId = customerCurrentOrders.get('objectId');
+                                                  final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                  final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                  final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
-                                                              return  GestureDetector(
-                                                                //Navigate to order details page
-                                                                  onTap: () =>  timer(OrderId),
-                                                                  //Order card information
-                                                                  child: Card(
-                                                                      elevation: 3,
-                                                                      color: Colors.white,
-                                                                      child: ClipPath(
-                                                                             child: Container(
-                                                                                   decoration: BoxDecoration(
-                                                                                     border: Border(
-                                                                                       left: BorderSide(color: Colors.purple.shade200, width:5),
-                                                                                       bottom: BorderSide(color: Colors.grey, width: 3),
-                                                                                     ),
-                                                                                   ),
-                                                                      child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                                                  return  GestureDetector(
+                                                    //Navigate to order details page
+                                                      onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, true))),
+                                                      //Order card information
+                                                      child: Card(
+                                                          elevation: 3,
+                                                          color: Colors.white,
+                                                          child: ClipPath(
+                                                              child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                      left: BorderSide(color: Colors.purple.shade200, width:5),
+                                                                      bottom: BorderSide(color: Colors.grey, width: 3),
+                                                                    ),
+                                                                  ),
+                                                                  child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                                                                       child:  Row(
                                                                           children:[
                                                                             Column(
                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children:[
-                                                                                Text('Order ID:  $OrderId',style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 19,
-                                                                                    color: Colors.black,
-                                                                                    fontWeight: FontWeight.w600),),
-                                                                                Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 18,
-                                                                                    color: Colors.black54,
-                                                                                    fontWeight: FontWeight.w700),),
-                                                                                Text(OrderStatus ,style: TextStyle(
-                                                                                    fontFamily: "Lato",
-                                                                                    fontSize: 17,
-                                                                                    color: Colors.black45,
-                                                                                    fontWeight: FontWeight.w700),),
-                                                                                SizedBox(height: 10),
-                                                                              ]),
+                                                                                children:[
+                                                                                  Text('Order ID:  $OrderId',style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 19,
+                                                                                      color: Colors.black,
+                                                                                      fontWeight: FontWeight.w600),),
+                                                                                  Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 18,
+                                                                                      color: Colors.black54,
+                                                                                      fontWeight: FontWeight.w700),),
+                                                                                  Text(OrderStatus ,style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 17,
+                                                                                      color: Colors.black45,
+                                                                                      fontWeight: FontWeight.w700),),
+                                                                                  SizedBox(height: 10),
+                                                                                ]),
                                                                             Spacer(),
                                                                             Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
-                                                                              ]) )))));
-                                                            });
-                                                      }
-                                                  }
-                                                })
-                                    ),
+                                                                          ]) )))));
+                                                });
+                                          }
+                                      }
+                                    })
+                            ),
                             SizedBox(
                               height: 15,
                             ),
@@ -301,107 +233,107 @@ class Orders extends State<OrdersPage> {
                             SingleChildScrollView(
                                 physics: ClampingScrollPhysics(),
                                 scrollDirection: Axis.vertical,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 10),
-                                      child:  FutureBuilder<List<ParseObject>> (
-                                                future: getCustomerPreviousOrders(),
-                                                builder: (context, snapshot) {
-                                                  switch (snapshot
-                                                      .connectionState) {
-                                                    case ConnectionState.none:
-                                                    case ConnectionState
-                                                        .waiting:
-                                                      return Center(
-                                                        child: Container(
-                                                            width: 50,
-                                                            height: 50,
-                                                            child:
-                                                            CircularProgressIndicator()),
-                                                      );
-                                                    default:
-                                                      if (snapshot.hasError) {
-                                                        return Center(
-                                                          child: Text(
-                                                              "Error..."),
-                                                        );
-                                                      }
-                                                      if (!snapshot.hasData) {
-                                                        return Center(
-                                                          child: Text(
-                                                              "No Data..."),
-                                                        );
-                                                      } if(snapshot.data!.length == 0){
-                                                        return Center(
-                                                            child:Column(
-                                                                children:[
-                                                                  Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
-                                                                  Text("You don't have previous orders.",style: TextStyle(
-                                                                      fontFamily: "Lato",
-                                                                      fontSize: 18,
-                                                                      color: Colors.black45,
-                                                                      fontWeight: FontWeight.w700),)
-                                                                ]
-                                                            )
-                                                        );
-                                                      }
-                                                      else {
-                                                        return  ListView.builder(
-                                                            physics: ClampingScrollPhysics(),
-                                                            shrinkWrap: true,
-                                                            scrollDirection: Axis.vertical,
-                                                            itemCount: snapshot.data!.length,
-                                                            itemBuilder: (context, index) {
-                                                              final customerCurrentOrders = snapshot.data![index];
-                                                              final OrderId = customerCurrentOrders.get('objectId');
-                                                              final CreatedDate = customerCurrentOrders.get('createdAt')!;
-                                                              final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
-                                                              final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child:  FutureBuilder<List<ParseObject>> (
+                                    future: getCustomerPreviousOrders(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot
+                                          .connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState
+                                            .waiting:
+                                          return Center(
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child:
+                                                CircularProgressIndicator()),
+                                          );
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text(
+                                                  "Error..."),
+                                            );
+                                          }
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: Text(
+                                                  "No Data..."),
+                                            );
+                                          } if(snapshot.data!.length == 0){
+                                            return Center(
+                                                child:Column(
+                                                    children:[
+                                                      Icon(Icons.shopping_cart_outlined,color: Colors.black45,size: 30,),
+                                                      Text("You don't have previous orders.",style: TextStyle(
+                                                          fontFamily: "Lato",
+                                                          fontSize: 18,
+                                                          color: Colors.black45,
+                                                          fontWeight: FontWeight.w700),)
+                                                    ]
+                                                )
+                                            );
+                                          }
+                                          else {
+                                            return  ListView.builder(
+                                                physics: ClampingScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: snapshot.data!.length,
+                                                itemBuilder: (context, index) {
+                                                  final customerCurrentOrders = snapshot.data![index];
+                                                  final OrderId = customerCurrentOrders.get('objectId');
+                                                  final CreatedDate = customerCurrentOrders.get('createdAt')!;
+                                                  final OrderStatus = customerCurrentOrders.get('OrderStatus')!;
+                                                  final TotalPrice = customerCurrentOrders.get('TotalPrice')!;
 
-                                                              return  GestureDetector(
-                                                                //Navigate to order details page
-                                                                  onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false, 0, 'PreviousOrder'))),
-                                                                  //Order card information
-                                                                  child: Card(
-                                                                      elevation: 3,
-                                                                      color: Colors.white,
-                                                                      child: ClipPath(
-                                                                          child: Container(
-                                                                              decoration: BoxDecoration(
-                                                                                border: Border(
-                                                                                  left: BorderSide(color: Colors.purple.shade200, width:5),
-                                                                                  bottom: BorderSide(color: Colors.grey, width: 3),
-                                                                                ),
-                                                                              ),
-                                                                              child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                                                                                  child:  Row(
-                                                                                      children:[
-                                                                                        Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children:[
-                                                                                              Text('Order ID:  $OrderId',style: TextStyle(
-                                                                                                  fontFamily: "Lato",
-                                                                                                  fontSize: 19,
-                                                                                                  color: Colors.black,
-                                                                                                  fontWeight: FontWeight.w600),),
-                                                                                              Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
-                                                                                                  fontFamily: "Lato",
-                                                                                                  fontSize: 18,
-                                                                                                  color: Colors.black54,
-                                                                                                  fontWeight: FontWeight.w700),),
-                                                                                              Text(OrderStatus ,style: TextStyle(
-                                                                                                  fontFamily: "Lato",
-                                                                                                  fontSize: 17,
-                                                                                                  color: Colors.black45,
-                                                                                                  fontWeight: FontWeight.w700),),
-                                                                                              SizedBox(height: 10),
-                                                                                            ]),
-                                                                                        Spacer(),
-                                                                                        Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
-                                                                                      ]) )))));
-                                                            });
-                                                      }
-                                                  }
-                                                }))
+                                                  return  GestureDetector(
+                                                    //Navigate to order details page
+                                                      onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetailsPage(widget.customerId, OrderId!, false))),
+                                                      //Order card information
+                                                      child: Card(
+                                                          elevation: 3,
+                                                          color: Colors.white,
+                                                          child: ClipPath(
+                                                              child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                      left: BorderSide(color: Colors.purple.shade200, width:5),
+                                                                      bottom: BorderSide(color: Colors.grey, width: 3),
+                                                                    ),
+                                                                  ),
+                                                                  child: Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                                                                      child:  Row(
+                                                                          children:[
+                                                                            Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children:[
+                                                                                  Text('Order ID:  $OrderId',style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 19,
+                                                                                      color: Colors.black,
+                                                                                      fontWeight: FontWeight.w600),),
+                                                                                  Text((CreatedDate).toString().substring(0,(CreatedDate).toString().indexOf(' ')) ,style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 18,
+                                                                                      color: Colors.black54,
+                                                                                      fontWeight: FontWeight.w700),),
+                                                                                  Text(OrderStatus ,style: TextStyle(
+                                                                                      fontFamily: "Lato",
+                                                                                      fontSize: 17,
+                                                                                      color: Colors.black45,
+                                                                                      fontWeight: FontWeight.w700),),
+                                                                                  SizedBox(height: 10),
+                                                                                ]),
+                                                                            Spacer(),
+                                                                            Icon(Icons.arrow_forward_ios_rounded, color: Colors.black45, size: 30)
+                                                                          ]) )))));
+                                                });
+                                          }
+                                      }
+                                    }))
                           ]))),
             ])),
 
@@ -423,8 +355,8 @@ class Orders extends State<OrdersPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30,
-                      ),
+                        iconSize: 30
+                    ),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -460,21 +392,41 @@ class Orders extends State<OrdersPage> {
                 ))));
   }
 
-  //Check orders status
-  Future<void> checkOrders() async {
-    ///Query orders that are under processing and check if the order passed the time then make order declined
+  //Get customer current orders from orders table
+  Future<List<ParseObject>> getCustomerCurrentOrders() async {
+
     var orderId;
+
+    //Query customer current orders
+    final QueryBuilder<ParseObject> query1 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query1.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query1.whereEqualTo('OrderStatus','Under processing');
+    final QueryBuilder<ParseObject> query2 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query2.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query2.whereEqualTo('OrderStatus','Ready for pick up');
+
+    final QueryBuilder<ParseObject> query3 =
+    QueryBuilder<ParseObject>(ParseObject('Orders'));
+    query3.whereEqualTo('Customer_id',
+        (ParseObject('Customer')
+          ..objectId = widget.customerId).toPointer());
+    query3.whereEqualTo('OrderStatus','Under preparation');
+    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
+      ParseObject("Orders"),
+      [query1, query2, query3],
+    )..orderByDescending('createdAt');
+
+    ///Query orders that are under processing and check if the order passed the time then make order declined
     var allDeclined;
     var orderCreatedAt;
-    var accepted = false;
+    var accepted;
     var extraTime = 0;
-
-  final QueryBuilder<ParseObject> query1 =
-  QueryBuilder<ParseObject>(ParseObject('Orders'));
-  query1.whereEqualTo('Customer_id',
-  (ParseObject('Customer')
-  ..objectId = widget.customerId).toPointer());
-  query1.whereEqualTo('OrderStatus','Under processing');
 
     final query1Response = await query1.query();
     if (query1Response.success && query1Response.results != null) {
@@ -488,23 +440,17 @@ class Orders extends State<OrdersPage> {
           ..objectId = orderId).toPointer());
         final parseQueryResponse = await parseQuery.query();
 
-        ///If no registered pharmacies, then decline order immediately
-        if(parseQueryResponse.results == null ){
-          var o = order..set('OrderStatus', 'Declined');
-          o.save();
-          break;
-        }
 
         ///Check if all pharmacies declined the order
-        for (var pharmaciesList in parseQueryResponse.results!) {
-          if (pharmaciesList.get('OrderStatus') != 'Declined') {
+        for (var o in parseQueryResponse.results!) {
+          if (o.get('OrderStatus') != 'Declined') {
             allDeclined = false;
           }
         }
 
         ///Check if any pharmacy accepted the order
-        for (var pharmaciesList in parseQueryResponse.results!) {
-          if (pharmaciesList.get('OrderStatus') == 'Accepted') {
+        for (var o in parseQueryResponse.results!) {
+          if (o.get('OrderStatus') == 'Accepted') {
             accepted = true;
           }
         }
@@ -521,7 +467,7 @@ class Orders extends State<OrdersPage> {
 
         ///*********Time code
 
-        ///If order not declined and customer didn't select a pharmacy check time
+        ///If order not declined and the customer didn't select a pharmacy check time
         if (!allDeclined) {
           String d1 = (DateTime.now()).subtract(Duration(hours: 3)).toString();
           ///Original time 30 minutes
@@ -534,16 +480,17 @@ class Orders extends State<OrdersPage> {
           DateTime date1 = DateTime.parse(d1);
           DateTime date2 = DateTime.parse(d2);
           DateTime date3 = DateTime.parse(d3);
+
           ///If there is acceptance from pharmacies and original time passed +
           ///cancel order only for pharmacies who didn't reply
           if (accepted && date1.isAfter(date2)) {
             ///For pharmacies
-            for (var pharmaciesList in parseQueryResponse.results!) {
+            for (var o in parseQueryResponse.results!) {
               ///If pharmacy declined or accepted order leave as it is for that pharmacy
               ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (pharmaciesList.get('OrderStatus') != 'Declined') {
-                if (pharmaciesList.get('OrderStatus') != 'Accepted') {
-                  var update = pharmaciesList..set('OrderStatus', 'Cancelled');
+              if (o.get('OrderStatus') != 'Declined') {
+                if (o.get('OrderStatus') != 'Accepted') {
+                  var update = o..set('OrderStatus', 'Cancelled');
                   final ParseResponse parseResponse = await update.save();
                 }
               }
@@ -555,11 +502,11 @@ class Orders extends State<OrdersPage> {
           ///order status cancelled for pharmacies who accepted or didn't reply
           if (date1.isAfter(date2)) { //date2 here either will be original or with extra time
             ///For pharmacies
-            for (var pharmaciesList in parseQueryResponse.results!) {
+            for (var o in parseQueryResponse.results!) {
               ///If pharmacy declined order leave as declined for that pharmacy
               ///If pharmacy didn't reply make order cancelled for that pharmacy
-              if (pharmaciesList.get('OrderStatus') != 'Declined') {
-                var update = pharmaciesList..set('OrderStatus', 'Cancelled');
+              if (o.get('OrderStatus') != 'Declined') {
+                var update = o..set('OrderStatus', 'Cancelled');
                 final ParseResponse parseResponse = await update.save();
               }
             }
@@ -571,35 +518,6 @@ class Orders extends State<OrdersPage> {
         }
       }
     }
-}
-
-  //Get customer current orders from orders table
-  Future<List<ParseObject>> getCustomerCurrentOrders() => Future.delayed(Duration(seconds: 2), () async {
-
-    //Query customer current orders
-    final QueryBuilder<ParseObject> query1 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query1.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-        query1.whereEqualTo('OrderStatus','Under processing');
-    final QueryBuilder<ParseObject> query2 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query2.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-        query2.whereEqualTo('OrderStatus','Ready for pick up');
-
-    final QueryBuilder<ParseObject> query3 =
-    QueryBuilder<ParseObject>(ParseObject('Orders'));
-    query3.whereEqualTo('Customer_id',
-        (ParseObject('Customer')
-          ..objectId = widget.customerId).toPointer());
-    query3.whereEqualTo('OrderStatus','Under preparation');
-    QueryBuilder<ParseObject> mainQuery = QueryBuilder.or(
-      ParseObject("Orders"),
-      [query1, query2, query3],
-    )..orderByDescending('createdAt');
     final apiResponse = await mainQuery.query();
 
     if (apiResponse.success && apiResponse.results != null) {
@@ -607,11 +525,11 @@ class Orders extends State<OrdersPage> {
     } else {
       return [];
     }
-  });
+  }
 
   //Get customer previous orders from orders table
   ///Wait for current orders to appear so if any orders become declined will appear in this query
-  Future<List<ParseObject>> getCustomerPreviousOrders() => Future.delayed(Duration(seconds: 3), () async {
+  Future<List<ParseObject>> getCustomerPreviousOrders()=> Future.delayed(Duration(seconds: 10), () async {
     //Query customer cart
     final QueryBuilder<ParseObject> query1 =
     QueryBuilder<ParseObject>(ParseObject('Orders'));
@@ -644,8 +562,7 @@ class Orders extends State<OrdersPage> {
     }
   });
 
-
-  void showErrorLogout(String errorMessage) {
+  void showError(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -674,7 +591,7 @@ class Orders extends State<OrdersPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showErrorLogout(response.error!.message);
+      showError(response.error!.message);
     }
   }
 }

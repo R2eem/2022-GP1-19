@@ -13,18 +13,18 @@ import 'package:untitled/CategoryPage.dart';
 
 
 class AccountPage extends StatefulWidget{
-  //Get customer id as a parameter
-  final String customerId;
-  const AccountPage(this.customerId);
-  @override
-  _AccountPage createState() => _AccountPage();
-}
 
+  @override
+  State<StatefulWidget> createState() {
+    return _AccountPage();
+  }
+}
 
 class _AccountPage extends State<AccountPage>{
   int _selectedIndex = 3;
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var customerId;
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +39,12 @@ class _AccountPage extends State<AccountPage>{
                 ),
                 //Back button
                 Container(
-                    child: SafeArea(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child:Container(
-                                    child: IconButton(
-                                      iconSize: 40,
-                                      color: Colors.white,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        }, icon: Icon(Icons.keyboard_arrow_left),),
-                                  )
-                              )]
-                        )
-                    )
+                  child: IconButton(padding: EdgeInsets.fromLTRB(0, 60, 370, 0),
+                    iconSize: 40,
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }, icon: Icon(Icons.keyboard_arrow_left),),
                 ),
                 ///Profile icon
                 Container(
@@ -144,6 +132,7 @@ class _AccountPage extends State<AccountPage>{
                                                               //Get Parse Object Values
                                                               //Get user information from Customer table
                                                               final user = snapshot.data![index];
+                                                              customerId = user.get<String>('objectId')!;
                                                               final Firstname = user.get<String>('Firstname')!;
                                                               final Lastname = user.get<String>('Lastname')!;
                                                               final Phonenumber = user.get<String>('Phonenumber')!;
@@ -165,12 +154,16 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: 'First name',
+                                                                        labelText: '',
                                                                         hintText: 'Firstname',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                         suffixIcon: Icon(Icons.edit) ) ,
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
                                                                     BoxShadow(
@@ -193,12 +186,16 @@ class _AccountPage extends State<AccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: 'Last name',
+                                                                        labelText: '',
                                                                         hintText: 'Lastname',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                                         suffixIcon: Icon(Icons.edit) ) ,
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
@@ -237,6 +234,10 @@ class _AccountPage extends State<AccountPage>{
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -250,12 +251,8 @@ class _AccountPage extends State<AccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.emailAddress,
                                                                     controller: controllerEmail,
-                                                              decoration: InputDecoration(
-                                                              labelText: 'Email',
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),) ,
-                                                              ),
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
+                                                                  ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
                                                                 SizedBox(height: 35.0),
@@ -266,24 +263,24 @@ class _AccountPage extends State<AccountPage>{
                                                                   child: ElevatedButton(
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
-                                                                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                                                      child: Text('Save'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     //Show confirmation dialog
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
-                                                                            updateInfo(userId,widget.customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
+                                                                            updateInfo(userId,customerId,controllerFirstname.text, controllerLasttname.text, controllerPhoneNumber.text);
                                                                             Navigator.of(context).pop();
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
@@ -333,7 +330,7 @@ class _AccountPage extends State<AccountPage>{
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart, iconActiveColor: Colors.purple.shade200, iconSize: 30,
+                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -348,11 +345,11 @@ class _AccountPage extends State<AccountPage>{
                     if (_selectedIndex == 0) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                     } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(customerId)));
                     } else if (_selectedIndex == 2) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersPage(customerId)));
                     } else if (_selectedIndex == 3) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
                     }
                   }),
                 )))
@@ -378,7 +375,7 @@ class _AccountPage extends State<AccountPage>{
       ..set('Firstname', editFirstname)
       ..set('Lastname', editLastname)
       ..set('Phonenumber', '0$editPhonenumber')
-      //userId should be pointer since its a foreign key
+    //userId should be pointer since its a foreign key
       ..set('user', (ParseObject('_User')..objectId = userId)
           .toPointer());
     final ParseResponse parseResponse = await todo.save();
@@ -410,7 +407,6 @@ class _AccountPage extends State<AccountPage>{
       return [];
     }
   }
-
   ///Function called when update is successful
   //Show message for 3 seconds then navigate to setting page
   void showSuccess() {
@@ -420,7 +416,7 @@ class _AccountPage extends State<AccountPage>{
           bool manuallyClosed = false;
           Future.delayed(Duration(seconds: 3)).then((_) {
             if (!manuallyClosed) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(widget.customerId)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(customerId)));
             }
           });
           return AlertDialog(

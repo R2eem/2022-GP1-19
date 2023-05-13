@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:untitled/PharmacySettings.dart';
 import 'package:untitled/widgets/header_widget.dart';
+import 'Cart.dart';
+import 'Orders.dart';
 import 'PharHomePage.dart';
-import 'PharmacyLogin.dart';
+import 'Settings.dart';
 import 'common/theme_helper.dart';
+import 'package:untitled/CategoryPage.dart';
 
 
 class PharmacyAccountPage extends StatefulWidget{
@@ -23,7 +27,6 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
   final controllerEditEmail = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var pharmacyId;
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +137,8 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                               pharmacyId = user.get<String>('objectId')!;
                                                               final PharmacyName = user.get<String>('PharmacyName')!;
                                                               final Phonenumber = user.get<String>('PhoneNumber')!;
-                                                              final ComRegNum = user.get('CommercialRegister')!;
-                                                              final Address = user.get('Address')!;
                                                               final controllerPharmacyName = TextEditingController(text: PharmacyName);
                                                               final controllerEmail = TextEditingController(text: email);
-                                                              final controllerComRegNum = TextEditingController(text: ComRegNum);
-                                                              final controllerAddress = TextEditingController(text: Address);
                                                               final controllerPhoneNumber = TextEditingController(text: Phonenumber.substring(1,));
                                                               //Display information
                                                               return Column( children: [
@@ -155,11 +154,15 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                           errorText: 'this field is required'),
                                                                     ]),
                                                                     decoration: InputDecoration(
-                                                                        labelText: 'Pharmacy name',
+                                                                        labelText: '',
                                                                         hintText: 'PharmacyName',
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: BoxDecoration(boxShadow: [
@@ -169,19 +172,6 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                       offset: const Offset(0, 5),
                                                                     )
                                                                   ]),
-                                                                ),
-                                                                SizedBox(height: 25.0),
-                                                                //Commercial number
-                                                                Container(
-                                                                  child: TextFormField(
-                                                                    readOnly: true,
-                                                                    autovalidateMode:
-                                                                    AutovalidateMode.onUserInteraction,
-                                                                    keyboardType: TextInputType.text,
-                                                                    controller: controllerComRegNum,
-                                                                    decoration: ThemeHelper().textInputDecoration('Commercial register number',"Commercial register number") ,
-                                                                  ),
-                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
                                                                 SizedBox(height: 25.0),
                                                                 //Phonenumber
@@ -218,6 +208,10 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                         fillColor: Colors.white,
                                                                         filled: true,
                                                                         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                                                                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                                                                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                                                                         suffixIcon: Icon(Icons.edit) ) ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -231,21 +225,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                     AutovalidateMode.onUserInteraction,
                                                                     keyboardType: TextInputType.emailAddress,
                                                                     controller: controllerEmail,
-                                                                    decoration: ThemeHelper().textInputDecoration('Email',"Email") ,
-                                                                  ),
-                                                                  decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                                                                ),
-                                                                SizedBox(height: 25.0),
-                                                                //Address
-                                                                Container(
-                                                                  child: TextFormField(
-                                                                    readOnly: true,
-                                                                    autovalidateMode:
-                                                                    AutovalidateMode.onUserInteraction,
-                                                                    keyboardType: TextInputType.text,
-                                                                    controller: controllerAddress,
-                                                                    maxLines:3,
-                                                                    decoration: ThemeHelper().textInputDecoration('Address',"Address") ,
+                                                                    decoration: ThemeHelper().textInputDecoration('',"Email") ,
                                                                   ),
                                                                   decoration: ThemeHelper().inputBoxDecorationShaddow(),
                                                                 ),
@@ -257,15 +237,15 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                   child: ElevatedButton(
                                                                     style: ThemeHelper().buttonStyle(),
                                                                     child: Padding(
-                                                                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                                                      child: Text('Save'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                                      child: Text('Save changes'.toUpperCase(), style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                                                     ),
                                                                     //Show confirmation dialog
                                                                     onPressed: (){
                                                                       if (_formKey.currentState!.validate()) {
                                                                         // set up the buttons
                                                                         Widget continueButton = TextButton(
-                                                                          child: Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Update", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             //Call updateInfo function when user confirms the update
                                                                             //Send userId from User table, customerId, Firstname, Lastname, and Phonenumber from Customer table
@@ -274,7 +254,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
                                                                           },
                                                                         );
                                                                         Widget cancelButton = TextButton(
-                                                                          child: Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                          child: Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black)),
                                                                           onPressed:  () {
                                                                             Navigator.of(context).pop();
                                                                           },
@@ -311,33 +291,32 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
               ]),
         ),
         //Bottom navigation bar
-      bottomNavigationBar:
-      SizedBox( height: 70,
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, size: 30,),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings, size: 30),
-                label: '',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.purple.shade200,
-            unselectedItemColor: Colors.black,
-            selectedFontSize: 0.0,
-            unselectedFontSize: 0.0,
-            onTap: (index) => setState(() {
-              _selectedIndex = index;
-              if (_selectedIndex == 0) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
-              } else if (_selectedIndex == 1) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
-              }
-            }),
-          )),
+        bottomNavigationBar: Container(
+            color: Colors.white,
+            child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: GNav(
+                  gap: 8,
+                  padding: const EdgeInsets.all(10),
+                  tabs: [
+                    GButton(
+                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                    GButton(
+                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) => setState(() {
+                    _selectedIndex = index;
+                    if (_selectedIndex == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+                    } else if (_selectedIndex == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(pharmacyId)));
+                    }
+                  }),
+                )))
     );
   }
 
@@ -379,7 +358,7 @@ class _PharmacyAccountPage extends State<PharmacyAccountPage>{
     return currentUser;
   }
 
-  ///Function to get current user from pharmacist table
+  ///Function to get current user from phrmacist table
   Future<List> currentuser(userId) async {
     QueryBuilder<ParseObject> queryPharmacies =
     QueryBuilder<ParseObject>(ParseObject('Pharmacist'));

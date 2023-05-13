@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:untitled/PresAttach.dart';
 import 'package:geocoding/geocoding.dart';
-import 'LoginPage.dart';
 
 
 
@@ -142,7 +142,6 @@ class Locations extends State<ChooseLocation> {
                                                                 return  ListView.builder(
                                                                     shrinkWrap: true,
                                                                     scrollDirection: Axis.vertical,
-                                                                    physics: ClampingScrollPhysics(),
                                                                     itemCount: 1,
                                                                     itemBuilder: (context, index) {
                                                                       final address = snapshot.data!;

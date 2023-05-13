@@ -1,16 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:latlong/latlong.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Location.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'Cart.dart';
 import 'CategoryPage.dart';
-import 'LoginPage.dart';
 import 'Orders.dart';
 import 'Settings.dart';
 import 'dart:io';
@@ -46,7 +46,6 @@ class _PresAttachPage extends State<PresAttach> {
   var subLocality;
   var street;
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -69,13 +68,16 @@ class _PresAttachPage extends State<PresAttach> {
                           children: [
                             Row(
                                 children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Image.asset('assets/logoheader.png',
                                       fit: BoxFit.contain,
                                       width: 110,
                                       height: 80,
                                     ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(50, 13, 0, 0),
                                   ),
                                 ]),
                             ///Show upload prescription button if there is prescribed medicine
@@ -85,83 +87,83 @@ class _PresAttachPage extends State<PresAttach> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   widget.presRequired ?
-                              Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text('Attach prescription:  ', style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                                  SizedBox(height: 10,),
-                                  Text('* The accepted image format are (png,jpg,jpeg)', style: TextStyle(
-                                      fontFamily: "Lato",
-                                      fontSize: 14,
-                                      color: Colors.black45,
-                                      fontWeight: FontWeight.w700),),
-                                  SizedBox(height: 10,),
-                                  GestureDetector(
-                                    child: pickedFile != null
-                                        ? Container(
-                                        width: 250,
-                                        height: 250,
-                                        decoration:
-                                        BoxDecoration(border: Border.all(color: HexColor(
-                                            '#ad5bf5'))),
-                                        child: kIsWeb
-                                            ? Image.network(pickedFile!.path)
-                                            : Image.file(
-                                            File(pickedFile!.path), fit: BoxFit.fitWidth))
-                                        : Container(
-                                      width: 150,
-                                      height: 150,
-                                      decoration:
-                                      BoxDecoration(border: Border.all(color: Colors
-                                          .black87)),
-                                      child: Center(
-                                        child: Text('Click here to pick image from Gallery'),
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      PickedFile? image =
-                                      await ImagePicker().getImage(
-                                          source: ImageSource.gallery);
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text('Attach prescription:  ', style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                        SizedBox(height: 10,),
+                                        Text('* The accepted image format are (png,jpg,jpeg)', style: TextStyle(
+                                            fontFamily: "Lato",
+                                            fontSize: 14,
+                                            color: Colors.black45,
+                                            fontWeight: FontWeight.w700),),
+                                        SizedBox(height: 10,),
+                                        GestureDetector(
+                                          child: pickedFile != null
+                                              ? Container(
+                                              width: 250,
+                                              height: 250,
+                                              decoration:
+                                              BoxDecoration(border: Border.all(color: HexColor(
+                                                  '#ad5bf5'))),
+                                              child: kIsWeb
+                                                  ? Image.network(pickedFile!.path)
+                                                  : Image.file(
+                                                  File(pickedFile!.path), fit: BoxFit.cover))
+                                              : Container(
+                                            width: 150,
+                                            height: 150,
+                                            decoration:
+                                            BoxDecoration(border: Border.all(color: Colors
+                                                .black87)),
+                                            child: Center(
+                                              child: Text('Click here to pick image from Gallery'),
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            PickedFile? image =
+                                            await ImagePicker().getImage(
+                                                source: ImageSource.gallery);
 
-                                      if (image != null && image.path.contains("PNG") | image
-                                          .path.contains("png") | image.path.contains(
-                                          "jpg") | image.path.contains("JPG") | image.path
-                                          .contains("jpeg") | image.path.contains("JPEG")) {
-                                        setState(() {
-                                          pickedFile = image;
-                                        });
-                                      }
-                                      else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              content: Text(
-                                                  "The accepted image format are (png,jpg,jpeg) ",
-                                                  style: TextStyle(
-                                                    fontFamily: 'Lato', fontSize: 20,)),
-                                              actions: <Widget>[
-                                                new TextButton(
-                                                  child: const Text("Ok", style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Colors.black)),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
+                                            if (image != null && image.path.contains("PNG") | image
+                                                .path.contains("png") | image.path.contains(
+                                                "jpg") | image.path.contains("JPG") | image.path
+                                                .contains("jpeg") | image.path.contains("JPEG")) {
+                                              setState(() {
+                                                pickedFile = image;
+                                              });
+                                            }
+                                            else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    content: Text(
+                                                        "The accepted image format are (png,jpg,jpeg) ",
+                                                        style: TextStyle(
+                                                          fontFamily: 'Lato', fontSize: 20,)),
+                                                    actions: <Widget>[
+                                                      new TextButton(
+                                                        child: const Text("Ok", style: TextStyle(
+                                                            fontFamily: 'Lato',
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Colors.black)),
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }
                                           },
-                                        );
-                                      }
-                                    },
-                                  )]) : Container(),
+                                        )]) : Container(),
                                   SizedBox(height: 10,),
 
                                   ///Show order summary
@@ -174,78 +176,78 @@ class _PresAttachPage extends State<PresAttach> {
                                   ///Show selected location
                                   Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Selected location:  ', style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                      FutureBuilder<Placemark>(
-                                          future: getUserLocation(),
-                                          builder: (context, snapshot) {
-                                            switch (snapshot.connectionState) {
-                                              case ConnectionState.none:
+                                      children: [
+                                        Text('Selected location:  ', style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontSize: 23,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                        FutureBuilder<Placemark>(
+                                            future: getUserLocation(),
+                                            builder: (context, snapshot) {
+                                              switch (snapshot.connectionState) {
+                                                case ConnectionState.none:
                                                 case ConnectionState.waiting:
                                                   return Center(
-                                                  child: Container(
-                                                  width: 200,
-                                                  height: 5,
-                                                  child:LinearProgressIndicator()),
+                                                    child: Container(
+                                                        width: 200,
+                                                        height: 5,
+                                                        child:LinearProgressIndicator()),
                                                   );
-                                                  default:
-                                                    if (snapshot.hasError) {
-                                                      return Center(
+                                                default:
+                                                  if (snapshot.hasError) {
+                                                    return Center(
                                                       child: Text(
-                                                      "Error..."),
-                                                  );
-                                                    }
-                                                    if (!snapshot.hasData) {
-                                                      return Center(
-                                                      child: Text(
-                                                      "No Data..."),
+                                                          "Error..."),
                                                     );
-                                                    } else {
-                                                      return  ListView.builder(
-                                                          physics: ClampingScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                      scrollDirection: Axis.vertical,
-                                                      itemCount: 1,
-                                                      itemBuilder: (context, index) {
-                                                        final address = snapshot.data!;
-                                                        country = address.country;
-                                                        locality = address.locality;
-                                                        subLocality = address.subLocality;
-                                                        street = address.street;
-                                                        return Stack(
-                                                            children: <Widget>[
-                                                              Container(
-                                                                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                  padding: EdgeInsets.all(10),
-                                                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                  child:RichText(
-                                                                    text: TextSpan(
-                                                                      children: [
-                                                                        WidgetSpan(
-                                                                          child: Icon(Icons.location_on),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text: " $street, $subLocality, $locality, $country",style: TextStyle(
-                                                                            fontFamily: "Lato",
-                                                                            fontSize: 17,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w600),
-                                                                            ),
-                                                                      ],
-                                                                    ),
-                                                            )
-                                                              )
-                                                            ]
-                                                        );
-                                                      });
-                                                    }
-                                            }
-                                          }),
-                                    ]),
+                                                  }
+                                                  if (!snapshot.hasData) {
+                                                    return Center(
+                                                      child: Text(
+                                                          "No Data..."),
+                                                    );
+                                                  } else {
+                                                    return  ListView.builder(
+                                                        physics: ClampingScrollPhysics(),
+                                                        shrinkWrap: true,
+                                                        scrollDirection: Axis.vertical,
+                                                        itemCount: 1,
+                                                        itemBuilder: (context, index) {
+                                                          final address = snapshot.data!;
+                                                          country = address.country;
+                                                          locality = address.locality;
+                                                          subLocality = address.subLocality;
+                                                          street = address.street;
+                                                          return Stack(
+                                                              children: <Widget>[
+                                                                Container(
+                                                                    margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                    padding: EdgeInsets.all(10),
+                                                                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                    child:RichText(
+                                                                      text: TextSpan(
+                                                                        children: [
+                                                                          WidgetSpan(
+                                                                            child: Icon(Icons.location_on),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text: " $street, $subLocality, $locality, $country",style: TextStyle(
+                                                                              fontFamily: "Lato",
+                                                                              fontSize: 17,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w600),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                )
+                                                              ]
+                                                          );
+                                                        });
+                                                  }
+                                              }
+                                            }),
+                                      ]),
                                   SizedBox(height: 20,),
                                   ///Show total price
                                   Row(
@@ -284,7 +286,7 @@ class _PresAttachPage extends State<PresAttach> {
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 25,),
+                                        horizontal: 25,),
                                       height: size.height/2,
                                       width: size.width,
                                       child: Column(children: [
@@ -384,49 +386,49 @@ class _PresAttachPage extends State<PresAttach> {
                                                                                 return Column(
                                                                                     children: [
                                                                                       Stack(
-                                                                                          children: <Widget>[
-                                                                                            Container(
-                                                                                              margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                                                                              padding: EdgeInsets.all(10),
-                                                                                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
-                                                                                              child: Row(
-                                                                                                children: <Widget>[
-                                                                                                  Text('$quantity X',
-                                                                                                    style: TextStyle(
-                                                                                                        fontFamily: "Lato",
-                                                                                                        fontSize: 20,
-                                                                                                        fontWeight: FontWeight.w700),),
-                                                                                                  Expanded(
-                                                                                                    child: Container(
-                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                      child: Column(
-                                                                                                        mainAxisSize: MainAxisSize.max,
-                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                        children: <Widget>[
-                                                                                                          Container(
-                                                                                                            padding: EdgeInsets.only(right: 8, top: 4),
-                                                                                                            child: Text(
-                                                                                                              '$TradeName  $Publicprice SAR',
-                                                                                                              maxLines: 2,
-                                                                                                              softWrap: true,
-                                                                                                              style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
-                                                                                                            ),
-                                                                                                          ),Text('$text',
-                                                                                                            style: TextStyle(
-                                                                                                                fontFamily: "Lato",
-                                                                                                                fontSize: 10,
-                                                                                                                fontWeight: FontWeight.w700,
-                                                                                                                color: Colors.red),),
-                                                                                                        ],
-                                                                                                      ),
+                                                                                        children: <Widget>[
+                                                                                          Container(
+                                                                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                                                                            padding: EdgeInsets.all(10),
+                                                                                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                                                            child: Row(
+                                                                                              children: <Widget>[
+                                                                                                Text('$quantity X',
+                                                                                                  style: TextStyle(
+                                                                                                      fontFamily: "Lato",
+                                                                                                      fontSize: 20,
+                                                                                                      fontWeight: FontWeight.w700),),
+                                                                                                Expanded(
+                                                                                                  child: Container(
+                                                                                                    padding: const EdgeInsets.all(8.0),
+                                                                                                    child: Column(
+                                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: <Widget>[
+                                                                                                        Container(
+                                                                                                          padding: EdgeInsets.only(right: 8, top: 4),
+                                                                                                          child: Text(
+                                                                                                            '$TradeName  $Publicprice SAR',
+                                                                                                            maxLines: 2,
+                                                                                                            softWrap: true,
+                                                                                                            style: TextStyle(fontFamily: "Lato", fontSize: 20, fontWeight: FontWeight.w700),
+                                                                                                          ),
+                                                                                                        ),Text('$text',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: "Lato",
+                                                                                                              fontSize: 10,
+                                                                                                              fontWeight: FontWeight.w700,
+                                                                                                              color: Colors.red),),
+                                                                                                      ],
                                                                                                     ),
-                                                                                                    flex: 100,
-                                                                                                  )
-                                                                                                ],
-                                                                                              ),
+                                                                                                  ),
+                                                                                                  flex: 100,
+                                                                                                )
+                                                                                              ],
                                                                                             ),
-                                                                                          ],
-                                                                                        )]);
+                                                                                          ),
+                                                                                        ],
+                                                                                      )]);
                                                                               });
                                                                         }
                                                                     }
@@ -441,9 +443,7 @@ class _PresAttachPage extends State<PresAttach> {
             ])),
 
         persistentFooterButtons: [
-        Row(
-        mainAxisAlignment:MainAxisAlignment.spaceBetween,
-        children:[CircleAvatar(
+          CircleAvatar(
               backgroundColor: Colors.purple.shade300,
               child: IconButton(
                   onPressed: () {
@@ -457,7 +457,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-          Spacer(),
+          SizedBox(width: 135,),
           Text('Send Order',
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -522,7 +522,7 @@ class _PresAttachPage extends State<PresAttach> {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
                           ..objectId = orderInfo.objectId).toPointer())
-                        ..set('PharmacistId', (ParseObject('Pharmacist')
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
                         ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 
@@ -535,7 +535,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Thank you for your order.\nCheck order in orders page for more information.",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the 30 minutes end.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -605,7 +605,7 @@ class _PresAttachPage extends State<PresAttach> {
                       final orderPharmacyInfo = ParseObject('PharmaciesList')
                         ..set('OrderId', (ParseObject('Orders')
                           ..objectId = orderInfo.objectId).toPointer())
-                        ..set('PharmacistId', (ParseObject('Pharmacist')
+                        ..set('PharmacyId', (ParseObject('Pharmacist')
                           ..objectId = pharmacies[i]['pharmacyId']).toPointer())
                         ..set('Distance' , calculateDistance(widget.lat, widget.lng,pharmaciesLocation[i]['pharmacyLocation'].latitude,pharmaciesLocation[i]['pharmacyLocation'].longitude));
 
@@ -617,7 +617,7 @@ class _PresAttachPage extends State<PresAttach> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           content: Text(
-                              "Thank you for your order.\nCheck order in orders page for more information.",
+                              "Your order has been submited. \n Pharmacies reply will be displayed within 30 minutes... \n Please select one pharmacy before the 30 minutes end.",
                               style: TextStyle(
                                 fontFamily: 'Lato', fontSize: 20,)),
                           actions: <Widget>[
@@ -649,7 +649,7 @@ class _PresAttachPage extends State<PresAttach> {
                     color: Colors.white,
                     size: 24.0,
                   ))),
-        ])],
+        ],
 
         //Bottom navigation bar
         bottomNavigationBar: Container(
@@ -752,15 +752,10 @@ class _PresAttachPage extends State<PresAttach> {
             'pharmacyLocation': object.get('Location')
           };
 
-          ///contain will not be empty if the pharmacy already exist in the array so no need to add it again
           var contain = pharmacies.where((element) => element['pharmacyId'] == object.objectId);
           if (contain.isEmpty) {
-            ///Send order only to accepted pharmacies
-            if(object.get('JoinRequest') == 'accepted'){
-              pharmacies.add(pharmacy);
-              pharmaciesLocation.add(pharmacyLocation);
-            }
-
+            pharmacies.add(pharmacy);
+            pharmaciesLocation.add(pharmacyLocation);
           }
         }
       }
@@ -769,8 +764,8 @@ class _PresAttachPage extends State<PresAttach> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           object = o as ParseObject;
-          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'].toStringAsFixed(5) == widget.lat.toStringAsFixed(5)){
-            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'].toStringAsFixed(5) == widget.lng.toStringAsFixed(5)){
+          if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['latitude'] == widget.lat){
+            if (object.get<ParseGeoPoint>('SavedLocations')!.toJson()['longitude'] == widget.lng){
               locationExist = true;
             }
           }
@@ -796,16 +791,13 @@ class _PresAttachPage extends State<PresAttach> {
     }
   }
   ///Calculate distance between customer and pharmacy
-  calculateDistance(lat1, lon1, lat2, lon2){
-    final Distance distance = new Distance();
-
-    //calculate distance in meter for better accuracy
-    final distanceMeter = distance.as(LengthUnit.Meter,
-        new LatLng(lat1,lon1),new LatLng(lat2,lon2));
-
-    //Convert distance to kilometers
-    var distanceKM = distanceMeter/1000;
-    return distanceKM;
+  double calculateDistance(lat1, lon1, lat2, lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
   }
 
   ///Convert coordinates to address
@@ -816,5 +808,4 @@ class _PresAttachPage extends State<PresAttach> {
     return place;
   }
 }
-
 

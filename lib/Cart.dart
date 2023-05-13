@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
@@ -8,7 +9,6 @@ import 'Orders.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'Settings.dart';
-
 
 class CartPage extends StatefulWidget {
   //Get customer id as a parameter
@@ -30,7 +30,6 @@ class Cart extends State<CartPage> {
   num TotalPrice  = 0;
   bool presRequired = false;
   int numOfPres = 0;
-  int numOfItems = 0;
 
   ///To change value of variable 'full'
   @override
@@ -59,9 +58,10 @@ class Cart extends State<CartPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 10,80, 0),
                                     child: Image.asset(
                                       'assets/logoheader.png',
                                       fit: BoxFit.contain,
@@ -71,7 +71,7 @@ class Cart extends State<CartPage> {
                                   ),
                                   //Controls Cart page title
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
+                                    margin: EdgeInsets.fromLTRB(0, 10,100, 0),
                                     child: Text(
                                       'Cart',
                                       textAlign: TextAlign.center,
@@ -82,7 +82,6 @@ class Cart extends State<CartPage> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  Spacer(),
                                   Container(
                                       child:  IconButton(
                                         onPressed: (){
@@ -268,7 +267,7 @@ class Cart extends State<CartPage> {
                                                                                             context: context,
                                                                                             builder: (BuildContext context) {
                                                                                               return AlertDialog(
-                                                                                                title: Text("Are you sure you want to delete this medication?",
+                                                                                                title: Text("Are you sure you wish to delete this item?",
                                                                                                     style: TextStyle(
                                                                                                       fontFamily: 'Lato',
                                                                                                       fontSize: 20,
@@ -276,11 +275,11 @@ class Cart extends State<CartPage> {
                                                                                                 actions: <Widget>[
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(true),
-                                                                                                    child: const Text("Yes", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("Delete", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                   TextButton(
                                                                                                     onPressed: () => Navigator.of(context).pop(false),
-                                                                                                    child: const Text("No", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
+                                                                                                    child: const Text("Cancel", style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)),
                                                                                                   ),
                                                                                                 ],
                                                                                               );
@@ -341,10 +340,10 @@ class Cart extends State<CartPage> {
                                                                                                             child: Row(
                                                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                                               children: <Widget>[
-                                                                                                                Expanded(child: Text(
+                                                                                                                Text(
                                                                                                                   '$Publicprice SAR  x$counter',
                                                                                                                   style: TextStyle(fontFamily: "Lato", fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
-                                                                                                                )),
+                                                                                                                ),
                                                                                                                 //Increment and decrement of medication
                                                                                                                 Padding(
                                                                                                                   padding: const EdgeInsets.all(0.0),
@@ -361,7 +360,6 @@ class Cart extends State<CartPage> {
                                                                                                                                 setState(() {
                                                                                                                                   //Modify the counter
                                                                                                                                   if (counter > 1) {
-                                                                                                                                    numOfItems++;
                                                                                                                                     counter--;
                                                                                                                                   }
                                                                                                                                 });
@@ -386,7 +384,6 @@ class Cart extends State<CartPage> {
                                                                                                                                 //Send medication id. customer id and the counter after modification
                                                                                                                                 increment(medId, widget.customerId, counter! ,Publicprice);
                                                                                                                                 setState(() {
-                                                                                                                                  numOfItems++;
                                                                                                                                   counter++;
                                                                                                                                 });
                                                                                                                               },
@@ -401,7 +398,7 @@ class Cart extends State<CartPage> {
                                                                                                               ],
                                                                                                             ),
                                                                                                           ),
-                                                                                                       ],
+                                                                                                        ],
                                                                                                       ),
                                                                                                     ),
                                                                                                     flex: 100,
@@ -538,8 +535,7 @@ class Cart extends State<CartPage> {
                     GButton(
                         icon: Icons.shopping_cart,
                         iconActiveColor: Colors.purple.shade200,
-                        iconSize: 30,
-                       ),
+                        iconSize: 30),
                     GButton(
                         icon: Icons.receipt_long,
                         iconActiveColor: Colors.purple.shade200,
@@ -730,7 +726,7 @@ class Cart extends State<CartPage> {
     }
   }
 
-  ///Get if cart empty or not
+  ///Get cif cart empty or not
   Future<void> checkEmptiness() async {
     //Query customer cart
     final QueryBuilder<ParseObject> customerCart =
@@ -742,16 +738,14 @@ class Cart extends State<CartPage> {
     if (apiResponse.success && apiResponse.results != null) {
       //If query have objects then set true
       full = true;
-      numOfItems = apiResponse.count;
       setState(() {});
     } else {
       //If query have no object then set false
       full = false;
-      numOfItems = 0;
     }
   }
 
-  void showErrorLogout(String errorMessage) {
+  void showError(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -779,7 +773,7 @@ class Cart extends State<CartPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       });
     } else {
-      showErrorLogout(response.error!.message);
+      showError(response.error!.message);
     }
   }
 }
