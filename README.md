@@ -35,12 +35,14 @@ App:
  Email: noura-alfouzan@hotmail.com
 
  Password: Noura00@
-
+ 
+ 
 -Pharmacy
  
  Email:lemon@hotmail.com 
  
  Password: LemonPharm2011@
+
 
 -Admin Dashboard
  
@@ -49,6 +51,7 @@ App:
  Email: shahad@gmail.com
  
  Password: Shahad1234*
+
 
  account2:
  
