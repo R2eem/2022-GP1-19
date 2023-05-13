@@ -84,17 +84,114 @@ If you want to experience Tiryaq app, you should download Android Studio and flu
 
                    import 'package:hexcolor/hexcolor.dart';
 
-- *Fifth:* 
+- *Fifth:*
 
-   - Name: flutter_launcher_icons
+  - Name: flutter_launcher_icons
 
-   - Version: 0.10.0
+  - Version: 0.10.0
 
-   - Usage: Update the application launcher icon
+  - Usage: Update the application launcher icon
 
-   - Resource: https://pub.dev/packages/flutter_launcher_icons
+  - Resource: https://pub.dev/packages/flutter_launcher_icons
 
-   - Imports: No imports
+  - Imports: No imports
+  
+- *Sixth:*
+
+  - Name: google_maps_flutter
+
+  - Version: 2.2.1
+
+  - Usage: Integrate google map with android application
+
+  - Resource: https://pub.dev/packages/google_maps_flutter
+
+  - Imports:
+                   import 'package:google_maps_flutter/google_maps_flutter.dart';
+  
+- *Seventh:*
+
+  - Name: geolocator
+
+  - Version: 9.0.2
+
+  - Usage: Acquire the current position of the device
+
+  - Resource: https://pub.dev/packages/geolocator
+
+  - Imports:
+    
+                    import 'package:geolocator/geolocator.dart';
+
+- *Eighth:*
+
+  - Name: full_screen_image
+
+  - Version: 1.0.2
+
+  - Usage: Full screen photo viewer
+
+  - Resource: https://pub.dev/packages/full_screen_image
+
+  - Imports: 
+  
+                    import 'package:full_screen_image/full_screen_image.dart';
+
+- *Ninth:*
+
+  - Name: native_notify
+
+  - Version: 0.0.16
+
+  - Usage: Push notification package
+
+  - Resource: https://pub.dev/packages/native_notify
+
+  - Imports:
+  
+                     import 'package:native_notify/native_notify.dart';
+  
+- *Tenth:*
+
+  - Name: flutter_countdown_timer
+
+  - Version: 4.1.0
+
+  - Usage: Countdown timer widget
+
+  - Resource: https://pub.dev/packages/flutter_countdown_timer
+
+  - Imports:
+  
+                     import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+  
+- *Eleventh:*
+
+  - Name: flutter_image_slideshow
+
+  - Version: any
+
+  - Usage:  Image slideshow widget
+
+  - Resource: https://pub.dev/packages/flutter_image_slideshow
+
+  - Imports:
+  
+                     import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+
+- *Twelfth:*
+
+  - Name: latlong
+
+  - Version: 0.6.1
+
+  - Usage: Calculate the distance between two coordinates
+
+  - Resource: https://pub.dev/packages/latlong
+
+  - Imports: 
+  
+                    import 'package:latlong/latlong.dart';
 
 ### Configuration:
 
