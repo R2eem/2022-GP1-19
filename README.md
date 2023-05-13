@@ -37,7 +37,6 @@ App:
  Password: Noura00@
  
  
- 
 -Pharmacy
  
  Email:lemon@hotmail.com 
