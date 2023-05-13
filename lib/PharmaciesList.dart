@@ -57,7 +57,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                   ),
                                   Container(
                                     margin: EdgeInsets.fromLTRB(65, 33, 0, 0),
-                                    child: Text('Pharamcies list',
+                                    child: Text('',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontFamily: 'Lato',
@@ -106,9 +106,9 @@ class PharmacyList extends State<PharmacyListPage> {
                                                 final pharmDetails = snapshot
                                                     .data![index];
                                                 final pharmacyId = pharmDetails
-                                                    .get('PharmacyId')
+                                                    .get('PharmacistId')
                                                     .objectId;
-                                                final Distance = pharmDetails
+                                                var Distance = pharmDetails
                                                     .get('Distance')!;
                                                 var OrderStatus2 = pharmDetails
                                                     .get('OrderStatus')!;
@@ -129,6 +129,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                     note = 'No note';
                                                   }
                                                 }
+                                                Distance = num.parse(Distance.toStringAsFixed(2));
                                                 return FutureBuilder<
                                                     List<ParseObject>>(
                                                     future: getPharmDetails(
@@ -213,7 +214,8 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                   crossAxisAlignment: CrossAxisAlignment
                                                                                       .start,
                                                                                   children: [
-                                                                                    Text(
+                                                                                    Row(
+                                                                              children:[Text(
                                                                                       '$pharmacyName ',
                                                                                       style: TextStyle(
                                                                                           fontFamily: "Lato",
@@ -222,6 +224,15 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                               .black,
                                                                                           fontWeight: FontWeight
                                                                                               .w600),),
+                                                                                    Text(
+                                                                                      ' -  ${Distance} Km',
+                                                                                      style: TextStyle(
+                                                                                          fontFamily: "Lato",
+                                                                                          fontSize: 17,
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontWeight: FontWeight
+                                                                                              .w500),),]),
                                                                                     Text(
                                                                                       '$pharmPhonenumber',
                                                                                       style: TextStyle(
@@ -376,7 +387,7 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                   child: Column(
                                                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                     children:[
-                                                                                                                      (medicationListStatus[0][i]['isChecked'] == true)?
+                                                                                                                  (medicationListStatus[0][i]['isChecked'] == true)?
                                                                                                                       Container(
                                                                                                                           padding: EdgeInsets.all(5),
                                                                                                                           width: size.width,
@@ -386,52 +397,56 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                               children:[
                                                                                                                                 Row(
-                                                                                                                                    children:[
-                                                                                                                                      Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
-                                                                                                                                      Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
-                                                                                                                                          fontFamily: "Lato",
-                                                                                                                                          fontSize: 17,
-                                                                                                                                          color: Colors.black,
-                                                                                                                                          fontWeight: FontWeight.w600),
-                                                                                                                                        maxLines: 2,),
-                                                                                                                                    ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
+                                                                                                                            children:[
+                                                                                                                              Icon(Icons.check,color: HexColor('#2b872d'),size: 30,),
+                                                                                                                          Expanded(
+                                                                                                                              child:Text('${medicationListStatus[0][i]['quantity']} X $medications ' ,style: TextStyle(
+                                                                                                                                    fontFamily: "Lato",
+                                                                                                                                    fontSize: 17,
+                                                                                                                                    color: Colors.black,
+                                                                                                                                    fontWeight: FontWeight.w600),
+                                                                                                                                    maxLines: 3,),
+                                                                                                                           )]),
+                                                                                                                  Row(
+                                                                                                                      children:[
+                                                                                                                          Expanded(
+                                                                                                                               child: Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                     fontFamily: "Lato",
                                                                                                                                     fontSize: 15,
                                                                                                                                     color: Colors.black,
                                                                                                                                     fontWeight: FontWeight.w500),
-                                                                                                                                  maxLines: 2,)
-                                                                                                                              ]
-                                                                                                                          )
+                                                                                                                                    maxLines: 3,)
+                                                                                                                              )])
+                                                                                                                          ])
                                                                                                                       ):Container(),
-                                                                                                                      (medicationListStatus[0][i]['isChecked'] == false)?
-                                                                                                                      Container(
-                                                                                                                          padding: EdgeInsets.all(5),
-                                                                                                                          width: size.width,
-                                                                                                                          color: Colors.grey.shade200,
-                                                                                                                          child:
-                                                                                                                          Column(
-                                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                              children:[
-                                                                                                                                Row(
-                                                                                                                                    children:[
-                                                                                                                                      Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
-                                                                                                                                      Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
-                                                                                                                                          fontFamily: "Lato",
-                                                                                                                                          fontSize: 17,
-                                                                                                                                          color: Colors.black,
-                                                                                                                                          fontWeight: FontWeight.w600),
-                                                                                                                                        maxLines: 2,),
-                                                                                                                                    ]),
-                                                                                                                                Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
-                                                                                                                                    fontFamily: "Lato",
-                                                                                                                                    fontSize: 15,
-                                                                                                                                    color: Colors.black,
-                                                                                                                                    fontWeight: FontWeight.w500),
-                                                                                                                                  maxLines: 2,)
-                                                                                                                              ]
-                                                                                                                          )
-                                                                                                                      ):Container()
+                                                                                                                    (medicationListStatus[0][i]['isChecked'] == false)?
+                                                                                                                  Container(
+                                                                                                                      padding: EdgeInsets.all(5),
+                                                                                                                      width: size.width,
+                                                                                                                      color: Colors.grey.shade200,
+                                                                                                                      child:
+                                                                                                                      Column(
+                                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                          children:[
+                                                                                                                            Row(
+                                                                                                                                children:[
+                                                                                                                                  Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
+                                                                                                                                  Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                                      fontFamily: "Lato",
+                                                                                                                                      fontSize: 17,
+                                                                                                                                      color: Colors.black,
+                                                                                                                                      fontWeight: FontWeight.w600),
+                                                                                                                                      maxLines: 2,),
+                                                                                                                                ]),
+                                                                                                                            Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
+                                                                                                                                fontFamily: "Lato",
+                                                                                                                                fontSize: 15,
+                                                                                                                                color: Colors.black,
+                                                                                                                                fontWeight: FontWeight.w500),
+                                                                                                                                maxLines: 2,)
+                                                                                                                          ]
+                                                                                                                      )
+                                                                                                                  ):Container()
                                                                                                                     ],
                                                                                                                   )
                                                                                                               );
@@ -528,12 +543,10 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                       children: <
                                                                                                           TextSpan>[
                                                                                                         TextSpan(
-                                                                                                            text: 'Please note that you cannot undo this process!!!',
+                                                                                                            text: 'Please note that you cannot undo this process!',
                                                                                                             style: TextStyle(
                                                                                                                 color: Colors
-                                                                                                                    .red,
-                                                                                                                fontWeight: FontWeight
-                                                                                                                    .bold)),
+                                                                                                                    .red,)),
                                                                                                       ],
                                                                                                     ),
                                                                                                   ),
@@ -656,7 +669,7 @@ class PharmacyList extends State<PharmacyListPage> {
     if (apiResponse1.success && apiResponse1.results != null) {
       for (var o in apiResponse1.results!) {
         var pharmacy = o as ParseObject;
-        if (pharmacy.get('PharmacyId').objectId == pharmacyId) {
+        if (pharmacy.get('PharmacistId').objectId == pharmacyId) {
           var update = pharmacy..set('OrderStatus', 'Under preparation');
           final ParseResponse parseResponse = await update.save();
         }

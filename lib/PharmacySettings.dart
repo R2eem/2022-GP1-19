@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:untitled/SavedLocation.dart';
-import 'AccountPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
 import 'PharHomePage.dart';
 import 'PharmacyAccountPage.dart';
@@ -19,7 +16,6 @@ class PharmacySettingsPage extends StatefulWidget {
 
 class Settings extends State<PharmacySettingsPage> {
   int _selectedIndex = 1;
-
 
 
   @override
@@ -43,10 +39,9 @@ class Settings extends State<PharmacySettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,70, 0),
+                            Align(
+                              alignment: Alignment.topLeft,
                               child: Image.asset(
                                 'assets/logoheader.png',
                                 fit: BoxFit.contain,
@@ -56,7 +51,7 @@ class Settings extends State<PharmacySettingsPage> {
                             ),
                             ///Controls settings page title
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,60, 0),
+                              margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
                               child: Text(
                                 'Settings',
                                 textAlign: TextAlign.center,
@@ -67,6 +62,7 @@ class Settings extends State<PharmacySettingsPage> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
+                            Spacer(),
                             Container(
                                 child:  IconButton(
                                   onPressed: (){
@@ -138,36 +134,37 @@ class Settings extends State<PharmacySettingsPage> {
           ]),
         ),
         //Bottom navigation bar
-        bottomNavigationBar: Container(
-            color: Colors.white,
-            child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                child: GNav(
-                  gap: 8,
-                  padding: const EdgeInsets.all(10),
-                  tabs: [
-                    GButton(
-                        icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                    GButton(
-                        icon: Icons.settings,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
-                  ],
-                  selectedIndex: _selectedIndex,
-                  onTabChange: (index) => setState(() {
-                    _selectedIndex = index;
-                    if (_selectedIndex == 0) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
-                    } else if (_selectedIndex == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(widget.pharmacyId)));
-                    }
-                  }),
-                )))
+      bottomNavigationBar:
+      SizedBox( height: 70,
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, size: 30,),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings, size: 30),
+                label: '',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.purple.shade200,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            onTap: (index) => setState(() {
+              _selectedIndex = index;
+              if (_selectedIndex == 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharHomePage()));
+              } else if (_selectedIndex == 1) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PharmacySettingsPage(widget.pharmacyId)));
+              }
+            }),
+          )),
     );
   }
   ///Show error message function
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -197,7 +194,7 @@ class Settings extends State<PharmacySettingsPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }

@@ -101,7 +101,7 @@ class Login extends State<LoginPage> {
                                               obscureText: !_isVisible,
                                               validator: MultiValidator([
                                                 RequiredValidator(
-                                                    errorText: 'this is required'),
+                                                    errorText: 'this field is required'),
                                               ]),
                                               decoration: InputDecoration(
                                                 suffixIcon: IconButton(
@@ -118,11 +118,7 @@ class Login extends State<LoginPage> {
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
-                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-                                                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                                focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                                              ),),
+                                               ),),
                                             decoration: BoxDecoration(boxShadow: [
                                               BoxShadow(
                                                 color: Colors.black.withOpacity(0.1),
@@ -209,9 +205,6 @@ class Login extends State<LoginPage> {
             new TextButton(
               child: const Text("Ok", style: TextStyle(fontFamily: 'Lato', fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),),
               onPressed: () {
-                if(errorMessage.compareTo('Account blocked, contact Tiryaq admin.')==0){
-                  doUserLogout();
-                }
                 Navigator.of(context).pop();
               },
             ),
@@ -226,8 +219,7 @@ class Login extends State<LoginPage> {
     var object;
     var id;
     var type;
-    bool block = false;
-    final email = controllerEmail.text.trim();
+    final email = controllerEmail.text.trim().toLowerCase();
     final password = controllerPassword.text.trim();
 
     QueryBuilder<ParseObject> queryCustomer1 =
@@ -258,7 +250,6 @@ class Login extends State<LoginPage> {
       if (apiResponse2.success && apiResponse2.results != null) {
         for (var o in apiResponse2.results!) {
           type = 'Customer';
-          block = o.get('Block');
         }
       }
       if (type == 'Customer') {
@@ -266,19 +257,16 @@ class Login extends State<LoginPage> {
 
         var response = await user.login();
 
-        ///If credentials correct and not blocked enter account
-        if (response.success && !block) {
+        ///If credentials correct login
+        if (response.success) {
           setState(() {
             isLoggedIn = true;
           });
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => CategoryPage()));
 
-          ///If credentials correct and blocked don't enter account
-        } else if(response.success && block){
-          showError('Account blocked, contact Tiryaq admin.');
         }
-        ///If credentials not correct and blocked don't enter account
+        ///If credentials not correct show messaage
         else{
           showError(response.error!.message);
         }
@@ -287,18 +275,6 @@ class Login extends State<LoginPage> {
       else {
         showError('Invalid username/password.');
       }
-    }
-  }
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      setState(() {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    } else {
-      showError(response.error!.message);
     }
   }
 }

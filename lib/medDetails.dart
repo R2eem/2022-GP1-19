@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:untitled/Cart.dart';
+import 'LoginPage.dart';
 import 'Orders.dart';
 import 'CategoryPage.dart';
 import 'package:untitled/widgets/header_widget.dart';
@@ -40,14 +41,14 @@ class MedDetails extends State<medDetailsPage> {
                                 Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                        color: Colors.white,
+                                      color: Colors.white,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
                                         height: size.height,
                                         width: size.width,
                                         child: Column(children: [
                                           Expanded(
-                                            //Get medication
+                                              //Get medication
                                               child: FutureBuilder<ParseObject>(
                                                   future: getMedDetails(),
                                                   builder: (context, snapshot) {
@@ -91,268 +92,271 @@ class MedDetails extends State<medDetailsPage> {
                                                                 final MarketingCompany = medDetails.get<String>('MarketingCompany')!;
                                                                 final MarketingCountry = medDetails.get<String>('MarketingCountry')!;
                                                                 final ProductForm = medDetails.get<String>('PharmaceuticalForm')!;
+                                                                final LegalStatus = medDetails.get("LegalStatus")!;
                                                                 ParseFileBase? image;
                                                                 if(medDetails.get<ParseFileBase>('Image') != null){
                                                                   image = medDetails.get<ParseFileBase>('Image')!;
                                                                 }
                                                                 ///Display medication information
                                                                 return  Container(
-                                                                    child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                                        mainAxisSize: MainAxisSize.min,
-                                                                        children: [
-                                                                          Stack(
-                                                                              children: [
-                                                                                Container(
-                                                                                  height: MediaQuery.of(context).size.height * 0.3,
-                                                                                ),
-                                                                                SafeArea(
-                                                                                    child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children: [
-                                                                                          SizedBox(
-                                                                                            height: size.height/10,
-                                                                                          ),
-                                                                                          (image!=null)?
-                                                                                          Image.network(
-                                                                                            image!.url!,
-                                                                                            width: size.width,
-                                                                                            height: size.height/4,
-                                                                                            fit: BoxFit.contain,
-                                                                                          ):Container(),
-                                                                                          Container(
-                                                                                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                                                                              child: Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: [
-                                                                                                    RichText(
-                                                                                                      textAlign: TextAlign.left,
-                                                                                                      text: TextSpan(
-                                                                                                        children: [
-                                                                                                          TextSpan(
-                                                                                                            text: TradeName,
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              height: 2.5,
-                                                                                                              fontSize: 30.0,
-                                                                                                              fontWeight: FontWeight.w600,
-                                                                                                              color: Color.fromRGBO(34, 34, 34, 1),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          TextSpan(
-                                                                                                            text: '  $ProductForm',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 30.0,
-                                                                                                              color: Color.fromRGBO(34, 34, 34, 1),
-                                                                                                            ),
-                                                                                                          ),],),),
-                                                                                                    SizedBox(
-                                                                                                      height: 5.0,
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                      ScientificName,
-                                                                                                      style: TextStyle(
-                                                                                                          fontFamily: 'Lato',
-                                                                                                          fontSize: 20.0,
-                                                                                                          color: Colors.grey[700],
-                                                                                                          fontWeight: FontWeight.w600
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    SizedBox(height: 10,),
-                                                                                                    Row(
-                                                                                                        children: [
-                                                                                                          Container(
-                                                                                                              margin: EdgeInsets.only(),
-                                                                                                              width: 300.0,
-                                                                                                              decoration: BoxDecoration(
-                                                                                                                borderRadius:
-                                                                                                                BorderRadius.circular(8.0),
-                                                                                                                border: Border.all(
-                                                                                                                  color: Colors.grey.withOpacity(0.5),
+                                                                        child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            children: [
+                                                                              Stack(
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      height: MediaQuery.of(context).size.height * 0.3,
+                                                                                    ),
+                                                                                    SafeArea(
+                                                                                        child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                height: size.height/10,
+                                                                                              ),
+                                                                                              (image!=null)?
+                                                                                              Image.network(
+                                                                                                image!.url!,
+                                                                                                width: size.width,
+                                                                                                height: size.height/4,
+                                                                                                fit: BoxFit.contain,
+                                                                                              ):Container(),
+                                                                                              Container(
+                                                                                                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                                                                                  child: Column(
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: [
+                                                                                                        RichText(
+                                                                                                          textAlign: TextAlign.left,
+                                                                                                          text: TextSpan(
+                                                                                                            children: [
+                                                                                                              TextSpan(
+                                                                                                                text: TradeName,
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  height: 2.5,
+                                                                                                                  fontSize: 30.0,
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  color: Color.fromRGBO(34, 34, 34, 1),
                                                                                                                 ),
-                                                                                                              ))
-                                                                                                        ]
-                                                                                                    ),
-                                                                                                    Container(
-                                                                                                        height: 60.0,
-                                                                                                        margin: EdgeInsets.only(right: 15.0, left: 15.0,top: 25.0),
-                                                                                                        child:
+                                                                                                              ),
+                                                                                                              TextSpan(
+                                                                                                                text: '  $ProductForm',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 30.0,
+                                                                                                                  color: Color.fromRGBO(34, 34, 34, 1),
+                                                                                                                ),
+                                                                                                              ),],),),
+                                                                                                        SizedBox(
+                                                                                                          height: 5.0,
+                                                                                                        ),
                                                                                                         Text(
-                                                                                                          "${(Publicprice).toStringAsFixed(2) +' SAR'}",
+                                                                                                          ScientificName,
                                                                                                           style: TextStyle(
                                                                                                               fontFamily: 'Lato',
-                                                                                                              fontWeight: FontWeight.w600,
-                                                                                                              fontSize: 24.0,
-                                                                                                              color: Color.fromRGBO(34, 34, 34, 1),
-                                                                                                              background: Paint()
-                                                                                                                ..strokeWidth = 30.0
-                                                                                                                ..color =  HexColor('#c7a1d1').withOpacity(0.5)
-                                                                                                                ..style = PaintingStyle.stroke
-                                                                                                                ..strokeJoin = StrokeJoin.round
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                    Text('More information: ',
-                                                                                                      style: TextStyle(
-                                                                                                        fontFamily: 'Lato',
-                                                                                                        fontSize: 20.0,
-                                                                                                        color: Colors.black87,
-                                                                                                        height: 1.40,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    SizedBox(height: 10,),
-                                                                                                    Row(
-                                                                                                        children:[
-                                                                                                          Text('Strength:',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 18.0,
-                                                                                                              color: Colors.black54,
-                                                                                                              height: 1.40,
-                                                                                                            ),
-                                                                                                          ),Text('  $Strength  $StrengthUnit',
-                                                                                                            style: TextStyle(
-                                                                                                                fontFamily: 'Lato',
-                                                                                                                fontSize: 16.0,
-                                                                                                                color: Colors.black45,
-                                                                                                                height: 1.40,
-                                                                                                                fontStyle: FontStyle.italic
-                                                                                                            ),
-                                                                                                          ),]),
-                                                                                                    SizedBox(
-                                                                                                      height: 10.0,
-                                                                                                    ),
-                                                                                                    Row(
-                                                                                                        children:[
-                                                                                                          Text('Usage method: ',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 18.0,
-                                                                                                              color: Colors.black54,
-                                                                                                              height: 1.40,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          Text('$UsageMethod',
-                                                                                                            style: TextStyle(
-                                                                                                                fontFamily: 'Lato',
-                                                                                                                fontSize: 16.0,
-                                                                                                                color: Colors.black45,
-                                                                                                                height: 1.40,
-                                                                                                                fontStyle: FontStyle.italic
-                                                                                                            ),
-                                                                                                          ),]),
-                                                                                                    SizedBox(
-                                                                                                      height: 10.0,
-                                                                                                    ),
-                                                                                                    Row(
-                                                                                                        children:[
-                                                                                                          Text('Package type: ',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 18.0,
-                                                                                                              color: Colors.black54,
-                                                                                                              height: 1.40,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          Text('$PackageType',
-                                                                                                            style: TextStyle(
-                                                                                                                fontFamily: 'Lato',
-                                                                                                                fontSize: 16.0,
-                                                                                                                color: Colors.black45,
-                                                                                                                height: 1.40,
-                                                                                                                fontStyle: FontStyle.italic
-                                                                                                            ),
-                                                                                                          ),]),
-                                                                                                    SizedBox(
-                                                                                                      height: 10.0,
-                                                                                                    ),
-                                                                                                    Row(
-                                                                                                        children:[
-                                                                                                          Text('Marketing company: ',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 18.0,
-                                                                                                              color: Colors.black54,
-                                                                                                              height: 1.40,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          Flexible(
-                                                                                                            child:
-                                                                                                            Text(MarketingCompany,
-                                                                                                              maxLines: 1,
-                                                                                                              softWrap: false,
-                                                                                                              overflow: TextOverflow.fade,
-                                                                                                              style: TextStyle(
-                                                                                                                fontFamily: 'Lato',
-                                                                                                                fontSize: 16.0,
-                                                                                                                color: Colors.black45,
-                                                                                                                height: 1.40,
-                                                                                                                fontStyle: FontStyle.italic,
-                                                                                                              ),
-                                                                                                            ),)]),
-                                                                                                    SizedBox(
-                                                                                                      height: 10.0,
-                                                                                                    ),
-                                                                                                    Row(
-                                                                                                        children:[
-                                                                                                          Text('Marketing country: ',
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 18.0,
-                                                                                                              color: Colors.black54,
-                                                                                                              height: 1.40,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          Text(MarketingCountry,
-                                                                                                            style: TextStyle(
-                                                                                                              fontFamily: 'Lato',
-                                                                                                              fontSize: 16.0,
-                                                                                                              color: Colors.black45,
-                                                                                                              height: 1.40,
-                                                                                                              fontStyle: FontStyle.italic,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ]),
-                                                                                                    SizedBox(height: 50,),
-                                                                                                    //Add to cart button
-                                                                                                    Center(
-                                                                                                      child:Align(
-                                                                                                        alignment: FractionalOffset.bottomCenter,
-                                                                                                        child: Container(
-                                                                                                          decoration: ThemeHelper().buttonBoxDecoration(context),
-                                                                                                          child: ElevatedButton(
-                                                                                                            style: ThemeHelper().buttonStyle(),
-                                                                                                            child: Padding(
-                                                                                                                padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                                                                                                child: Text.rich(
-                                                                                                                  TextSpan(
-                                                                                                                    children: [
-                                                                                                                      TextSpan(text: "ADD TO CART ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                                                                                                                      WidgetSpan(
-                                                                                                                          child: Icon(
-                                                                                                                            Icons.add_shopping_cart_rounded,
-                                                                                                                            color: Colors.white,
-                                                                                                                            size: 25.0,)),
-                                                                                                                    ],
-                                                                                                                  ),
-                                                                                                                )),
-
-                                                                                                            onPressed: () async {
-                                                                                                              if(await addToCart(medId, widget.customerId)) {
-                                                                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                                                                    SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
-                                                                                                                      duration: Duration(milliseconds: 3000),
-                                                                                                                    ));
-                                                                                                              };
-                                                                                                            },
+                                                                                                              fontSize: 20.0,
+                                                                                                              color: Colors.grey[700],
+                                                                                                              fontWeight: FontWeight.w600
                                                                                                           ),
                                                                                                         ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    SizedBox(height: 10,)  ]))]))
-                                                                              ])
-                                                                        ])
-                                                                );
+                                                                                                        SizedBox(height: 10,),
+                                                                                                        (LegalStatus == 'Prescription')?
+                                                                                                        Text('Requires prescription',
+                                                                                                          style: TextStyle(
+                                                                                                              fontFamily: 'Lato',
+                                                                                                              fontSize: 14,
+                                                                                                              color: Colors.red),):
+                                                                                                        SizedBox(width: 0,),
+                                                                                                        SizedBox(height: 10,),
+                                                                                                        Row(
+                                                                                                            children: [
+                                                                                                              Container(
+                                                                                                                  margin: EdgeInsets.only(),
+                                                                                                                  width: 300.0,
+                                                                                                                  decoration: BoxDecoration(
+                                                                                                                    borderRadius:
+                                                                                                                    BorderRadius.circular(8.0),
+                                                                                                                    border: Border.all(
+                                                                                                                      color: Colors.grey.withOpacity(0.5),
+                                                                                                                    ),
+                                                                                                                  ))
+                                                                                                            ]
+                                                                                                        ),
+                                                                                                        Container(
+                                                                                                            height: 60.0,
+                                                                                                            margin: EdgeInsets.only(right: 15.0, left: 15.0,top: 25.0),
+                                                                                                            child:
+                                                                                                            Text(
+                                                                                                              "${(Publicprice).toStringAsFixed(2) +' SAR'}",
+                                                                                                              style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  fontSize: 24.0,
+                                                                                                                  color: Color.fromRGBO(34, 34, 34, 1),
+                                                                                                                  background: Paint()
+                                                                                                                    ..strokeWidth = 30.0
+                                                                                                                    ..color =  HexColor('#c7a1d1').withOpacity(0.5)
+                                                                                                                    ..style = PaintingStyle.stroke
+                                                                                                                    ..strokeJoin = StrokeJoin.round
+                                                                                                              ),
+                                                                                                            )),
+                                                                                                        Text('More information: ',
+                                                                                                          style: TextStyle(
+                                                                                                            fontFamily: 'Lato',
+                                                                                                            fontSize: 20.0,
+                                                                                                            color: Colors.black87,
+                                                                                                            height: 1.40,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        SizedBox(height: 10,),
+                                                                                                        Row(
+                                                                                                            children:[
+                                                                                                              Text('Strength:',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 18.0,
+                                                                                                                  color: Colors.black54,
+                                                                                                                  height: 1.40,
+                                                                                                                ),
+                                                                                                              ),Text('  $Strength  $StrengthUnit',
+                                                                                                                style: TextStyle(
+                                                                                                                    fontFamily: 'Lato',
+                                                                                                                    fontSize: 16.0,
+                                                                                                                    color: Colors.black45,
+                                                                                                                    height: 1.40,
+                                                                                                                    fontStyle: FontStyle.italic
+                                                                                                                ),
+                                                                                                              ),]),
+                                                                                                        SizedBox(
+                                                                                                          height: 10.0,
+                                                                                                        ),
+                                                                                                        Row(
+                                                                                                            children:[
+                                                                                                              Text('Usage method: ',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 18.0,
+                                                                                                                  color: Colors.black54,
+                                                                                                                  height: 1.40,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              Text('$UsageMethod',
+                                                                                                                style: TextStyle(
+                                                                                                                    fontFamily: 'Lato',
+                                                                                                                    fontSize: 16.0,
+                                                                                                                    color: Colors.black45,
+                                                                                                                    height: 1.40,
+                                                                                                                    fontStyle: FontStyle.italic
+                                                                                                                ),
+                                                                                                              ),]),
+                                                                                                        SizedBox(
+                                                                                                          height: 10.0,
+                                                                                                        ),
+                                                                                                        Row(
+                                                                                                            children:[
+                                                                                                              Text('Package type: ',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 18.0,
+                                                                                                                  color: Colors.black54,
+                                                                                                                  height: 1.40,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              Text('$PackageType',
+                                                                                                                style: TextStyle(
+                                                                                                                    fontFamily: 'Lato',
+                                                                                                                    fontSize: 16.0,
+                                                                                                                    color: Colors.black45,
+                                                                                                                    height: 1.40,
+                                                                                                                    fontStyle: FontStyle.italic
+                                                                                                                ),
+                                                                                                              ),]),
+                                                                                                        SizedBox(
+                                                                                                          height: 10.0,
+                                                                                                        ),
+                                                                                                              Text('Marketing company: ',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 18.0,
+                                                                                                                  color: Colors.black54,
+                                                                                                                  height: 1.40,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                                Text(MarketingCompany,
+                                                                                                                  maxLines: 3,
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontFamily: 'Lato',
+                                                                                                                    fontSize: 16.0,
+                                                                                                                    color: Colors.black45,
+                                                                                                                    height: 1.40,
+                                                                                                                    fontStyle: FontStyle.italic,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                        SizedBox(
+                                                                                                          height: 10.0,
+                                                                                                        ),
+                                                                                                        Row(
+                                                                                                            children:[
+                                                                                                              Text('Marketing country: ',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 18.0,
+                                                                                                                  color: Colors.black54,
+                                                                                                                  height: 1.40,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              Text(MarketingCountry,
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Lato',
+                                                                                                                  fontSize: 16.0,
+                                                                                                                  color: Colors.black45,
+                                                                                                                  height: 1.40,
+                                                                                                                  fontStyle: FontStyle.italic,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ]),
+                                                                                                        SizedBox(height: 50,),
+                                                                                                        //Add to cart button
+                                                                                                        Center(
+                                                                                                          child:Align(
+                                                                                                            alignment: FractionalOffset.bottomCenter,
+                                                                                                            child: Container(
+                                                                                                              decoration: ThemeHelper().buttonBoxDecoration(context),
+                                                                                                              child: ElevatedButton(
+                                                                                                                style: ThemeHelper().buttonStyle(),
+                                                                                                                child: Padding(
+                                                                                                                    padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                                                                                                    child: Text.rich(
+                                                                                                                      TextSpan(
+                                                                                                                        children: [
+                                                                                                                          TextSpan(text: "ADD TO CART ",style: TextStyle(fontFamily: 'Lato',fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                                                                                          WidgetSpan(
+                                                                                                                              child: Icon(
+                                                                                                                                Icons.add_shopping_cart_rounded,
+                                                                                                                                color: Colors.white,
+                                                                                                                                size: 25.0,)),
+                                                                                                                        ],
+                                                                                                                      ),
+                                                                                                                    )),
+
+                                                                                                                onPressed: () async {
+                                                                                                                  if(await addToCart(medId, widget.customerId)) {
+                                                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                                        SnackBar(content: Text("$TradeName added to your cart",style: TextStyle(fontSize: 20),),
+                                                                                                                          duration: Duration(milliseconds: 3000),
+                                                                                                                        ));
+                                                                                                                  };
+                                                                                                                },
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        SizedBox(height: 10,)  ]))]))
+                                                                                  ])
+                                                                            ])
+                                                                    );
                                                               }
                                                           );
                                                         }
@@ -395,8 +399,10 @@ class MedDetails extends State<medDetailsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
-                    ),
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
+                       ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),

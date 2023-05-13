@@ -42,10 +42,9 @@ class Settings extends State<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,70, 0),
+                            Align(
+                              alignment: Alignment.topLeft,
                               child: Image.asset(
                                 'assets/logoheader.png',
                                 fit: BoxFit.contain,
@@ -55,7 +54,7 @@ class Settings extends State<SettingsPage> {
                             ),
                             ///Controls Cart page title
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 10,60, 0),
+                              margin: EdgeInsets.fromLTRB(size.width/7, size.height/100,0, 0),
                               child: Text(
                                 'Settings',
                                 textAlign: TextAlign.center,
@@ -66,6 +65,7 @@ class Settings extends State<SettingsPage> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
+                            Spacer(),
                             Container(
                                 child:  IconButton(
                                   onPressed: (){
@@ -120,7 +120,7 @@ class Settings extends State<SettingsPage> {
                                 title: Text("My Account" ,style: TextStyle(fontFamily: 'Lato',fontSize: 22, color: Colors.black)),
                                 trailing: Icon(Icons.keyboard_arrow_right, size: 30,),
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage(widget.customerId)));
                                 },
                                 contentPadding: EdgeInsets.fromLTRB(20, 10, 14, 10),
                               ),
@@ -160,7 +160,9 @@ class Settings extends State<SettingsPage> {
                         icon: Icons.home,iconActiveColor:Colors.purple.shade200,iconSize: 30
                     ),
                     GButton(
-                        icon: Icons.shopping_cart,iconActiveColor:Colors.purple.shade200,iconSize: 30
+                        icon: Icons.shopping_cart,
+                        iconActiveColor: Colors.purple.shade200,
+                        iconSize: 30,
                     ),
                     GButton(
                         icon: Icons.receipt_long, iconActiveColor:Colors.purple.shade200,iconSize: 30
@@ -185,8 +187,9 @@ class Settings extends State<SettingsPage> {
                 )))
     );
   }
+
   ///Show error message function
-  void showError(String errorMessage) {
+  void showErrorLogout(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -203,7 +206,6 @@ class Settings extends State<SettingsPage> {
           ],
         );
       },
-
     );
   }
 
@@ -216,7 +218,7 @@ class Settings extends State<SettingsPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       });
     } else {
-      showError(response.error!.message);
+      showErrorLogout(response.error!.message);
     }
   }
 }
