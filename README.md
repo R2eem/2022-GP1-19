@@ -3,8 +3,8 @@
 A new graduation project.
 
 ## Introduction
-Tiryaq project is an Android app, will be launched in Saudi Arabia.
-It's an app that gives you the opportunity to order your medications from the nearest pharmacies for pickup.
+Tiryaq project is an Android app and admin dashboard , will be launched in Saudi Arabia.
+It's a system that gives you the opportunity to order your medications from the nearest pharmacies for pickup.
 
 Our goal from this project is to:
 
@@ -13,13 +13,42 @@ Our goal from this project is to:
 - Help pharmacies reach their customers in an efficient manner.
 
 ## Technologies
-Tiryaq is an app developed in Android studio using Flutter, Dart language.
+Tiryaq app is developed in Android studio using Flutter and Dart language.
+Tiryaq admin dashboard developed in visual studio using HTML and Javascript.
 
 ## Launching instructions
-
-If you want to experience Tiryaq app, you should download Android Studio and flutter plugin then download the APK to run the app, or you can download the code files of main branch and use Pixel 3a XL emulator to run the app.
+### app
+If you want to experience Tiryaq app, you can download Android Studio and flutter plugin then download the code files of main branch and use Pixel 3a emulator, or
+download the APK to run the app.
 
 - The app must run with no sound null safety
+
+### dashboard 
+If you want to experience Tiryaq admin dashboard, you can download the "Admin Dashboard folder" from main branch, or
+open google chrome browser and visit the link https://tiryaq.b4a.app/ to run the dashboard.
+
+### Log in credentials
+App:
+
+-Customer
+Email:noura-alfouzan@hotmail.com
+Password: Noura00@
+
+-Pharmacy
+Email:lemon@hotmail.com 
+Password: LemonPharm2011@
+
+-Admin Dashboard
+account1:
+Email: shahad@gmail.com
+Password: Shahad1234*
+
+account2:
+Email: noura@gmail.com
+Password: Noura00@
+
+### Github link 
+https://github.com/R2eem/2022-GP1-19.git
 
 ### Targeted environment:
 
