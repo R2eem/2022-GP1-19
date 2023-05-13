@@ -37,17 +37,24 @@ App:
  Password: Noura00@
 
 -Pharmacy
-Email:lemon@hotmail.com 
-Password: LemonPharm2011@
+ 
+ Email:lemon@hotmail.com 
+ 
+ Password: LemonPharm2011@
 
 -Admin Dashboard
-account1:
-Email: shahad@gmail.com
-Password: Shahad1234*
+ 
+ account1:
+ 
+ Email: shahad@gmail.com
+ 
+ Password: Shahad1234*
 
-account2:
-Email: noura@gmail.com
-Password: Noura00@
+ account2:
+ 
+ Email: noura@gmail.com
+ 
+ Password: Noura00@
 
 ### Github link 
 https://github.com/R2eem/2022-GP1-19.git
