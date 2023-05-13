@@ -431,21 +431,25 @@ class PharmacyList extends State<PharmacyListPage> {
                                                                                                                             Row(
                                                                                                                                 children:[
                                                                                                                                   Icon(Icons.close,color: HexColor('#bd2717'),size: 30,),
-                                                                                                                                  Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
+                                                                                                                            Expanded(
+                                                                                                                             child: Text('${medicationListStatus[0][i]['quantity']} x $medications ' ,style: TextStyle(
                                                                                                                                       fontFamily: "Lato",
                                                                                                                                       fontSize: 17,
                                                                                                                                       color: Colors.black,
                                                                                                                                       fontWeight: FontWeight.w600),
                                                                                                                                       maxLines: 2,),
-                                                                                                                                ]),
-                                                                                                                            Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
+                                                                                                                            )]),
+                                                                                                                            Row(
+                                                                                                                                children:[
+                                                                                                                            Expanded(
+                                                                                                                                child:Text('$ProductForm $Strength $StrengthUnit, $Publicprice SAR' ,style: TextStyle(
                                                                                                                                 fontFamily: "Lato",
                                                                                                                                 fontSize: 15,
                                                                                                                                 color: Colors.black,
                                                                                                                                 fontWeight: FontWeight.w500),
                                                                                                                                 maxLines: 2,)
-                                                                                                                          ]
-                                                                                                                      )
+                                                                                                                            )])
+                                                                                                                          ])
                                                                                                                   ):Container()
                                                                                                                     ],
                                                                                                                   )
