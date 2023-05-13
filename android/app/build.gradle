@@ -71,4 +71,7 @@ dependencies {
 }
 android {
     compileSdkVersion 33
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
 }
